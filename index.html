@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studio Existence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Space+Grotesk:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0ece4;
+      --ink: #0f0e0c;
+      --accent: #5B2D8E;
+      --gap: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* ══ CUSTOM CURSOR ══ */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform .1s, width .2s, height .2s, background .2s;
+      mix-blend-mode: multiply;
+    }
+
+    /* ══ NOISE TEXTURE ══ */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 200px;
+      opacity: .04;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ══ HEADER ══ */
+    header {
+      padding: 3.5rem 4rem 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-left {}
+
+    .studio-label {
+      font-family: 'Space Mono', monospace;
+      font-size: .6rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #888;
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    .studio-wordmark {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: .95;
+      letter-spacing: .01em;
+      color: var(--ink);
+    }
+
+    .studio-wordmark span {
+      display: block;
+      color: var(--accent);
+    }
+
+    .header-right {
+      text-align: right;
+      padding-top: .2rem;
+    }
+
+    .header-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #888;
+      line-height: 1.5;
+      max-width: 22ch;
+    }
+
+    .header-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: .55rem;
+      letter-spacing: .12em;
+      color: #aaa;
+      margin-top: .8rem;
+      text-transform: uppercase;
+    }
+
+    /* ══ MARQUEE ══ */
+    .marquee-wrap {
+      margin: 3rem 0 2.5rem;
+      overflow: hidden;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      padding: .6rem 0;
+      white-space: nowrap;
+    }
+
+    .marquee-track {
+      display: inline-flex;
+      animation: marquee 90s linear infinite;
+      gap: 0;
+      align-items: baseline;
+    }
+
+    .marquee-item {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      letter-spacing: .01em;
+      color: #999;
+      padding: 0 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .marquee-author {
+      font-family: 'Space Mono', monospace;
+      font-style: normal;
+      font-size: .6rem;
+      letter-spacing: .1em;
+      color: #bbb;
+      padding: 0 .4rem;
+    }
+
+    .marquee-dot {
+      font-family: 'Space Mono', monospace;
+      font-style: normal;
+      color: var(--accent);
+      opacity: .4;
+      padding: 0 1rem;
+      font-size: .7rem;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ══ GRID ══ */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--gap);
+      margin: var(--gap) 4rem 0;
+    }
+
+    /* ══ CARD ══ */
+    .card {
+      border: 1.5px solid var(--accent);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      min-height: 420px;
+      transition: box-shadow .22s ease, transform .22s ease;
+    }
+
+    .card:hover {
+      box-shadow: 5px 5px 0 var(--accent);
+      transform: translate(-3px, -3px);
+      z-index: 5;
+    }
+
+    .card-bg {
+      position: absolute; inset: 0;
+      transition: transform .6s cubic-bezier(.23,1,.32,1);
+    }
+
+    .card:hover .card-bg { transform: scale(1.04); }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .card-top {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem;
+      position: relative;
+    }
+
+    .card-bottom {
+      padding: 1.4rem 1.8rem 1.8rem;
+      border-top: 1px solid rgba(0,0,0,.12);
+    }
+
+    .card-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: .45rem;
+    }
+
+    .card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: .04em;
+    }
+
+    .card-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: .5rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .22em .7em;
+      border: 1px solid currentColor;
+    }
+
+    .card-desc {
+      font-size: .78rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: inherit;
+      opacity: .7;
+      max-width: 38ch;
+    }
+
+
+    /* ══════════════════════════════
+       CARD 1 — DEAR SOMEONE
+       warm linen + ink
+    ══════════════════════════════ */
+    #dear {
+      --c: #e8e0d0;
+      --ink-c: #2c2820;
+    }
+    #dear .card-bg   { background: #e8e0d0; }
+    #dear .card-bottom { background: #ddd6c4; color: var(--ink-c); border-color: rgba(0,0,0,.1); }
+    #dear .card-badge { color: #a07848; border-color: #a07848; }
+
+    /* handwritten letter that opens on hover */
+    .letter-stack {
+      position: relative;
+      width: 180px;
+      height: 220px;
+    }
+
+    .letter-sheet {
+      position: absolute;
+      width: 160px;
+      background: #faf7f0;
+      border: 1px solid #d8d0be;
+      padding: 16px;
+      box-shadow: 2px 4px 18px rgba(0,0,0,.08);
+    }
+
+    .letter-sheet:nth-child(1) {
+      bottom: 0; left: 0;
+      transform: rotate(-4deg);
+      z-index: 1;
+    }
+    .letter-sheet:nth-child(2) {
+      bottom: 16px; left: 16px;
+      transform: rotate(1.5deg);
+      z-index: 2;
+      transition: transform .4s ease;
+    }
+    #dear:hover .letter-sheet:nth-child(2) {
+      transform: rotate(1.5deg) translateY(-20px);
+    }
+    .letter-sheet:nth-child(3) {
+      bottom: 28px; left: 10px;
+      transform: rotate(-1deg);
+      z-index: 3;
+      transition: transform .4s .05s ease;
+    }
+    #dear:hover .letter-sheet:nth-child(3) {
+      transform: rotate(-1deg) translateY(-36px);
+    }
+
+    .sheet-lines span {
+      display: block;
+      height: 1px;
+      background: #c8c0b0;
+      margin-bottom: 8px;
+    }
+    .sheet-lines span:nth-child(3) { width: 70%; }
+    .sheet-lines span:nth-child(6) { width: 55%; }
+
+    .sheet-seal {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #d49040, #8a4e18);
+      margin-top: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.2);
+    }
+
+    /* floating ink dots */
+    .dear-floats {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .dear-floats i {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #b0a890;
+      opacity: .3;
+      animation: driftY var(--dur) var(--del) ease-in-out infinite alternate;
+    }
+    @keyframes driftY {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-12px); }
+    }
+
+    /* ══════════════════════════════
+       CARD 2 — PAY TO EXIST
+       electric indigo space
+    ══════════════════════════════ */
+    #pay {
+      --c: #0a0820;
+      --ink-c: #e0ddf8;
+    }
+    #pay .card-bg   { background: radial-gradient(ellipse at 60% 40%, #1a0f40 0%, #060414 100%); }
+    #pay .card-bottom { background: #0e0b28; color: var(--ink-c); border-color: rgba(255,255,255,.06); }
+    #pay .card-name  { color: #e0ddf8; }
+    #pay .card-desc  { color: #e0ddf8; }
+    #pay .card-badge { color: #9980ff; border-color: #9980ff; }
+
+    .pay-universe {
+      width: 100%; height: 100%;
+      position: absolute; inset: 0;
+    }
+
+    .pay-bubble {
+      position: absolute;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ══════════════════════════════
+       CARD 3 — 100 HALL OF FAME
+       matte black + gold
+    ══════════════════════════════ */
+    #hall {
+      --c: #0c0b08;
+      --ink-c: #e8e0c8;
+    }
+    #hall .card-bg {
+      background: #0c0b08;
+      background-image: radial-gradient(ellipse at 40% 60%, #1c180a 0%, #0c0b08 70%);
+    }
+    #hall .card-bottom { background: #111009; color: var(--ink-c); border-color: rgba(184,146,42,.15); }
+    #hall .card-name   { color: #e8e0c8; }
+    #hall .card-desc   { color: #e8e0c8; }
+    #hall .card-badge  { color: #7a6020; border-color: #7a6020; }
+
+    .hall-scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .hall-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 9vw, 7.5rem);
+      line-height: 1;
+      color: #b8922a;
+      letter-spacing: .02em;
+      position: relative;
+      animation: goldPulse 3s ease-in-out infinite;
+    }
+
+    /* gold shimmer */
+    .hall-num::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,220,100,.5) 50%, transparent 70%);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 2.5s ease-in-out infinite;
+    }
+
+    @keyframes goldPulse {
+      0%,100% { text-shadow: 0 0 40px rgba(184,146,42,.3); }
+      50%      { text-shadow: 0 0 80px rgba(184,146,42,.6), 0 0 120px rgba(184,146,42,.2); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+
+    .hall-rule {
+      display: flex; align-items: center; gap: .8rem;
+      width: 60%;
+    }
+    .hall-rule::before, .hall-rule::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, #b8922a55, transparent);
+    }
+    .hall-rule-diamond {
+      width: 7px; height: 7px;
+      border: 1px solid #b8922a99;
+      transform: rotate(45deg);
+      animation: diamondPulse 2s ease-in-out infinite;
+    }
+    @keyframes diamondPulse {
+      0%,100% { box-shadow: 0 0 0 rgba(184,146,42,0); }
+      50%      { box-shadow: 0 0 12px rgba(184,146,42,.5); }
+    }
+
+    .hall-subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: .5rem;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      color: #6a5820;
+    }
+
+    /* gold particles */
+    .hall-particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: #b8922a;
+      border-radius: 50%;
+      animation: particleDrift var(--dur) var(--del) ease-in-out infinite;
+    }
+    @keyframes particleDrift {
+      0%   { transform: translate(0,0); opacity: 0; }
+      20%  { opacity: .8; }
+      100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+    }
+
+    /* ══════════════════════════════
+       CARD 4 — I KNOW WHAT I SAW
+       radar green / military
+    ══════════════════════════════ */
+    #ikwis {
+      --c: #020f06;
+      --ink-c: #a0d0a8;
+    }
+    #ikwis .card-bg {
+      background: #020f06;
+      background-image:
+        radial-gradient(ellipse at 50% 50%, #041a08 0%, #020f06 60%),
+        repeating-linear-gradient(0deg, transparent, transparent 22px, rgba(0,200,60,.025) 22px, rgba(0,200,60,.025) 23px),
+        repeating-linear-gradient(90deg, transparent, transparent 22px, rgba(0,200,60,.015) 22px, rgba(0,200,60,.015) 23px);
+    }
+    #ikwis .card-bottom { background: #031408; color: var(--ink-c); border-color: rgba(0,200,60,.12); }
+    #ikwis .card-name   { color: #a0d0a8; }
+    #ikwis .card-desc   { color: #a0d0a8; }
+    #ikwis .card-badge  { color: #2a8a40; border-color: #2a8a40; }
+
+    .radar-scene {
+      position: relative;
+      width: 180px; height: 180px;
+    }
+
+    .radar-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(0,200,60,.25);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .radar-ring:nth-child(1) { width: 180px; height: 180px; border-color: rgba(0,200,60,.35); }
+    .radar-ring:nth-child(2) { width: 120px; height: 120px; border-color: rgba(0,200,60,.25); }
+    .radar-ring:nth-child(3) { width:  60px; height:  60px; border-color: rgba(0,200,60,.2); }
+
+    /* crosshairs */
+    .radar-cross {
+      position: absolute; inset: 0;
+    }
+    .radar-cross::before, .radar-cross::after {
+      content: '';
+      position: absolute;
+      background: rgba(0,200,60,.15);
+    }
+    .radar-cross::before { width: 1px; height: 100%; left: 50%; }
+    .radar-cross::after  { width: 100%; height: 1px; top: 50%; }
+
+    /* sweep */
+    .radar-sweep {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(0,200,60,.0) 0deg,
+        rgba(0,200,60,.4) 60deg,
+        rgba(0,200,60,.0) 90deg
+      );
+      animation: radarSpin 3s linear infinite;
+      transform-origin: 50% 50%;
+    }
+    @keyframes radarSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* blips */
+    .radar-blip {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #00c83c;
+      transform: translate(-50%,-50%);
+      box-shadow: 0 0 8px #00c83c;
+      animation: blipFade var(--dur) var(--del) ease-out infinite;
+    }
+    @keyframes blipFade {
+      0%,100% { opacity: 0; transform: translate(-50%,-50%) scale(.5); }
+      50%      { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
+    }
+
+    /* ══ FOOTER ══ */
+    .footer-strip {
+      margin: var(--gap) 4rem 0;
+      padding: 1.1rem 1.6rem;
+      border: 1.5px solid var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-id {
+      font-family: 'Space Mono', monospace;
+      font-size: .58rem;
+      letter-spacing: .1em;
+      color: #888;
+      text-transform: uppercase;
+    }
+
+    .footer-mail {
+      font-family: 'Space Mono', monospace;
+      font-size: .58rem;
+      letter-spacing: .06em;
+      color: #888;
+      text-decoration: none;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 1px;
+      transition: color .2s, border-color .2s;
+    }
+    .footer-mail:hover { color: var(--accent); border-color: var(--accent); }
+
+    .bottom-pad { height: 4rem; }
+
+    /* ══ CARD HOVER LABEL ══ */
+    .card-visit-hint {
+      position: absolute;
+      top: 1.2rem; right: 1.2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: .5rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: .3em .7em;
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.4);
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity .2s, transform .2s;
+      z-index: 5;
+    }
+    #dear .card-visit-hint {
+      border-color: rgba(0,0,0,.15);
+      color: rgba(0,0,0,.3);
+    }
+
+    .card:hover .card-visit-hint {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ══ ENTRANCE ANIMATION ══ */
+    .card {
+      opacity: 0;
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .card.in { opacity: 1; }
+    .card:nth-child(1) { transition-delay: .05s; }
+    .card:nth-child(2) { transition-delay: .15s; }
+    .card:nth-child(3) { transition-delay: .25s; }
+    .card:nth-child(4) { transition-delay: .35s; }
+
+    header, .marquee-wrap {
+      opacity: 0;
+      animation: slideIn .6s ease forwards;
+    }
+    .marquee-wrap { animation-delay: .1s; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 700px) {
+      header { padding: 2rem 1.5rem 0; flex-direction: column; gap: 1rem; }
+      .header-right { text-align: left; }
+      .grid { grid-template-columns: 1fr; margin: 0 1.5rem 0; }
+      .footer-strip { margin: 0 1.5rem; }
+      .card { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- ══ HEADER ════════════════════════════════ -->
+<header>
+  <div class="header-left">
+    <span class="studio-label">Studio Existence — Sutton, QC</span>
+    <div class="studio-wordmark">
+      Studio<br><span>Existence</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <p class="header-tagline">Des expériences web vivantes,<br>dynamiques, singulières.</p>
+    <p class="header-meta">Par Mikaël Theimer</p>
+  </div>
+</header>
+
+<!-- ══ MARQUEE ════════════════════════════════ -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item marquee-quote">"Exister, c'est être perçu."</span><span class="marquee-item marquee-author">— Berkeley</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Je suis, donc je crée."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"La vie n'a de sens que celui qu'on lui donne."</span><span class="marquee-item marquee-author">— Sartre</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Être ou ne pas être n'est pas la question. La question, c'est comment."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Le temps que nous perdons est le temps qui nous fait vivre."</span><span class="marquee-item marquee-author">— Renard</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Le plus grand mystère de l'existence est l'existence elle-même."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Votre temps est limité, ne le gâchez pas en menant une existence qui n'est pas la vôtre."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Notre existence se trouve entre deux éternités."</span><span class="marquee-item marquee-author">— Timée</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Le sel de l'existence est essentiellement dans le poivre qu'on y met."</span><span class="marquee-item marquee-author">— Allais</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Si stupide que soit son existence, l'homme s'y rattache toujours."</span><span class="marquee-item marquee-author">— Rimbaud</span><span class="marquee-item marquee-dot">◆</span>
+    <!-- duplicate for seamless loop -->
+    <span class="marquee-item marquee-quote">"Exister, c'est être perçu."</span><span class="marquee-item marquee-author">— Berkeley</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Je suis, donc je crée."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"La vie n'a de sens que celui qu'on lui donne."</span><span class="marquee-item marquee-author">— Sartre</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Être ou ne pas être n'est pas la question. La question, c'est comment."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Le temps que nous perdons est le temps qui nous fait vivre."</span><span class="marquee-item marquee-author">— Renard</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Le plus grand mystère de l'existence est l'existence elle-même."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Votre temps est limité, ne le gâchez pas en menant une existence qui n'est pas la vôtre."</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Notre existence se trouve entre deux éternités."</span><span class="marquee-item marquee-author">— Timée</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Le sel de l'existence est essentiellement dans le poivre qu'on y met."</span><span class="marquee-item marquee-author">— Allais</span><span class="marquee-item marquee-dot">◆</span>
+    <span class="marquee-item marquee-quote">"Si stupide que soit son existence, l'homme s'y rattache toujours."</span><span class="marquee-item marquee-author">— Rimbaud</span><span class="marquee-item marquee-dot">◆</span>
+  </div>
+</div>
+
+<!-- ══ GRID ════════════════════════════════ -->
+<div class="grid">
+
+  <!-- DEAR SOMEONE -->
+  <a class="card" id="dear" href="https://dearsomeone.co" target="_blank" rel="noopener">
+    <div class="card-bg"></div>
+    <div class="card-content">
+      <div class="card-top">
+        <div class="dear-floats" id="dearFloats"></div>
+        <div class="letter-stack">
+          <div class="letter-sheet">
+            <div class="sheet-lines">
+              <span></span><span></span><span></span>
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="letter-sheet">
+            <div class="sheet-lines">
+              <span></span><span></span><span></span>
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="letter-sheet">
+            <div class="sheet-lines">
+              <span></span><span></span><span></span>
+              <span></span><span></span><span></span>
+            </div>
+            <div class="sheet-seal"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <div class="card-row">
+          <span class="card-name">Dear Someone</span>
+          <span class="card-badge">Live ●</span>
+        </div>
+        <p class="card-desc">Des lettres jetées à la mer. Des correspondances entre inconnus, lentes et sincères.</p>
+      </div>
+    </div>
+    <span class="card-visit-hint">Visiter →</span>
+  </a>
+
+  <!-- PAY TO EXIST -->
+  <a class="card" id="pay" href="https://paytoexist.com" target="_blank" rel="noopener">
+    <div class="card-bg"></div>
+    <div class="card-content">
+      <div class="card-top" style="padding:0; overflow:hidden;">
+        <div class="pay-universe" id="payCanvas"></div>
+      </div>
+      <div class="card-bottom">
+        <div class="card-row">
+          <span class="card-name">Pay to Exist</span>
+          <span class="card-badge">Live ●</span>
+        </div>
+        <p class="card-desc">Un univers de bulles. Plus tu paies, plus tu es grand. Pas d'algorithme, pas de likes.</p>
+      </div>
+    </div>
+    <span class="card-visit-hint">Visiter →</span>
+  </a>
+
+  <!-- 100 HALL OF FAME -->
+  <a class="card" id="hall" href="https://100halloffame.com" target="_blank" rel="noopener">
+    <div class="card-bg"></div>
+    <div class="card-content">
+      <div class="card-top">
+        <div class="hall-scene" id="hallScene">
+          <div class="hall-num" data-text="100">100</div>
+          <div class="hall-rule"><div class="hall-rule-diamond"></div></div>
+          <div class="hall-subtitle">Hall of Fame</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <div class="card-row">
+          <span class="card-name">100 Hall of Fame</span>
+          <span class="card-badge">Bientôt</span>
+        </div>
+        <p class="card-desc">100 règnes aux enchères scellées, inscrits pour toujours. Quand le centième est réclamé, tout s'arrête.</p>
+      </div>
+    </div>
+    <span class="card-visit-hint">Visiter →</span>
+  </a>
+
+  <!-- I KNOW WHAT I SAW -->
+  <a class="card" id="ikwis" href="https://iknowwhatisaw.vercel.app" target="_blank" rel="noopener">
+    <div class="card-bg"></div>
+    <div class="card-content">
+      <div class="card-top">
+        <div class="radar-scene">
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <div class="radar-cross"></div>
+          <div class="radar-sweep"></div>
+          <!-- blips injected by JS -->
+        </div>
+      </div>
+      <div class="card-bottom">
+        <div class="card-row">
+          <span class="card-name">I Know What I Saw</span>
+          <span class="card-badge">Bientôt</span>
+        </div>
+        <p class="card-desc">Une archive ouverte de vidéos UAP. Vote : Real deal ou Don't buy it. Les plus crédibles remontent.</p>
+      </div>
+    </div>
+    <span class="card-visit-hint">Visiter →</span>
+  </a>
+
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════ -->
+<div class="footer-strip">
+  <span class="footer-id">Mikaël Theimer — Sutton, Québec</span>
+  <a class="footer-mail" href="mailto:mikael@studioexistence.com">mikael@studioexistence.com</a>
+</div>
+
+<div class="bottom-pad"></div>
+
+<script>
+/* ── Custom cursor ── */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a').forEach(a => {
+  a.addEventListener('mouseenter', () => { cur.style.width='20px'; cur.style.height='20px'; });
+  a.addEventListener('mouseleave', () => { cur.style.width='10px'; cur.style.height='10px'; });
+});
+
+/* ── Dear Someone: floating dots ── */
+const dearFloats = document.getElementById('dearFloats');
+for (let i = 0; i < 16; i++) {
+  const d = document.createElement('i');
+  const s = 4 + Math.random() * 7;
+  Object.assign(d.style, {
+    width: s+'px', height: s+'px',
+    left: (Math.random()*90+5)+'%',
+    top:  (Math.random()*80+10)+'%',
+    '--dur': (3 + Math.random()*3) + 's',
+    '--del': (Math.random()*3) + 's',
+  });
+  dearFloats.appendChild(d);
+}
+
+/* ── Pay to Exist: bubbles ── */
+const payCanvas = document.getElementById('payCanvas');
+const bDefs = [
+  { s:110, x:54, y:42, h:'#6a50b0', g:'#9a80e0' },
+  { s:70,  x:22, y:64, h:'#3a7868', g:'#5aa898' },
+  { s:50,  x:74, y:70, h:'#a07040', g:'#c09060' },
+  { s:38,  x:16, y:28, h:'#4a5888', g:'#7a88b8' },
+  { s:28,  x:82, y:25, h:'#904050', g:'#b06070' },
+  { s:20,  x:62, y:82, h:'#406040', g:'#609060' },
+  { s:15,  x:38, y:18, h:'#806040', g:'#a08060' },
+];
+const fkf = ['bf0','bf1','bf2'];
+const bStyle = document.createElement('style');
+bStyle.textContent = `
+  @keyframes bf0{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-12px)}}
+  @keyframes bf1{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-8px) translateX(7px)}}
+  @keyframes bf2{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-10px) translateX(-5px)}}
+`;
+document.head.appendChild(bStyle);
+
+bDefs.forEach((b,i) => {
+  const el = document.createElement('div');
+  el.className = 'pay-bubble';
+  Object.assign(el.style, {
+    width:b.s+'px', height:b.s+'px',
+    left:b.x+'%', top:b.y+'%',
+    background:`radial-gradient(circle at 30% 28%, ${b.g}55, ${b.h}cc)`,
+    border:`1.5px solid ${b.g}44`,
+    boxShadow:`0 0 ${b.s*.5}px ${b.h}60`,
+    animation:`${fkf[i%3]} ${4.5+i*.5}s ${i*.3}s ease-in-out infinite`,
+  });
+  payCanvas.appendChild(el);
+});
+
+/* ── Hall of Fame: gold particles ── */
+const hallScene = document.getElementById('hallScene');
+for(let i=0;i<20;i++){
+  const p = document.createElement('div');
+  p.className = 'hall-particle';
+  const angle = Math.random()*360;
+  const dist = 60 + Math.random()*80;
+  Object.assign(p.style, {
+    left: (50 + Math.cos(angle*Math.PI/180)*40)+'%',
+    top:  (50 + Math.sin(angle*Math.PI/180)*40)+'%',
+    '--dx': (Math.cos(angle*Math.PI/180)*dist)+'px',
+    '--dy': (Math.sin(angle*Math.PI/180)*dist)+'px',
+    '--dur': (2+Math.random()*3)+'s',
+    '--del': (Math.random()*3)+'s',
+  });
+  hallScene.appendChild(p);
+}
+
+/* ── Radar: blips ── */
+const radarScene = document.querySelector('.radar-scene');
+const blipPositions = [
+  {x:72,y:35},{x:28,y:58},{x:60,y:70},{x:42,y:20},{x:80,y:65}
+];
+blipPositions.forEach((pos,i) => {
+  const b = document.createElement('div');
+  b.className = 'radar-blip';
+  Object.assign(b.style, {
+    left: pos.x+'%', top: pos.y+'%',
+    '--dur': (2+i*.4)+'s',
+    '--del': (i*.7)+'s',
+  });
+  radarScene.appendChild(b);
+});
+
+/* ── Entrance observer ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.05 });
+document.querySelectorAll('.card').forEach(c => obs.observe(c));
+</script>
+</body>
+</html>
