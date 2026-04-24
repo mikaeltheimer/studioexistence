@@ -62,8 +62,6 @@
       z-index: 10;
     }
 
-    .header-left {}
-
     .studio-label {
       font-family: 'Space Mono', monospace;
       font-size: .6rem;
@@ -244,7 +242,7 @@
       line-height: 1.65;
       color: inherit;
       opacity: .7;
-      max-width: 38ch;
+      max-width: 100%;
     }
 
 
@@ -539,6 +537,109 @@
       50%      { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
     }
 
+    /* ══ 100 HALL OF FAME LOGO ══ */
+    .card-logo-hof {
+      display: inline-flex;
+      align-items: center;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      color: #e8e0c8;
+    }
+    .hof-hundred {
+      font-weight: 475;
+      font-size: 22px;
+      letter-spacing: 0;
+      transform: translateY(-0.75px);
+      font-variant-numeric: tabular-nums;
+      display: inline-flex;
+      align-items: baseline;
+      color: #b8922a;
+    }
+    .hof-digit { display: inline-block; }
+    .hof-one   { transform: translateX(0); }
+    .hof-zero1 { transform: translateX(-2.75px); }
+    .hof-zero2 { transform: translateX(-2.5px); }
+    .hof-divider {
+      width: 1px;
+      height: 28px;
+      background-color: #e8e0c8;
+      opacity: 0.5;
+      margin: 0 14px;
+      flex-shrink: 0;
+    }
+    .hof-name {
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      color: #e8e0c8;
+    }
+
+    /* ══ PAY TO EXIST LOGO ══ */
+    .card-logo-pay {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .pay-ring-wrap {
+      position: relative;
+      width: 26px; height: 26px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pay-ring-glow {
+      position: absolute;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      box-shadow:
+        0 0 5px 1px rgba(244,114,182,.6),
+        0 0 10px 2px rgba(244,114,182,.35),
+        0 0 18px 4px rgba(167,139,250,.2),
+        0 0 26px 6px rgba(96,165,250,.08);
+    }
+    .pay-ring {
+      position: relative;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #f472b6, #e879f9, #a78bfa, #60a5fa, #22d3ee,
+        #34d399, #a3e635, #fbbf24, #fb923c, #f87171, #f472b6
+      );
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+      filter: brightness(1.2);
+    }
+    .pay-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #e0ddf8;
+      letter-spacing: .01em;
+    }
+
+    /* ══ DEAR SOMEONE LOGO ══ */
+    .card-logo-dear {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 7px;
+      line-height: 1;
+    }
+    .dear-italic {
+      font-style: italic;
+      font-size: 1.35rem;
+      letter-spacing: 1.5px;
+      color: #2c2820;
+    }
+    .dear-roman {
+      font-style: normal;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+      color: #b5763a;
+    }
+
     /* ══ FOOTER ══ */
     .footer-strip {
       margin: var(--gap) 4rem 0;
@@ -707,10 +808,12 @@
       </div>
       <div class="card-bottom">
         <div class="card-row">
-          <span class="card-name">Dear Someone</span>
+          <span class="card-logo-dear">
+            <span class="dear-italic">Dear</span><span class="dear-roman">Someone</span>
+          </span>
           <span class="card-badge">Live ●</span>
         </div>
-        <p class="card-desc">Des lettres jetées à la mer. Des correspondances entre inconnus, lentes et sincères.</p>
+        <p class="card-desc">Vous écrivez une lettre — une pensée, une question, une histoire — et elle part à la mer. Quelqu'un la trouve, peut y répondre, ou la laisser repartir. Une correspondance naît par hasard, se poursuit par choix, et dure ce qu'elle dure : deux lettres ou deux ans.</p>
       </div>
     </div>
     <span class="card-visit-hint">Visiter →</span>
@@ -725,10 +828,16 @@
       </div>
       <div class="card-bottom">
         <div class="card-row">
-          <span class="card-name">Pay to Exist</span>
+          <span class="card-logo-pay">
+            <span class="pay-ring-wrap">
+              <span class="pay-ring-glow"></span>
+              <span class="pay-ring"></span>
+            </span>
+            <span class="pay-text">Pay to Exist</span>
+          </span>
           <span class="card-badge">Live ●</span>
         </div>
-        <p class="card-desc">Un univers de bulles. Plus tu paies, plus tu es grand. Pas d'algorithme, pas de likes.</p>
+        <p class="card-desc">Exister a toujours eu un prix. Ici, c'est toi qui le fixes. Ta bulle flotte dans l'univers — un message, un lien, une présence. Pas de likes, pas d'algorithme. Mais plus tu paies, plus ta bulle est grande.</p>
       </div>
     </div>
     <span class="card-visit-hint">Visiter →</span>
@@ -747,10 +856,18 @@
       </div>
       <div class="card-bottom">
         <div class="card-row">
-          <span class="card-name">100 Hall of Fame</span>
-          <span class="card-badge">Bientôt</span>
+          <span class="card-logo-hof">
+            <span class="hof-hundred">
+              <span class="hof-digit hof-one">1</span>
+              <span class="hof-digit hof-zero1">0</span>
+              <span class="hof-digit hof-zero2">0</span>
+            </span>
+            <span class="hof-divider"></span>
+            <span class="hof-name">Hall of Fame</span>
+          </span>
+          <span class="card-badge">En développement</span>
         </div>
-        <p class="card-desc">100 règnes aux enchères scellées, inscrits pour toujours. Quand le centième est réclamé, tout s'arrête.</p>
+        <p class="card-desc">Un espace public limité à exactement 100 entrées : les Règnes. Remporté par encan silencieux, chaque Règne occupe la une, puis rejoint la Chronique permanente — visible, immuable, pour toujours. Une fois le Hall complété, un Règne ne peut être acquis qu'auprès de son propriétaire.</p>
       </div>
     </div>
     <span class="card-visit-hint">Visiter →</span>
@@ -773,9 +890,9 @@
       <div class="card-bottom">
         <div class="card-row">
           <span class="card-name">I Know What I Saw</span>
-          <span class="card-badge">Bientôt</span>
+          <span class="card-badge">En développement</span>
         </div>
-        <p class="card-desc">Une archive ouverte de vidéos UAP. Vote : Real deal ou Don't buy it. Les plus crédibles remontent.</p>
+        <p class="card-desc">Une archive ouverte de vidéos UAP. N'importe qui peut soumettre. Tout le monde vote : <em>Real deal</em> ou <em>Don't buy it</em>. Ce que la communauté juge crédible remonte. Le reste coule.</p>
       </div>
     </div>
     <span class="card-visit-hint">Visiter →</span>
