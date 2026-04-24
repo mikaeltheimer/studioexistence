@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whale Song Translator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --deep: #020d1a;
+    --mid: #041e33;
+    --teal: #0a7a8f;
+    --cyan: #17d4e4;
+    --foam: #a8f0f4;
+    --text: #c8eef2;
+  }
+
+  body {
+    background: var(--deep);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Ocean background */
+  .ocean-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .ocean-bg canvas { width: 100%; height: 100%; display: block; }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: min(680px, 92vw);
+    padding: 40px 0 80px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .whale-icon {
+    font-size: 52px;
+    display: block;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 20px var(--cyan));
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-10px) rotate(3deg); }
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--foam);
+    letter-spacing: 0.05em;
+  }
+  h1 span { color: var(--cyan); }
+
+  .subtitle {
+    font-size: 0.85rem;
+    opacity: 0.5;
+    margin-top: 6px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+  .tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    opacity: 0.5;
+  }
+  .tab.active {
+    background: var(--teal);
+    color: white;
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(10,122,143,0.5);
+  }
+
+  /* Cards */
+  .card {
+    background: rgba(4,30,51,0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(23,212,228,0.15);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(23,212,228,0.2);
+    border-radius: 12px;
+    color: var(--foam);
+    font-family: inherit;
+    font-size: 0.95rem;
+    padding: 14px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus, input[type="text"]:focus {
+    border-color: rgba(23,212,228,0.5);
+  }
+  textarea { height: 110px; }
+
+  /* Whale output */
+  .whale-output {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(23,212,228,0.2);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1.3rem;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    color: var(--cyan);
+    min-height: 80px;
+    word-break: break-all;
+    font-family: 'Space Grotesk', monospace;
+  }
+
+  /* Boutons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .btn-primary {
+    background: var(--teal);
+    color: white;
+    box-shadow: 0 0 20px rgba(10,122,143,0.4);
+  }
+  .btn-primary:hover { background: #0d9ab2; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: rgba(23,212,228,0.08);
+    color: var(--cyan);
+    border: 1px solid rgba(23,212,228,0.2);
+  }
+  .btn-ghost:hover { background: rgba(23,212,228,0.15); }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  /* Waveform visualizer */
+  .visualizer {
+    width: 100%;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 14px 0;
+    background: rgba(0,0,0,0.3);
+  }
+
+  /* Share link */
+  .share-box {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .share-box input { flex: 1; font-size: 0.8rem; opacity: 0.8; }
+
+  /* Status */
+  .status {
+    text-align: center;
+    font-size: 0.82rem;
+    opacity: 0.6;
+    margin-top: 8px;
+    min-height: 20px;
+    transition: opacity 0.3s;
+  }
+  .status.ok { color: var(--cyan); opacity: 1; }
+
+  /* Playing animation */
+  .playing-indicator {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    color: var(--cyan);
+    font-size: 0.85rem;
+  }
+  .playing-indicator.active { display: flex; }
+  .bar {
+    width: 3px;
+    height: 14px;
+    background: var(--cyan);
+    border-radius: 2px;
+    animation: eq 0.8s ease-in-out infinite;
+  }
+  .bar:nth-child(2) { animation-delay: 0.15s; }
+  .bar:nth-child(3) { animation-delay: 0.3s; }
+  .bar:nth-child(4) { animation-delay: 0.45s; }
+  @keyframes eq {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1.2); }
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(2,13,26,0.82);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 0.4s ease;
+  }
+  .modal-box {
+    background: rgba(4,30,51,0.95);
+    border: 1px solid rgba(23,212,228,0.25);
+    border-radius: 24px;
+    padding: 40px 36px 32px;
+    width: min(480px, 88vw);
+    text-align: center;
+    box-shadow: 0 0 60px rgba(10,122,143,0.3);
+    animation: modalPop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+  }
+  @keyframes modalPop {
+    from { opacity: 0; transform: scale(0.88) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-whale {
+    font-size: 2.8rem;
+    display: block;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
+  }
+  .modal-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    opacity: 0.7;
+    margin-bottom: 14px;
+  }
+  .modal-message {
+    font-size: 1.25rem;
+    color: var(--foam);
+    line-height: 1.6;
+    font-weight: 400;
+    margin-bottom: 28px;
+  }
+  .modal-close {
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 28px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: #0d9ab2; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .decoded-text {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(23,212,228,0.2);
+    border-radius: 12px;
+    padding: 16px;
+    color: var(--foam);
+    font-size: 1.05rem;
+    min-height: 60px;
+    line-height: 1.6;
+  }
+
+  .hidden { display: none; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Bubbles */
+  .bubble {
+    position: fixed;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(23,212,228,0.15), rgba(23,212,228,0.03));
+    border: 1px solid rgba(23,212,228,0.1);
+    animation: rise linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes rise {
+    0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+    100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ocean-bg"><canvas id="oceanCanvas"></canvas></div>
+
+<div class="container">
+  <header>
+    <span class="whale-icon">🐋</span>
+    <h1>Whale<span>Song</span></h1>
+    <p class="subtitle">Traducteur de messages en chant de baleine</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('encode')">🎵 Encoder</button>
+    <button class="tab" onclick="switchTab('decode')">🔍 Décoder</button>
+  </div>
+
+  <!-- ENCODE PANEL -->
+  <div id="panel-encode" class="panel active">
+    <div class="card">
+      <label>Votre message</label>
+      <textarea id="input-text" placeholder="Écrivez votre message ici…" oninput="onTextInput()"></textarea>
+    </div>
+
+    <div class="card">
+      <label>Chant de baleine</label>
+      <div class="whale-output" id="whale-out">
+        <span style="opacity:0.3;font-size:0.9rem;">Le chant apparaîtra ici…</span>
+      </div>
+      <canvas class="visualizer" id="visualizer-enc"></canvas>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:4px;">
+        <div class="playing-indicator" id="play-enc-indicator">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          Lecture en cours…
+        </div>
+        <div class="status" id="enc-status"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="play-enc-btn" onclick="playWhale('enc')" disabled>▶ Écouter</button>
+        <button class="btn btn-ghost" id="stop-enc-btn" onclick="stopWhale()" style="display:none">⏹ Stop</button>
+        <button class="btn btn-ghost" id="copy-whale-btn" onclick="copyWhale()" disabled>📋 Copier le chant</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Partager ce message</label>
+      <p style="font-size:0.82rem;opacity:0.6;margin-bottom:10px;">Copiez ce lien et envoyez-le — le destinataire pourra décoder le chant.</p>
+      <div class="share-box">
+        <input type="text" id="share-link" readonly placeholder="Le lien apparaîtra ici…">
+        <button class="btn btn-ghost" onclick="copyLink()">🔗 Copier</button>
+      </div>
+      <div class="status" id="link-status"></div>
+    </div>
+  </div>
+
+  <!-- DECODE PANEL -->
+  <div id="panel-decode" class="panel">
+    <div class="card">
+      <p style="font-size:1.05rem;color:var(--foam);margin-bottom:18px;line-height:1.5;">
+        🐋 Vous avez reçu un chant de baleine.<br>
+        <span style="font-size:0.82rem;opacity:0.5;font-weight:300;">Collez-le ci-dessous, puis écoutez.</span>
+      </p>
+      <label>Chant de baleine</label>
+      <textarea id="decode-input" placeholder="🎵 Collez le chant ici…" oninput="onDecodeInput()"></textarea>
+
+      <canvas class="visualizer" id="visualizer-dec" style="margin-top:16px;"></canvas>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
+        <div class="playing-indicator" id="play-dec-indicator">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          Lecture en cours…
+        </div>
+        <div class="status" id="dec-status"></div>
+      </div>
+
+      <div class="btn-row" style="margin-top:18px;">
+        <button class="btn btn-primary" id="play-dec-btn" onclick="playWhale('dec')" disabled
+          style="flex:1; justify-content:center; padding:14px; font-size:1rem;">
+          ▶ Écouter le chant
+        </button>
+        <button class="btn btn-ghost" id="stop-dec-btn" onclick="stopWhale()" style="display:none">⏹ Stop</button>
+      </div>
+    </div>
+
+    <!-- Révélation du message — caché jusqu'après l'écoute -->
+    <div id="reveal-card" class="card" style="display:none; animation: fadeIn 0.6s ease;">
+      <label>Message décodé</label>
+      <div class="decoded-text" id="decoded-out"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal révélation -->
+<div id="decode-modal" class="modal-overlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal-box">
+    <span class="modal-whale">🐋</span>
+    <div class="modal-label">Message décodé</div>
+    <div class="modal-message" id="modal-message"></div>
+    <button class="modal-close" onclick="closeModalBtn()">Fermer</button>
+  </div>
+</div>
+
+<footer style="position:relative;z-index:1;text-align:center;padding:24px 0 36px;opacity:0.35;font-size:0.78rem;letter-spacing:0.08em;">
+  Une expérience de <a href="https://studioexistence.com" target="_blank" style="color:var(--cyan);text-decoration:none;">Studio Existence</a>
+</footer>
+
+<script>
+// ─── WHALE ENCODING ──────────────────────────────────────────────────────────
+// Each char → sequence of whale glyphs. Deterministic & reversible.
+const WHALE_CHARS = ['〜','∿','≈','⌇','⌁','↝','↜','⟿','⇝','⟣','⟤','⍾','∾','⌀','◌','○','◎','●','◉','◍','🌊','💧','🫧'];
+const SEPARATOR = '·';
+
+function charToWhale(c) {
+  const code = c.charCodeAt(0);
+  // Turn code into base-23 with whale chars
+  let n = code;
+  let result = [];
+  do {
+    result.unshift(WHALE_CHARS[n % WHALE_CHARS.length]);
+    n = Math.floor(n / WHALE_CHARS.length);
+  } while (n > 0);
+  return result.join('');
+}
+
+function whaleToChar(w) {
+  let n = 0;
+  for (const ch of [...w]) {
+    const idx = WHALE_CHARS.indexOf(ch);
+    if (idx === -1) return null;
+    n = n * WHALE_CHARS.length + idx;
+  }
+  return String.fromCharCode(n);
+}
+
+function encode(text) {
+  return [...text].map(c => charToWhale(c)).join(SEPARATOR);
+}
+
+function decode(whale) {
+  return whale.split(SEPARATOR).map(w => whaleToChar(w) || '?').join('');
+}
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentWhale = '';
+let audioCtx = null;
+let activeSource = null;
+let currentNotes = [];
+
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+// ─── AUDIO : BALEINE À BOSSE — UN SON PAR MOT ────────────────────────────────
+//   • Chaque mot → une longue vocalise (2.5–5s)
+//   • Glissement très lent, majoritairement descendant (mélancolique)
+//   • Intervalles mineurs / nappes graves
+//   • Silence généreux entre les mots
+
+let stopRequested = false;
+let playingSide = null;
+let playToken = 0;
+let animTimer = null; // timer de fin d'animation — annulable // incrémenté à chaque play — permet à une instance de savoir si elle est obsolète
+
+// Hash stable d'un mot → [0,1)
+function hashWord(word) {
+  word = word.toLowerCase();
+  let h = 2166136261;
+  for (let i = 0; i < word.length; i++) { h ^= word.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  // Mélanger la longueur dans le hash — disperse les collisions entre mots courts similaires
+  h ^= word.length * 2654435761;
+  h = (h * 16777619) >>> 0;
+  return (h >>> 0) / 4294967296;
+}
+
+// Gamme mineure naturelle
+const MINOR_SCALE = [1, 1.122, 1.189, 1.335, 1.498, 1.587, 1.782];
+
+function wordToVocalise(word) {
+  const h  = hashWord(word);
+  const h2 = hashWord(word + '2');
+  const h3 = hashWord(word + '3');
+  const h4 = hashWord(word + '4');
+  const h5 = hashWord(word + '5');
+
+  const rootFreq  = 140 + h * 120;
+  const freqStart = rootFreq * MINOR_SCALE[Math.floor(h2 * MINOR_SCALE.length)];
+  const duration  = 2.5 + Math.min(word.length * 0.25, 2.5) + h * 0.8;
+
+  // Glissement toujours lent et ample — jamais symétrique pour éviter l'effet sirène
+  // Les amplitudes de montée sont délibérément plus modestes que les descentes
+  const glideDown = 0.18 + h2 * 0.22; // descend de 18–40%
+  const glideUp   = 0.08 + h4 * 0.12; // monte de 8–20% seulement (asymétrie clé)
+
+  let freqMid, freqEnd, vibratoDepth, vibratoRate;
+
+  // 4 formes de courbe, distribuées selon h3
+  // Règle : aucune courbe ne monte et redescend au même rythme → pas de sirène
+  if (h3 < 0.28) {
+    // DESCENTE PURE — glisse lentement vers le bas, s'efface
+    freqMid = null;
+    freqEnd = freqStart * (1 - glideDown);
+
+  } else if (h3 < 0.52) {
+    // MONTÉE DOUCE — s'élève modestement et tient
+    // Montée intentionnellement limitée (pas d'aller-retour)
+    freqMid = null;
+    freqEnd = freqStart * (1 + glideUp);
+
+  } else if (h3 < 0.76) {
+    // ARC ASYMÉTRIQUE — monte vite (30% de la durée), descend très lentement
+    // La dissymétrie temporelle empêche toute ressemblance avec une sirène
+    freqMid = freqStart * (1 + glideUp * 0.9);   // pic modeste
+    freqEnd = freqStart * (1 - glideDown * 0.5);  // retombe doucement, pas jusqu'au départ
+
+  } else {
+    // SOUPIR — descend d'abord en douceur, très légère remontée finale (expiration)
+    // Le creux est atteint à 55% de la durée, la remontée est infime
+    freqMid = freqStart * (1 - glideDown * 0.8);
+    freqEnd = freqStart * (1 - glideDown * 0.55); // reste en bas, remonte à peine
+  }
+
+  // Vibrato très discret — juste assez pour que le son soit vivant, pas mécanique
+  vibratoDepth = 0.8 + h5 * 1.4;  // 0.8–2.2 Hz de déviation max
+  vibratoRate  = 0.9 + h4 * 0.7;  // 0.9–1.6 Hz (très lent)
+
+  const h6 = hashWord(word + '6');
+  const h7 = hashWord(word + '7');
+  const h8 = hashWord(word + '8');
+
+  const durationMod = Math.max(3.2, duration * (0.4 + h6 * 1.2));
+  const volume = 0.25 + h7 * 0.45;
+  const gap    = 0.15 + h8 * 0.85;
+
+  return { freqStart, freqMid, freqEnd,
+           duration: durationMod, volume, gap,
+           vibratoRate, vibratoDepth };
+}
+
+// Convertit le texte en N segments de longueur égale
+// N = nombre de caractères (sans espaces) / 6, minimum 1
+// Chaque segment "nourrit" un son — déterministe et réversible
+function textToSegments(text) {
+  const clean = text.replace(/\s+/g, ''); // retire les espaces pour le comptage
+  const n = Math.max(1, Math.round(clean.length / 7));
+  const segments = [];
+  // On répartit les caractères du texte original (avec espaces) en n segments égaux
+  const step = text.length / n;
+  for (let i = 0; i < n; i++) {
+    const chunk = text.slice(Math.round(i * step), Math.round((i + 1) * step)).trim();
+    if (chunk) segments.push(chunk || text.slice(0, 1));
+  }
+  return segments;
+}
+
+function buildWaveShaper(ctx) {
+  const curve = new Float32Array(512);
+  for (let i = 0; i < 512; i++) {
+    const x = (i * 2) / 512 - 1;
+    curve[i] = (Math.PI + 120) * x / (Math.PI + 120 * Math.abs(x));
+  }
+  const ws = ctx.createWaveShaper();
+  ws.curve = curve;
+  ws.oversample = '4x';
+  return ws;
+}
+
+async function playWhaleAudio(text, side) {
+  // Stop instantané : fermer le contexte audio existant
+  if (audioCtx) {
+    try { await audioCtx.close(); } catch(e) {}
+    audioCtx = null;
+  }
+  stopRequested = false;
+  const myToken = ++playToken; // ce chant "possède" ce token
+  setPlayingState(side);
+
+  const ctx = getCtx();
+  if (ctx.state === 'suspended') await ctx.resume();
+
+  const indicator = document.getElementById(`play-${side}-indicator`);
+  indicator.classList.add('active');
+
+  const canvas = document.getElementById(`visualizer-${side}`);
+  const cCtx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  const analyser = ctx.createAnalyser();
+  analyser.fftSize = 1024;
+  analyser.smoothingTimeConstant = 0.93;
+
+  const shaper = buildWaveShaper(ctx);
+
+  const lpf = ctx.createBiquadFilter();
+  lpf.type = 'lowpass';
+  lpf.frequency.value = 650;
+  lpf.Q.value = 0.4;
+
+  const delay1 = ctx.createDelay(6); delay1.delayTime.value = 0.7;
+  const delay2 = ctx.createDelay(6); delay2.delayTime.value = 1.4;
+  const fb1 = ctx.createGain(); fb1.gain.value = 0.36;
+  const fb2 = ctx.createGain(); fb2.gain.value = 0.24;
+  delay1.connect(fb1); fb1.connect(delay1);
+  delay2.connect(fb2); fb2.connect(delay2);
+
+  const wetGain = ctx.createGain(); wetGain.gain.value = 0.35;
+  const dryGain = ctx.createGain(); dryGain.gain.value = 0.65;
+
+  shaper.connect(lpf);
+  lpf.connect(dryGain);
+  lpf.connect(delay1); lpf.connect(delay2);
+  delay1.connect(wetGain); delay2.connect(wetGain);
+  // Compresseur en bout de chaîne — évite le clipping quand les couches s'accumulent
+  const compressor = ctx.createDynamicsCompressor();
+  compressor.threshold.value = -18;  // commence à compresser à -18 dB
+  compressor.knee.value      =  8;   // transition douce
+  compressor.ratio.value     =  4;   // 4:1 — transparent mais efficace
+  compressor.attack.value    =  0.003;
+  compressor.release.value   =  0.25;
+
+  const masterFade = ctx.createGain();
+  masterFade.gain.value = 1;
+
+  dryGain.connect(analyser);
+  wetGain.connect(analyser);
+  analyser.connect(masterFade);
+  masterFade.connect(compressor);
+  compressor.connect(ctx.destination);
+
+  const segments = textToSegments(text);
+  let t = ctx.currentTime + 0.2;
+
+  for (const segment of segments) {
+    if (myToken !== playToken) break;
+
+    const v = wordToVocalise(segment);
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(v.freqStart, t);
+    if (v.freqMid) {
+      // Arc : pic atteint à 30% (montée rapide), descente lente sur les 70% restants
+      // Soupir : creux à 55%, micro-remontée finale
+      const midPoint = (v.freqMid > v.freqStart) ? 0.30 : 0.55;
+      osc.frequency.exponentialRampToValueAtTime(v.freqMid, t + v.duration * midPoint);
+      osc.frequency.exponentialRampToValueAtTime(v.freqEnd, t + v.duration * 0.93);
+    } else {
+      osc.frequency.exponentialRampToValueAtTime(v.freqEnd, t + v.duration * 0.93);
+    }
+
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = v.vibratoRate;
+    lfoGain.gain.setValueAtTime(0, t);
+    lfoGain.gain.linearRampToValueAtTime(v.vibratoDepth, t + v.duration * 0.4);
+    lfoGain.gain.linearRampToValueAtTime(0, t + v.duration);
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0, t);
+    env.gain.linearRampToValueAtTime(v.volume, t + v.duration * 0.25);
+    env.gain.setValueAtTime(v.volume, t + v.duration * 0.6);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + v.duration - 0.01);
+    env.gain.linearRampToValueAtTime(0, t + v.duration);
+
+    osc.connect(env); env.connect(shaper);
+    osc.start(t); osc.stop(t + v.duration + 0.15);
+    lfo.start(t); lfo.stop(t + v.duration + 0.15);
+
+    t += v.duration + v.gap;
+  }
+
+  // Si un nouveau play a été lancé entre-temps, on abandonne silencieusement
+  if (myToken !== playToken) return;
+
+  // Fade-out propre : 0.8s après la fin du dernier son
+  // On fade masterFade à zéro, puis on suspend — aucune coupure brutale possible
+  const fadeDuration = 0.8;
+  const fadeStart = t;
+  masterFade.gain.setValueAtTime(1.0, fadeStart);
+  masterFade.gain.linearRampToValueAtTime(0.0, fadeStart + fadeDuration);
+
+  const totalDuration = (t - ctx.currentTime + 2.0) * 1000;
+
+  const freqData = new Uint8Array(analyser.frequencyBinCount);
+  let animId;
+  function drawSpectrum() {
+    animId = requestAnimationFrame(drawSpectrum);
+    analyser.getByteFrequencyData(freqData);
+    cCtx.clearRect(0, 0, canvas.width, canvas.height);
+    const binCount = Math.floor(freqData.length * 0.15);
+    cCtx.beginPath();
+    cCtx.moveTo(0, canvas.height);
+    for (let i = 0; i < binCount; i++) {
+      const x = (i / binCount) * canvas.width;
+      const y = canvas.height - (freqData[i] / 255) * canvas.height * 0.88;
+      cCtx.lineTo(x, y);
+    }
+    cCtx.lineTo(canvas.width, canvas.height);
+    cCtx.closePath();
+    const fill = cCtx.createLinearGradient(0, 0, 0, canvas.height);
+    fill.addColorStop(0, 'rgba(23,212,228,0.45)');
+    fill.addColorStop(1, 'rgba(10,122,143,0.05)');
+    cCtx.fillStyle = fill;
+    cCtx.fill();
+    cCtx.strokeStyle = 'rgba(168,240,244,0.6)';
+    cCtx.lineWidth = 1.5;
+    cCtx.stroke();
+  }
+  drawSpectrum();
+
+  animTimer = setTimeout(() => {
+    cancelAnimationFrame(animId);
+    indicator.classList.remove('active');
+    cCtx.clearRect(0, 0, canvas.width, canvas.height);
+    if (playingSide === side) {
+      setPlayingState(null);
+      if (side === 'dec') revealDecodedMessage();
+    }
+  }, totalDuration);
+}
+
+async function stopWhale() {
+  playToken++;
+  if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+  // Nettoyer les indicateurs immédiatement
+  ['enc','dec'].forEach(s => {
+    const ind = document.getElementById(`play-${s}-indicator`);
+    if (ind) ind.classList.remove('active');
+    const canvas = document.getElementById(`visualizer-${s}`);
+    if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  });
+  if (audioCtx) {
+    // Fade rapide avant suspension pour éviter le tomp sur stop manuel
+    try {
+      const g = audioCtx.createGain();
+      // On ne peut pas re-router ici — on suspend simplement après un court délai
+      await new Promise(r => setTimeout(r, 30));
+      await audioCtx.suspend();
+    } catch(e) {}
+    audioCtx = null;
+  }
+  setPlayingState(null);
+}
+
+function setPlayingState(side) {
+  // Met à jour les boutons play/stop selon l'état
+  playingSide = side;
+  ['enc', 'dec'].forEach(s => {
+    const playBtn = document.getElementById(`play-${s}-btn`);
+    const stopBtn = document.getElementById(`stop-${s}-btn`);
+    if (side === s) {
+      playBtn.textContent = '↺ Rejouer';
+      stopBtn.style.display = '';
+    } else {
+      // Remettre le label original
+      playBtn.textContent = s === 'enc' ? '▶ Écouter' : '▶ Écouter le chant';
+      stopBtn.style.display = 'none';
+    }
+  });
+}
+
+
+function playWhale(side) {
+  let text;
+  if (side === 'enc') {
+    text = document.getElementById('input-text').value;
+  } else {
+    // Côté decode : jouer le chant (depuis le textarea), révéler après
+    text = pendingDecodedMsg;
+  }
+  if (text && text.length >= 1) {
+    playWhaleAudio(text, side);
+  }
+}
+
+// ─── ENCODE ───────────────────────────────────────────────────────────────────
+function onTextInput() {
+  const text = document.getElementById('input-text').value;
+  const whaleOut = document.getElementById('whale-out');
+  const encStatus = document.getElementById('enc-status');
+
+  if (!text) {
+    whaleOut.innerHTML = '<span style="opacity:0.3;font-size:0.9rem;">Le chant apparaîtra ici…</span>';
+    currentWhale = '';
+    document.getElementById('play-enc-btn').disabled = true;
+    document.getElementById('copy-whale-btn').disabled = true;
+    document.getElementById('share-link').value = '';
+    return;
+  }
+
+  currentWhale = encode(text);
+  whaleOut.textContent = currentWhale;
+  document.getElementById('play-enc-btn').disabled = false;
+  document.getElementById('copy-whale-btn').disabled = false;
+
+  // Build share link
+  const encoded = btoa(encodeURIComponent(currentWhale));
+  const url = `${location.href.split('?')[0]}?chant=${encoded}`;
+  document.getElementById('share-link').value = url;
+  encStatus.textContent = `${text.length} caractère(s) encodé(s)`;
+  encStatus.className = 'status ok';
+}
+
+function copyWhale() {
+  navigator.clipboard.writeText(currentWhale);
+  const btn = document.getElementById('copy-whale-btn');
+  btn.textContent = '✓ Copié !';
+  setTimeout(() => btn.textContent = '📋 Copier le chant', 1800);
+}
+
+function copyLink() {
+  const link = document.getElementById('share-link').value;
+  navigator.clipboard.writeText(link);
+  const s = document.getElementById('link-status');
+  s.textContent = '✓ Lien copié dans le presse-papier !';
+  s.className = 'status ok';
+  setTimeout(() => { s.textContent = ''; s.className = 'status'; }, 2500);
+}
+
+// ─── DECODE ───────────────────────────────────────────────────────────────────
+let pendingDecodedMsg = null; // message décodé, révélé après écoute
+
+function onDecodeInput() {
+  const whale = document.getElementById('decode-input').value.trim();
+  const out = document.getElementById('decoded-out');
+  const decStatus = document.getElementById('dec-status');
+
+  pendingDecodedMsg = null;
+  document.getElementById('reveal-card').style.display = 'none';
+  out.textContent = '';
+
+  if (!whale) {
+    document.getElementById('play-dec-btn').disabled = true;
+    decStatus.textContent = '';
+    return;
+  }
+
+  try {
+    const msg = decode(whale);
+    pendingDecodedMsg = msg;
+    document.getElementById('play-dec-btn').disabled = false;
+    decStatus.textContent = 'Écoutez le chant pour révéler le message…';
+    decStatus.className = 'status ok';
+  } catch {
+    out.innerHTML = '<span style="opacity:0.5;">Chant invalide ou corrompu…</span>';
+  }
+}
+
+function revealDecodedMessage() {
+  if (!pendingDecodedMsg) return;
+  // Remplir et afficher le modal
+  document.getElementById('modal-message').textContent = pendingDecodedMsg;
+  const modal = document.getElementById('decode-modal');
+  modal.style.display = 'flex';
+  // Mettre à jour aussi la carte sous le lecteur
+  const out = document.getElementById('decoded-out');
+  const card = document.getElementById('reveal-card');
+  out.textContent = pendingDecodedMsg;
+  card.style.display = 'none';
+  requestAnimationFrame(() => {
+    card.style.display = '';
+    card.style.animation = 'none';
+    requestAnimationFrame(() => { card.style.animation = 'fadeIn 0.8s ease'; });
+  });
+}
+
+function closeModalBtn() {
+  document.getElementById('decode-modal').style.display = 'none';
+}
+
+function closeModal(e) {
+  // Fermer en cliquant sur l'overlay (pas sur la box)
+  if (e.target === document.getElementById('decode-modal')) closeModalBtn();
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  stopWhale();
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['encode','decode'][i] === tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${tab}`).classList.add('active');
+}
+
+// ─── URL PARAM AUTO-DECODE ────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  const chant = params.get('chant');
+  if (chant) {
+    switchTab('decode');
+    try {
+      const whale = decodeURIComponent(atob(chant));
+      document.getElementById('decode-input').value = whale;
+      onDecodeInput();
+    } catch {}
+  }
+  spawnBubbles();
+  initOcean();
+});
+
+// ─── OCEAN BACKGROUND ─────────────────────────────────────────────────────────
+function initOcean() {
+  const canvas = document.getElementById('oceanCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const waves = [
+    { amp: 22, freq: 0.008, speed: 0.0008, offset: 0, alpha: 0.04 },
+    { amp: 15, freq: 0.014, speed: 0.0013, offset: 2, alpha: 0.03 },
+    { amp: 30, freq: 0.005, speed: 0.0005, offset: 5, alpha: 0.025 },
+  ];
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    // Gradient background
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#020d1a');
+    grad.addColorStop(1, '#041e33');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    waves.forEach(wave => {
+      wave.offset += wave.speed;
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 4) {
+        const y = h / 2 + Math.sin(x * wave.freq + t * wave.speed * 1000 + wave.offset) * wave.amp;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(23,212,228,${wave.alpha})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function spawnBubbles() {
+  setInterval(() => {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const size = 4 + Math.random() * 16;
+    b.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random() * 100}vw;
+      bottom:-${size}px;
+      animation-duration:${6 + Math.random() * 10}s;
+      animation-delay:${Math.random() * 2}s;
+    `;
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 18000);
+  }, 1043);
+}
+</script>
+</body>
+</html>
