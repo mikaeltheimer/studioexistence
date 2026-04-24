@@ -62,6 +62,8 @@
       z-index: 10;
     }
 
+    .header-left {}
+
     .studio-label {
       font-family: 'Space Mono', monospace;
       font-size: .6rem;
@@ -640,6 +642,151 @@
       color: #b5763a;
     }
 
+    /* ══ PHOTO CARD ══ */
+    .card-photo {
+      min-height: auto;
+      height: auto;
+      background: #0a0908;
+      border-color: var(--accent);
+      margin: var(--gap) 4rem 0;
+    }
+
+    .card-photo .card-bg { background: #0a0908; }
+
+    .card-content-photo {
+      flex-direction: column !important;
+      height: 100% !important;
+      padding: 0 !important;
+      gap: 0 !important;
+    }
+
+    /* filmstrip */
+    .film-top {
+      height: 200px;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+      background: #0d0c0b;
+      border-bottom: 1px solid #1e1e1c;
+    }
+
+    .film-top::before,
+    .film-top::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 18px;
+      z-index: 2;
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 10px,
+        #0a0908 10px,
+        #0a0908 14px,
+        transparent 14px,
+        transparent 34px
+      );
+    }
+    .film-top::before { top: 0; }
+    .film-top::after  { bottom: 0; }
+
+    .film-track {
+      display: flex;
+      gap: 0;
+      position: absolute;
+      top: 0; bottom: 0; left: 0;
+      animation: filmRoll 18s linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes filmRoll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .film-frame {
+      flex-shrink: 0;
+      width: 160px;
+      height: 100%;
+      border-right: 2px solid #1a1918;
+      position: relative;
+      overflow: hidden;
+      padding: 20px 8px;
+    }
+
+    .film-frame-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 1px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* frame number */
+    .film-frame-num {
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Space Mono', monospace;
+      font-size: .38rem;
+      color: #f0ece4;
+      letter-spacing: .1em;
+      opacity: .5;
+      z-index: 3;
+    }
+
+    /* bottom info bar — same style as other card-bottoms */
+    .photo-bottom {
+      padding: 1rem 1.8rem 1.1rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .photo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .7rem;
+    }
+
+    .photo-logo {
+      height: 38px;
+      width: auto;
+      display: block;
+    }
+
+    .photo-url {
+      font-family: 'Space Mono', monospace;
+      font-size: .48rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .22em .65em;
+      border: 1px solid #3a3a38;
+      color: #3a3a38;
+      white-space: nowrap;
+      transition: color .2s, border-color .2s;
+    }
+    .card-photo:hover .photo-url { color: var(--accent); border-color: var(--accent); }
+
+    .photo-desc {
+      font-size: .78rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: #7a7a72;
+      max-width: 100%;
+      opacity: .9;
+    }
+
+    .card-photo .card-visit-hint {
+      border-color: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.25);
+    }
+
+    @media(max-width:700px){
+      .card-photo { margin: var(--gap) 1.5rem 0; }
+      .film-frame { width: 120px; }
+    }
+
     /* ══ FOOTER ══ */
     .footer-strip {
       margin: var(--gap) 4rem 0;
@@ -900,6 +1047,29 @@
 
 </div>
 
+<!-- ══ PHOTO CARD ════════════════════════════════ -->
+<a class="card card-photo" id="photo" href="https://www.mikaeltheimer.com" target="_blank" rel="noopener">
+  <div class="card-bg"></div>
+  <div class="card-content card-content-photo">
+
+    <!-- FILMSTRIP -->
+    <div class="film-top">
+      <div class="film-track" id="filmTrack"></div>
+    </div>
+
+    <!-- INFO -->
+    <div class="photo-bottom">
+      <div class="photo-row">
+        <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/400368/file/400368O6Z0QtON.png" alt="Mikaël Theimer" class="photo-logo" />
+        <span class="photo-url">mikaeltheimer.com</span>
+      </div>
+      <p class="photo-desc">Portraitiste de l'humain. Je ne crée pas des images — je fige des instants. Ce n'est pas tant la photographie que j'aime ; ce sont les gens qu'elle me permet de rencontrer.</p>
+    </div>
+
+  </div>
+  <span class="card-visit-hint">Visiter →</span>
+</a>
+
 <!-- ══ FOOTER ════════════════════════════════ -->
 <div class="footer-strip">
   <span class="footer-id">Mikaël Theimer — Sutton, Québec</span>
@@ -1003,7 +1173,32 @@ blipPositions.forEach((pos,i) => {
   radarScene.appendChild(b);
 });
 
-/* ── Entrance observer ── */
+/* ── Filmstrip with real photos ── */
+(function() {
+  const track = document.getElementById('filmTrack');
+  if (!track) return;
+
+  const photoCount = 10;
+  const photos = Array.from({length: photoCount}, (_, i) =>
+    `photos/${String(i + 1).padStart(2, '0')}.jpg`
+  );
+
+  // Duplicate for seamless loop
+  const all = [...photos, ...photos];
+
+  all.forEach((src, i) => {
+    const num = (i % photoCount) + 1;
+    const frame = document.createElement('div');
+    frame.className = 'film-frame';
+    frame.innerHTML = `
+      <div class="film-frame-inner">
+        <img src="${src}" alt="Photo ${num}" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+      </div>
+      <span class="film-frame-num">${String(num).padStart(2,'0')}A</span>
+    `;
+    track.appendChild(frame);
+  });
+})();
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
 }, { threshold: 0.05 });
