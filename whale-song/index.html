@@ -402,7 +402,6 @@
     <div class="card">
       <p style="font-size:1.05rem;color:var(--foam);margin-bottom:18px;line-height:1.5;">
         🐋 Vous avez reçu un chant de baleine.<br>
-        <span style="font-size:0.82rem;opacity:0.5;font-weight:300;">Collez-le ci-dessous, puis écoutez.</span>
       </p>
       <label>Chant de baleine</label>
       <textarea id="decode-input" placeholder="🎵 Collez le chant ici…" oninput="onDecodeInput()"></textarea>
@@ -416,6 +415,8 @@
         <div class="status" id="dec-status"></div>
       </div>
 
+      <div id="dec-listen-hint" style="display:none;text-align:center;margin:16px 0 0;color:var(--cyan);font-size:1rem;letter-spacing:0.05em;">✦ Écoutez le chant pour révéler le message ✦</div>
+      <div id="dec-listen-hint" style="display:none;text-align:center;margin:16px 0 0;color:var(--cyan);font-size:1rem;letter-spacing:0.05em;">✦ Écoutez le chant pour révéler le message ✦</div>
       <div class="btn-row" style="margin-top:18px;">
         <button class="btn btn-primary" id="play-dec-btn" onclick="playWhale('dec')" disabled
           style="flex:1; justify-content:center; padding:14px; font-size:1rem;">
@@ -571,7 +572,7 @@ function wordToVocalise(word) {
   const h7 = hashWord(word + '7');
   const h8 = hashWord(word + '8');
 
-  const durationMod = Math.max(3.2, duration * (0.4 + h6 * 1.2));
+  const durationMod = Math.min(6.5, Math.max(3.2, duration * (0.4 + h6 * 1.2)));
   const volume = 0.25 + h7 * 0.45;
   const gap    = 0.15 + h8 * 0.85;
 
@@ -840,7 +841,11 @@ function onTextInput() {
   document.getElementById('copy-whale-btn').disabled = false;
 
   // Build share link
-  const encoded = btoa(encodeURIComponent(currentWhale));
+  const bytes = new TextEncoder().encode(currentWhale);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  // Base64 URL-safe : +→-, /→_, retirer les =
+  const encoded = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
   const url = `${location.href.split('?')[0]}?chant=${encoded}`;
   document.getElementById('share-link').value = url;
   encStatus.textContent = `${text.length} caractère(s) encodé(s)`;
@@ -873,6 +878,7 @@ function onDecodeInput() {
 
   pendingDecodedMsg = null;
   document.getElementById('reveal-card').style.display = 'none';
+  const dh = document.getElementById('dec-listen-hint'); if (dh) dh.style.display = 'none';
   out.textContent = '';
 
   if (!whale) {
@@ -885,8 +891,9 @@ function onDecodeInput() {
     const msg = decode(whale);
     pendingDecodedMsg = msg;
     document.getElementById('play-dec-btn').disabled = false;
-    decStatus.textContent = 'Écoutez le chant pour révéler le message…';
-    decStatus.className = 'status ok';
+    decStatus.textContent = '';
+    const hint = document.getElementById('dec-listen-hint');
+    if (hint) hint.style.display = '';
   } catch {
     out.innerHTML = '<span style="opacity:0.5;">Chant invalide ou corrompu…</span>';
   }
@@ -934,7 +941,13 @@ window.addEventListener('DOMContentLoaded', () => {
   if (chant) {
     switchTab('decode');
     try {
-      const whale = decodeURIComponent(atob(chant));
+      // Restaurer le base64 standard depuis URL-safe
+      const b64 = chant.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = b64 + '=='.slice(0, (4 - b64.length % 4) % 4);
+      const bin = atob(padded);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const whale = new TextDecoder().decode(bytes);
       document.getElementById('decode-input').value = whale;
       onDecodeInput();
     } catch {}
