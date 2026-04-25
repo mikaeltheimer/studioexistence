@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/whale-song",
+      "destination": "/whale-song/index.html"
+    },
+    {
+      "source": "/droid-lang",
+      "destination": "/droid-lang/index.html"
+    }
+  ]
+}

@@ -5,7 +5,6 @@
   <meta property="og:title" content="WhaleSong" />
   <meta property="og:description" content="Traduisez vos messages en chant de baleine. Partagez le lien. Le destinataire écoute — et seulement après, le message se révèle." />
   <meta property="og:image" content="https://www.studioexistence.com/whale-song/og-image.png" />
-  <meta property="og:url" content="https://www.studioexistence.com/whale-song" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="WhaleSong" />
@@ -14,7 +13,6 @@
   <meta property="og:title" content="WhaleSong" />
   <meta property="og:description" content="Traduisez vos messages en chant de baleine. Partagez le lien. Le destinataire écoute — et seulement après, le message se révèle." />
   <meta property="og:image" content="https://www.studioexistence.com/whale-song/og-image.png" />
-  <meta property="og:url" content="https://www.studioexistence.com/whale-song" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="WhaleSong" />
@@ -359,6 +357,20 @@
     0% { transform: translateY(0) translateX(0); opacity: 0.6; }
     100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
   }
+
+    .cross-link-mobile {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 0 8px;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 600px) {
+      .cross-link-header { display: none !important; }
+      .cross-link-mobile { display: flex !important; }
+    }
 </style>
 </head>
 <body>
@@ -370,9 +382,9 @@
     <span class="whale-icon">🐋</span>
     <h1>Whale<span>Song</span></h1>
     <p class="subtitle">Traducteur de messages en chant de baleine</p>
-    <div style="position:absolute;top:0;right:0;display:flex;align-items:center;gap:7px;">
+    <div class="cross-link-header" style="position:absolute;top:0;right:0;display:flex;align-items:center;gap:7px;">
       <span style="font-size:0.62rem;letter-spacing:0.1em;opacity:0.4;text-transform:uppercase;font-family:monospace;">Essayez aussi</span>
-      <a href="/droid-lang" target="_blank"
+      <a href="https://studioexistence.com/droid-lang" target="_blank"
          style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(232,160,32,0.08);border:1px solid rgba(232,160,32,0.25);border-radius:8px;color:#e8a020;font-family:monospace;font-size:0.7rem;letter-spacing:0.08em;text-decoration:none;transition:all 0.15s;"
          onmouseover="this.style.background='rgba(232,160,32,0.15)';this.style.borderColor='rgba(232,160,32,0.5)'"
          onmouseout="this.style.background='rgba(232,160,32,0.08)';this.style.borderColor='rgba(232,160,32,0.25)'">
@@ -469,6 +481,14 @@
     <div class="modal-message" id="modal-message"></div>
     <button class="modal-close" onclick="closeModalBtn()">Fermer</button>
   </div>
+</div>
+
+<div class="cross-link-mobile">
+  <span style="font-family:monospace;font-size:0.62rem;letter-spacing:0.1em;opacity:0.4;text-transform:uppercase;">Essayez aussi</span>
+  <a href="https://studioexistence.com/droid-lang" target="_blank"
+     style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(232,160,32,0.08);border:1px solid rgba(232,160,32,0.25);border-radius:8px;color:#e8a020;font-family:monospace;font-size:0.75rem;letter-spacing:0.08em;text-decoration:none;">
+    🤖 Droid.lang
+  </a>
 </div>
 
 <footer style="position:relative;z-index:1;text-align:center;padding:24px 0 36px;opacity:0.35;font-size:0.78rem;letter-spacing:0.08em;">
