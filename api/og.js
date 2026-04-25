@@ -1,7 +1,10 @@
-export const config = { runtime: 'edge' };
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-export default async function handler(req) {
-  const url = new URL(req.url);
+export const config = { runtime: 'nodejs' };
+
+export default function handler(req, res) {
+  const url = new URL(req.url, `https://${req.headers.host}`);
   const path = url.pathname;
 
   let title, desc;
@@ -21,13 +24,14 @@ export default async function handler(req) {
       : 'Encodez vos messages en signal droïde. Partagez le lien. Le destinataire écoute — et seulement après, le message se révèle.';
 
   } else {
-    // Toute autre route : servir tel quel sans modification
-    return fetch(req);
+    res.status(404).send('Not found');
+    return;
   }
 
-  // Récupérer le index.html du bon sous-dossier
-  const htmlUrl = new URL(path.replace(/\/?$/, '/index.html'), url.origin);
-  const html = await fetch(htmlUrl).then(r => r.text());
+  // Lire le fichier HTML depuis le disque (chemin relatif à la racine du projet)
+  const subfolder = path.startsWith('/whale-song') ? 'whale-song' : 'droid-lang';
+  const filePath = join(process.cwd(), subfolder, 'index.html');
+  const html = readFileSync(filePath, 'utf8');
 
   const patched = html
     .replace(/<meta property="og:title"[^>]*>/g,
@@ -39,7 +43,6 @@ export default async function handler(req) {
     .replace(/<meta name="twitter:description"[^>]*>/g,
       `<meta name="twitter:description" content="${desc}" />`);
 
-  return new Response(patched, {
-    headers: { 'content-type': 'text/html; charset=utf-8' },
-  });
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.status(200).send(patched);
 }
