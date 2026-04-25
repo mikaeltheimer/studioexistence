@@ -1,12 +1,8 @@
 {
   "rewrites": [
-    {
-      "source": "/whale-song",
-      "destination": "/whale-song/index.html"
-    },
-    {
-      "source": "/droid-lang",
-      "destination": "/droid-lang/index.html"
-    }
+    { "source": "/whale-song",   "destination": "/api/og" },
+    { "source": "/whale-song/",  "destination": "/api/og" },
+    { "source": "/droid-lang",   "destination": "/api/og" },
+    { "source": "/droid-lang/",  "destination": "/api/og" }
   ]
 }
