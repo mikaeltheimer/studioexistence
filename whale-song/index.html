@@ -366,10 +366,19 @@
 <div class="ocean-bg"><canvas id="oceanCanvas"></canvas></div>
 
 <div class="container">
-  <header>
+  <header style="position:relative;">
     <span class="whale-icon">🐋</span>
     <h1>Whale<span>Song</span></h1>
     <p class="subtitle">Traducteur de messages en chant de baleine</p>
+    <div style="position:absolute;top:0;right:0;display:flex;align-items:center;gap:7px;">
+      <span style="font-size:0.62rem;letter-spacing:0.1em;opacity:0.4;text-transform:uppercase;font-family:monospace;">Essayez aussi</span>
+      <a href="/droid-lang" target="_blank"
+         style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(232,160,32,0.08);border:1px solid rgba(232,160,32,0.25);border-radius:8px;color:#e8a020;font-family:monospace;font-size:0.7rem;letter-spacing:0.08em;text-decoration:none;transition:all 0.15s;"
+         onmouseover="this.style.background='rgba(232,160,32,0.15)';this.style.borderColor='rgba(232,160,32,0.5)'"
+         onmouseout="this.style.background='rgba(232,160,32,0.08)';this.style.borderColor='rgba(232,160,32,0.25)'">
+        🤖 Droid.lang
+      </a>
+    </div>
   </header>
 
   <div class="tabs">
