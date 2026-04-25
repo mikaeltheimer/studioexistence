@@ -239,14 +239,29 @@ textarea { height: 100px; }
 .decode-header p span { color: var(--amber); }
 
 .listen-hint {
-  display: none; text-align: center;
-  margin: 14px 0 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 18px 0 0;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 0.78rem; letter-spacing: 0.12em;
+  font-size: 0.82rem; letter-spacing: 0.12em;
   color: var(--amber);
 }
-.listen-hint::before { content: '[ '; }
-.listen-hint::after  { content: ' ]'; }
+.listen-hint.active { display: flex; }
+.listen-hint .dish {
+  font-size: 1.6rem; line-height: 1; opacity: 0.85; flex-shrink: 0;
+  animation: dishPulse 2.4s ease-in-out infinite;
+}
+.listen-hint .dish.flip {
+  transform: scaleX(-1);
+  animation: dishPulse 2.4s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+@keyframes dishPulse {
+  0%,100% { opacity: 0.5; }
+  50%      { opacity: 1; }
+}
 
 /* ── REVEAL ── */
 #reveal-card { display: none; animation: revealIn 0.45s ease; }
@@ -415,7 +430,11 @@ footer a { color: var(--amber); text-decoration: none; }
         </div>
         <div class="status" id="dec-status"></div>
       </div>
-      <div class="listen-hint" id="dec-listen-hint">Écoutez le signal pour révéler le message</div>
+      <div class="listen-hint" id="dec-listen-hint">
+        <span class="dish">📡</span>
+        <span>Écoutez le signal pour révéler le message</span>
+        <span class="dish flip">📡</span>
+      </div>
       <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-primary" id="play-dec-btn" onclick="playDroid('dec')" disabled
           style="flex:1;justify-content:center;padding:12px;">▶ Écouter le signal</button>
@@ -750,7 +769,7 @@ function onDecodeInput() {
   pendingDecodedMsg = null;
   document.getElementById('reveal-card').style.display = 'none';
   const hint = document.getElementById('dec-listen-hint');
-  if (hint) hint.style.display = 'none';
+  if (hint) hint.classList.remove('active');
   document.getElementById('decoded-out').textContent = '';
   document.getElementById('dec-status').textContent = '';
 
@@ -761,7 +780,7 @@ function onDecodeInput() {
   try {
     pendingDecodedMsg = decode(signal);
     document.getElementById('play-dec-btn').disabled = false;
-    if (hint) hint.style.display = '';
+    if (hint) hint.classList.add('active');
   } catch {
     document.getElementById('decoded-out').innerHTML =
       '<span style="opacity:0.4;">Signal invalide ou corrompu…</span>';
