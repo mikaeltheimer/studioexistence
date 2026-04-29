@@ -4,221 +4,398 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bucket List</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  /* =============================================
+     DESIGN SYSTEM — Bucket List
+     Fond blanc global, blocs colorés par catégorie
+     Modifier CAT_COLORS dans le JS pour la palette
+     ============================================= */
   :root {
-    --bg: #F5F0E8;
-    --bg2: #EDE8DC;
-    --surface: #FDFAF4;
-    --surface2: #F0EBE0;
-    --border: #D8D0C0;
-    --border2: #C8BEA8;
-    --text: #1C1810;
-    --text-muted: #7A7060;
-    --text-dim: #B8AE9A;
-    --done: #2D5016;
-    --todo: #C4622D;
-    --done-dim: rgba(45,80,22,0.10);
-    --todo-dim: rgba(196,98,45,0.10);
-    --done-mid: rgba(45,80,22,0.25);
-    --todo-mid: rgba(196,98,45,0.25);
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'DM Sans', sans-serif;
-    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    --bg:          #FFFFFF;
+    --bg-nav:      #F8F8F8;
+    --surface:     #FFFFFF;
+    --border:      rgba(0,0,0,0.09);
+    --border2:     rgba(0,0,0,0.15);
+    --text:        #111111;
+    --text-muted:  rgba(17,17,17,0.55);
+    --text-dim:    rgba(17,17,17,0.28);
+    --font-display:'DM Serif Display', serif;
+    --font-body:   'Plus Jakarta Sans', sans-serif;
+    --shadow:      0 2px 8px rgba(0,0,0,0.10);
+    --shadow-md:   0 4px 20px rgba(0,0,0,0.14);
+    /* Per-category (set inline) */
+    --cat-bg:  #2ECC71;
+    --cat-h:   #27AE60;
+    --cat-r:   46,204,113;
+    --cat-text:#FFFFFF;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;min-height:100vh;overflow:hidden;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;overflow-x:hidden;}
 
-  /* HEADER */
-  #site-header{padding:36px 40px 24px;border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;background:rgba(245,240,232,0.97);backdrop-filter:blur(12px);z-index:100;}
-  .header-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px;}
-  h1{font-family:var(--font-display);font-size:36px;font-weight:400;letter-spacing:-0.5px;line-height:1;color:var(--text);}
-  h1 em{font-style:italic;color:var(--done);}
-  .lang-toggle{display:flex;gap:6px;}
-  .lang-btn{background:none;border:1px solid var(--border2);color:var(--text-muted);padding:3px 11px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:12px;letter-spacing:0.5px;transition:all 0.2s;}
-  .lang-btn.active{border-color:var(--done);color:var(--done);background:var(--done-dim);}
+  /* ── HEADER ── */
+  /* ── HERO BANNER ── */
+  #hero-banner{
+    background: linear-gradient(105deg, #FF6B35 0%, #E91E8C 55%, #9B59B6 100%);
+    padding: 14px 44px 12px;
+    position: relative;
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: none;
+  }
+  .hero-left{ display:flex;flex-direction:column;gap:4px; }
+  .hero-title{
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    color: #fff;
+  }
+  .hero-title em{ font-style:italic; opacity:0.85; }
+  .hero-subtitle{
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.65);
+    font-style: italic;
+    letter-spacing: 0.2px;
+  }
+  .hero-right{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-scroll-hint{
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-  /* STATS */
-  .stats-bar{display:flex;gap:22px;align-items:center;flex-wrap:wrap;}
+  /* ── SITE HEADER (fixed, sits below hero in flow) ── */
+  #site-header{
+    padding:8px 44px 0;
+    border-bottom:none;
+    position:fixed;left:0;right:0;
+    background:rgba(255,255,255,0.97);
+    backdrop-filter:blur(16px);
+    z-index:100;
+    top:0;
+  }
+  .header-row{
+    display:flex;align-items:center;gap:12px;
+    padding-bottom:8px;
+    flex-wrap:wrap;
+  }
+  .progress-separator{ width:100%; }
+  .progress-separator .progress-track{
+    height:2px;
+    border-radius:0;
+    background:#EBEBEB;
+  }
+  .header-top{display:flex;align-items:center;justify-content:space-between;}
+  h1{font-family:var(--font-display);font-size:32px;font-weight:400;letter-spacing:-0.3px;line-height:1;color:var(--text);}
+  h1 em{font-style:italic;}
+  .header-right{display:flex;gap:8px;align-items:center;}
+  .lang-toggle{display:flex;gap:5px;}
+  .lang-btn{background:none;border:1.5px solid var(--border2);color:var(--text-muted);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:0.5px;transition:all 0.2s;}
+  .lang-btn-hero{background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.75);padding:3px 10px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:0.5px;transition:all 0.2s;}
+  .lang-btn-hero.active{background:rgba(255,255,255,0.9);border-color:transparent;color:#111;}
+  .lang-btn.active{border-color:var(--text);color:var(--text);background:#F0F0F0;}
+
+  /* ── STATS ── */
+  .stats-bar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;}
   .stat{display:flex;flex-direction:column;gap:1px;}
-  .stat-value{font-family:var(--font-display);font-size:24px;line-height:1;}
-  .stat-value.done{color:var(--done);}
-  .stat-value.todo{color:var(--todo);}
-  .stat-label{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;}
-  .stat-divider{width:1px;height:28px;background:var(--border);}
+  .stat-value{font-family:var(--font-display);font-size:26px;line-height:1;color:var(--text);}
+  .stat-label{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+  .stat-divider{width:1px;height:26px;background:var(--border2);}
   .progress-wrap{flex:1;min-width:160px;}
-  .progress-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden;position:relative;}
-  .progress-fill-done{position:absolute;left:0;top:0;height:100%;background:var(--done);border-radius:2px;transition:width 0.4s;}
-  .progress-fill-todo{position:absolute;top:0;height:100%;background:var(--todo);border-radius:2px;transition:all 0.4s;}
-  .progress-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;}
+  .progress-track{height:4px;background:#EBEBEB;border-radius:2px;overflow:hidden;position:relative;}
+  .progress-fill-done{position:absolute;left:0;top:0;height:100%;background:#111;transition:width 0.4s;}
+  .progress-fill-todo{position:absolute;top:0;height:100%;background:#BBBBBB;transition:all 0.4s;}
+  .progress-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--text-muted);font-weight:600;}
 
-  /* CONTROLS */
-  #site-controls{padding:12px 40px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(245,240,232,0.97);backdrop-filter:blur(12px);position:fixed;left:0;right:0;z-index:99;}
-  .search-wrap{position:relative;flex:1;min-width:160px;max-width:340px;}
+  /* ── CONTROLS ── */
+  /* site-controls merged into site-header */
+  .search-wrap{position:relative;flex:1;min-width:150px;max-width:320px;}
   .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;pointer-events:none;}
-  input[type="text"]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px 7px 30px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color 0.2s;}
-  input[type="text"]:focus{border-color:var(--done);}
+  input[type="text"]{width:100%;background:#F5F5F5;border:1.5px solid transparent;border-radius:8px;padding:7px 10px 7px 30px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:all 0.2s;font-weight:500;}
+  input[type="text"]:focus{background:#fff;border-color:var(--border2);}
   input[type="text"]::placeholder{color:var(--text-dim);}
   .filter-btns{display:flex;gap:5px;flex-wrap:wrap;}
-  .filter-btn{background:none;border:1px solid var(--border);color:var(--text-muted);padding:5px 11px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all 0.2s;white-space:nowrap;}
-  .filter-btn:hover{border-color:var(--border2);color:var(--text);}
-  .filter-btn.active-done{border-color:var(--done);color:var(--done);background:var(--done-dim);}
-  .filter-btn.active-todo{border-color:var(--todo);color:var(--todo);background:var(--todo-dim);}
-  .filter-btn.active-all{border-color:var(--text);color:var(--text);}
-  .results-btn{margin-left:auto;background:var(--done);color:#fff;border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;transition:opacity 0.2s;white-space:nowrap;}
-  .results-btn:hover{opacity:0.85;}
+  .filter-btn{background:none;border:1.5px solid var(--border2);color:var(--text-muted);padding:5px 12px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:12px;font-weight:600;transition:all 0.2s;white-space:nowrap;}
+  .filter-btn:hover{border-color:var(--text);color:var(--text);}
+  .filter-btn.active-done,.filter-btn.active-todo,.filter-btn.active-all{border-color:var(--text);color:var(--text);background:#F0F0F0;}
+  .results-btn{margin-left:auto;background:var(--text);color:#fff;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:700;transition:opacity 0.2s;white-space:nowrap;letter-spacing:0.2px;}
+  .results-btn:hover{opacity:0.8;}
 
-  /* MAIN */
+  /* ── MAIN LAYOUT ── */
   #main-layout{display:flex;position:fixed;left:0;right:0;bottom:0;}
-  .cat-nav{width:196px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:18px 0;background:var(--bg2);}
-  .cat-nav-item{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--text-muted);border-left:2px solid transparent;}
-  .cat-nav-item:hover{color:var(--text);background:var(--surface2);}
-  .cat-nav-item.active{color:var(--done);border-left-color:var(--done);background:var(--done-dim);}
-  .cat-count{font-size:11px;color:var(--text-dim);}
-  .cat-nav-item.active .cat-count{color:var(--done);opacity:0.7;}
-  .content{flex:1;overflow-y:auto;padding:32px 40px;}
-  .category-section{margin-bottom:48px;}
-  .cat-header{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-  .cat-title{font-family:var(--font-display);font-size:21px;font-weight:400;letter-spacing:-0.2px;color:var(--text);}
-  .subcat{margin-bottom:22px;}
-  .subcat-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
-  .items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:5px;}
-  .item{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:8px;transition:all 0.15s;box-shadow:var(--shadow);}
-  .item:hover{border-color:var(--border2);background:var(--surface2);}
-  .item.is-done{border-color:var(--done-mid);background:var(--done-dim);}
-  .item.is-todo{border-color:var(--todo-mid);background:var(--todo-dim);}
+
+  /* ── NAV ── */
+  .cat-nav{width:196px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:12px 0;background:var(--bg-nav);}
+  .cat-nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 16px;cursor:pointer;transition:all 0.15s;
+    font-size:12.5px;font-weight:600;color:var(--text-muted);
+    border-left:3px solid transparent;
+    border-radius:0 6px 6px 0;
+    margin-right:8px;
+  }
+  .cat-nav-item:hover{color:var(--text);background:#F0F0F0;}
+  .cat-nav-item.active{color:var(--text);border-left-color:var(--cat-bg);background:#F0F0F0;}
+  .cat-nav-dot{width:9px;height:9px;border-radius:50%;background:var(--cat-bg);flex-shrink:0;box-shadow:0 0 6px rgba(var(--cat-r),0.5);}
+  .cat-count{font-size:10px;color:var(--text-dim);margin-left:auto;font-weight:700;}
+
+  /* ── CONTENT ── */
+  .content{flex:1;overflow-y:auto;padding:0;}
+
+  /* ── CATEGORY SECTION ── */
+  .category-section{position:relative;}
+
+  /* ── STICKY CAT HEADER ── */
+  .cat-sticky{
+    position:sticky;top:0;z-index:10;
+    background:var(--cat-bg);
+    padding:18px 44px 14px;
+    display:flex;align-items:center;gap:20px;
+  }
+  .cat-title{
+    font-family:var(--font-display);
+    font-size:30px;font-weight:400;
+    letter-spacing:-0.3px;
+    color:var(--cat-text);
+    line-height:1;
+    flex-shrink:0;
+  }
+  .cat-progress-wrap{flex:1;max-width:260px;}
+  .cat-progress-track{height:5px;background:rgba(255,255,255,0.25);border-radius:3px;overflow:hidden;}
+  .cat-progress-fill{height:100%;background:rgba(255,255,255,0.9);border-radius:3px;transition:width 0.4s;}
+  .cat-progress-label{font-size:11px;color:rgba(255,255,255,0.75);margin-top:4px;font-weight:700;letter-spacing:0.3px;}
+
+  /* ── CAT BODY ── */
+  .cat-body{
+    background:color-mix(in srgb, var(--cat-bg) 8%, white);
+    padding:24px 44px 36px;
+  }
+
+  /* ── SUBCATEGORY ── */
+  .subcat{margin-bottom:26px;}
+  .subcat-title{
+    font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+    color:var(--cat-h);font-weight:800;
+    margin-bottom:10px;padding-bottom:7px;
+    border-bottom:2px solid var(--cat-bg);
+    display:inline-block;
+  }
+
+  /* ── ITEMS GRID ── */
+  .items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:7px;}
+
+  /* ── ITEM default ── */
+  .item{
+    background:#fff;
+    border:1.5px solid rgba(var(--cat-r),0.20);
+    border-radius:10px;
+    padding:10px 13px;
+    display:flex;align-items:center;gap:9px;
+    transition:all 0.18s;
+    box-shadow:0 1px 3px rgba(var(--cat-r),0.06);
+  }
+  .item:hover{
+    border-color:rgba(var(--cat-r),0.5);
+    box-shadow:0 3px 12px rgba(var(--cat-r),0.15);
+    transform:translateY(-1px);
+  }
   .item.hidden{display:none;}
-  .item-label{flex:1;font-size:13px;line-height:1.4;color:var(--text);}
-  .item.is-done .item-label{color:var(--done);}
-  .item.is-todo .item-label{color:var(--todo);}
+  .item-label{flex:1;font-size:13px;line-height:1.4;color:#444;font-weight:500;}
+  .item:hover .item-label{color:var(--text);}
+
+  /* ── ITEM accompli (plein) ── */
+  .item.is-done{
+    background:var(--cat-bg);
+    border-color:var(--cat-bg);
+    box-shadow:0 3px 14px rgba(var(--cat-r),0.35);
+    transform:none;
+  }
+  .item.is-done .item-label{color:var(--cat-text);font-weight:700;}
+
+  /* ── ITEM à faire (contour) ── */
+  .item.is-todo{
+    background:#fff;
+    border-color:var(--cat-bg);
+    border-width:2px;
+    box-shadow:0 2px 8px rgba(var(--cat-r),0.12);
+  }
+  .item.is-todo .item-label{color:var(--cat-h);font-weight:600;}
+
+  /* ── CHECK BUTTONS ── */
   .item-actions{display:flex;gap:4px;flex-shrink:0;}
-  .check-btn{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.15s;color:var(--text-muted);}
-  .check-btn:hover{border-color:var(--border2);color:var(--text);}
-  .check-btn.done-btn:hover,.check-btn.done-btn.active{background:var(--done);border-color:var(--done);color:#fff;}
-  .check-btn.todo-btn:hover,.check-btn.todo-btn.active{background:var(--todo);border-color:var(--todo);color:#fff;}
+  .check-btn{
+    width:28px;height:28px;border-radius:6px;
+    border:1.5px solid rgba(var(--cat-r),0.25);
+    background:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;transition:all 0.15s;
+    color:rgba(var(--cat-r),0.5);
+    font-weight:700;
+  }
+  .check-btn:hover{border-color:var(--cat-bg);color:var(--cat-bg);}
+  .check-btn.done-btn.active{
+    background:rgba(255,255,255,0.25);
+    border-color:rgba(255,255,255,0.6);
+    color:var(--cat-text);
+  }
+  .check-btn.todo-btn.active{
+    background:var(--cat-bg);
+    border-color:var(--cat-bg);
+    color:var(--cat-text);
+  }
+  .del-btn{color:var(--text-dim);font-size:9px;font-weight:700;}
+  .del-btn:hover{color:#e53e3e;border-color:#e53e3e;}
 
-  /* FREETEXT */
-  .freetext-row{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;box-shadow:var(--shadow);}
-  .freetext-prefix{font-size:13px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;}
-  .freetext-input{flex:1;min-width:80px;background:none;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:1px 4px;font-size:13px;color:var(--text);outline:none;font-family:var(--font-body);}
-  .freetext-input:focus{border-bottom-color:var(--done);}
-  .freetext-add{background:none;border:1px solid var(--border);color:var(--text-muted);padding:2px 9px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-body);transition:all 0.15s;white-space:nowrap;}
-  .freetext-add:hover{border-color:var(--done);color:var(--done);}
-  .dynamic-items{display:flex;flex-direction:column;gap:5px;margin-bottom:5px;}
+  /* ── FREETEXT ── */
+  .freetext-row{
+    border:1.5px dashed rgba(var(--cat-r),0.3);
+    border-radius:10px;padding:8px 13px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    margin-bottom:7px;background:#fff;
+  }
+  .freetext-prefix{font-size:13px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;font-weight:600;}
+  .freetext-input{flex:1;min-width:80px;background:none;border:none;border-bottom:1.5px solid rgba(var(--cat-r),0.3);padding:1px 4px;font-size:13px;color:var(--text);outline:none;font-family:var(--font-body);font-weight:500;}
+  .freetext-input:focus{border-bottom-color:var(--cat-bg);}
+  .freetext-add{background:var(--cat-bg);border:none;color:var(--cat-text);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font-body);font-weight:700;transition:all 0.15s;white-space:nowrap;}
+  .freetext-add:hover{opacity:0.85;}
+  .dynamic-items{display:flex;flex-direction:column;gap:5px;margin-bottom:6px;}
 
-  /* SAVE NOTICE */
-  #save-notice{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:7px;font-size:11px;color:var(--text-dim);letter-spacing:0.5px;border-top:1px solid var(--border);background:var(--bg2);z-index:50;}
+  /* ── SAVE NOTICE ── */
+  #save-notice{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:6px;font-size:11px;color:var(--text-dim);letter-spacing:0.5px;border-top:1px solid var(--border);background:var(--bg);z-index:50;font-weight:600;}
 
-  /* ===================== RESULTS PANEL ===================== */
-  #results-panel{display:none;position:fixed;inset:0;background:rgba(245,240,232,0.99);z-index:200;overflow-y:auto;padding:48px 60px;}
+  /* ── RESULTS ── */
+  #results-panel{display:none;position:fixed;inset:0;background:rgba(255,255,255,0.99);z-index:200;overflow-y:auto;padding:48px 56px;}
   #results-panel.open{display:block;}
-  .results-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;}
-  .results-title{font-family:var(--font-display);font-size:40px;font-weight:400;color:var(--text);}
-  .results-title em{font-style:italic;color:var(--done);}
-  .results-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-  .close-btn{background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all 0.2s;}
-  .close-btn:hover{border-color:var(--text);color:var(--text);}
-  .save-url-btn{background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all 0.2s;}
-  .save-url-btn:hover{border-color:var(--done);color:var(--done);}
-  .poster-btn-main{background:var(--done);color:#fff;border:none;padding:7px 18px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;transition:opacity 0.2s;}
-  .poster-btn-main:hover{opacity:0.85;}
-
-  /* RESULTS STATS */
-  .results-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:32px;}
-  .r-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;box-shadow:var(--shadow);}
-  .r-stat.done-s{border-color:var(--done-mid);background:var(--done-dim);}
-  .r-stat.todo-s{border-color:var(--todo-mid);background:var(--todo-dim);}
-  .r-stat-n{font-family:var(--font-display);font-size:40px;line-height:1;margin-bottom:3px;}
-  .done-s .r-stat-n{color:var(--done);}
-  .todo-s .r-stat-n{color:var(--todo);}
-  .r-stat-d{font-size:11px;color:var(--text-muted);}
-
-  /* RESULTS LISTS */
-  .results-lists{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;}
-  .res-list-col{}
-  .res-col-title{font-family:var(--font-display);font-size:20px;font-weight:400;margin-bottom:14px;}
-  .res-col-title.done-t{color:var(--done);}
-  .res-col-title.todo-t{color:var(--todo);}
-
-  /* CATEGORY TOGGLE */
-  .res-cat-block{margin-bottom:10px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);}
-  .res-cat-toggle{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;cursor:pointer;transition:background 0.15s;user-select:none;}
-  .res-cat-toggle:hover{background:var(--surface2);}
-  .res-cat-name{font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:500;color:var(--text-muted);}
-  .res-cat-count{font-size:11px;color:var(--text-dim);}
-  .res-cat-arrow{font-size:10px;color:var(--text-dim);transition:transform 0.2s;}
+  .results-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+  .results-title{font-family:var(--font-display);font-size:38px;font-weight:400;color:var(--text);}
+  .results-title em{font-style:italic;}
+  .results-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .close-btn,.save-url-btn{background:none;border:1.5px solid var(--border2);color:var(--text-muted);padding:7px 14px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:600;transition:all 0.2s;}
+  .close-btn:hover,.save-url-btn:hover{border-color:var(--text);color:var(--text);}
+  .poster-btn-main{background:var(--text);color:#fff;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:700;transition:opacity 0.2s;}
+  .poster-btn-main:hover{opacity:0.8;}
+  .results-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:28px;}
+  .r-stat{background:#F5F5F5;border:1.5px solid var(--border2);border-radius:12px;padding:14px 18px;}
+  .r-stat-n{font-family:var(--font-display);font-size:38px;line-height:1;margin-bottom:3px;color:var(--text);}
+  .r-stat-d{font-size:11px;color:var(--text-muted);font-weight:700;letter-spacing:0.5px;}
+  .results-lists{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:28px;}
+  .res-col-title{font-family:var(--font-display);font-size:22px;font-weight:400;margin-bottom:12px;color:var(--text);}
+  .res-cat-block{margin-bottom:8px;border:1.5px solid var(--border2);border-radius:10px;overflow:hidden;background:#F9F9F9;}
+  .res-cat-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;cursor:pointer;transition:background 0.15s;user-select:none;}
+  .res-cat-toggle:hover{background:#F0F0F0;}
+  .res-cat-name{font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--text-muted);}
+  .res-cat-arrow{font-size:9px;color:var(--text-dim);transition:transform 0.2s;font-weight:700;}
   .res-cat-block.open .res-cat-arrow{transform:rotate(180deg);}
-  .res-cat-items{display:none;padding:4px 14px 10px;}
+  .res-cat-items{display:none;padding:4px 13px 10px;}
   .res-cat-block.open .res-cat-items{display:block;}
-  .res-item{font-size:12.5px;color:var(--text-muted);padding:3px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+  .res-item{font-size:12.5px;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;font-weight:500;}
   .res-item:last-child{border-bottom:none;}
-  .res-item::before{content:'';width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:1px;}
-  .done-col .res-item::before{background:var(--done);}
-  .todo-col .res-item::before{background:var(--todo);}
+  .res-item::before{content:'';width:4px;height:4px;border-radius:50%;flex-shrink:0;background:var(--border2);}
 
-  /* ===================== POSTER ===================== */
-  #poster-panel{display:none;position:fixed;inset:0;background:rgba(28,24,16,0.92);z-index:300;overflow-y:auto;padding:40px;align-items:flex-start;justify-content:center;}
+  /* ── POSTER ── */
+  #poster-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;overflow-y:auto;padding:36px;align-items:flex-start;justify-content:center;}
   #poster-panel.open{display:flex;}
-  .poster-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;}
-  .poster-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
-  .p-btn{background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.8);padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all 0.2s;}
+  .poster-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;}
+  .poster-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  .p-btn{background:none;border:1.5px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.8);padding:7px 14px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:600;transition:all 0.2s;}
   .p-btn:hover{border-color:#fff;color:#fff;}
-  .p-btn.primary{background:var(--done);border-color:var(--done);color:#fff;}
+  .p-btn.primary{background:#fff;border-color:#fff;color:#111;font-weight:700;}
   .p-btn.primary:hover{opacity:0.85;}
-  #poster-canvas{max-width:100%;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+  #poster-canvas{max-width:min(100%,580px);border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,0.7);}
+
+  /* ── ADMIN ── */
+  #admin-panel{display:none;position:fixed;inset:0;background:var(--bg);z-index:400;overflow-y:auto;padding:40px 50px;}
+  #admin-panel.open{display:block;}
+  .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:16px;border-bottom:1.5px solid var(--border2);}
+  .admin-title{font-family:var(--font-display);font-size:30px;font-weight:400;color:var(--text);}
+  .admin-title em{font-style:italic;}
+  .admin-body{display:grid;grid-template-columns:220px 1fr;gap:24px;}
+  .admin-nav{border-right:1px solid var(--border);padding-right:18px;}
+  .admin-nav-item{padding:8px 11px;cursor:pointer;border-radius:8px;font-size:13px;font-weight:600;color:var(--text-muted);transition:all 0.15s;display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
+  .admin-nav-item:hover{background:#F5F5F5;color:var(--text);}
+  .admin-nav-item.active{background:#F0F0F0;color:var(--text);}
+  .admin-nav-count{font-size:11px;opacity:0.5;font-weight:700;}
+  .admin-content-area{min-height:500px;}
+  .admin-cat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .admin-cat-title{font-family:var(--font-display);font-size:22px;font-weight:400;color:var(--text);}
+  .admin-subcat{margin-bottom:26px;}
+  .admin-subcat-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);font-weight:700;}
+  .admin-item-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:#F9F9F9;margin-bottom:4px;}
+  .admin-item-row:hover{border-color:var(--border2);background:#F5F5F5;}
+  .admin-item-text{flex:1;font-size:13px;color:var(--text);font-weight:500;}
+  .admin-item-freetext{font-size:11px;color:var(--text-muted);font-style:italic;}
+  .admin-del-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px;transition:all 0.15s;font-weight:700;}
+  .admin-del-btn:hover{background:rgba(229,62,62,0.1);color:#e53e3e;}
+  .admin-add-row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;}
+  .admin-add-input{flex:1;min-width:160px;background:#F5F5F5;border:1.5px solid var(--border2);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text);font-family:var(--font-body);outline:none;font-weight:500;}
+  .admin-add-input:focus{background:#fff;border-color:var(--text);}
+  .admin-add-btn{background:var(--text);color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:700;white-space:nowrap;transition:opacity 0.2s;}
+  .admin-add-btn:hover{opacity:0.8;}
+  .admin-save-notice{display:inline-block;font-size:12px;color:#22c55e;margin-left:8px;opacity:0;transition:opacity 0.3s;font-weight:700;}
+  .admin-save-notice.show{opacity:1;}
 
   ::-webkit-scrollbar{width:4px;}
   ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+  ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:2px;}
 </style>
 </head>
 <body>
 
-<header id="site-header">
-  <div class="header-top">
-    <h1>Bucket <em>List</em></h1>
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-      <button class="lang-btn" onclick="setLang('en')">EN</button>
-    </div>
+<div id="hero-banner">
+  <div class="hero-left">
+    <div class="hero-title">Bucket <em>List</em></div>
+    <div class="hero-subtitle">Pour une vie qui vaut la peine d'être vécue</div>
   </div>
-  <div class="stats-bar">
-    <div class="stat">
-      <span class="stat-value done" id="stat-done">0</span>
-      <span class="stat-label">Accomplis</span>
+  <div class="hero-right">
+    <div class="lang-toggle">
+      <button class="lang-btn-hero" onclick="setLang('fr')" id="lang-fr-hero">FR</button>
+      <button class="lang-btn-hero" onclick="setLang('en')" id="lang-en-hero">EN</button>
     </div>
+    <!-- admin accessible via ?admin -->
+  </div>
+</div>
+
+<header id="site-header">
+  <div class="header-row">
+    <div class="stat"><span class="stat-value done" id="stat-done">0</span><span class="stat-label">Accomplis</span></div>
     <div class="stat-divider"></div>
-    <div class="stat">
-      <span class="stat-value todo" id="stat-todo">0</span>
-      <span class="stat-label">Sur ma liste</span>
+    <div class="stat"><span class="stat-value todo" id="stat-todo">0</span><span class="stat-label">Sur ma liste</span></div>
+    <div class="stat-divider"></div>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search-input" placeholder="Rechercher..." oninput="renderContent()">
     </div>
-    <div class="stat-divider"></div>
-    <div class="progress-wrap">
-      <div class="progress-track">
-        <div class="progress-fill-done" id="progress-done" style="width:0%"></div>
-        <div class="progress-fill-todo" id="progress-todo" style="width:0%;left:0%"></div>
-      </div>
-      <div class="progress-labels">
-        <span id="pct-done" style="color:var(--done)">—</span>
-        <span id="pct-todo" style="color:var(--todo)">—</span>
-      </div>
+    <div class="filter-btns">
+      <button class="filter-btn active-all" onclick="setFilter('all',this)">Tous</button>
+      <button class="filter-btn" onclick="setFilter('done',this)">✓ Accomplis</button>
+      <button class="filter-btn" onclick="setFilter('todo',this)">☆ À faire</button>
+      <button class="filter-btn" onclick="setFilter('none',this)">Non cochés</button>
+    </div>
+    <button class="results-btn" onclick="openResults()">Voir mes résultats →</button>
+  </div>
+  <div class="progress-separator">
+    <div class="progress-track">
+      <div class="progress-fill-done" id="progress-done" style="width:0%"></div>
+      <div class="progress-fill-todo" id="progress-todo" style="width:0%;left:0%"></div>
     </div>
   </div>
 </header>
 
-<div id="site-controls">
-  <div class="search-wrap">
-    <span class="search-icon">⌕</span>
-    <input type="text" id="search-input" placeholder="Rechercher..." oninput="renderContent()">
-  </div>
-  <div class="filter-btns">
-    <button class="filter-btn active-all" onclick="setFilter('all',this)">Tous</button>
-    <button class="filter-btn" onclick="setFilter('done',this)">✓ Accomplis</button>
-    <button class="filter-btn" onclick="setFilter('todo',this)">☆ À faire</button>
-    <button class="filter-btn" onclick="setFilter('none',this)">Non cochés</button>
-  </div>
-  <button class="results-btn" onclick="openResults()">Voir mes résultats →</button>
-</div>
+
 
 <div id="main-layout">
   <nav class="cat-nav" id="cat-nav"></nav>
@@ -227,7 +404,7 @@
 
 <div id="save-notice">💾 Votre liste est sauvegardée dans ce navigateur.</div>
 
-<!-- RESULTS PANEL -->
+<!-- RESULTS -->
 <div id="results-panel">
   <div class="results-header">
     <div class="results-title">Ma <em>Bucket List</em></div>
@@ -241,7 +418,7 @@
   <div class="results-lists" id="results-lists"></div>
 </div>
 
-<!-- POSTER PANEL -->
+<!-- POSTER -->
 <div id="poster-panel">
   <div class="poster-wrap">
     <div class="poster-controls">
@@ -253,61 +430,47 @@
   </div>
 </div>
 
+<!-- ADMIN -->
+<div id="admin-panel">
+  <div class="admin-header">
+    <div class="admin-title">Admin <em>Bucket List</em></div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span class="admin-save-notice" id="admin-save-notice">✓ Sauvegardé</span>
+      <button class="close-btn" onclick="closeAdmin()">Fermer ✕</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-nav" id="admin-nav"></div>
+    <div class="admin-content-area" id="admin-content"></div>
+  </div>
+</div>
+
 <datalist id="dl-pays"></datalist>
 
 <script>
-// ===================== i18n =====================
-const i18n={
-  fr:{add:'Ajouter',done_label:'Fait',todo_label:'À faire',accomplished:'Accomplis',on_list:'Sur ma liste',
-    of_checked:'des éléments cochés',done_items:'accomplis',todo_items:'sur ma liste',
-    search_p:'Rechercher...',country_p:'Nom du pays...',author_p:"Nom de l'auteur...",
-    what_done:'Ce que j\'ai accompli',what_todo:'Ce que je veux encore faire',
-    save_copied:'Lien copié !',no_items:'Aucun élément',
-    poster_done:'Ce que j\'ai accompli',poster_todo:'Ce que je veux encore faire',
-  },
-  en:{add:'Add',done_label:'Done',todo_label:'To do',accomplished:'Accomplished',on_list:'On my list',
-    of_checked:'of checked items',done_items:'accomplished',todo_items:'on my list',
-    search_p:'Search...',country_p:'Country name...',author_p:'Author name...',
-    what_done:'What I\'ve accomplished',what_todo:'What I still want to do',
-    save_copied:'Link copied!',no_items:'No items',
-    poster_done:'What I\'ve accomplished',poster_todo:'What I still want to do',
-  }
-};
-let lang=localStorage.getItem('bl-lang')||'fr';
-const t=k=>i18n[lang][k]||k;
-
-function setLang(l){
-  lang=l;localStorage.setItem('bl-lang',l);
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
-  document.getElementById('search-input').placeholder=t('search_p');
-  renderContent();updateStats();
-}
-
-// ===================== COUNTRIES =====================
-const countries=["Afghanistan","Afrique du Sud","Albanie","Algérie","Allemagne","Andorre","Angola","Antigua-et-Barbuda","Arabie saoudite","Argentine","Arménie","Australie","Autriche","Azerbaïdjan","Bahamas","Bahreïn","Bangladesh","Barbade","Bélarus","Belgique","Belize","Bénin","Bhoutan","Bolivie","Bosnie-Herzégovine","Botswana","Brésil","Brunéi","Bulgarie","Burkina Faso","Burundi","Cabo Verde","Cambodge","Cameroun","Canada","Centrafrique","Chili","Chine","Chypre","Colombie","Comores","Congo","Congo (RDC)","Corée du Nord","Corée du Sud","Costa Rica","Côte d'Ivoire","Croatie","Cuba","Danemark","Djibouti","Dominique","Égypte","Émirats arabes unis","Équateur","Érythrée","Espagne","Eswatini","Estonie","États-Unis","Éthiopie","Fidji","Finlande","France","Gabon","Gambie","Géorgie","Ghana","Grèce","Grenade","Guatemala","Guinée","Guinée-Bissau","Guinée équatoriale","Guyana","Haïti","Honduras","Hongrie","Inde","Indonésie","Irak","Iran","Irlande","Islande","Israël","Italie","Jamaïque","Japon","Jordanie","Kazakhstan","Kenya","Kirghizistan","Kiribati","Kosovo","Koweït","Laos","Lesotho","Lettonie","Liban","Libéria","Libye","Liechtenstein","Lituanie","Luxembourg","Madagascar","Malaisie","Malawi","Maldives","Mali","Malte","Maroc","Marshall","Maurice","Mauritanie","Mexique","Micronésie","Moldavie","Monaco","Mongolie","Monténégro","Mozambique","Myanmar","Namibie","Nauru","Népal","Nicaragua","Niger","Nigeria","Norvège","Nouvelle-Zélande","Oman","Ouganda","Ouzbékistan","Pakistan","Palaos","Palestine","Panama","Papouasie-Nouvelle-Guinée","Paraguay","Pays-Bas","Pérou","Philippines","Pologne","Portugal","Qatar","Roumanie","Royaume-Uni","Russie","Rwanda","Saint-Christophe-et-Niévès","Saint-Marin","Saint-Vincent-et-les-Grenadines","Sainte-Lucie","Salomon","Salvador","Samoa","São Tomé-et-Príncipe","Sénégal","Serbie","Seychelles","Sierra Leone","Singapour","Slovaquie","Slovénie","Somalie","Soudan","Soudan du Sud","Sri Lanka","Suède","Suisse","Suriname","Syrie","Tadjikistan","Tanzanie","Tchad","Thaïlande","Timor oriental","Togo","Tonga","Trinité-et-Tobago","Tunisie","Turkménistan","Turquie","Tuvalu","Ukraine","Uruguay","Vanuatu","Vatican","Venezuela","Viêt Nam","Yémen","Zambie","Zimbabwe"];
-const dl=document.getElementById('dl-pays');
-countries.forEach(c=>{const o=document.createElement('option');o.value=c;dl.appendChild(o);});
-
 // ===================== DATA =====================
-const categories=[
+// Categories stored in a mutable array — admin can edit
+let categories = [
   {id:'nature',fr:'Nature',en:'Nature',subcats:[
     {fr:'Ciel & astres',en:'Sky & Stars',items:[
       {id:'n1',fr:"Voir la Voie lactée à l'œil nu",en:'See the Milky Way with the naked eye'},
       {id:'n2',fr:'Voir une aurore boréale',en:'See the northern lights'},
       {id:'n3',fr:'Assister à une éclipse lunaire',en:'Witness a lunar eclipse'},
       {id:'n4',fr:'Assister à une éclipse solaire',en:'Witness a solar eclipse'},
-      {id:'n5',fr:'Regarder la Lune au télescope',en:'Look at the Moon through a telescope'},
-      {id:'n6',fr:'Voir Jupiter et ses lunes au télescope',en:'See Jupiter and its moons through a telescope'},
-      {id:'n7',fr:"Voir Saturne et ses anneaux au télescope",en:"See Saturn's rings through a telescope"},
+      {id:'n5',fr:'Observer les planètes et les étoiles au télescope',en:'Observe planets and stars through a telescope'},
       {id:'n8',fr:'Voir un lever de soleil',en:'Watch a sunrise'},
       {id:'n9',fr:'Voir un lever de Lune',en:'Watch a moonrise'},
-      {id:'n10',fr:'Admirer un coucher de soleil',en:'Watch a sunset'},
+      {id:'n10',fr:"Assister à un coucher de soleil depuis un point de vue unique",en:'Watch a sunset from a breathtaking viewpoint'},
     ]},
-    {fr:'Phénomènes météo',en:'Weather',items:[
+    {fr:'Phénomènes météo & géologiques',en:'Weather & Geology',items:[
       {id:'n11',fr:'Voir une tornade',en:'See a tornado'},
       {id:'n12',fr:'Vivre un ouragan',en:'Live through a hurricane'},
       {id:'n13',fr:'Sortir volontairement sous une pluie battante',en:'Walk voluntarily in a downpour'},
       {id:'n14',fr:"Admirer des éclairs pendant l'orage",en:'Watch lightning during a storm'},
+      {id:'n22',fr:'Voir un volcan',en:'See a volcano'},
+      {id:'n22b',fr:'Voir une éruption volcanique',en:'See a volcanic eruption'},
+      {id:'n_geyser',fr:'Voir un geyser',en:'See a geyser'},
+      {id:'n_quake',fr:'Vivre un tremblement de terre',en:'Experience an earthquake'},
     ]},
     {fr:'Eau',en:'Water',items:[
       {id:'n15',fr:"Voir l'océan",en:'See the ocean'},
@@ -315,12 +478,12 @@ const categories=[
       {id:'n17',fr:'Marcher sur un glacier',en:'Walk on a glacier'},
       {id:'n18',fr:'Voir une baleine',en:'See a whale'},
       {id:'n19',fr:'Voir des dauphins nager',en:'Watch dolphins swim'},
+      {id:'n_hotspring',fr:'Se baigner dans une source chaude naturelle',en:'Bathe in a natural hot spring'},
+      {id:'n_waterfall',fr:'Se baigner sous une cascade',en:'Swim under a waterfall'},
     ]},
     {fr:'Terre',en:'Earth',items:[
       {id:'n20',fr:'Dormir à la belle étoile',en:'Sleep under the stars'},
       {id:'n21',fr:'Traverser un désert',en:'Cross a desert'},
-      {id:'n22',fr:'Voir un volcan',en:'See a volcano'},
-      {id:'n22b',fr:'Voir une éruption volcanique',en:'See a volcanic eruption'},
       {id:'n23',fr:'Voir un baobab',en:'See a baobab tree'},
       {id:'n24',fr:'Faire un safari',en:'Go on a safari'},
       {id:'n25',fr:'Cueillir et cuisiner des champignons sauvages',en:'Forage and cook wild mushrooms'},
@@ -340,10 +503,23 @@ const categories=[
       {id:'na17',fr:'Voir une tortue géante',en:'See a giant tortoise'},{id:'na18',fr:'Voir un tigre du Bengale',en:'See a Bengal tiger'},
     ]},
   ]},
+
   {id:'voyages',fr:'Voyages & Géographie',en:'Travel & Geography',subcats:[
     {fr:'Le monde',en:'The World',items:[
       {id:'v0',fr:'Faire le tour du monde',en:'Travel around the world'},
       {id:'v_pays',fr:'Visiter ______',en:'Visit ______',freetext:true,prefix_fr:'Visiter',prefix_en:'Visit',datalist:'dl-pays'},
+    ]},
+    {fr:'Expériences de voyage',en:'Travel Experiences',items:[
+      {id:'vx1',fr:'Faire un road-trip',en:'Go on a road trip'},
+      {id:'vx2',fr:'Voyager en van',en:'Travel in a van'},
+      {id:'vx3',fr:'Faire une croisière',en:'Go on a cruise'},
+      {id:'vx4',fr:'Traverser un pays en train',en:'Cross a country by train'},
+      {id:'vx5',fr:'Traverser un pays en voiture',en:'Cross a country by car'},
+      {id:'vx6',fr:'Traverser un pays à pied',en:'Cross a country on foot'},
+      {id:'vx7',fr:'Vivre dans un pays étranger',en:'Live in a foreign country'},
+      {id:'vx8',fr:'Dormir dans un igloo',en:'Sleep in an igloo'},
+      {id:'vx9',fr:'Dormir sur une île déserte',en:'Sleep on a deserted island'},
+      {id:'vx10',fr:'Dormir dans un hôtel sous-marin',en:'Sleep in an underwater hotel'},
     ]},
     {fr:'Europe',en:'Europe',items:[
       {id:'v1',fr:'Voir la Tour Eiffel',en:'See the Eiffel Tower'},{id:'v2',fr:'Visiter le Louvre',en:'Visit the Louvre'},
@@ -352,6 +528,7 @@ const categories=[
       {id:'v7',fr:'Voir Stonehenge',en:'See Stonehenge'},{id:'v8',fr:'Voir les fjords norvégiens',en:'See the Norwegian fjords'},
       {id:'v8b',fr:'Voir le Mont-Blanc',en:'See Mont Blanc'},{id:'v9',fr:'Voir la Sagrada Família',en:'See the Sagrada Família'},
       {id:'v10',fr:"Voir l'Alhambra de Grenade",en:'See the Alhambra'},{id:'v11',fr:'Voir la Piazza San Marco',en:'See Piazza San Marco'},
+      {id:'v11b',fr:'Embarquer dans une gondole à Venise',en:'Ride a gondola in Venice'},
       {id:'v12',fr:'Voir le château de Neuschwanstein',en:'See Neuschwanstein Castle'},{id:'v13',fr:'Voir la Porte de Brandebourg',en:'See the Brandenburg Gate'},
       {id:'v14',fr:'Voir le château de Versailles',en:'See the Palace of Versailles'},{id:'v15',fr:'Voir Notre-Dame de Paris',en:'See Notre-Dame de Paris'},
       {id:'v16',fr:'Voir la Tour de Pise',en:'See the Leaning Tower of Pisa'},{id:'v17',fr:'Voir Big Ben',en:'See Big Ben'},
@@ -388,6 +565,9 @@ const categories=[
       {id:'v54',fr:'Voir le temple Kinkaku-ji (Kyoto)',en:'See Kinkaku-ji Temple'},{id:'v55',fr:'Voir Borobudur (Indonésie)',en:'See Borobudur'},
       {id:'v56',fr:'Voir le Mont du Temple (Jérusalem)',en:'See the Temple Mount'},{id:'v57',fr:'Voir le désert de Gobi',en:'See the Gobi Desert'},
       {id:'v58',fr:"Voir l'armée de terre cuite",en:'See the Terracotta Army'},
+      {id:'v_burj',fr:'Voir le Burj Khalifa (Dubaï)',en:'See the Burj Khalifa (Dubai)'},
+      {id:'v_merdead',fr:'Se baigner dans la mer Morte',en:'Float in the Dead Sea'},
+      {id:'v_china_ny',fr:'Célébrer le Nouvel An chinois en Chine',en:'Celebrate Chinese New Year in China'},
     ]},
     {fr:'Océanie',en:'Oceania',items:[
       {id:'v59',fr:"Voir l'Opéra de Sydney",en:'See the Sydney Opera House'},{id:'v60',fr:'Voir Uluru (Ayers Rock)',en:'See Uluru (Ayers Rock)'},
@@ -397,6 +577,7 @@ const categories=[
       {id:'v62',fr:'Mettre le pied en Antarctique',en:'Set foot in Antarctica'},{id:'v63',fr:'Mettre le pied en Arctique',en:'Set foot in the Arctic'},
     ]},
   ]},
+
   {id:'corps',fr:'Corps & Limites physiques',en:'Body & Physical Limits',subcats:[
     {fr:'',en:'',items:[
       {id:'c1',fr:'Courir un marathon',en:'Run a marathon'},{id:'c2',fr:'Compléter un Ironman',en:'Complete an Ironman'},
@@ -405,10 +586,16 @@ const categories=[
       {id:'c7',fr:'Apprendre à marcher sur les mains',en:'Learn to walk on your hands'},{id:'c8',fr:'Apprendre à jongler',en:'Learn to juggle'},
       {id:'c9',fr:'Apprendre le splits',en:'Learn the splits'},{id:'c10',fr:'Escalader une voie en falaise naturelle',en:'Climb a natural rock face'},
       {id:'c11',fr:'Soulever deux fois son poids corporel',en:'Lift twice your body weight'},{id:'c12',fr:'Traverser un pays à vélo',en:'Cycle across a country'},
-      {id:'c13',fr:'Faire le Chemin de Saint-Jacques',en:'Walk the Camino de Santiago'},{id:'c15',fr:'Vivre en autonomie dans la nature',en:'Live off the grid in nature'},
-      {id:'c16',fr:'Descendre une piste noire en ski',en:'Ski a black diamond run'},{id:'c17',fr:'Apprendre à marcher sur un fil',en:'Learn to walk a tightrope'},
+      {id:'c13',fr:'Faire le Chemin de Saint-Jacques',en:'Walk the Camino de Santiago'},
+      {id:'c15',fr:'Vivre en autonomie dans la nature',en:'Live off the grid in nature'},
+      {id:'c16',fr:'Descendre une piste noire en ski',en:'Ski a black diamond run'},
+      {id:'c17',fr:'Apprendre à marcher sur un fil',en:'Learn to walk a tightrope'},
+      {id:'c_sail',fr:'Apprendre à faire de la voile',en:'Learn to sail'},
+      {id:'c_surf',fr:'Apprendre à surfer',en:'Learn to surf'},
+      {id:'c_windsurf',fr:'Apprendre à faire de la planche à voile',en:'Learn to windsurf'},
     ]},
   ]},
+
   {id:'sensations',fr:'Sensations fortes',en:'Thrills',subcats:[
     {fr:'',en:'',items:[
       {id:'s1',fr:'Sauter en parachute',en:'Skydive'},{id:'s2',fr:"Sauter à l'élastique",en:'Bungee jump'},
@@ -422,8 +609,33 @@ const categories=[
       {id:'s17',fr:'Faire du ski hors-piste',en:'Ski off-piste'},{id:'s18',fr:'Conduire une motoneige',en:'Drive a snowmobile'},
       {id:'s19',fr:'Monter à cheval au galop',en:'Ride a horse at full gallop'},{id:'s20',fr:'Faire un tour en montgolfière',en:'Ride in a hot air balloon'},
       {id:'s21',fr:'Faire du parapente',en:'Paraglide'},{id:'s22',fr:'Faire du deltaplane',en:'Hang glide'},
+      {id:'s_tyrolienne',fr:'Faire de la tyrolienne',en:'Zip-line'},
+      {id:'s_skiwat',fr:'Faire du ski nautique',en:'Water ski'},
+      {id:'s_jetski',fr:'Piloter un jet ski',en:'Ride a jet ski'},
+      {id:'s_scuba',fr:'Faire de la plongée sous-marine',en:'Scuba dive'},
+      {id:'s_sandsrf',fr:'Faire du surf sur sable',en:'Sand surf'},
+      {id:'s_buggy',fr:'Conduire un buggy dans le désert',en:'Drive a dune buggy in the desert'},
+      {id:'s_apesant',fr:"Faire l'expérience de l'apesanteur",en:'Experience weightlessness'},
+      {id:'s_chien',fr:'Faire du chien de traîneau',en:'Dog sled'},
+      {id:'s_cliff',fr:'Sauter d\'une falaise',en:'Cliff jump'},
+      {id:'s_speleo',fr:'Faire de la spéléologie',en:'Go spelunking'},
+      {id:'s_paintball',fr:'Faire du paintball',en:'Play paintball'},
     ]},
   ]},
+
+  {id:'perso',fr:'Accomplissements personnels',en:'Personal Achievements',subcats:[
+    {fr:'',en:'',items:[
+      {id:'pp1',fr:'Résoudre un Rubik\'s Cube',en:'Solve a Rubik\'s Cube'},
+      {id:'pp2',fr:'Conquérir une phobie',en:'Overcome a phobia'},
+      {id:'pp3',fr:'Apprendre une nouvelle langue',en:'Learn a new language'},
+      {id:'pp4',fr:'Devenir polyglotte',en:'Become polyglot'},
+      {id:'pp5',fr:'Apprendre à jouer d\'un instrument de musique',en:'Learn to play a musical instrument'},
+      {id:'pp6',fr:'Participer à un open-mic',en:'Perform at an open mic'},
+      {id:'pp7',fr:'Faire voler un cerf-volant',en:'Fly a kite'},
+      {id:'pp8',fr:'Se faire tatouer',en:'Get a tattoo'},
+    ]},
+  ]},
+
   {id:'relations',fr:'Relations humaines',en:'Human Relationships',subcats:[
     {fr:'',en:'',items:[
       {id:'r1',fr:'Se marier',en:'Get married'},{id:'r2',fr:'Avoir un enfant',en:'Have a child'},
@@ -435,8 +647,12 @@ const categories=[
       {id:'r13',fr:'Se réconcilier avec un ennemi',en:'Reconcile with an enemy'},{id:'r14',fr:"Être le témoin d'un mariage",en:'Be a witness at a wedding'},
       {id:'r15',fr:"Couper les ponts avec quelqu'un de toxique",en:'Cut ties with a toxic person'},{id:'r16',fr:'Rencontrer son héros',en:'Meet your hero'},
       {id:'r17',fr:"Inspirer quelqu'un à changer de vie",en:'Inspire someone to change their life'},
+      {id:'r18',fr:"S'asseoir et discuter avec un parfait inconnu",en:'Sit and talk with a complete stranger'},
+      {id:'r19',fr:"Envoyer une lettre d'amour",en:'Send a love letter'},
+      {id:'r20',fr:'Envoyer une bouteille à la mer',en:'Send a message in a bottle'},
     ]},
   ]},
+
   {id:'culture',fr:'Culture',en:'Culture',subcats:[
     {fr:'Œuvres visuelles',en:'Visual Works',items:[
       {id:'cu1',fr:'La Joconde (Louvre, Paris)',en:'The Mona Lisa (Louvre, Paris)'},{id:'cu2',fr:'La Pietà (Vatican)',en:'The Pietà (Vatican)'},
@@ -444,11 +660,11 @@ const categories=[
       {id:'cu5',fr:'La Vénus de Milo (Louvre)',en:'Venus de Milo (Louvre)'},{id:'cu6',fr:'La Nuit étoilée de Van Gogh (MoMA)',en:"Van Gogh's Starry Night (MoMA)"},
       {id:'cu7',fr:'Guernica de Picasso',en:"Picasso's Guernica"},{id:'cu8',fr:'Le Cri de Munch',en:"Munch's The Scream"},
       {id:'cu9',fr:"La Persistance de la mémoire de Dalí",en:"Dalí's Persistence of Memory"},{id:'cu10',fr:'La Jeune Fille à la perle de Vermeer',en:"Vermeer's Girl with a Pearl Earring"},
-      {id:'cu11',fr:"L'École d'Athènes de Raphaël (Vatican)",en:"Raphael's School of Athens (Vatican)"},{id:'cu12',fr:'La Naissance de Vénus de Botticelli (Florence)',en:"Botticelli's Birth of Venus (Florence)"},
-      {id:'cu13',fr:'David de Michel-Ange (Florence)',en:"Michelangelo's David (Florence)"},{id:'cu14',fr:'La Victoire de Samothrace (Louvre)',en:'Winged Victory of Samothrace (Louvre)'},
+      {id:'cu11',fr:"L'École d'Athènes de Raphaël (Vatican)",en:"Raphael's School of Athens"},{id:'cu12',fr:'La Naissance de Vénus de Botticelli (Florence)',en:"Botticelli's Birth of Venus"},
+      {id:'cu13',fr:'David de Michel-Ange (Florence)',en:"Michelangelo's David"},{id:'cu14',fr:'La Victoire de Samothrace (Louvre)',en:'Winged Victory of Samothrace'},
     ]},
     {fr:'Littérature',en:'Literature',items:[
-      {id:'cu_lit',fr:"Avoir lu l'œuvre complète de ______",en:'Having read the complete works of ______',freetext:true,prefix_fr:"Avoir lu l'œuvre complète de",prefix_en:'Complete works of'},
+      {id:'cu_lit',fr:"Avoir lu l'œuvre complète de ______",en:'Complete works of ______',freetext:true,prefix_fr:"Avoir lu l'œuvre complète de",prefix_en:'Complete works of'},
     ]},
     {fr:'Concerts',en:'Concerts',items:[
       {id:'cu15',fr:'Avoir vu les Rolling Stones en concert',en:'Having seen the Rolling Stones live'},{id:'cu16',fr:'Avoir vu Paul McCartney en concert',en:'Having seen Paul McCartney live'},
@@ -459,27 +675,49 @@ const categories=[
       {id:'cu25',fr:'Avoir vu Freddie Mercury / Queen en concert',en:'Having seen Freddie Mercury / Queen live'},{id:'cu26',fr:'Avoir vu Jimi Hendrix en concert',en:'Having seen Jimi Hendrix live'},
       {id:'cu27',fr:'Avoir vu Bob Marley en concert',en:'Having seen Bob Marley live'},
     ]},
-    {fr:'Expériences',en:'Experiences',items:[
+    {fr:'Événements & expériences',en:'Events & Experiences',items:[
       {id:'cu28',fr:'Assister à un opéra',en:'Attend an opera'},{id:'cu29',fr:'Assister à un ballet',en:'Attend a ballet'},
-      {id:'cu30',fr:'Assister à un concert symphonique',en:'Attend a symphonic concert'},{id:'cu31',fr:'Assister au Festival de Cannes',en:'Attend the Cannes Film Festival'},
-      {id:'cu32',fr:'Assister aux Oscars',en:'Attend the Oscars'},{id:'cu33',fr:'Assister à la Fashion Week de Paris',en:'Attend Paris Fashion Week'},
+      {id:'cu30',fr:'Assister à un concert symphonique',en:'Attend a symphonic concert'},
+      {id:'cu31',fr:'Assister au Festival de Cannes',en:'Attend the Cannes Film Festival'},{id:'cu32',fr:'Assister aux Oscars',en:'Attend the Oscars'},
+      {id:'cu33',fr:'Assister à la Fashion Week de Paris',en:'Attend Paris Fashion Week'},
       {id:'cu34',fr:'Assister au Carnaval de Venise',en:'Attend the Venice Carnival'},{id:'cu35',fr:'Assister au Carnaval de Rio',en:'Attend the Rio Carnival'},
-      {id:'cu36',fr:'Assister au Burning Man',en:'Attend Burning Man'},{id:'cu37',fr:'Faire le pèlerinage de La Mecque',en:'Make the pilgrimage to Mecca'},
-      {id:'cu38',fr:'Manger dans un restaurant 3 étoiles Michelin',en:'Dine at a 3-star Michelin restaurant'},{id:'cu39',fr:'Manger du fugu',en:'Eat fugu (pufferfish)'},
-      {id:'cu40',fr:'Boire un grand cru classé',en:'Drink a grand cru classé wine'},{id:'cu41',fr:'Fumer un grand cigare cubain',en:'Smoke a fine Cuban cigar'},
+      {id:'cu36',fr:'Assister au Burning Man',en:'Attend Burning Man'},
+      {id:'cu37',fr:'Faire le pèlerinage de La Mecque',en:'Make the pilgrimage to Mecca'},
+      {id:'cu_tomatina',fr:'Participer à La Tomatina (Espagne)',en:'Participate in La Tomatina (Spain)'},
+      {id:'cu_bayonne',fr:'Participer aux Fêtes de Bayonne',en:'Attend the Fêtes de Bayonne'},
+      {id:'cu_oktoberfest',fr:"Participer à l'Oktoberfest (Munich)",en:'Attend Oktoberfest (Munich)'},
+      {id:'cu_mardigras',fr:'Participer à Mardi Gras à la Nouvelle-Orléans',en:'Attend Mardi Gras in New Orleans'},
+      {id:'cu_fullmoon',fr:'Participer à une Full Moon Party en Thaïlande',en:'Attend a Full Moon Party in Thailand'},
+      {id:'cu_festival',fr:'Participer à un festival de grande ampleur',en:'Attend a major music festival'},
+      {id:'cu_cdm',fr:'Assister à la Coupe du Monde de football',en:'Attend the FIFA World Cup'},
+      {id:'cu_grandchelem',fr:'Assister à un tournoi du Grand Chelem',en:'Attend a Grand Slam tennis tournament'},
+      {id:'cu_jo',fr:'Assister aux Jeux olympiques',en:'Attend the Olympic Games'},
+      {id:'cu_fusee',fr:"Assister au décollage d'une fusée",en:'Watch a rocket launch'},
+      {id:'cu_vegascasino',fr:'Jouer au casino à Las Vegas',en:'Gamble in a Las Vegas casino'},
+      {id:'cu_restaurant_sea',fr:'Manger dans un restaurant sous-marin',en:'Dine in an underwater restaurant'},
+      {id:'cu38',fr:'Manger dans un restaurant 3 étoiles Michelin',en:'Dine at a 3-star Michelin restaurant'},
+      {id:'cu39',fr:'Manger du fugu',en:'Eat fugu (pufferfish)'},{id:'cu40',fr:'Boire un grand cru classé',en:'Drink a grand cru classé wine'},
+      {id:'cu41',fr:'Fumer un grand cigare cubain',en:'Smoke a fine Cuban cigar'},
     ]},
   ]},
+
   {id:'pro',fr:'Accomplissements professionnels',en:'Professional Achievements',subcats:[
-    {fr:'',en:'',items:[
+    {fr:'Création',en:'Creation',items:[
       {id:'p1',fr:'Avoir publié un livre',en:'Publish a book'},{id:'p2',fr:'Avoir réalisé un film',en:'Direct a film'},
       {id:'p3',fr:'Avoir sorti un album',en:'Release an album'},{id:'p4',fr:'Avoir fait un concert',en:'Perform a concert'},
-      {id:'p5',fr:'Avoir fait un spectacle solo',en:'Do a solo show'},{id:'p6',fr:"Avoir monté une pièce de théâtre",en:'Stage a theatre production'},
+      {id:'p5',fr:'Avoir fait un spectacle solo (stand-up, one-man-show)',en:'Do a solo show'},{id:'p6',fr:"Avoir monté une pièce de théâtre",en:'Stage a theatre production'},
       {id:'p7',fr:'Avoir joué dans un film',en:'Act in a film'},{id:'p8',fr:"Avoir organisé une exposition de ses œuvres",en:'Organize an exhibition of your work'},
+    ]},
+    {fr:'Réalisations',en:'Achievements',items:[
       {id:'p9',fr:'Avoir créé une entreprise',en:'Start a company'},{id:'p10',fr:'Avoir breveté une invention',en:'Patent an invention'},
       {id:'p11',fr:'Avoir construit une maison',en:'Build a house'},{id:'p12',fr:'Avoir été élu politiquement',en:'Win a political election'},
       {id:'p13',fr:'Avoir reçu un prix de reconnaissance',en:'Receive an award or prize'},
+      {id:'p14',fr:'Remporter une médaille olympique',en:'Win an Olympic medal'},
+      {id:'p15',fr:'Remporter un championnat national',en:'Win a national championship'},
+      {id:'p16',fr:'Remporter un championnat mondial',en:'Win a world championship'},
     ]},
   ]},
+
   {id:'mystere',fr:'Mystère & Paranormal',en:'Mystery & Paranormal',subcats:[
     {fr:'',en:'',items:[
       {id:'m1',fr:'Avoir vécu une expérience de mort imminente',en:'Have a near-death experience'},
@@ -487,123 +725,173 @@ const categories=[
       {id:'m3',fr:'Avoir été enlevé par des extraterrestres',en:'Be abducted by aliens'},
       {id:'m4',fr:'Avoir vu un fantôme',en:'See a ghost'},
       {id:'m5',fr:'Avoir communiqué avec un mort',en:'Communicate with the dead'},
+      {id:'m6',fr:'Visiter une maison hantée',en:'Visit a haunted house'},
     ]},
   ]},
 ];
 
+// ===================== CATEGORY COLORS =====================
+// One color per category — change here to repaint everything
+// =============================================
+// PALETTE PAR CATÉGORIE
+// bg  = couleur de fond du bloc catégorie
+// h   = couleur d'accent (version plus sombre)
+// r   = valeurs RGB pour les transparences
+// txt = couleur du texte sur fond coloré
+// =============================================
+const CAT_COLORS = {
+  nature:     { bg:'#2ECC71', h:'#1A9E50', r:'46,204,113',   txt:'#fff' },
+  voyages:    { bg:'#F39C12', h:'#C47D08', r:'243,156,18',   txt:'#fff' },
+  corps:      { bg:'#E74C3C', h:'#B83228', r:'231,76,60',    txt:'#fff' },
+  sensations: { bg:'#9B59B6', h:'#7A3D9A', r:'155,89,182',   txt:'#fff' },
+  perso:      { bg:'#1ABC9C', h:'#0E9278', r:'26,188,156',   txt:'#fff' },
+  relations:  { bg:'#E91E8C', h:'#C01070', r:'233,30,140',   txt:'#fff' },
+  culture:    { bg:'#3498DB', h:'#1A6FAD', r:'52,152,219',   txt:'#fff' },
+  pro:        { bg:'#FF6B35', h:'#D44E1A', r:'255,107,53',   txt:'#fff' },
+  mystere:    { bg:'#34495E', h:'#1C2F3E', r:'52,73,94',     txt:'#fff' },
+};
+function catColor(catId){ return CAT_COLORS[catId] || { bg:'#888', h:'#555', r:'136,136,136', txt:'#fff' }; }
+
+// ===================== COUNTRIES =====================
+const countries=["Afghanistan","Afrique du Sud","Albanie","Algérie","Allemagne","Andorre","Angola","Antigua-et-Barbuda","Arabie saoudite","Argentine","Arménie","Australie","Autriche","Azerbaïdjan","Bahamas","Bahreïn","Bangladesh","Barbade","Bélarus","Belgique","Belize","Bénin","Bhoutan","Bolivie","Bosnie-Herzégovine","Botswana","Brésil","Brunéi","Bulgarie","Burkina Faso","Burundi","Cabo Verde","Cambodge","Cameroun","Canada","Centrafrique","Chili","Chine","Chypre","Colombie","Comores","Congo","Congo (RDC)","Corée du Nord","Corée du Sud","Costa Rica","Côte d'Ivoire","Croatie","Cuba","Danemark","Djibouti","Dominique","Égypte","Émirats arabes unis","Équateur","Érythrée","Espagne","Eswatini","Estonie","États-Unis","Éthiopie","Fidji","Finlande","France","Gabon","Gambie","Géorgie","Ghana","Grèce","Grenade","Guatemala","Guinée","Guinée-Bissau","Guinée équatoriale","Guyana","Haïti","Honduras","Hongrie","Inde","Indonésie","Irak","Iran","Irlande","Islande","Israël","Italie","Jamaïque","Japon","Jordanie","Kazakhstan","Kenya","Kirghizistan","Kiribati","Kosovo","Koweït","Laos","Lesotho","Lettonie","Liban","Libéria","Libye","Liechtenstein","Lituanie","Luxembourg","Madagascar","Malaisie","Malawi","Maldives","Mali","Malte","Maroc","Marshall","Maurice","Mauritanie","Mexique","Micronésie","Moldavie","Monaco","Mongolie","Monténégro","Mozambique","Myanmar","Namibie","Nauru","Népal","Nicaragua","Niger","Nigeria","Norvège","Nouvelle-Zélande","Oman","Ouganda","Ouzbékistan","Pakistan","Palaos","Palestine","Panama","Papouasie-Nouvelle-Guinée","Paraguay","Pays-Bas","Pérou","Philippines","Pologne","Portugal","Qatar","Roumanie","Royaume-Uni","Russie","Rwanda","Saint-Christophe-et-Niévès","Saint-Marin","Saint-Vincent-et-les-Grenadines","Sainte-Lucie","Salomon","Salvador","Samoa","São Tomé-et-Príncipe","Sénégal","Serbie","Seychelles","Sierra Leone","Singapour","Slovaquie","Slovénie","Somalie","Soudan","Soudan du Sud","Sri Lanka","Suède","Suisse","Suriname","Syrie","Tadjikistan","Tanzanie","Tchad","Thaïlande","Timor oriental","Togo","Tonga","Trinité-et-Tobago","Tunisie","Turkménistan","Turquie","Tuvalu","Ukraine","Uruguay","Vanuatu","Vatican","Venezuela","Viêt Nam","Yémen","Zambie","Zimbabwe"];
+const dl=document.getElementById('dl-pays');
+countries.forEach(c=>{const o=document.createElement('option');o.value=c;dl.appendChild(o);});
+
 // ===================== STATE =====================
-let state={}, dynamicItems={}, currentFilter='all', activeCatId=categories[0].id;
+let state={}, dynamicItems={}, currentFilter='all', activeCatId='nature', lang='fr';
+const t=k=>({fr:{add:'Ajouter',done_label:'Fait',todo_label:'À faire',country_p:'Nom du pays...',author_p:"Nom de l'auteur...",search_p:'Rechercher...',save_copied:'Lien copié !',poster_done:"Ce que j'ai accompli",poster_todo:'Ce que je veux encore faire',what_done:"Ce que j'ai accompli",what_todo:'Ce que je veux encore faire'},en:{add:'Add',done_label:'Done',todo_label:'To do',country_p:'Country name...',author_p:'Author name...',search_p:'Search...',save_copied:'Link copied!',poster_done:"What I've accomplished",poster_todo:'What I still want to do',what_done:"What I've accomplished",what_todo:'What I still want to do'}}[lang][k]||k);
 
 function loadState(){
   try{state=JSON.parse(localStorage.getItem('bl-state')||'{}');}catch(e){state={};}
   try{dynamicItems=JSON.parse(localStorage.getItem('bl-dynamic')||'{}');}catch(e){dynamicItems={};}
+  // Load custom categories from admin edits
+  try{const saved=localStorage.getItem('bl-categories');if(saved)categories=JSON.parse(saved);}catch(e){}
 }
 function saveState(){
   localStorage.setItem('bl-state',JSON.stringify(state));
   localStorage.setItem('bl-dynamic',JSON.stringify(dynamicItems));
 }
+function saveCategories(){
+  localStorage.setItem('bl-categories',JSON.stringify(categories));
+  const notice=document.getElementById('admin-save-notice');
+  notice.classList.add('show');
+  setTimeout(()=>notice.classList.remove('show'),2000);
+}
 
-// URL encode/decode
-function saveToUrl(){
-  const payload={s:state,d:dynamicItems};
-  const encoded=btoa(encodeURIComponent(JSON.stringify(payload)));
-  const url=window.location.href.split('?')[0]+'?bl='+encoded;
-  navigator.clipboard.writeText(url).then(()=>{
-    const btn=document.querySelector('.save-url-btn');
-    const orig=btn.textContent;
-    btn.textContent='✓ '+t('save_copied');
-    setTimeout(()=>btn.textContent=orig,2500);
-  });
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
+  document.querySelectorAll('.lang-btn-hero').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
+  document.getElementById('search-input').placeholder=t('search_p');
+  // Sync hero lang buttons
+  const hfr=document.getElementById('lang-fr-hero');
+  const hen=document.getElementById('lang-en-hero');
+  if(hfr) hfr.classList.toggle('active', l==='fr');
+  if(hen) hen.classList.toggle('active', l==='en');
+  renderContent();updateStats();
 }
 
 function loadFromUrl(){
   const params=new URLSearchParams(window.location.search);
   const bl=params.get('bl');
-  if(!bl) return false;
-  try{
-    const payload=JSON.parse(decodeURIComponent(atob(bl)));
-    state=payload.s||{};
-    dynamicItems=payload.d||{};
-    saveState();
-    return true;
-  }catch(e){return false;}
+  if(!bl) return;
+  try{const p=JSON.parse(decodeURIComponent(atob(bl)));state=p.s||{};dynamicItems=p.d||{};saveState();}catch(e){}
 }
 
 // ===================== HELPERS =====================
 function flatItems(cat){
   const arr=[];
   cat.subcats.forEach(sc=>sc.items.forEach(item=>{
-    if(item.freetext){
-      (dynamicItems[item.id]||[]).forEach(di=>arr.push({id:di.id,label:di.label,catId:cat.id,prefix:item['prefix_'+lang]}));
-    } else {
-      arr.push({id:item.id,label:item[lang],catId:cat.id});
-    }
+    if(item.freetext)(dynamicItems[item.id]||[]).forEach(di=>arr.push({id:di.id,label:di.label,catId:cat.id,prefix:item['prefix_'+lang]}));
+    else arr.push({id:item.id,label:item[lang]||item.fr,catId:cat.id});
   }));
   return arr;
 }
 function allFlatItems(){return categories.flatMap(cat=>flatItems(cat));}
+function genId(){return 'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
 // ===================== LAYOUT =====================
 function layout(){
-  const hh=document.getElementById('site-header').offsetHeight;
-  const ch=document.getElementById('site-controls').offsetHeight;
+  const hero=document.getElementById('hero-banner');
+  const heroH=hero?hero.offsetHeight:0;
+  const header=document.getElementById('site-header');
+  const hh=header?header.offsetHeight:0;
   const nh=document.getElementById('save-notice').offsetHeight;
-  document.getElementById('site-controls').style.top=hh+'px';
   const ml=document.getElementById('main-layout');
-  ml.style.top=(hh+ch)+'px';
+  ml.style.top=(heroH+hh)+'px';
   ml.style.bottom=nh+'px';
 }
 
-// ===================== RENDER NAV =====================
+// ===================== NAV =====================
 function renderNav(){
   document.getElementById('cat-nav').innerHTML=categories.map(cat=>{
     const items=flatItems(cat);
     const done=items.filter(i=>state[i.id]==='done').length;
-    return `<div class="cat-nav-item ${activeCatId===cat.id?'active':''}" onclick="navClick('${cat.id}')">
-      <span>${cat[lang]}</span><span class="cat-count">${done}/${items.length}</span>
+    const cc=catColor(cat.id);
+    return `<div class="cat-nav-item ${activeCatId===cat.id?'active':''}" onclick="navClick('${cat.id}')" style="--cat-bg:${cc.bg};--cat-r:${cc.r};">
+      <span class="cat-nav-dot"></span>
+      <span>${cat[lang]||cat.fr}</span>
+      <span class="cat-count">${done}/${items.length}</span>
     </div>`;
   }).join('');
 }
-
 function navClick(catId){
   const content=document.getElementById('content');
   const el=document.getElementById('cat-'+catId);
   if(el&&content) content.scrollTo({top:el.offsetTop-8,behavior:'smooth'});
 }
 
-// ===================== RENDER CONTENT =====================
+// ===================== CONTENT =====================
 function renderContent(){
   const search=document.getElementById('search-input').value.toLowerCase().trim();
   document.getElementById('content').innerHTML=categories.map(cat=>{
+    const cc=catColor(cat.id);
     const html=cat.subcats.map(sc=>{
-      const ihtml=sc.items.map(item=>item.freetext?renderFreetext(item,search):renderStatic(item,search)).join('');
+      const ihtml=sc.items.map(item=>item.freetext?renderFreetext(item,search,cat.id):renderStatic(item,search,cat.id)).join('');
       if(!ihtml.trim()) return '';
-      return `<div class="subcat">${sc[lang]?`<div class="subcat-title">${sc[lang]}</div>`:''}<div class="items-grid">${ihtml}</div></div>`;
+      return `<div class="subcat" style="--cat-h:${cc.h};--cat-r:${cc.r};">${(sc[lang]||sc.fr)?`<div class="subcat-title" style="color:${cc.h}">${sc[lang]||sc.fr}</div>`:''}<div class="items-grid">${ihtml}</div></div>`;
     }).join('');
-    return `<div class="category-section" id="cat-${cat.id}">
-      <div class="cat-header"><span class="cat-title">${cat[lang]}</span></div>${html}
+    const catItems=flatItems(cat);
+    const catDone=catItems.filter(i=>state[i.id]==='done').length;
+    const catPct=catItems.length?Math.round(catDone/catItems.length*100):0;
+    return `<div class="category-section" id="cat-${cat.id}" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
+      <div class="cat-sticky" style="background:${cc.bg};">
+        <span class="cat-title">${cat[lang]||cat.fr}</span>
+        <div class="cat-progress-wrap">
+          <div class="cat-progress-track">
+            <div class="cat-progress-fill" style="width:${catPct}%"></div>
+          </div>
+          <div class="cat-progress-label">${catDone} / ${catItems.length} accomplis</div>
+        </div>
+      </div>
+      <div class="cat-body">${html}</div>
     </div>`;
   }).join('');
-  layout(); setupScrollSpy();
+  layout();setupScrollSpy();
 }
 
-function renderStatic(item,search){
-  const label=item[lang],status=state[item.id]||null;
+function renderStatic(item,search,catId){
+  const label=item[lang]||item.fr;
+  const status=state[item.id]||null;
   if(search&&!label.toLowerCase().includes(search)) return '';
   if(currentFilter==='done'&&status!=='done') return '';
   if(currentFilter==='todo'&&status!=='todo') return '';
   if(currentFilter==='none'&&status!==null) return '';
+  const cc=catColor(catId);
   const cls=status==='done'?'is-done':status==='todo'?'is-todo':'';
-  return `<div class="item ${cls}" id="item-${item.id}">
+  const styleAttr=`--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};`;
+  const showDone=status===null||status==='done';
+  const showTodo=status===null||status==='todo';
+  return `<div class="item ${cls}" id="item-${item.id}" style="${styleAttr}">
     <span class="item-label">${label}</span>
     <div class="item-actions">
-      <button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${item.id}','done')" title="${t('done_label')}">✓</button>
-      <button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${item.id}','todo')" title="${t('todo_label')}">☆</button>
+      ${showDone?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${item.id}','done','${catId}')" title="${t('done_label')}">✓</button>`:''}
+      ${showTodo?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${item.id}','todo','${catId}')" title="${t('todo_label')}">☆</button>`:''}
     </div>
   </div>`;
 }
 
-function renderFreetext(item,search){
+function renderFreetext(item,search,catId){
   const prefix=item['prefix_'+lang]||item.prefix_fr;
   const isCountry=item.id==='v_pays';
   const ph=isCountry?t('country_p'):t('author_p');
@@ -616,12 +904,14 @@ function renderFreetext(item,search){
     if(currentFilter==='todo'&&status!=='todo') return '';
     if(currentFilter==='none'&&status!==null) return '';
     const cls=status==='done'?'is-done':status==='todo'?'is-todo':'';
-    return `<div class="item ${cls}" id="item-${di.id}">
+    const cc2=catColor(catId);
+    const sd=status===null||status==='done', st=status===null||status==='todo';
+    return `<div class="item ${cls}" id="item-${di.id}" style="--cat-bg:${cc2.bg};--cat-h:${cc2.h};--cat-r:${cc2.r};--cat-text:${cc2.txt};">
       <span class="item-label">${full}</span>
       <div class="item-actions">
-        <button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${di.id}','done')" title="${t('done_label')}">✓</button>
-        <button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${di.id}','todo')" title="${t('todo_label')}">☆</button>
-        <button class="check-btn" onclick="removeDynamic('${item.id}','${di.id}')" style="font-size:9px;color:var(--text-dim)">✕</button>
+        ${sd?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${di.id}','done','${catId}')" title="${t('done_label')}">✓</button>`:''}
+        ${st?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${di.id}','todo','${catId}')" title="${t('todo_label')}">☆</button>`:''}
+        <button class="check-btn del-btn" onclick="removeDynamic('${item.id}','${di.id}')">✕</button>
       </div>
     </div>`;
   }).join('');
@@ -632,23 +922,36 @@ function renderFreetext(item,search){
     <input type="text" class="freetext-input" id="ft-${item.id}" placeholder="${ph}" ${listAttr}
       onkeydown="if(event.key==='Enter'){addDynamic('${item.id}');event.preventDefault();}">
     <button class="freetext-add" onclick="addDynamic('${item.id}')">${t('add')}</button>
-  </div>
-  <div class="dynamic-items">${dynHtml}</div>`;
+  </div><div class="dynamic-items">${dynHtml}</div>`;
 }
 
 // ===================== INTERACTIONS =====================
-function toggle(id,type){
+function toggle(id,type,catId){
   state[id]=state[id]===type?null:type;
   saveState();
+  // Re-render just this item for button visibility
   const el=document.getElementById('item-'+id);
   if(el){
     const s=state[id];
+    const label=el.querySelector('.item-label').textContent;
+    const cc=catColor(catId||'');
     el.className='item'+(s==='done'?' is-done':s==='todo'?' is-todo':'');
-    el.querySelector('.done-btn').classList.toggle('active',s==='done');
-    el.querySelector('.todo-btn').classList.toggle('active',s==='todo');
+    el.style.setProperty('--cat-bg',cc.bg);
+    el.style.setProperty('--cat-h',cc.h);
+    el.style.setProperty('--cat-r',cc.r);
+    el.style.setProperty('--cat-text',cc.txt);
+    // Rebuild buttons
+    const showDone=s===null||s==='done';
+    const showTodo=s===null||s==='todo';
+    const actions=el.querySelector('.item-actions');
+    if(actions){
+      actions.innerHTML=
+        (showDone?`<button class="check-btn done-btn ${s==='done'?'active':''}" onclick="toggle('${id}','done','${catId||''}')" title="${t('done_label')}">✓</button>`:'')+
+        (showTodo?`<button class="check-btn todo-btn ${s==='todo'?'active':''}" onclick="toggle('${id}','todo','${catId||''}')" title="${t('todo_label')}">☆</button>`:'');
+    }
     if(currentFilter!=='all'&&!(currentFilter==='none'&&!s)&&s!==currentFilter) el.classList.add('hidden');
   }
-  updateStats(); renderNav();
+  updateStats();renderNav();
 }
 function addDynamic(ftId){
   const input=document.getElementById('ft-'+ftId);
@@ -656,12 +959,12 @@ function addDynamic(ftId){
   if(!dynamicItems[ftId]) dynamicItems[ftId]=[];
   dynamicItems[ftId].push({id:ftId+'_'+Date.now(),label:input.value.trim()});
   input.value='';
-  saveState(); renderContent(); updateStats(); renderNav();
+  saveState();renderContent();updateStats();renderNav();
 }
 function removeDynamic(ftId,uid){
   dynamicItems[ftId]=(dynamicItems[ftId]||[]).filter(d=>d.id!==uid);
   delete state[uid];
-  saveState(); renderContent(); updateStats(); renderNav();
+  saveState();renderContent();updateStats();renderNav();
 }
 function setFilter(filter,btn){
   currentFilter=filter;
@@ -685,8 +988,9 @@ function updateStats(){
   document.getElementById('progress-done').style.width=pD+'%';
   document.getElementById('progress-todo').style.width=pT+'%';
   document.getElementById('progress-todo').style.left=pD+'%';
-  document.getElementById('pct-done').textContent=checked?`${done} accomplis`:'—';
-  document.getElementById('pct-todo').textContent=checked?`${todo} à faire`:'—';
+  const pdEl=document.getElementById('pct-done');
+  if(pdEl) pdEl.textContent=checked?`${pD}%`:'—';
+  // pct-todo no longer displayed separately
   renderNav();
 }
 
@@ -697,10 +1001,7 @@ function setupScrollSpy(){
   content.onscroll=()=>{
     const st=content.scrollTop;
     let cur=categories[0].id;
-    categories.forEach(cat=>{
-      const el=document.getElementById('cat-'+cat.id);
-      if(el&&el.offsetTop-60<=st) cur=cat.id;
-    });
+    categories.forEach(cat=>{const el=document.getElementById('cat-'+cat.id);if(el&&el.offsetTop-60<=st)cur=cat.id;});
     if(activeCatId!==cur){activeCatId=cur;renderNav();}
   };
 }
@@ -713,210 +1014,303 @@ function openResults(){
   const todoItems=all.filter(i=>state[i.id]==='todo');
   const checked=doneItems.length+todoItems.length;
   const pct=checked?Math.round(doneItems.length/checked*100):0;
-
   document.getElementById('results-stats').innerHTML=`
     <div class="r-stat done-s"><div class="r-stat-n">${doneItems.length}</div><div class="r-stat-d">accomplis</div></div>
     <div class="r-stat todo-s"><div class="r-stat-n">${todoItems.length}</div><div class="r-stat-d">sur ma liste</div></div>
-    <div class="r-stat done-s"><div class="r-stat-n">${pct}%</div><div class="r-stat-d">des éléments cochés</div></div>
-  `;
-
-  // Build by-category lists
-  function buildCatList(items, colClass){
+    <div class="r-stat done-s"><div class="r-stat-n">${pct}%</div><div class="r-stat-d">des éléments cochés</div></div>`;
+  function buildList(items,colClass){
     return categories.map(cat=>{
       const catItems=items.filter(i=>i.catId===cat.id);
       if(!catItems.length) return '';
       return `<div class="res-cat-block open">
         <div class="res-cat-toggle" onclick="this.parentElement.classList.toggle('open')">
-          <span class="res-cat-name">${cat[lang]}</span>
-          <span style="display:flex;align-items:center;gap:8px">
-            <span class="res-cat-count">${catItems.length}</span>
-            <span class="res-cat-arrow">▼</span>
-          </span>
+          <span class="res-cat-name">${cat[lang]||cat.fr}</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="font-size:11px;color:var(--text-dim)">${catItems.length}</span><span class="res-cat-arrow">▼</span></span>
         </div>
-        <div class="res-cat-items ${colClass}">
-          ${catItems.map(i=>`<div class="res-item">${i.prefix?i.prefix+' ':''}${i.label}</div>`).join('')}
-        </div>
+        <div class="res-cat-items ${colClass}">${catItems.map(i=>`<div class="res-item">${i.prefix?i.prefix+' ':''}${i.label}</div>`).join('')}</div>
       </div>`;
     }).join('');
   }
-
   document.getElementById('results-lists').innerHTML=`
-    <div class="res-list-col">
-      <div class="res-col-title done-t">${t('what_done')}</div>
-      ${buildCatList(doneItems,'done-col')||`<div style="color:var(--text-dim);font-size:13px">—</div>`}
-    </div>
-    <div class="res-list-col">
-      <div class="res-col-title todo-t">${t('what_todo')}</div>
-      ${buildCatList(todoItems,'todo-col')||`<div style="color:var(--text-dim);font-size:13px">—</div>`}
-    </div>
-  `;
+    <div><div class="res-col-title done-t">${t('what_done')}</div>${buildList(doneItems,'done-col')||'<div style="color:var(--text-dim);font-size:13px">—</div>'}</div>
+    <div><div class="res-col-title todo-t">${t('what_todo')}</div>${buildList(todoItems,'todo-col')||'<div style="color:var(--text-dim);font-size:13px">—</div>'}</div>`;
 }
-
 function closeResults(){document.getElementById('results-panel').classList.remove('open');}
+
+function saveToUrl(){
+  const payload={s:state,d:dynamicItems};
+  const encoded=btoa(encodeURIComponent(JSON.stringify(payload)));
+  const url=window.location.href.split('?')[0]+'?bl='+encoded;
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.querySelector('.save-url-btn');
+    const orig=btn.textContent;btn.textContent='✓ '+t('save_copied');
+    setTimeout(()=>btn.textContent=orig,2500);
+  });
+}
 
 // ===================== POSTER =====================
 let posterPortrait=true;
-
-function openPoster(){
-  document.getElementById('poster-panel').classList.add('open');
-  drawPoster();
-}
+function openPoster(){document.getElementById('poster-panel').classList.add('open');drawPoster();}
 function closePoster(){document.getElementById('poster-panel').classList.remove('open');}
 function toggleOrientation(){posterPortrait=!posterPortrait;drawPoster();}
 
 function drawPoster(){
   const canvas=document.getElementById('poster-canvas');
-  // A2 at 150dpi: 2480×3508 portrait
-  const W=posterPortrait?2480:3508;
-  const H=posterPortrait?3508:2480;
-  canvas.width=W; canvas.height=H;
-
+  const W=posterPortrait?2480:3508, H=posterPortrait?3508:2480;
+  canvas.width=W;canvas.height=H;
   const ctx=canvas.getContext('2d');
-
-  // Colors
-  const BG='#F5F0E8';
-  const CREAM='#FDFAF4';
-  const BORDER='#D8D0C0';
-  const TEXT='#1C1810';
-  const MUTED='#7A7060';
-  const DIM='#B8AE9A';
-  const GREEN='#2D5016';
-  const TERRA='#C4622D';
-
-  // Background
-  ctx.fillStyle=BG;
-  ctx.fillRect(0,0,W,H);
-
-  const PAD=120;
-  const colW=(W-PAD*2-60)/2;
-
-  // Header
+  const BG='#F5F0E8',BORDER='#D8D0C0',TEXT='#1C1810',MUTED='#7A7060',DIM='#B8AE9A',GREEN='#2D5016',TERRA='#C4622D';
+  ctx.fillStyle=BG;ctx.fillRect(0,0,W,H);
+  const PAD=110, colW=(W-PAD*2-80)/2;
   ctx.fillStyle=TEXT;
-  ctx.font=`italic ${posterPortrait?110:90}px 'Georgia', serif`;
-  ctx.fillText('Bucket List',PAD,PAD+80);
-
-  // Date + total
+  ctx.font=`italic ${posterPortrait?100:82}px Georgia,serif`;
+  ctx.fillText('Bucket List',PAD,PAD+72);
   const all=allFlatItems();
   const doneItems=all.filter(i=>state[i.id]==='done');
   const todoItems=all.filter(i=>state[i.id]==='todo');
-  const dateStr=new Date().toLocaleDateString(lang==='fr'?'fr-CA':'en-CA',{year:'numeric',month:'long',day:'numeric'});
   const total=doneItems.length+todoItems.length;
+  const dateStr=new Date().toLocaleDateString(lang==='fr'?'fr-CA':'en-CA',{year:'numeric',month:'long',day:'numeric'});
+  ctx.fillStyle=MUTED;ctx.font=`${posterPortrait?32:26}px 'DM Sans',sans-serif`;
+  ctx.fillText(`${dateStr}   ·   ${total} élément${total>1?'s':''} coché${total>1?'s':''}`,PAD,PAD+120);
+  ctx.strokeStyle=BORDER;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(PAD,PAD+148);ctx.lineTo(W-PAD,PAD+148);ctx.stroke();
+  const COL_Y=PAD+190, FS=posterPortrait?24:20, FScat=posterPortrait?28:24, lineH=FS*1.7, cbSize=FS*0.72;
 
-  ctx.fillStyle=MUTED;
-  ctx.font=`${posterPortrait?36:30}px 'DM Sans', sans-serif`;
-  ctx.fillText(`${dateStr}   ·   ${total} élément${total>1?'s':''} coché${total>1?'s':''}`,PAD,PAD+130);
-
-  // Separator line
-  ctx.strokeStyle=BORDER;
-  ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(PAD,PAD+160);ctx.lineTo(W-PAD,PAD+160);ctx.stroke();
-
-  // Two columns
-  const COL_START_Y=PAD+200;
-  const FS=posterPortrait?26:22; // font size items
-  const FScat=posterPortrait?30:26;
-  const lineH=FS*1.65;
-  const catH=FScat*2.2;
-  const cbSize=FS*0.75;
-
-  function drawCol(items, x, color, title){
-    // Column title
-    ctx.fillStyle=color;
-    ctx.font=`italic ${posterPortrait?52:44}px 'Georgia', serif`;
-    ctx.fillText(title,x,COL_START_Y);
-
-    let y=COL_START_Y+catH;
-
-    // Group by category
+  function drawCol(items,x,color,title){
+    ctx.fillStyle=color;ctx.font=`italic ${posterPortrait?48:40}px Georgia,serif`;ctx.fillText(title,x,COL_Y);
+    let y=COL_Y+FScat*2;
     categories.forEach(cat=>{
       const catItems=items.filter(i=>i.catId===cat.id);
       if(!catItems.length) return;
-
-      // Category label
-      ctx.fillStyle=MUTED;
-      ctx.font=`500 ${FScat*0.72}px 'DM Sans', sans-serif`;
-      const catLabel=cat[lang].toUpperCase();
-      ctx.fillText(catLabel,x,y);
-
-      // Thin line under cat
-      ctx.strokeStyle=BORDER;
-      ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(x,y+8);ctx.lineTo(x+colW,y+8);ctx.stroke();
-      y+=catH*0.85;
-
+      ctx.fillStyle=MUTED;ctx.font=`500 ${FS*0.65}px 'DM Sans',sans-serif`;
+      ctx.fillText((cat[lang]||cat.fr).toUpperCase(),x,y);
+      ctx.strokeStyle=BORDER;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(x,y+6);ctx.lineTo(x+colW,y+6);ctx.stroke();
+      y+=FScat*0.9;
       catItems.forEach(item=>{
-        if(y>H-PAD-lineH) return; // clip if too long
+        if(y>H-PAD) return;
         const label=item.prefix?item.prefix+' '+item.label:item.label;
-
-        // Checkbox
-        const cb=cbSize;
-        const cbY=y-cb*0.78;
-        ctx.strokeStyle=color;
-        ctx.lineWidth=1.5;
-        ctx.strokeRect(x,cbY,cb,cb);
-
-        // Checkmark if done
+        const cb=cbSize, cbY=y-cb*0.8;
+        ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.strokeRect(x,cbY,cb,cb);
         if(color===GREEN){
-          ctx.strokeStyle=GREEN;
-          ctx.lineWidth=2;
-          ctx.beginPath();
-          ctx.moveTo(x+cb*0.18,cbY+cb*0.5);
-          ctx.lineTo(x+cb*0.42,cbY+cb*0.78);
-          ctx.lineTo(x+cb*0.82,cbY+cb*0.22);
-          ctx.stroke();
+          ctx.strokeStyle=GREEN;ctx.lineWidth=2;ctx.beginPath();
+          ctx.moveTo(x+cb*0.18,cbY+cb*0.5);ctx.lineTo(x+cb*0.42,cbY+cb*0.78);ctx.lineTo(x+cb*0.82,cbY+cb*0.22);ctx.stroke();
           ctx.fillStyle=TEXT;
-        } else {
-          ctx.fillStyle=MUTED;
-        }
-
-        // Wrap text
-        ctx.font=`${FS}px 'DM Sans', sans-serif`;
-        const textX=x+cb+14;
-        const maxW=colW-cb-14;
-        const words=label.split(' ');
-        let line='';
-        let firstLine=true;
-        words.forEach((word,wi)=>{
-          const test=line+word+(wi<words.length-1?' ':'');
-          if(ctx.measureText(test).width>maxW&&line!==''){
-            ctx.fillText(line,textX,y);
-            line=word+' ';
-            y+=lineH*0.85;
-            firstLine=false;
-          } else { line=test; }
+        } else {ctx.fillStyle=MUTED;}
+        ctx.font=`${FS}px 'DM Sans',sans-serif`;
+        const textX=x+cb+12, maxW=colW-cb-12;
+        const words=label.split(' ');let line='';
+        words.forEach((w,i)=>{
+          const test=line+w+(i<words.length-1?' ':'');
+          if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,textX,y);line=w+' ';y+=lineH*0.82;}
+          else line=test;
         });
-        ctx.fillText(line,textX,y);
-        y+=lineH;
+        ctx.fillText(line,textX,y);y+=lineH;
       });
-      y+=lineH*0.3; // space between categories
+      y+=lineH*0.25;
     });
   }
-
-  drawCol(doneItems, PAD, GREEN, t('poster_done'));
-  drawCol(todoItems, PAD+colW+60, TERRA, t('poster_todo'));
-
-  // Footer
-  ctx.fillStyle=DIM;
-  ctx.font=`${posterPortrait?28:24}px 'DM Sans', sans-serif`;
-  ctx.fillText('studioexistence.com/bucket-list',PAD,H-PAD+30);
+  drawCol(doneItems,PAD,GREEN,t('poster_done'));
+  drawCol(todoItems,PAD+colW+80,TERRA,t('poster_todo'));
+  ctx.fillStyle=DIM;ctx.font=`${posterPortrait?24:20}px 'DM Sans',sans-serif`;
+  ctx.fillText('studioexistence.com/bucket-list',PAD,H-PAD+24);
 }
 
 function downloadPoster(){
-  const canvas=document.getElementById('poster-canvas');
-  const link=document.createElement('a');
-  link.download='bucket-list.png';
-  link.href=canvas.toDataURL('image/png');
-  link.click();
+  const link=document.createElement('a');link.download='bucket-list.png';
+  link.href=document.getElementById('poster-canvas').toDataURL('image/png');link.click();
+}
+
+// ===================== ADMIN =====================
+let adminCatId = null;
+
+const ADMIN_HASH='0d1afaf745c410a17f3ac348207a096d00b18ebc133dade357efcce99bbba8fa';
+
+async function hashPassword(pwd){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pwd));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function openAdmin(){
+  const pwd=prompt('Mot de passe admin :');
+  if(pwd===null) return;
+  const hash=await hashPassword(pwd);
+  if(hash!==ADMIN_HASH){
+    alert('Mot de passe incorrect.');
+    return;
+  }
+  document.getElementById('admin-panel').classList.add('open');
+  adminCatId=categories[0].id;
+  renderAdminNav();
+  renderAdminContent();
+}
+function closeAdmin(){
+  document.getElementById('admin-panel').classList.remove('open');
+  renderContent();renderNav();updateStats();
+}
+
+function renderAdminNav(){
+  document.getElementById('admin-nav').innerHTML = categories.map(cat=>{
+    const total = cat.subcats.reduce((n,sc)=>n+sc.items.length,0);
+    return `<div class="admin-nav-item ${adminCatId===cat.id?'active':''}" onclick="adminSelectCat('${cat.id}')">
+      <span>${cat.fr}</span><span class="admin-nav-count">${total}</span>
+    </div>`;
+  }).join('')
+  + `<div style="padding:12px;margin-top:8px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;letter-spacing:0.5px">NOUVELLE CATÉGORIE</div>
+      <div style="display:flex;gap:6px">
+        <input type="text" class="admin-add-input" id="new-cat-input" placeholder="Nom de la catégorie" style="font-size:12px;padding:5px 8px">
+        <button class="admin-add-btn" onclick="adminAddCategory()" style="font-size:12px;padding:5px 10px">+</button>
+      </div>
+    </div>`;
+}
+
+function adminSelectCat(catId){
+  adminCatId=catId;
+  renderAdminNav();
+  renderAdminContent();
+}
+
+function renderAdminContent(){
+  const cat=categories.find(c=>c.id===adminCatId);
+  if(!cat) return;
+  const area=document.getElementById('admin-content');
+
+  const subcatsHtml=cat.subcats.map((sc,si)=>{
+    if(sc.items.some(i=>i.freetext)) return ''; // skip freetext subcats
+    const scTitle=sc.fr||'(sans titre)';
+    const itemsHtml=sc.items.map((item,ii)=>`
+      <div class="admin-item-row">
+        <span class="admin-item-text">${item.fr}</span>
+        ${item.en?`<span class="admin-item-freetext">${item.en}</span>`:''}
+        <button class="admin-del-btn" onclick="adminDeleteItem('${cat.id}',${si},${ii})" title="Supprimer">✕</button>
+      </div>`).join('');
+
+    // Subcat title (editable for non-empty)
+    const titleHtml=sc.fr
+      ? `<div class="admin-subcat-title">${scTitle} <span style="font-size:10px;color:var(--text-dim);font-style:italic">(${sc.items.length} éléments)</span></div>`
+      : `<div class="admin-subcat-title">(sans sous-catégorie)</div>`;
+
+    return `<div class="admin-subcat">
+      ${titleHtml}
+      ${itemsHtml}
+      <div class="admin-add-row">
+        <input type="text" class="admin-add-input" id="add-fr-${si}" placeholder="Libellé français">
+        <input type="text" class="admin-add-input" id="add-en-${si}" placeholder="English label">
+        <button class="admin-add-btn" onclick="adminAddItem('${cat.id}',${si})">+ Ajouter</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Add new subcat
+  const newSubcatHtml=`<div class="admin-subcat" style="margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)">
+    <div class="admin-subcat-title" style="color:var(--done)">+ Nouvelle sous-catégorie</div>
+    <div class="admin-add-row">
+      <input type="text" class="admin-add-input" id="new-subcat-name" placeholder="Nom de la sous-catégorie (optionnel)">
+      <input type="text" class="admin-add-input" id="new-subcat-fr" placeholder="Premier élément (français)">
+      <input type="text" class="admin-add-input" id="new-subcat-en" placeholder="First item (English)">
+      <button class="admin-add-btn" onclick="adminAddSubcat('${cat.id}')">+ Créer</button>
+    </div>
+  </div>`;
+
+  // Delete category button
+  const delCatHtml=`<div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px">
+    <button onclick="adminDeleteCategory('${cat.id}')" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all 0.2s" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">
+      Supprimer la catégorie "${cat.fr}"
+    </button>
+    <span style="font-size:11px;color:var(--text-dim)">Cette action est irréversible</span>
+  </div>`;
+
+  area.innerHTML=`
+    <div class="admin-cat-header">
+      <div class="admin-cat-title">${cat.fr}</div>
+    </div>
+    ${subcatsHtml}
+    ${newSubcatHtml}
+    ${delCatHtml}`;
+}
+
+function adminAddItem(catId, scIdx){
+  const cat=categories.find(c=>c.id===catId);
+  if(!cat) return;
+  const frInput=document.getElementById(`add-fr-${scIdx}`);
+  const enInput=document.getElementById(`add-en-${scIdx}`);
+  const fr=frInput.value.trim(), en=enInput.value.trim();
+  if(!fr) return;
+  cat.subcats[scIdx].items.push({id:genId(),fr,en:en||fr});
+  frInput.value='';enInput.value='';
+  saveCategories();
+  renderAdminNav();
+  renderAdminContent();
+}
+
+function adminDeleteItem(catId,scIdx,itemIdx){
+  const cat=categories.find(c=>c.id===catId);
+  if(!cat) return;
+  if(!confirm(`Supprimer "${cat.subcats[scIdx].items[itemIdx].fr}" ?`)) return;
+  cat.subcats[scIdx].items.splice(itemIdx,1);
+  saveCategories();
+  renderAdminNav();
+  renderAdminContent();
+}
+
+function adminAddSubcat(catId){
+  const cat=categories.find(c=>c.id===catId);
+  if(!cat) return;
+  const name=document.getElementById('new-subcat-name').value.trim();
+  const fr=document.getElementById('new-subcat-fr').value.trim();
+  const en=document.getElementById('new-subcat-en').value.trim();
+  const items=fr?[{id:genId(),fr,en:en||fr}]:[];
+  cat.subcats.push({fr:name,en:name,items});
+  saveCategories();
+  renderAdminNav();
+  renderAdminContent();
+}
+
+function adminAddCategory(){
+  const input=document.getElementById('new-cat-input');
+  const name=input.value.trim();
+  if(!name) return;
+  const id='cat_'+Date.now().toString(36);
+  categories.push({id,fr:name,en:name,subcats:[{fr:'',en:'',items:[]}]});
+  input.value='';
+  adminCatId=id;
+  saveCategories();
+  renderAdminNav();
+  renderAdminContent();
+}
+
+function adminDeleteCategory(catId){
+  if(!confirm(`Supprimer toute la catégorie "${categories.find(c=>c.id===catId)?.fr}" ?`)) return;
+  categories=categories.filter(c=>c.id!==catId);
+  adminCatId=categories[0]?.id||null;
+  saveCategories();
+  renderAdminNav();
+  renderAdminContent();
 }
 
 // ===================== INIT =====================
+lang=localStorage.getItem('bl-lang')||'fr';
 loadFromUrl();
 loadState();
 renderContent();
 renderNav();
 updateStats();
 setLang(lang);
-window.addEventListener('resize',layout);
+// Position header below hero, then layout
+function positionAll(){
+  const hero=document.getElementById('hero-banner');
+  const header=document.getElementById('site-header');
+  if(hero&&header) header.style.top=hero.offsetHeight+'px';
+  layout();
+}
+positionAll();
+window.addEventListener('resize',positionAll);
+
+// Secret admin URL trigger
+if(window.location.search.includes('admin')){
+  // Remove ?admin from URL bar without reload
+  history.replaceState(null,'',window.location.pathname);
+  openAdmin();
+}
 </script>
 </body>
 </html>
