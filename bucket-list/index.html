@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bucket List</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F0E8;
+    --bg2: #EDE8DC;
+    --surface: #FDFAF4;
+    --surface2: #F0EBE0;
+    --border: #D8D0C0;
+    --border2: #C8BEA8;
+    --text: #1C1810;
+    --text-muted: #7A7060;
+    --text-dim: #B8AE9A;
+    --done: #2D5016;
+    --todo: #C4622D;
+    --done-dim: rgba(45,80,22,0.10);
+    --todo-dim: rgba(196,98,45,0.10);
+    --done-mid: rgba(45,80,22,0.25);
+    --todo-mid: rgba(196,98,45,0.25);
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;min-height:100vh;overflow:hidden;}
+
+  /* HEADER */
+  #site-header{padding:36px 40px 24px;border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;background:rgba(245,240,232,0.97);backdrop-filter:blur(12px);z-index:100;}
+  .header-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px;}
+  h1{font-family:var(--font-display);font-size:36px;font-weight:400;letter-spacing:-0.5px;line-height:1;color:var(--text);}
+  h1 em{font-style:italic;color:var(--done);}
+  .lang-toggle{display:flex;gap:6px;}
+  .lang-btn{background:none;border:1px solid var(--border2);color:var(--text-muted);padding:3px 11px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:12px;letter-spacing:0.5px;transition:all 0.2s;}
+  .lang-btn.active{border-color:var(--done);color:var(--done);background:var(--done-dim);}
+
+  /* STATS */
+  .stats-bar{display:flex;gap:22px;align-items:center;flex-wrap:wrap;}
+  .stat{display:flex;flex-direction:column;gap:1px;}
+  .stat-value{font-family:var(--font-display);font-size:24px;line-height:1;}
+  .stat-value.done{color:var(--done);}
+  .stat-value.todo{color:var(--todo);}
+  .stat-label{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;}
+  .stat-divider{width:1px;height:28px;background:var(--border);}
+  .progress-wrap{flex:1;min-width:160px;}
+  .progress-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden;position:relative;}
+  .progress-fill-done{position:absolute;left:0;top:0;height:100%;background:var(--done);border-radius:2px;transition:width 0.4s;}
+  .progress-fill-todo{position:absolute;top:0;height:100%;background:var(--todo);border-radius:2px;transition:all 0.4s;}
+  .progress-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;}
+
+  /* CONTROLS */
+  #site-controls{padding:12px 40px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(245,240,232,0.97);backdrop-filter:blur(12px);position:fixed;left:0;right:0;z-index:99;}
+  .search-wrap{position:relative;flex:1;min-width:160px;max-width:340px;}
+  .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;pointer-events:none;}
+  input[type="text"]{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px 7px 30px;color:var(--text);font-family:var(--font-body);font-size:13px;outline:none;transition:border-color 0.2s;}
+  input[type="text"]:focus{border-color:var(--done);}
+  input[type="text"]::placeholder{color:var(--text-dim);}
+  .filter-btns{display:flex;gap:5px;flex-wrap:wrap;}
+  .filter-btn{background:none;border:1px solid var(--border);color:var(--text-muted);padding:5px 11px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all 0.2s;white-space:nowrap;}
+  .filter-btn:hover{border-color:var(--border2);color:var(--text);}
+  .filter-btn.active-done{border-color:var(--done);color:var(--done);background:var(--done-dim);}
+  .filter-btn.active-todo{border-color:var(--todo);color:var(--todo);background:var(--todo-dim);}
+  .filter-btn.active-all{border-color:var(--text);color:var(--text);}
+  .results-btn{margin-left:auto;background:var(--done);color:#fff;border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;transition:opacity 0.2s;white-space:nowrap;}
+  .results-btn:hover{opacity:0.85;}
+
+  /* MAIN */
+  #main-layout{display:flex;position:fixed;left:0;right:0;bottom:0;}
+  .cat-nav{width:196px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:18px 0;background:var(--bg2);}
+  .cat-nav-item{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--text-muted);border-left:2px solid transparent;}
+  .cat-nav-item:hover{color:var(--text);background:var(--surface2);}
+  .cat-nav-item.active{color:var(--done);border-left-color:var(--done);background:var(--done-dim);}
+  .cat-count{font-size:11px;color:var(--text-dim);}
+  .cat-nav-item.active .cat-count{color:var(--done);opacity:0.7;}
+  .content{flex:1;overflow-y:auto;padding:32px 40px;}
+  .category-section{margin-bottom:48px;}
+  .cat-header{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .cat-title{font-family:var(--font-display);font-size:21px;font-weight:400;letter-spacing:-0.2px;color:var(--text);}
+  .subcat{margin-bottom:22px;}
+  .subcat-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+  .items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:5px;}
+  .item{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:8px;transition:all 0.15s;box-shadow:var(--shadow);}
+  .item:hover{border-color:var(--border2);background:var(--surface2);}
+  .item.is-done{border-color:var(--done-mid);background:var(--done-dim);}
+  .item.is-todo{border-color:var(--todo-mid);background:var(--todo-dim);}
+  .item.hidden{display:none;}
+  .item-label{flex:1;font-size:13px;line-height:1.4;color:var(--text);}
+  .item.is-done .item-label{color:var(--done);}
+  .item.is-todo .item-label{color:var(--todo);}
+  .item-actions{display:flex;gap:4px;flex-shrink:0;}
+  .check-btn{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.15s;color:var(--text-muted);}
+  .check-btn:hover{border-color:var(--border2);color:var(--text);}
+  .check-btn.done-btn:hover,.check-btn.done-btn.active{background:var(--done);border-color:var(--done);color:#fff;}
+  .check-btn.todo-btn:hover,.check-btn.todo-btn.active{background:var(--todo);border-color:var(--todo);color:#fff;}
+
+  /* FREETEXT */
+  .freetext-row{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 11px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;box-shadow:var(--shadow);}
+  .freetext-prefix{font-size:13px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;}
+  .freetext-input{flex:1;min-width:80px;background:none;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:1px 4px;font-size:13px;color:var(--text);outline:none;font-family:var(--font-body);}
+  .freetext-input:focus{border-bottom-color:var(--done);}
+  .freetext-add{background:none;border:1px solid var(--border);color:var(--text-muted);padding:2px 9px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-body);transition:all 0.15s;white-space:nowrap;}
+  .freetext-add:hover{border-color:var(--done);color:var(--done);}
+  .dynamic-items{display:flex;flex-direction:column;gap:5px;margin-bottom:5px;}
+
+  /* SAVE NOTICE */
+  #save-notice{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:7px;font-size:11px;color:var(--text-dim);letter-spacing:0.5px;border-top:1px solid var(--border);background:var(--bg2);z-index:50;}
+
+  /* ===================== RESULTS PANEL ===================== */
+  #results-panel{display:none;position:fixed;inset:0;background:rgba(245,240,232,0.99);z-index:200;overflow-y:auto;padding:48px 60px;}
+  #results-panel.open{display:block;}
+  .results-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;}
+  .results-title{font-family:var(--font-display);font-size:40px;font-weight:400;color:var(--text);}
+  .results-title em{font-style:italic;color:var(--done);}
+  .results-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .close-btn{background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all 0.2s;}
+  .close-btn:hover{border-color:var(--text);color:var(--text);}
+  .save-url-btn{background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all 0.2s;}
+  .save-url-btn:hover{border-color:var(--done);color:var(--done);}
+  .poster-btn-main{background:var(--done);color:#fff;border:none;padding:7px 18px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;transition:opacity 0.2s;}
+  .poster-btn-main:hover{opacity:0.85;}
+
+  /* RESULTS STATS */
+  .results-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:32px;}
+  .r-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;box-shadow:var(--shadow);}
+  .r-stat.done-s{border-color:var(--done-mid);background:var(--done-dim);}
+  .r-stat.todo-s{border-color:var(--todo-mid);background:var(--todo-dim);}
+  .r-stat-n{font-family:var(--font-display);font-size:40px;line-height:1;margin-bottom:3px;}
+  .done-s .r-stat-n{color:var(--done);}
+  .todo-s .r-stat-n{color:var(--todo);}
+  .r-stat-d{font-size:11px;color:var(--text-muted);}
+
+  /* RESULTS LISTS */
+  .results-lists{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;}
+  .res-list-col{}
+  .res-col-title{font-family:var(--font-display);font-size:20px;font-weight:400;margin-bottom:14px;}
+  .res-col-title.done-t{color:var(--done);}
+  .res-col-title.todo-t{color:var(--todo);}
+
+  /* CATEGORY TOGGLE */
+  .res-cat-block{margin-bottom:10px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);}
+  .res-cat-toggle{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;cursor:pointer;transition:background 0.15s;user-select:none;}
+  .res-cat-toggle:hover{background:var(--surface2);}
+  .res-cat-name{font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:500;color:var(--text-muted);}
+  .res-cat-count{font-size:11px;color:var(--text-dim);}
+  .res-cat-arrow{font-size:10px;color:var(--text-dim);transition:transform 0.2s;}
+  .res-cat-block.open .res-cat-arrow{transform:rotate(180deg);}
+  .res-cat-items{display:none;padding:4px 14px 10px;}
+  .res-cat-block.open .res-cat-items{display:block;}
+  .res-item{font-size:12.5px;color:var(--text-muted);padding:3px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+  .res-item:last-child{border-bottom:none;}
+  .res-item::before{content:'';width:3px;height:3px;border-radius:50%;flex-shrink:0;margin-top:1px;}
+  .done-col .res-item::before{background:var(--done);}
+  .todo-col .res-item::before{background:var(--todo);}
+
+  /* ===================== POSTER ===================== */
+  #poster-panel{display:none;position:fixed;inset:0;background:rgba(28,24,16,0.92);z-index:300;overflow-y:auto;padding:40px;align-items:flex-start;justify-content:center;}
+  #poster-panel.open{display:flex;}
+  .poster-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;}
+  .poster-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  .p-btn{background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.8);padding:7px 16px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:13px;transition:all 0.2s;}
+  .p-btn:hover{border-color:#fff;color:#fff;}
+  .p-btn.primary{background:var(--done);border-color:var(--done);color:#fff;}
+  .p-btn.primary:hover{opacity:0.85;}
+  #poster-canvas{max-width:100%;border-radius:4px;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-top">
+    <h1>Bucket <em>List</em></h1>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-value done" id="stat-done">0</span>
+      <span class="stat-label">Accomplis</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value todo" id="stat-todo">0</span>
+      <span class="stat-label">Sur ma liste</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill-done" id="progress-done" style="width:0%"></div>
+        <div class="progress-fill-todo" id="progress-todo" style="width:0%;left:0%"></div>
+      </div>
+      <div class="progress-labels">
+        <span id="pct-done" style="color:var(--done)">—</span>
+        <span id="pct-todo" style="color:var(--todo)">—</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="site-controls">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search-input" placeholder="Rechercher..." oninput="renderContent()">
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn active-all" onclick="setFilter('all',this)">Tous</button>
+    <button class="filter-btn" onclick="setFilter('done',this)">✓ Accomplis</button>
+    <button class="filter-btn" onclick="setFilter('todo',this)">☆ À faire</button>
+    <button class="filter-btn" onclick="setFilter('none',this)">Non cochés</button>
+  </div>
+  <button class="results-btn" onclick="openResults()">Voir mes résultats →</button>
+</div>
+
+<div id="main-layout">
+  <nav class="cat-nav" id="cat-nav"></nav>
+  <div class="content" id="content"></div>
+</div>
+
+<div id="save-notice">💾 Votre liste est sauvegardée dans ce navigateur.</div>
+
+<!-- RESULTS PANEL -->
+<div id="results-panel">
+  <div class="results-header">
+    <div class="results-title">Ma <em>Bucket List</em></div>
+    <div class="results-actions">
+      <button class="save-url-btn" onclick="saveToUrl()">🔗 Sauvegarder le lien</button>
+      <button class="poster-btn-main" onclick="openPoster()">🖼 Générer le poster</button>
+      <button class="close-btn" onclick="closeResults()">Fermer ✕</button>
+    </div>
+  </div>
+  <div class="results-stats" id="results-stats"></div>
+  <div class="results-lists" id="results-lists"></div>
+</div>
+
+<!-- POSTER PANEL -->
+<div id="poster-panel">
+  <div class="poster-wrap">
+    <div class="poster-controls">
+      <button class="p-btn" onclick="closePoster()">← Retour</button>
+      <button class="p-btn" onclick="toggleOrientation()">⟳ Portrait / Paysage</button>
+      <button class="p-btn primary" onclick="downloadPoster()">⬇ Télécharger PNG</button>
+    </div>
+    <canvas id="poster-canvas"></canvas>
+  </div>
+</div>
+
+<datalist id="dl-pays"></datalist>
+
+<script>
+// ===================== i18n =====================
+const i18n={
+  fr:{add:'Ajouter',done_label:'Fait',todo_label:'À faire',accomplished:'Accomplis',on_list:'Sur ma liste',
+    of_checked:'des éléments cochés',done_items:'accomplis',todo_items:'sur ma liste',
+    search_p:'Rechercher...',country_p:'Nom du pays...',author_p:"Nom de l'auteur...",
+    what_done:'Ce que j\'ai accompli',what_todo:'Ce que je veux encore faire',
+    save_copied:'Lien copié !',no_items:'Aucun élément',
+    poster_done:'Ce que j\'ai accompli',poster_todo:'Ce que je veux encore faire',
+  },
+  en:{add:'Add',done_label:'Done',todo_label:'To do',accomplished:'Accomplished',on_list:'On my list',
+    of_checked:'of checked items',done_items:'accomplished',todo_items:'on my list',
+    search_p:'Search...',country_p:'Country name...',author_p:'Author name...',
+    what_done:'What I\'ve accomplished',what_todo:'What I still want to do',
+    save_copied:'Link copied!',no_items:'No items',
+    poster_done:'What I\'ve accomplished',poster_todo:'What I still want to do',
+  }
+};
+let lang=localStorage.getItem('bl-lang')||'fr';
+const t=k=>i18n[lang][k]||k;
+
+function setLang(l){
+  lang=l;localStorage.setItem('bl-lang',l);
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()));
+  document.getElementById('search-input').placeholder=t('search_p');
+  renderContent();updateStats();
+}
+
+// ===================== COUNTRIES =====================
+const countries=["Afghanistan","Afrique du Sud","Albanie","Algérie","Allemagne","Andorre","Angola","Antigua-et-Barbuda","Arabie saoudite","Argentine","Arménie","Australie","Autriche","Azerbaïdjan","Bahamas","Bahreïn","Bangladesh","Barbade","Bélarus","Belgique","Belize","Bénin","Bhoutan","Bolivie","Bosnie-Herzégovine","Botswana","Brésil","Brunéi","Bulgarie","Burkina Faso","Burundi","Cabo Verde","Cambodge","Cameroun","Canada","Centrafrique","Chili","Chine","Chypre","Colombie","Comores","Congo","Congo (RDC)","Corée du Nord","Corée du Sud","Costa Rica","Côte d'Ivoire","Croatie","Cuba","Danemark","Djibouti","Dominique","Égypte","Émirats arabes unis","Équateur","Érythrée","Espagne","Eswatini","Estonie","États-Unis","Éthiopie","Fidji","Finlande","France","Gabon","Gambie","Géorgie","Ghana","Grèce","Grenade","Guatemala","Guinée","Guinée-Bissau","Guinée équatoriale","Guyana","Haïti","Honduras","Hongrie","Inde","Indonésie","Irak","Iran","Irlande","Islande","Israël","Italie","Jamaïque","Japon","Jordanie","Kazakhstan","Kenya","Kirghizistan","Kiribati","Kosovo","Koweït","Laos","Lesotho","Lettonie","Liban","Libéria","Libye","Liechtenstein","Lituanie","Luxembourg","Madagascar","Malaisie","Malawi","Maldives","Mali","Malte","Maroc","Marshall","Maurice","Mauritanie","Mexique","Micronésie","Moldavie","Monaco","Mongolie","Monténégro","Mozambique","Myanmar","Namibie","Nauru","Népal","Nicaragua","Niger","Nigeria","Norvège","Nouvelle-Zélande","Oman","Ouganda","Ouzbékistan","Pakistan","Palaos","Palestine","Panama","Papouasie-Nouvelle-Guinée","Paraguay","Pays-Bas","Pérou","Philippines","Pologne","Portugal","Qatar","Roumanie","Royaume-Uni","Russie","Rwanda","Saint-Christophe-et-Niévès","Saint-Marin","Saint-Vincent-et-les-Grenadines","Sainte-Lucie","Salomon","Salvador","Samoa","São Tomé-et-Príncipe","Sénégal","Serbie","Seychelles","Sierra Leone","Singapour","Slovaquie","Slovénie","Somalie","Soudan","Soudan du Sud","Sri Lanka","Suède","Suisse","Suriname","Syrie","Tadjikistan","Tanzanie","Tchad","Thaïlande","Timor oriental","Togo","Tonga","Trinité-et-Tobago","Tunisie","Turkménistan","Turquie","Tuvalu","Ukraine","Uruguay","Vanuatu","Vatican","Venezuela","Viêt Nam","Yémen","Zambie","Zimbabwe"];
+const dl=document.getElementById('dl-pays');
+countries.forEach(c=>{const o=document.createElement('option');o.value=c;dl.appendChild(o);});
+
+// ===================== DATA =====================
+const categories=[
+  {id:'nature',fr:'Nature',en:'Nature',subcats:[
+    {fr:'Ciel & astres',en:'Sky & Stars',items:[
+      {id:'n1',fr:"Voir la Voie lactée à l'œil nu",en:'See the Milky Way with the naked eye'},
+      {id:'n2',fr:'Voir une aurore boréale',en:'See the northern lights'},
+      {id:'n3',fr:'Assister à une éclipse lunaire',en:'Witness a lunar eclipse'},
+      {id:'n4',fr:'Assister à une éclipse solaire',en:'Witness a solar eclipse'},
+      {id:'n5',fr:'Regarder la Lune au télescope',en:'Look at the Moon through a telescope'},
+      {id:'n6',fr:'Voir Jupiter et ses lunes au télescope',en:'See Jupiter and its moons through a telescope'},
+      {id:'n7',fr:"Voir Saturne et ses anneaux au télescope",en:"See Saturn's rings through a telescope"},
+      {id:'n8',fr:'Voir un lever de soleil',en:'Watch a sunrise'},
+      {id:'n9',fr:'Voir un lever de Lune',en:'Watch a moonrise'},
+      {id:'n10',fr:'Admirer un coucher de soleil',en:'Watch a sunset'},
+    ]},
+    {fr:'Phénomènes météo',en:'Weather',items:[
+      {id:'n11',fr:'Voir une tornade',en:'See a tornado'},
+      {id:'n12',fr:'Vivre un ouragan',en:'Live through a hurricane'},
+      {id:'n13',fr:'Sortir volontairement sous une pluie battante',en:'Walk voluntarily in a downpour'},
+      {id:'n14',fr:"Admirer des éclairs pendant l'orage",en:'Watch lightning during a storm'},
+    ]},
+    {fr:'Eau',en:'Water',items:[
+      {id:'n15',fr:"Voir l'océan",en:'See the ocean'},
+      {id:'n16',fr:'Prendre un bain de minuit',en:'Take a midnight swim'},
+      {id:'n17',fr:'Marcher sur un glacier',en:'Walk on a glacier'},
+      {id:'n18',fr:'Voir une baleine',en:'See a whale'},
+      {id:'n19',fr:'Voir des dauphins nager',en:'Watch dolphins swim'},
+    ]},
+    {fr:'Terre',en:'Earth',items:[
+      {id:'n20',fr:'Dormir à la belle étoile',en:'Sleep under the stars'},
+      {id:'n21',fr:'Traverser un désert',en:'Cross a desert'},
+      {id:'n22',fr:'Voir un volcan',en:'See a volcano'},
+      {id:'n22b',fr:'Voir une éruption volcanique',en:'See a volcanic eruption'},
+      {id:'n23',fr:'Voir un baobab',en:'See a baobab tree'},
+      {id:'n24',fr:'Faire un safari',en:'Go on a safari'},
+      {id:'n25',fr:'Cueillir et cuisiner des champignons sauvages',en:'Forage and cook wild mushrooms'},
+      {id:'n26',fr:'Cueillir et manger des fruits sauvages',en:'Forage and eat wild fruit'},
+      {id:'n27',fr:'Adopter un animal',en:'Adopt an animal'},
+      {id:'n28',fr:'Sauver un animal sauvage et le relâcher',en:'Rescue a wild animal and release it'},
+    ]},
+    {fr:'Animaux marquants',en:'Remarkable Animals',items:[
+      {id:'na1',fr:'Voir un éléphant',en:'See an elephant'},{id:'na2',fr:'Voir un lion',en:'See a lion'},
+      {id:'na3',fr:'Voir un gorille',en:'See a gorilla'},{id:'na4',fr:'Voir un rhinocéros',en:'See a rhinoceros'},
+      {id:'na5',fr:'Voir un hippopotame',en:'See a hippopotamus'},{id:'na6',fr:'Voir une girafe',en:'See a giraffe'},
+      {id:'na7',fr:'Voir un panda',en:'See a panda'},{id:'na8',fr:"Voir un ours polaire",en:'See a polar bear'},
+      {id:'na9',fr:'Voir un jaguar',en:'See a jaguar'},{id:'na10',fr:'Voir un requin blanc',en:'See a great white shark'},
+      {id:'na11',fr:'Voir une raie manta',en:'See a manta ray'},{id:'na12',fr:'Voir une pieuvre géante',en:'See a giant octopus'},
+      {id:'na13',fr:'Voir un aigle royal',en:'See a golden eagle'},{id:'na14',fr:'Voir un anaconda',en:'See an anaconda'},
+      {id:'na15',fr:'Voir un dragon de Komodo',en:'See a Komodo dragon'},{id:'na16',fr:'Voir une baleine à bosse',en:'See a humpback whale'},
+      {id:'na17',fr:'Voir une tortue géante',en:'See a giant tortoise'},{id:'na18',fr:'Voir un tigre du Bengale',en:'See a Bengal tiger'},
+    ]},
+  ]},
+  {id:'voyages',fr:'Voyages & Géographie',en:'Travel & Geography',subcats:[
+    {fr:'Le monde',en:'The World',items:[
+      {id:'v0',fr:'Faire le tour du monde',en:'Travel around the world'},
+      {id:'v_pays',fr:'Visiter ______',en:'Visit ______',freetext:true,prefix_fr:'Visiter',prefix_en:'Visit',datalist:'dl-pays'},
+    ]},
+    {fr:'Europe',en:'Europe',items:[
+      {id:'v1',fr:'Voir la Tour Eiffel',en:'See the Eiffel Tower'},{id:'v2',fr:'Visiter le Louvre',en:'Visit the Louvre'},
+      {id:'v3',fr:'Voir le Colisée de Rome',en:'See the Colosseum'},{id:'v4',fr:'Voir la Chapelle Sixtine',en:'See the Sistine Chapel'},
+      {id:'v5',fr:"Voir la basilique Saint-Pierre",en:"See St. Peter's Basilica"},{id:'v6',fr:"Voir l'Acropole d'Athènes",en:'See the Acropolis of Athens'},
+      {id:'v7',fr:'Voir Stonehenge',en:'See Stonehenge'},{id:'v8',fr:'Voir les fjords norvégiens',en:'See the Norwegian fjords'},
+      {id:'v8b',fr:'Voir le Mont-Blanc',en:'See Mont Blanc'},{id:'v9',fr:'Voir la Sagrada Família',en:'See the Sagrada Família'},
+      {id:'v10',fr:"Voir l'Alhambra de Grenade",en:'See the Alhambra'},{id:'v11',fr:'Voir la Piazza San Marco',en:'See Piazza San Marco'},
+      {id:'v12',fr:'Voir le château de Neuschwanstein',en:'See Neuschwanstein Castle'},{id:'v13',fr:'Voir la Porte de Brandebourg',en:'See the Brandenburg Gate'},
+      {id:'v14',fr:'Voir le château de Versailles',en:'See the Palace of Versailles'},{id:'v15',fr:'Voir Notre-Dame de Paris',en:'See Notre-Dame de Paris'},
+      {id:'v16',fr:'Voir la Tour de Pise',en:'See the Leaning Tower of Pisa'},{id:'v17',fr:'Voir Big Ben',en:'See Big Ben'},
+      {id:'v17b',fr:'Voir la forêt de Brocéliande',en:'See the Forest of Brocéliande'},{id:'v17c',fr:'Voir la forêt Noire',en:'See the Black Forest'},
+      {id:'v17d',fr:'Voir la forêt de Białowieża',en:'See Białowieża Forest'},
+    ]},
+    {fr:'Amérique du Nord',en:'North America',items:[
+      {id:'v18',fr:'Voir la Statue de la Liberté',en:'See the Statue of Liberty'},{id:'v19',fr:'Voir le Capitole de Washington',en:'See the US Capitol'},
+      {id:'v20',fr:'Voir Times Square',en:'See Times Square'},{id:'v21',fr:'Voir le Golden Gate Bridge',en:'See the Golden Gate Bridge'},
+      {id:'v22',fr:'Voir Alcatraz',en:'See Alcatraz'},{id:'v23',fr:'Voir le Grand Canyon',en:'See the Grand Canyon'},
+      {id:'v24',fr:'Voir Monument Valley',en:'See Monument Valley'},{id:'v25',fr:'Voir Yellowstone',en:'See Yellowstone'},
+      {id:'v26',fr:'Voir les chutes du Niagara',en:'See Niagara Falls'},{id:'v27',fr:'Voir Teotihuacan',en:'See Teotihuacan'},
+      {id:'v28',fr:'Voir Tikal',en:'See Tikal'},{id:'v29',fr:'Voir le Blue Hole du Belize',en:'See the Belize Blue Hole'},
+    ]},
+    {fr:'Amérique du Sud',en:'South America',items:[
+      {id:'v30',fr:'Voir le Machu Picchu',en:'See Machu Picchu'},{id:'v31',fr:'Voir le Christ Rédempteur (Rio)',en:'See Christ the Redeemer (Rio)'},
+      {id:'v32',fr:"Voir les chutes Iguazú",en:'See Iguazú Falls'},{id:'v33',fr:'Voir le lac Titicaca',en:'See Lake Titicaca'},
+      {id:'v34',fr:'Voir les îles Galápagos',en:'See the Galápagos Islands'},{id:'v35',fr:"Voir le désert d'Atacama",en:'See the Atacama Desert'},
+      {id:'v36',fr:'Voir la Patagonie',en:'See Patagonia'},{id:'v37',fr:"Voir les salines d'Uyuni",en:'See the Uyuni Salt Flats'},
+      {id:'v38',fr:"Voir l'Amazonie",en:'See the Amazon'},{id:'v39',fr:"Voir les moaï de l'île de Pâques",en:'See the Easter Island moai'},
+      {id:'v39b',fr:"Voir l'Himalaya / l'Everest",en:'See the Himalayas / Everest'},{id:'v39c',fr:'Voir la cordillère des Andes',en:'See the Andes'},
+      {id:'v39d',fr:'Voir le Salto Ángel',en:'See Angel Falls'},
+    ]},
+    {fr:'Afrique',en:'Africa',items:[
+      {id:'v40',fr:'Voir les pyramides de Gizeh',en:'See the Pyramids of Giza'},{id:'v41',fr:'Voir le Sphinx',en:'See the Sphinx'},
+      {id:'v42',fr:'Voir le Kilimandjaro',en:'See Mount Kilimanjaro'},{id:'v43',fr:'Voir les chutes Victoria',en:'See Victoria Falls'},
+      {id:'v44',fr:'Voir le Sahara',en:'See the Sahara Desert'},{id:'v45',fr:'Voir le Serengeti',en:'See the Serengeti'},
+      {id:'v46',fr:'Voir le canyon du Fish River',en:'See Fish River Canyon'},{id:'v47',fr:'Voir le désert du Namib / Sossusvlei',en:'See the Namib Desert / Sossusvlei'},
+    ]},
+    {fr:'Asie',en:'Asia',items:[
+      {id:'v48',fr:'Voir la Grande Muraille de Chine',en:'See the Great Wall of China'},{id:'v49',fr:'Voir la Cité Interdite (Pékin)',en:'See the Forbidden City'},
+      {id:'v50',fr:'Voir le Mont Fuji',en:'See Mount Fuji'},{id:'v51',fr:'Voir Angkor Vat',en:'See Angkor Wat'},
+      {id:'v52',fr:'Voir le Taj Mahal',en:'See the Taj Mahal'},{id:'v53',fr:'Voir Petra (Jordanie)',en:'See Petra (Jordan)'},
+      {id:'v54',fr:'Voir le temple Kinkaku-ji (Kyoto)',en:'See Kinkaku-ji Temple'},{id:'v55',fr:'Voir Borobudur (Indonésie)',en:'See Borobudur'},
+      {id:'v56',fr:'Voir le Mont du Temple (Jérusalem)',en:'See the Temple Mount'},{id:'v57',fr:'Voir le désert de Gobi',en:'See the Gobi Desert'},
+      {id:'v58',fr:"Voir l'armée de terre cuite",en:'See the Terracotta Army'},
+    ]},
+    {fr:'Océanie',en:'Oceania',items:[
+      {id:'v59',fr:"Voir l'Opéra de Sydney",en:'See the Sydney Opera House'},{id:'v60',fr:'Voir Uluru (Ayers Rock)',en:'See Uluru (Ayers Rock)'},
+      {id:'v61',fr:'Voir la Grande Barrière de Corail',en:'See the Great Barrier Reef'},{id:'v61b',fr:'Voir la forêt de Daintree',en:'See the Daintree Rainforest'},
+    ]},
+    {fr:'Pôles',en:'Poles',items:[
+      {id:'v62',fr:'Mettre le pied en Antarctique',en:'Set foot in Antarctica'},{id:'v63',fr:'Mettre le pied en Arctique',en:'Set foot in the Arctic'},
+    ]},
+  ]},
+  {id:'corps',fr:'Corps & Limites physiques',en:'Body & Physical Limits',subcats:[
+    {fr:'',en:'',items:[
+      {id:'c1',fr:'Courir un marathon',en:'Run a marathon'},{id:'c2',fr:'Compléter un Ironman',en:'Complete an Ironman'},
+      {id:'c3',fr:"Gravir le sommet d'une montagne",en:'Reach a mountain summit'},{id:'c4',fr:"Faire l'ascension du Kilimandjaro",en:'Climb Kilimanjaro'},
+      {id:'c5',fr:"Faire l'ascension du Mont-Blanc",en:'Climb Mont Blanc'},{id:'c6',fr:'Obtenir une ceinture noire dans un art martial',en:'Earn a black belt in martial arts'},
+      {id:'c7',fr:'Apprendre à marcher sur les mains',en:'Learn to walk on your hands'},{id:'c8',fr:'Apprendre à jongler',en:'Learn to juggle'},
+      {id:'c9',fr:'Apprendre le splits',en:'Learn the splits'},{id:'c10',fr:'Escalader une voie en falaise naturelle',en:'Climb a natural rock face'},
+      {id:'c11',fr:'Soulever deux fois son poids corporel',en:'Lift twice your body weight'},{id:'c12',fr:'Traverser un pays à vélo',en:'Cycle across a country'},
+      {id:'c13',fr:'Faire le Chemin de Saint-Jacques',en:'Walk the Camino de Santiago'},{id:'c15',fr:'Vivre en autonomie dans la nature',en:'Live off the grid in nature'},
+      {id:'c16',fr:'Descendre une piste noire en ski',en:'Ski a black diamond run'},{id:'c17',fr:'Apprendre à marcher sur un fil',en:'Learn to walk a tightrope'},
+    ]},
+  ]},
+  {id:'sensations',fr:'Sensations fortes',en:'Thrills',subcats:[
+    {fr:'',en:'',items:[
+      {id:'s1',fr:'Sauter en parachute',en:'Skydive'},{id:'s2',fr:"Sauter à l'élastique",en:'Bungee jump'},
+      {id:'s3',fr:'Faire du wingsuit',en:'Fly in a wingsuit'},{id:'s4',fr:'Faire du basejump',en:'BASE jump'},
+      {id:'s5',fr:'Piloter un avion',en:'Pilot a plane'},{id:'s6',fr:'Piloter un hélicoptère',en:'Pilot a helicopter'},
+      {id:'s7',fr:'Piloter une voiture de course sur circuit',en:'Drive a race car on a track'},{id:'s8',fr:'Faire de la moto sur circuit',en:'Ride a motorcycle on a track'},
+      {id:'s9',fr:'Faire du surf',en:'Surf'},{id:'s10',fr:'Faire du kitesurf',en:'Kitesurf'},
+      {id:'s11',fr:'Faire de la via ferrata',en:'Do a via ferrata'},{id:'s12',fr:'Faire du canyoning',en:'Go canyoning'},
+      {id:'s13',fr:'Faire du rafting en eaux vives',en:'Whitewater raft'},{id:'s14',fr:'Plonger avec des requins',en:'Dive with sharks'},
+      {id:'s15',fr:'Faire de la plongée sous-glace',en:'Ice dive'},{id:'s16',fr:'Nager avec des baleines',en:'Swim with whales'},
+      {id:'s17',fr:'Faire du ski hors-piste',en:'Ski off-piste'},{id:'s18',fr:'Conduire une motoneige',en:'Drive a snowmobile'},
+      {id:'s19',fr:'Monter à cheval au galop',en:'Ride a horse at full gallop'},{id:'s20',fr:'Faire un tour en montgolfière',en:'Ride in a hot air balloon'},
+      {id:'s21',fr:'Faire du parapente',en:'Paraglide'},{id:'s22',fr:'Faire du deltaplane',en:'Hang glide'},
+    ]},
+  ]},
+  {id:'relations',fr:'Relations humaines',en:'Human Relationships',subcats:[
+    {fr:'',en:'',items:[
+      {id:'r1',fr:'Se marier',en:'Get married'},{id:'r2',fr:'Avoir un enfant',en:'Have a child'},
+      {id:'r3',fr:'Avoir des jumeaux',en:'Have twins'},{id:'r4',fr:'Avoir des triplés',en:'Have triplets'},
+      {id:'r5',fr:'Adopter un enfant',en:'Adopt a child'},{id:'r6',fr:'Devenir grand-parent',en:'Become a grandparent'},
+      {id:'r7',fr:"Devenir arrière-grand-parent",en:'Become a great-grandparent'},{id:'r8',fr:'Partager 50 ans avec la même personne',en:'Share 50 years with the same person'},
+      {id:'r9',fr:'Sauver une vie',en:'Save a life'},{id:'r10',fr:'Donner un organe',en:'Donate an organ'},
+      {id:'r11',fr:'Donner son sang',en:'Donate blood'},{id:'r12',fr:"Pardonner quelqu'un qui ne s'est pas excusé",en:'Forgive someone who never apologized'},
+      {id:'r13',fr:'Se réconcilier avec un ennemi',en:'Reconcile with an enemy'},{id:'r14',fr:"Être le témoin d'un mariage",en:'Be a witness at a wedding'},
+      {id:'r15',fr:"Couper les ponts avec quelqu'un de toxique",en:'Cut ties with a toxic person'},{id:'r16',fr:'Rencontrer son héros',en:'Meet your hero'},
+      {id:'r17',fr:"Inspirer quelqu'un à changer de vie",en:'Inspire someone to change their life'},
+    ]},
+  ]},
+  {id:'culture',fr:'Culture',en:'Culture',subcats:[
+    {fr:'Œuvres visuelles',en:'Visual Works',items:[
+      {id:'cu1',fr:'La Joconde (Louvre, Paris)',en:'The Mona Lisa (Louvre, Paris)'},{id:'cu2',fr:'La Pietà (Vatican)',en:'The Pietà (Vatican)'},
+      {id:'cu3',fr:'La Chapelle Sixtine (Vatican)',en:'The Sistine Chapel (Vatican)'},{id:'cu4',fr:'Le Penseur de Rodin',en:"Rodin's The Thinker"},
+      {id:'cu5',fr:'La Vénus de Milo (Louvre)',en:'Venus de Milo (Louvre)'},{id:'cu6',fr:'La Nuit étoilée de Van Gogh (MoMA)',en:"Van Gogh's Starry Night (MoMA)"},
+      {id:'cu7',fr:'Guernica de Picasso',en:"Picasso's Guernica"},{id:'cu8',fr:'Le Cri de Munch',en:"Munch's The Scream"},
+      {id:'cu9',fr:"La Persistance de la mémoire de Dalí",en:"Dalí's Persistence of Memory"},{id:'cu10',fr:'La Jeune Fille à la perle de Vermeer',en:"Vermeer's Girl with a Pearl Earring"},
+      {id:'cu11',fr:"L'École d'Athènes de Raphaël (Vatican)",en:"Raphael's School of Athens (Vatican)"},{id:'cu12',fr:'La Naissance de Vénus de Botticelli (Florence)',en:"Botticelli's Birth of Venus (Florence)"},
+      {id:'cu13',fr:'David de Michel-Ange (Florence)',en:"Michelangelo's David (Florence)"},{id:'cu14',fr:'La Victoire de Samothrace (Louvre)',en:'Winged Victory of Samothrace (Louvre)'},
+    ]},
+    {fr:'Littérature',en:'Literature',items:[
+      {id:'cu_lit',fr:"Avoir lu l'œuvre complète de ______",en:'Having read the complete works of ______',freetext:true,prefix_fr:"Avoir lu l'œuvre complète de",prefix_en:'Complete works of'},
+    ]},
+    {fr:'Concerts',en:'Concerts',items:[
+      {id:'cu15',fr:'Avoir vu les Rolling Stones en concert',en:'Having seen the Rolling Stones live'},{id:'cu16',fr:'Avoir vu Paul McCartney en concert',en:'Having seen Paul McCartney live'},
+      {id:'cu17',fr:'Avoir vu Bob Dylan en concert',en:'Having seen Bob Dylan live'},{id:'cu18',fr:'Avoir vu Elton John en concert',en:'Having seen Elton John live'},
+      {id:'cu19',fr:'Avoir vu Stevie Wonder en concert',en:'Having seen Stevie Wonder live'},{id:'cu20',fr:'Avoir vu Bruce Springsteen en concert',en:'Having seen Bruce Springsteen live'},
+      {id:'cu21',fr:'Avoir vu Madonna en concert',en:'Having seen Madonna live'},{id:'cu22',fr:'Avoir vu David Bowie en concert',en:'Having seen David Bowie live'},
+      {id:'cu23',fr:'Avoir vu Michael Jackson en concert',en:'Having seen Michael Jackson live'},{id:'cu24',fr:'Avoir vu Prince en concert',en:'Having seen Prince live'},
+      {id:'cu25',fr:'Avoir vu Freddie Mercury / Queen en concert',en:'Having seen Freddie Mercury / Queen live'},{id:'cu26',fr:'Avoir vu Jimi Hendrix en concert',en:'Having seen Jimi Hendrix live'},
+      {id:'cu27',fr:'Avoir vu Bob Marley en concert',en:'Having seen Bob Marley live'},
+    ]},
+    {fr:'Expériences',en:'Experiences',items:[
+      {id:'cu28',fr:'Assister à un opéra',en:'Attend an opera'},{id:'cu29',fr:'Assister à un ballet',en:'Attend a ballet'},
+      {id:'cu30',fr:'Assister à un concert symphonique',en:'Attend a symphonic concert'},{id:'cu31',fr:'Assister au Festival de Cannes',en:'Attend the Cannes Film Festival'},
+      {id:'cu32',fr:'Assister aux Oscars',en:'Attend the Oscars'},{id:'cu33',fr:'Assister à la Fashion Week de Paris',en:'Attend Paris Fashion Week'},
+      {id:'cu34',fr:'Assister au Carnaval de Venise',en:'Attend the Venice Carnival'},{id:'cu35',fr:'Assister au Carnaval de Rio',en:'Attend the Rio Carnival'},
+      {id:'cu36',fr:'Assister au Burning Man',en:'Attend Burning Man'},{id:'cu37',fr:'Faire le pèlerinage de La Mecque',en:'Make the pilgrimage to Mecca'},
+      {id:'cu38',fr:'Manger dans un restaurant 3 étoiles Michelin',en:'Dine at a 3-star Michelin restaurant'},{id:'cu39',fr:'Manger du fugu',en:'Eat fugu (pufferfish)'},
+      {id:'cu40',fr:'Boire un grand cru classé',en:'Drink a grand cru classé wine'},{id:'cu41',fr:'Fumer un grand cigare cubain',en:'Smoke a fine Cuban cigar'},
+    ]},
+  ]},
+  {id:'pro',fr:'Accomplissements professionnels',en:'Professional Achievements',subcats:[
+    {fr:'',en:'',items:[
+      {id:'p1',fr:'Avoir publié un livre',en:'Publish a book'},{id:'p2',fr:'Avoir réalisé un film',en:'Direct a film'},
+      {id:'p3',fr:'Avoir sorti un album',en:'Release an album'},{id:'p4',fr:'Avoir fait un concert',en:'Perform a concert'},
+      {id:'p5',fr:'Avoir fait un spectacle solo',en:'Do a solo show'},{id:'p6',fr:"Avoir monté une pièce de théâtre",en:'Stage a theatre production'},
+      {id:'p7',fr:'Avoir joué dans un film',en:'Act in a film'},{id:'p8',fr:"Avoir organisé une exposition de ses œuvres",en:'Organize an exhibition of your work'},
+      {id:'p9',fr:'Avoir créé une entreprise',en:'Start a company'},{id:'p10',fr:'Avoir breveté une invention',en:'Patent an invention'},
+      {id:'p11',fr:'Avoir construit une maison',en:'Build a house'},{id:'p12',fr:'Avoir été élu politiquement',en:'Win a political election'},
+      {id:'p13',fr:'Avoir reçu un prix de reconnaissance',en:'Receive an award or prize'},
+    ]},
+  ]},
+  {id:'mystere',fr:'Mystère & Paranormal',en:'Mystery & Paranormal',subcats:[
+    {fr:'',en:'',items:[
+      {id:'m1',fr:'Avoir vécu une expérience de mort imminente',en:'Have a near-death experience'},
+      {id:'m2',fr:'Avoir vu un ovni',en:'See a UFO'},
+      {id:'m3',fr:'Avoir été enlevé par des extraterrestres',en:'Be abducted by aliens'},
+      {id:'m4',fr:'Avoir vu un fantôme',en:'See a ghost'},
+      {id:'m5',fr:'Avoir communiqué avec un mort',en:'Communicate with the dead'},
+    ]},
+  ]},
+];
+
+// ===================== STATE =====================
+let state={}, dynamicItems={}, currentFilter='all', activeCatId=categories[0].id;
+
+function loadState(){
+  try{state=JSON.parse(localStorage.getItem('bl-state')||'{}');}catch(e){state={};}
+  try{dynamicItems=JSON.parse(localStorage.getItem('bl-dynamic')||'{}');}catch(e){dynamicItems={};}
+}
+function saveState(){
+  localStorage.setItem('bl-state',JSON.stringify(state));
+  localStorage.setItem('bl-dynamic',JSON.stringify(dynamicItems));
+}
+
+// URL encode/decode
+function saveToUrl(){
+  const payload={s:state,d:dynamicItems};
+  const encoded=btoa(encodeURIComponent(JSON.stringify(payload)));
+  const url=window.location.href.split('?')[0]+'?bl='+encoded;
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.querySelector('.save-url-btn');
+    const orig=btn.textContent;
+    btn.textContent='✓ '+t('save_copied');
+    setTimeout(()=>btn.textContent=orig,2500);
+  });
+}
+
+function loadFromUrl(){
+  const params=new URLSearchParams(window.location.search);
+  const bl=params.get('bl');
+  if(!bl) return false;
+  try{
+    const payload=JSON.parse(decodeURIComponent(atob(bl)));
+    state=payload.s||{};
+    dynamicItems=payload.d||{};
+    saveState();
+    return true;
+  }catch(e){return false;}
+}
+
+// ===================== HELPERS =====================
+function flatItems(cat){
+  const arr=[];
+  cat.subcats.forEach(sc=>sc.items.forEach(item=>{
+    if(item.freetext){
+      (dynamicItems[item.id]||[]).forEach(di=>arr.push({id:di.id,label:di.label,catId:cat.id,prefix:item['prefix_'+lang]}));
+    } else {
+      arr.push({id:item.id,label:item[lang],catId:cat.id});
+    }
+  }));
+  return arr;
+}
+function allFlatItems(){return categories.flatMap(cat=>flatItems(cat));}
+
+// ===================== LAYOUT =====================
+function layout(){
+  const hh=document.getElementById('site-header').offsetHeight;
+  const ch=document.getElementById('site-controls').offsetHeight;
+  const nh=document.getElementById('save-notice').offsetHeight;
+  document.getElementById('site-controls').style.top=hh+'px';
+  const ml=document.getElementById('main-layout');
+  ml.style.top=(hh+ch)+'px';
+  ml.style.bottom=nh+'px';
+}
+
+// ===================== RENDER NAV =====================
+function renderNav(){
+  document.getElementById('cat-nav').innerHTML=categories.map(cat=>{
+    const items=flatItems(cat);
+    const done=items.filter(i=>state[i.id]==='done').length;
+    return `<div class="cat-nav-item ${activeCatId===cat.id?'active':''}" onclick="navClick('${cat.id}')">
+      <span>${cat[lang]}</span><span class="cat-count">${done}/${items.length}</span>
+    </div>`;
+  }).join('');
+}
+
+function navClick(catId){
+  const content=document.getElementById('content');
+  const el=document.getElementById('cat-'+catId);
+  if(el&&content) content.scrollTo({top:el.offsetTop-8,behavior:'smooth'});
+}
+
+// ===================== RENDER CONTENT =====================
+function renderContent(){
+  const search=document.getElementById('search-input').value.toLowerCase().trim();
+  document.getElementById('content').innerHTML=categories.map(cat=>{
+    const html=cat.subcats.map(sc=>{
+      const ihtml=sc.items.map(item=>item.freetext?renderFreetext(item,search):renderStatic(item,search)).join('');
+      if(!ihtml.trim()) return '';
+      return `<div class="subcat">${sc[lang]?`<div class="subcat-title">${sc[lang]}</div>`:''}<div class="items-grid">${ihtml}</div></div>`;
+    }).join('');
+    return `<div class="category-section" id="cat-${cat.id}">
+      <div class="cat-header"><span class="cat-title">${cat[lang]}</span></div>${html}
+    </div>`;
+  }).join('');
+  layout(); setupScrollSpy();
+}
+
+function renderStatic(item,search){
+  const label=item[lang],status=state[item.id]||null;
+  if(search&&!label.toLowerCase().includes(search)) return '';
+  if(currentFilter==='done'&&status!=='done') return '';
+  if(currentFilter==='todo'&&status!=='todo') return '';
+  if(currentFilter==='none'&&status!==null) return '';
+  const cls=status==='done'?'is-done':status==='todo'?'is-todo':'';
+  return `<div class="item ${cls}" id="item-${item.id}">
+    <span class="item-label">${label}</span>
+    <div class="item-actions">
+      <button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${item.id}','done')" title="${t('done_label')}">✓</button>
+      <button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${item.id}','todo')" title="${t('todo_label')}">☆</button>
+    </div>
+  </div>`;
+}
+
+function renderFreetext(item,search){
+  const prefix=item['prefix_'+lang]||item.prefix_fr;
+  const isCountry=item.id==='v_pays';
+  const ph=isCountry?t('country_p'):t('author_p');
+  const dynamics=dynamicItems[item.id]||[];
+  const dynHtml=dynamics.map(di=>{
+    const status=state[di.id]||null;
+    const full=prefix+' '+di.label;
+    if(search&&!full.toLowerCase().includes(search)) return '';
+    if(currentFilter==='done'&&status!=='done') return '';
+    if(currentFilter==='todo'&&status!=='todo') return '';
+    if(currentFilter==='none'&&status!==null) return '';
+    const cls=status==='done'?'is-done':status==='todo'?'is-todo':'';
+    return `<div class="item ${cls}" id="item-${di.id}">
+      <span class="item-label">${full}</span>
+      <div class="item-actions">
+        <button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${di.id}','done')" title="${t('done_label')}">✓</button>
+        <button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${di.id}','todo')" title="${t('todo_label')}">☆</button>
+        <button class="check-btn" onclick="removeDynamic('${item.id}','${di.id}')" style="font-size:9px;color:var(--text-dim)">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+  if(currentFilter!=='all'&&currentFilter!=='none') return `<div class="dynamic-items">${dynHtml}</div>`;
+  const listAttr=isCountry?'list="dl-pays"':'';
+  return `<div class="freetext-row">
+    <span class="freetext-prefix">${prefix}</span>
+    <input type="text" class="freetext-input" id="ft-${item.id}" placeholder="${ph}" ${listAttr}
+      onkeydown="if(event.key==='Enter'){addDynamic('${item.id}');event.preventDefault();}">
+    <button class="freetext-add" onclick="addDynamic('${item.id}')">${t('add')}</button>
+  </div>
+  <div class="dynamic-items">${dynHtml}</div>`;
+}
+
+// ===================== INTERACTIONS =====================
+function toggle(id,type){
+  state[id]=state[id]===type?null:type;
+  saveState();
+  const el=document.getElementById('item-'+id);
+  if(el){
+    const s=state[id];
+    el.className='item'+(s==='done'?' is-done':s==='todo'?' is-todo':'');
+    el.querySelector('.done-btn').classList.toggle('active',s==='done');
+    el.querySelector('.todo-btn').classList.toggle('active',s==='todo');
+    if(currentFilter!=='all'&&!(currentFilter==='none'&&!s)&&s!==currentFilter) el.classList.add('hidden');
+  }
+  updateStats(); renderNav();
+}
+function addDynamic(ftId){
+  const input=document.getElementById('ft-'+ftId);
+  if(!input||!input.value.trim()) return;
+  if(!dynamicItems[ftId]) dynamicItems[ftId]=[];
+  dynamicItems[ftId].push({id:ftId+'_'+Date.now(),label:input.value.trim()});
+  input.value='';
+  saveState(); renderContent(); updateStats(); renderNav();
+}
+function removeDynamic(ftId,uid){
+  dynamicItems[ftId]=(dynamicItems[ftId]||[]).filter(d=>d.id!==uid);
+  delete state[uid];
+  saveState(); renderContent(); updateStats(); renderNav();
+}
+function setFilter(filter,btn){
+  currentFilter=filter;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active-all','active-done','active-todo'));
+  if(filter==='all') btn.classList.add('active-all');
+  else if(filter==='done') btn.classList.add('active-done');
+  else if(filter==='todo') btn.classList.add('active-todo');
+  renderContent();
+}
+
+// ===================== STATS =====================
+function updateStats(){
+  const all=allFlatItems();
+  const done=all.filter(i=>state[i.id]==='done').length;
+  const todo=all.filter(i=>state[i.id]==='todo').length;
+  const checked=done+todo;
+  document.getElementById('stat-done').textContent=done;
+  document.getElementById('stat-todo').textContent=todo;
+  const pD=checked?Math.round(done/checked*100):0;
+  const pT=checked?Math.round(todo/checked*100):0;
+  document.getElementById('progress-done').style.width=pD+'%';
+  document.getElementById('progress-todo').style.width=pT+'%';
+  document.getElementById('progress-todo').style.left=pD+'%';
+  document.getElementById('pct-done').textContent=checked?`${done} accomplis`:'—';
+  document.getElementById('pct-todo').textContent=checked?`${todo} à faire`:'—';
+  renderNav();
+}
+
+// ===================== SCROLL SPY =====================
+function setupScrollSpy(){
+  const content=document.getElementById('content');
+  if(!content) return;
+  content.onscroll=()=>{
+    const st=content.scrollTop;
+    let cur=categories[0].id;
+    categories.forEach(cat=>{
+      const el=document.getElementById('cat-'+cat.id);
+      if(el&&el.offsetTop-60<=st) cur=cat.id;
+    });
+    if(activeCatId!==cur){activeCatId=cur;renderNav();}
+  };
+}
+
+// ===================== RESULTS =====================
+function openResults(){
+  document.getElementById('results-panel').classList.add('open');
+  const all=allFlatItems();
+  const doneItems=all.filter(i=>state[i.id]==='done');
+  const todoItems=all.filter(i=>state[i.id]==='todo');
+  const checked=doneItems.length+todoItems.length;
+  const pct=checked?Math.round(doneItems.length/checked*100):0;
+
+  document.getElementById('results-stats').innerHTML=`
+    <div class="r-stat done-s"><div class="r-stat-n">${doneItems.length}</div><div class="r-stat-d">accomplis</div></div>
+    <div class="r-stat todo-s"><div class="r-stat-n">${todoItems.length}</div><div class="r-stat-d">sur ma liste</div></div>
+    <div class="r-stat done-s"><div class="r-stat-n">${pct}%</div><div class="r-stat-d">des éléments cochés</div></div>
+  `;
+
+  // Build by-category lists
+  function buildCatList(items, colClass){
+    return categories.map(cat=>{
+      const catItems=items.filter(i=>i.catId===cat.id);
+      if(!catItems.length) return '';
+      return `<div class="res-cat-block open">
+        <div class="res-cat-toggle" onclick="this.parentElement.classList.toggle('open')">
+          <span class="res-cat-name">${cat[lang]}</span>
+          <span style="display:flex;align-items:center;gap:8px">
+            <span class="res-cat-count">${catItems.length}</span>
+            <span class="res-cat-arrow">▼</span>
+          </span>
+        </div>
+        <div class="res-cat-items ${colClass}">
+          ${catItems.map(i=>`<div class="res-item">${i.prefix?i.prefix+' ':''}${i.label}</div>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('results-lists').innerHTML=`
+    <div class="res-list-col">
+      <div class="res-col-title done-t">${t('what_done')}</div>
+      ${buildCatList(doneItems,'done-col')||`<div style="color:var(--text-dim);font-size:13px">—</div>`}
+    </div>
+    <div class="res-list-col">
+      <div class="res-col-title todo-t">${t('what_todo')}</div>
+      ${buildCatList(todoItems,'todo-col')||`<div style="color:var(--text-dim);font-size:13px">—</div>`}
+    </div>
+  `;
+}
+
+function closeResults(){document.getElementById('results-panel').classList.remove('open');}
+
+// ===================== POSTER =====================
+let posterPortrait=true;
+
+function openPoster(){
+  document.getElementById('poster-panel').classList.add('open');
+  drawPoster();
+}
+function closePoster(){document.getElementById('poster-panel').classList.remove('open');}
+function toggleOrientation(){posterPortrait=!posterPortrait;drawPoster();}
+
+function drawPoster(){
+  const canvas=document.getElementById('poster-canvas');
+  // A2 at 150dpi: 2480×3508 portrait
+  const W=posterPortrait?2480:3508;
+  const H=posterPortrait?3508:2480;
+  canvas.width=W; canvas.height=H;
+
+  const ctx=canvas.getContext('2d');
+
+  // Colors
+  const BG='#F5F0E8';
+  const CREAM='#FDFAF4';
+  const BORDER='#D8D0C0';
+  const TEXT='#1C1810';
+  const MUTED='#7A7060';
+  const DIM='#B8AE9A';
+  const GREEN='#2D5016';
+  const TERRA='#C4622D';
+
+  // Background
+  ctx.fillStyle=BG;
+  ctx.fillRect(0,0,W,H);
+
+  const PAD=120;
+  const colW=(W-PAD*2-60)/2;
+
+  // Header
+  ctx.fillStyle=TEXT;
+  ctx.font=`italic ${posterPortrait?110:90}px 'Georgia', serif`;
+  ctx.fillText('Bucket List',PAD,PAD+80);
+
+  // Date + total
+  const all=allFlatItems();
+  const doneItems=all.filter(i=>state[i.id]==='done');
+  const todoItems=all.filter(i=>state[i.id]==='todo');
+  const dateStr=new Date().toLocaleDateString(lang==='fr'?'fr-CA':'en-CA',{year:'numeric',month:'long',day:'numeric'});
+  const total=doneItems.length+todoItems.length;
+
+  ctx.fillStyle=MUTED;
+  ctx.font=`${posterPortrait?36:30}px 'DM Sans', sans-serif`;
+  ctx.fillText(`${dateStr}   ·   ${total} élément${total>1?'s':''} coché${total>1?'s':''}`,PAD,PAD+130);
+
+  // Separator line
+  ctx.strokeStyle=BORDER;
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(PAD,PAD+160);ctx.lineTo(W-PAD,PAD+160);ctx.stroke();
+
+  // Two columns
+  const COL_START_Y=PAD+200;
+  const FS=posterPortrait?26:22; // font size items
+  const FScat=posterPortrait?30:26;
+  const lineH=FS*1.65;
+  const catH=FScat*2.2;
+  const cbSize=FS*0.75;
+
+  function drawCol(items, x, color, title){
+    // Column title
+    ctx.fillStyle=color;
+    ctx.font=`italic ${posterPortrait?52:44}px 'Georgia', serif`;
+    ctx.fillText(title,x,COL_START_Y);
+
+    let y=COL_START_Y+catH;
+
+    // Group by category
+    categories.forEach(cat=>{
+      const catItems=items.filter(i=>i.catId===cat.id);
+      if(!catItems.length) return;
+
+      // Category label
+      ctx.fillStyle=MUTED;
+      ctx.font=`500 ${FScat*0.72}px 'DM Sans', sans-serif`;
+      const catLabel=cat[lang].toUpperCase();
+      ctx.fillText(catLabel,x,y);
+
+      // Thin line under cat
+      ctx.strokeStyle=BORDER;
+      ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(x,y+8);ctx.lineTo(x+colW,y+8);ctx.stroke();
+      y+=catH*0.85;
+
+      catItems.forEach(item=>{
+        if(y>H-PAD-lineH) return; // clip if too long
+        const label=item.prefix?item.prefix+' '+item.label:item.label;
+
+        // Checkbox
+        const cb=cbSize;
+        const cbY=y-cb*0.78;
+        ctx.strokeStyle=color;
+        ctx.lineWidth=1.5;
+        ctx.strokeRect(x,cbY,cb,cb);
+
+        // Checkmark if done
+        if(color===GREEN){
+          ctx.strokeStyle=GREEN;
+          ctx.lineWidth=2;
+          ctx.beginPath();
+          ctx.moveTo(x+cb*0.18,cbY+cb*0.5);
+          ctx.lineTo(x+cb*0.42,cbY+cb*0.78);
+          ctx.lineTo(x+cb*0.82,cbY+cb*0.22);
+          ctx.stroke();
+          ctx.fillStyle=TEXT;
+        } else {
+          ctx.fillStyle=MUTED;
+        }
+
+        // Wrap text
+        ctx.font=`${FS}px 'DM Sans', sans-serif`;
+        const textX=x+cb+14;
+        const maxW=colW-cb-14;
+        const words=label.split(' ');
+        let line='';
+        let firstLine=true;
+        words.forEach((word,wi)=>{
+          const test=line+word+(wi<words.length-1?' ':'');
+          if(ctx.measureText(test).width>maxW&&line!==''){
+            ctx.fillText(line,textX,y);
+            line=word+' ';
+            y+=lineH*0.85;
+            firstLine=false;
+          } else { line=test; }
+        });
+        ctx.fillText(line,textX,y);
+        y+=lineH;
+      });
+      y+=lineH*0.3; // space between categories
+    });
+  }
+
+  drawCol(doneItems, PAD, GREEN, t('poster_done'));
+  drawCol(todoItems, PAD+colW+60, TERRA, t('poster_todo'));
+
+  // Footer
+  ctx.fillStyle=DIM;
+  ctx.font=`${posterPortrait?28:24}px 'DM Sans', sans-serif`;
+  ctx.fillText('studioexistence.com/bucket-list',PAD,H-PAD+30);
+}
+
+function downloadPoster(){
+  const canvas=document.getElementById('poster-canvas');
+  const link=document.createElement('a');
+  link.download='bucket-list.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ===================== INIT =====================
+loadFromUrl();
+loadState();
+renderContent();
+renderNav();
+updateStats();
+setLang(lang);
+window.addEventListener('resize',layout);
+</script>
+</body>
+</html>
