@@ -406,6 +406,107 @@
   ::-webkit-scrollbar{width:4px;}
   ::-webkit-scrollbar-track{background:transparent;}
   ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:2px;}
+
+  /* ═══════════════════════════════════════════
+     MOBILE  (≤ 640px)
+     ═══════════════════════════════════════════ */
+  @media (max-width: 640px) {
+
+    /* ── Hero ── */
+    #hero-banner{ padding:12px 16px 10px; gap:12px; }
+    .hero-title{ font-size:24px; }
+    .hero-subtitle{ font-size:11px; }
+
+    /* ── Site header ── */
+    #site-header{ padding:8px 16px 0; }
+    .header-row{ gap:8px; flex-wrap:nowrap; }
+
+    /* Stats: show only numbers, hide labels & dividers */
+    .stat-label{ display:none; }
+    .stat-divider{ display:none; }
+    .stat-value{ font-size:20px; }
+    /* Search takes remaining space */
+    .search-wrap{ max-width:none; min-width:0; flex:1; }
+    /* Filter buttons hidden on mobile (replaced by category pills) */
+    .filter-btns{ display:none; }
+    /* Results button: icon only */
+    .results-btn{ padding:7px 12px; font-size:12px; white-space:nowrap; }
+
+    /* ── Mobile category pill nav ── */
+    #cat-nav-mobile{
+      display:flex;
+      position:fixed;
+      left:0;right:0;
+      z-index:99;
+      overflow-x:auto;
+      gap:7px;
+      padding:8px 16px 10px;
+      background:rgba(255,255,255,0.97);
+      backdrop-filter:blur(16px);
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+      border-bottom:1px solid var(--border);
+    }
+    #cat-nav-mobile::-webkit-scrollbar{ display:none; }
+    .mob-cat-pill{
+      display:flex;align-items:center;gap:6px;
+      padding:5px 12px;
+      border-radius:20px;
+      border:2px solid transparent;
+      background:#F0F0F0;
+      color:var(--text-muted);
+      font-size:12px;font-weight:700;
+      white-space:nowrap;cursor:pointer;
+      flex-shrink:0;
+      transition:all 0.18s;
+      font-family:var(--font-body);
+    }
+    .mob-cat-pill.active{
+      background:var(--cat-bg);
+      color:var(--cat-text);
+      border-color:transparent;
+    }
+    .mob-cat-dot{
+      width:7px;height:7px;border-radius:50%;
+      background:var(--cat-bg);flex-shrink:0;
+    }
+    .mob-cat-pill.active .mob-cat-dot{
+      background:rgba(255,255,255,0.6);
+    }
+
+    /* ── Hide desktop side nav ── */
+    .cat-nav{ display:none; }
+
+    /* ── Main layout: full width, no sidebar ── */
+    #main-layout{ flex-direction:column; }
+    .content{ width:100%; }
+
+    /* ── Category sections ── */
+    .cat-sticky{ padding:14px 16px 10px; gap:12px; }
+    .cat-title{ font-size:22px; }
+    .cat-body{ padding:16px 16px 28px; }
+
+    /* ── Items: single column ── */
+    .items-grid{ grid-template-columns:1fr; gap:6px; }
+
+    /* ── Results panel ── */
+    .results-hero{ padding:12px 16px; }
+    .results-hero-title{ font-size:22px; }
+    .results-stats-bar{ padding:8px 16px 6px; gap:12px; flex-wrap:wrap; }
+    .results-body{ padding:0 16px 40px; }
+    .results-lists{ grid-template-columns:1fr; gap:20px; }
+
+    /* ── Poster panel ── */
+    #poster-panel{ padding:20px 16px; }
+
+    /* ── Admin panel ── */
+    #admin-panel{ padding:24px 16px; }
+    .admin-body{ grid-template-columns:1fr; }
+    .admin-nav{ border-right:none; border-bottom:1px solid var(--border); padding-right:0; padding-bottom:16px; margin-bottom:16px; }
+
+    /* ── Footer ── */
+    #save-notice{ font-size:10px; }
+  }
 </style>
 </head>
 <body>
@@ -423,6 +524,9 @@
     <!-- admin accessible via ?admin -->
   </div>
 </div>
+
+<!-- Mobile category pill nav (hidden on desktop via CSS) -->
+<div id="cat-nav-mobile"></div>
 
 <header id="site-header">
   <div class="header-row">
@@ -879,14 +983,20 @@ function allFlatItems(){return categories.flatMap(cat=>flatItems(cat));}
 function genId(){return 'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
 
 // ===================== LAYOUT =====================
-function layout(){
+function stickyOffset(){
   const hero=document.getElementById('hero-banner');
-  const heroH=hero?hero.offsetHeight:0;
+  const mobNav=document.getElementById('cat-nav-mobile');
   const header=document.getElementById('site-header');
+  const heroH=hero?hero.offsetHeight:0;
+  const isMobile=window.innerWidth<=640;
+  const mobNavH=(isMobile&&mobNav)?mobNav.offsetHeight:0;
   const hh=header?header.offsetHeight:0;
+  return heroH+mobNavH+hh;
+}
+function layout(){
   const nh=document.getElementById('save-notice').offsetHeight;
   const ml=document.getElementById('main-layout');
-  ml.style.top=(heroH+hh)+'px';
+  ml.style.top=stickyOffset()+'px';
   ml.style.bottom=nh+'px';
 }
 
@@ -902,11 +1012,28 @@ function renderNav(){
       <span class="cat-count">${done}/${items.length}</span>
     </div>`;
   }).join('');
+  renderMobileNav();
+}
+
+function renderMobileNav(){
+  const el=document.getElementById('cat-nav-mobile');
+  if(!el) return;
+  el.innerHTML=categories.map(cat=>{
+    const cc=catColor(cat.id);
+    const isActive=activeCatId===cat.id;
+    return `<button class="mob-cat-pill ${isActive?'active':''}" onclick="navClick('${cat.id}')" style="--cat-bg:${cc.bg};--cat-r:${cc.r};--cat-text:${cc.txt};">
+      <span class="mob-cat-dot"></span>
+      ${cat[lang]||cat.fr}
+    </button>`;
+  }).join('');
+  // Auto-scroll active pill into view
+  const active=el.querySelector('.mob-cat-pill.active');
+  if(active) active.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'});
 }
 function navClick(catId){
   const content=document.getElementById('content');
   const el=document.getElementById('cat-'+catId);
-  if(el&&content) content.scrollTo({top:el.offsetTop-8,behavior:'smooth'});
+  if(el&&content) content.scrollTo({top:el.offsetTop,behavior:'smooth'});
 }
 
 // ===================== CONTENT =====================
@@ -1408,11 +1535,19 @@ renderContent();
 renderNav();
 updateStats();
 setLang(lang);
-// Position header below hero, then layout — called once at init and on resize
+// Position header below hero (+ mobile pill nav if visible) — called once at init and on resize
 function positionAll(){
   const hero=document.getElementById('hero-banner');
+  const mobNav=document.getElementById('cat-nav-mobile');
   const header=document.getElementById('site-header');
-  if(hero&&header) header.style.top=hero.offsetHeight+'px';
+  const heroH=hero?hero.offsetHeight:0;
+  const isMobile=window.innerWidth<=640;
+  if(mobNav){
+    mobNav.style.top=heroH+'px';
+    mobNav.style.display=isMobile?'flex':'none';
+  }
+  const mobNavH=(isMobile&&mobNav)?mobNav.offsetHeight:0;
+  if(header) header.style.top=(heroH+mobNavH)+'px';
   layout();
 }
 positionAll();
