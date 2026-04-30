@@ -252,17 +252,20 @@
 
   /* ── FREETEXT ── */
   .freetext-row{
-    border:1.5px dashed rgba(var(--cat-r),0.3);
-    border-radius:10px;padding:8px 13px;
     display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-    margin-bottom:7px;background:#fff;
+    margin-bottom:10px;
+    background:rgba(var(--cat-r),0.06);
+    border:1.5px dashed rgba(var(--cat-r),0.3);
+    border-radius:10px;
+    padding:10px 13px;
   }
-  .freetext-prefix{font-size:13px;color:var(--text-muted);white-space:nowrap;flex-shrink:0;font-weight:600;}
-  .freetext-input{flex:1;min-width:80px;background:none;border:none;border-bottom:1.5px solid rgba(var(--cat-r),0.3);padding:1px 4px;font-size:13px;color:var(--text);outline:none;font-family:var(--font-body);font-weight:500;}
-  .freetext-input:focus{border-bottom-color:var(--cat-bg);}
-  .freetext-add{background:var(--cat-bg);border:none;color:var(--cat-text);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font-body);font-weight:700;transition:all 0.15s;white-space:nowrap;}
+  .freetext-prefix{font-size:13px;color:var(--cat-h);white-space:nowrap;flex-shrink:0;font-weight:700;}
+  .freetext-input{flex:1;min-width:120px;background:#fff;border:1.5px solid rgba(var(--cat-r),0.25);border-radius:7px;padding:5px 10px;font-size:13px;color:var(--text);outline:none;font-family:var(--font-body);font-weight:500;transition:border-color 0.2s;}
+  .freetext-input:focus{border-color:var(--cat-bg);}
+  .freetext-add{background:var(--cat-bg);border:none;color:var(--cat-text);padding:6px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-family:var(--font-body);font-weight:700;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
   .freetext-add:hover{opacity:0.85;}
-  .dynamic-items{display:flex;flex-direction:column;gap:5px;margin-bottom:6px;}
+  .dynamic-items{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  .dynamic-items .item{min-width:200px;flex:1 1 200px;}
 
   /* ── SAVE NOTICE ── */
   #save-notice{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:6px;font-size:11px;color:var(--text-dim);letter-spacing:0.5px;border-top:1px solid var(--border);background:var(--bg);z-index:50;font-weight:600;}
@@ -672,21 +675,23 @@ let categories = [
   ]},
 
   {id:'voyages',fr:'Voyages & Géographie',en:'Travel & Geography',subcats:[
-    {fr:'Le monde',en:'The World',items:[
-      {id:'v0',fr:'Faire le tour du monde',en:'Travel around the world'},
-      {id:'v_pays',fr:'Visiter ______',en:'Visit ______',freetext:true,prefix_fr:'Visiter',prefix_en:'Visit',datalist:'dl-pays'},
-    ]},
     {fr:'Expériences de voyage',en:'Travel Experiences',items:[
+      {id:'v0',fr:'Faire le tour du monde',en:'Travel around the world'},
       {id:'vx1',fr:'Faire un road-trip',en:'Go on a road trip'},
       {id:'vx2',fr:'Voyager en van',en:'Travel in a van'},
       {id:'vx3',fr:'Faire une croisière',en:'Go on a cruise'},
       {id:'vx4',fr:'Traverser un pays en train',en:'Cross a country by train'},
       {id:'vx5',fr:'Traverser un pays en voiture',en:'Cross a country by car'},
       {id:'vx6',fr:'Traverser un pays à pied',en:'Cross a country on foot'},
+      {id:'c12',fr:'Traverser un pays à vélo',en:'Cycle across a country'},
+      {id:'c13',fr:'Faire le Chemin de Saint-Jacques',en:'Walk the Camino de Santiago'},
       {id:'vx7',fr:'Vivre dans un pays étranger',en:'Live in a foreign country'},
       {id:'vx8',fr:'Dormir dans un igloo',en:'Sleep in an igloo'},
       {id:'vx9',fr:'Dormir sur une île déserte',en:'Sleep on a deserted island'},
       {id:'vx10',fr:'Dormir dans un hôtel sous-marin',en:'Sleep in an underwater hotel'},
+    ]},
+    {fr:'Pays visités',en:'Countries Visited',freetext_subcat:true,items:[
+      {id:'v_pays',fr:'Visiter ______',en:'Visit ______',freetext:true,prefix_fr:'Visiter',prefix_en:'Visit',datalist:'dl-pays'},
     ]},
     {fr:'Europe',en:'Europe',items:[
       {id:'v1',fr:'Voir la Tour Eiffel',en:'See the Eiffel Tower'},{id:'v2',fr:'Visiter le Louvre',en:'Visit the Louvre'},
@@ -716,11 +721,11 @@ let categories = [
       {id:'v34',fr:'Voir les îles Galápagos',en:'See the Galápagos Islands'},{id:'v35',fr:"Voir le désert d'Atacama",en:'See the Atacama Desert'},
       {id:'v36',fr:'Voir la Patagonie',en:'See Patagonia'},{id:'v37',fr:"Voir les salines d'Uyuni",en:'See the Uyuni Salt Flats'},
       {id:'v38',fr:"Voir l'Amazonie",en:'See the Amazon'},{id:'v39',fr:"Voir les moaï de l'île de Pâques",en:'See the Easter Island moai'},
-      {id:'v39b',fr:"Voir l'Himalaya / l'Everest",en:'See the Himalayas / Everest'},{id:'v39c',fr:'Voir la cordillère des Andes',en:'See the Andes'},
+      {id:'v39c',fr:'Voir la cordillère des Andes',en:'See the Andes'},
       {id:'v39d',fr:'Voir le Salto Ángel',en:'See Angel Falls'},
     ]},
     {fr:'Afrique',en:'Africa',items:[
-      {id:'v40',fr:'Voir les pyramides de Gizeh',en:'See the Pyramids of Giza'},{id:'v41',fr:'Voir le Sphinx',en:'See the Sphinx'},
+      {id:'v40',fr:'Voir les pyramides de Gizeh et le Sphinx',en:'See the Pyramids of Giza and the Sphinx'},
       {id:'v42',fr:'Voir le Kilimandjaro',en:'See Mount Kilimanjaro'},{id:'v43',fr:'Voir les chutes Victoria',en:'See Victoria Falls'},
       {id:'v44',fr:'Voir le Sahara',en:'See the Sahara Desert'},{id:'v45',fr:'Voir le Serengeti',en:'See the Serengeti'},
       {id:'v46',fr:'Voir le canyon du Fish River',en:'See Fish River Canyon'},{id:'v47',fr:'Voir le désert du Namib / Sossusvlei',en:'See the Namib Desert / Sossusvlei'},
@@ -732,6 +737,7 @@ let categories = [
       {id:'v54',fr:'Voir le temple Kinkaku-ji (Kyoto)',en:'See Kinkaku-ji Temple'},{id:'v55',fr:'Voir Borobudur (Indonésie)',en:'See Borobudur'},
       {id:'v56',fr:'Voir le Mont du Temple (Jérusalem)',en:'See the Temple Mount'},{id:'v57',fr:'Voir le désert de Gobi',en:'See the Gobi Desert'},
       {id:'v58',fr:"Voir l'armée de terre cuite",en:'See the Terracotta Army'},
+      {id:'v39b',fr:"Voir l'Himalaya / l'Everest",en:'See the Himalayas / Everest'},
       {id:'v_burj',fr:'Voir le Burj Khalifa (Dubaï)',en:'See the Burj Khalifa (Dubai)'},
       {id:'v_merdead',fr:'Se baigner dans la mer Morte',en:'Float in the Dead Sea'},
       {id:'v_china_ny',fr:'Célébrer le Nouvel An chinois en Chine',en:'Celebrate Chinese New Year in China'},
@@ -752,8 +758,7 @@ let categories = [
       {id:'c5',fr:"Faire l'ascension du Mont-Blanc",en:'Climb Mont Blanc'},{id:'c6',fr:'Obtenir une ceinture noire dans un art martial',en:'Earn a black belt in martial arts'},
       {id:'c7',fr:'Apprendre à marcher sur les mains',en:'Learn to walk on your hands'},{id:'c8',fr:'Apprendre à jongler',en:'Learn to juggle'},
       {id:'c9',fr:'Apprendre le splits',en:'Learn the splits'},{id:'c10',fr:'Escalader une voie en falaise naturelle',en:'Climb a natural rock face'},
-      {id:'c11',fr:'Soulever deux fois son poids corporel',en:'Lift twice your body weight'},{id:'c12',fr:'Traverser un pays à vélo',en:'Cycle across a country'},
-      {id:'c13',fr:'Faire le Chemin de Saint-Jacques',en:'Walk the Camino de Santiago'},
+      {id:'c11',fr:'Soulever deux fois son poids corporel',en:'Lift twice your body weight'},
       {id:'c15',fr:'Vivre en autonomie dans la nature',en:'Live off the grid in nature'},
       {id:'c16',fr:'Descendre une piste noire en ski',en:'Ski a black diamond run'},
       {id:'c17',fr:'Apprendre à marcher sur un fil',en:'Learn to walk a tightrope'},
@@ -830,7 +835,7 @@ let categories = [
       {id:'cu11',fr:"L'École d'Athènes de Raphaël (Vatican)",en:"Raphael's School of Athens"},{id:'cu12',fr:'La Naissance de Vénus de Botticelli (Florence)',en:"Botticelli's Birth of Venus"},
       {id:'cu13',fr:'David de Michel-Ange (Florence)',en:"Michelangelo's David"},{id:'cu14',fr:'La Victoire de Samothrace (Louvre)',en:'Winged Victory of Samothrace'},
     ]},
-    {fr:'Littérature',en:'Literature',items:[
+    {fr:'Littérature',en:'Literature',freetext_subcat:true,items:[
       {id:'cu_lit',fr:"Avoir lu l'œuvre complète de ______",en:'Complete works of ______',freetext:true,prefix_fr:"Avoir lu l'œuvre complète de",prefix_en:'Complete works of'},
     ]},
     {fr:'Concerts',en:'Concerts',items:[
@@ -1042,6 +1047,53 @@ function renderContent(){
   document.getElementById('content').innerHTML=categories.map(cat=>{
     const cc=catColor(cat.id);
     const html=cat.subcats.map(sc=>{
+
+      // ── Freetext subcat: input as header, items in standard grid ──
+      if(sc.freetext_subcat && sc.items.length===1 && sc.items[0].freetext){
+        const item=sc.items[0];
+        const prefix=item['prefix_'+lang]||item.prefix_fr;
+        const isCountry=item.id==='v_pays';
+        const ph=isCountry?t('country_p'):t('author_p');
+        const listAttr=isCountry?'list="dl-pays"':'';
+        const dynamics=dynamicItems[item.id]||[];
+        const dynHtml=dynamics.map(di=>{
+          const status=state[di.id]||null;
+          const full=prefix+' '+di.label;
+          if(search&&!full.toLowerCase().includes(search)) return '';
+          if(currentFilter==='done'&&status!=='done') return '';
+          if(currentFilter==='todo'&&status!=='todo') return '';
+          if(currentFilter==='none'&&status!==null) return '';
+          const cls=status==='done'?'is-done':status==='todo'?'is-todo':'';
+          const sd=status===null||status==='done', st=status===null||status==='todo';
+          return `<div class="item ${cls}" id="item-${di.id}" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
+            <span class="item-label">${full}</span>
+            <div class="item-actions">
+              ${sd?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${di.id}','done','${cat.id}')" title="${t('done_label')}">✓</button>`:''}
+              ${st?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${di.id}','todo','${cat.id}')" title="${t('todo_label')}">☆</button>`:''}
+              <button class="check-btn del-btn" onclick="removeDynamic('${item.id}','${di.id}')">✕</button>
+            </div>
+          </div>`;
+        }).join('');
+        const hasVisible=dynHtml.trim();
+        // Hide entire subcat if filtered and nothing to show
+        if(currentFilter!=='all'&&currentFilter!=='none'&&!hasVisible) return '';
+        const inputRow=(currentFilter==='all'||currentFilter==='none')
+          ? `<div class="freetext-row" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
+               <span class="freetext-prefix">${prefix}</span>
+               <input type="text" class="freetext-input" id="ft-${item.id}" placeholder="${ph}" ${listAttr}
+                 onkeydown="if(event.key==='Enter'){addDynamic('${item.id}');event.preventDefault();}">
+               <button class="freetext-add" onclick="addDynamic('${item.id}')">${t('add')}</button>
+             </div>`
+          : '';
+        const scTitle=sc[lang]||sc.fr;
+        return `<div class="subcat" style="--cat-h:${cc.h};--cat-r:${cc.r};">
+          ${scTitle?`<div class="subcat-title" style="color:${cc.h}">${scTitle}</div>`:''}
+          ${inputRow}
+          ${hasVisible?`<div class="items-grid">${dynHtml}</div>`:''}
+        </div>`;
+      }
+
+      // ── Standard subcat ──
       const ihtml=sc.items.map(item=>item.freetext?renderFreetext(item,search,cat.id):renderStatic(item,search,cat.id)).join('');
       if(!ihtml.trim()) return '';
       return `<div class="subcat" style="--cat-h:${cc.h};--cat-r:${cc.r};">${(sc[lang]||sc.fr)?`<div class="subcat-title" style="color:${cc.h}">${sc[lang]||sc.fr}</div>`:''}<div class="items-grid">${ihtml}</div></div>`;
@@ -1110,39 +1162,44 @@ function renderFreetext(item,search,catId){
       </div>
     </div>`;
   }).join('');
-  if(currentFilter!=='all'&&currentFilter!=='none') return `<div class="dynamic-items">${dynHtml}</div>`;
   const listAttr=isCountry?'list="dl-pays"':'';
-  return `<div class="freetext-row">
-    <span class="freetext-prefix">${prefix}</span>
-    <input type="text" class="freetext-input" id="ft-${item.id}" placeholder="${ph}" ${listAttr}
-      onkeydown="if(event.key==='Enter'){addDynamic('${item.id}');event.preventDefault();}">
-    <button class="freetext-add" onclick="addDynamic('${item.id}')">${t('add')}</button>
-  </div><div class="dynamic-items">${dynHtml}</div>`;
+  const inputRow=(currentFilter==='all'||currentFilter==='none')
+    ? `<div class="freetext-row" style="--cat-bg:${catColor(catId).bg};--cat-h:${catColor(catId).h};--cat-r:${catColor(catId).r};--cat-text:${catColor(catId).txt};">
+        <span class="freetext-prefix">${prefix}</span>
+        <input type="text" class="freetext-input" id="ft-${item.id}" placeholder="${ph}" ${listAttr}
+          onkeydown="if(event.key==='Enter'){addDynamic('${item.id}');event.preventDefault();}">
+        <button class="freetext-add" onclick="addDynamic('${item.id}')">${t('add')}</button>
+       </div>`
+    : '';
+  return `${inputRow}<div class="dynamic-items">${dynHtml}</div>`;
 }
 
 // ===================== INTERACTIONS =====================
 function toggle(id,type,catId){
   state[id]=state[id]===type?null:type;
   saveState();
-  // Re-render just this item for button visibility
   const el=document.getElementById('item-'+id);
   if(el){
     const s=state[id];
-    const label=el.querySelector('.item-label').textContent;
     const cc=catColor(catId||'');
     el.className='item'+(s==='done'?' is-done':s==='todo'?' is-todo':'');
     el.style.setProperty('--cat-bg',cc.bg);
     el.style.setProperty('--cat-h',cc.h);
     el.style.setProperty('--cat-r',cc.r);
     el.style.setProperty('--cat-text',cc.txt);
-    // Rebuild buttons
     const showDone=s===null||s==='done';
     const showTodo=s===null||s==='todo';
     const actions=el.querySelector('.item-actions');
     if(actions){
+      // Check if this is a dynamic item (has existing del-btn)
+      const isDynamic=!!actions.querySelector('.del-btn');
+      // Find the ftId from the del-btn onclick if present
+      const delBtn=actions.querySelector('.del-btn');
+      const delHtml=delBtn?delBtn.outerHTML:'';
       actions.innerHTML=
         (showDone?`<button class="check-btn done-btn ${s==='done'?'active':''}" onclick="toggle('${id}','done','${catId||''}')" title="${t('done_label')}">✓</button>`:'')+
-        (showTodo?`<button class="check-btn todo-btn ${s==='todo'?'active':''}" onclick="toggle('${id}','todo','${catId||''}')" title="${t('todo_label')}">☆</button>`:'');
+        (showTodo?`<button class="check-btn todo-btn ${s==='todo'?'active':''}" onclick="toggle('${id}','todo','${catId||''}')" title="${t('todo_label')}">☆</button>`:'')+
+        delHtml;
     }
     if(currentFilter!=='all'&&!(currentFilter==='none'&&!s)&&s!==currentFilter) el.classList.add('hidden');
   }
@@ -1152,7 +1209,10 @@ function addDynamic(ftId){
   const input=document.getElementById('ft-'+ftId);
   if(!input||!input.value.trim()) return;
   if(!dynamicItems[ftId]) dynamicItems[ftId]=[];
-  dynamicItems[ftId].push({id:ftId+'_'+Date.now(),label:input.value.trim()});
+  const val=input.value.trim();
+  const alreadyExists=dynamicItems[ftId].some(d=>d.label.toLowerCase()===val.toLowerCase());
+  if(alreadyExists){input.select();return;}
+  dynamicItems[ftId].push({id:ftId+'_'+Date.now(),label:val});
   input.value='';
   saveState();renderContent();updateStats();renderNav();
 }
@@ -1294,64 +1354,293 @@ function toggleOrientation(){posterPortrait=!posterPortrait;drawPoster();}
 function drawPoster(){
   const canvas=document.getElementById('poster-canvas');
   const W=posterPortrait?2480:3508, H=posterPortrait?3508:2480;
-  canvas.width=W;canvas.height=H;
+  canvas.width=W; canvas.height=H;
   const ctx=canvas.getContext('2d');
-  const BG='#F5F0E8',BORDER='#D8D0C0',TEXT='#1C1810',MUTED='#7A7060',DIM='#B8AE9A',GREEN='#2D5016',TERRA='#C4622D';
-  ctx.fillStyle=BG;ctx.fillRect(0,0,W,H);
-  const PAD=110, colW=(W-PAD*2-80)/2;
-  ctx.fillStyle=TEXT;
-  ctx.font=`italic ${posterPortrait?100:82}px Georgia,serif`;
-  ctx.fillText('Bucket List',PAD,PAD+72);
+  const sc=W/2480;
+
+  const BG='#F7F3ED';
+  const INK='#1A1612';
+  const WHITE='#FFFFFF';
+
+  function hexToRgb(hex){return[parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)];}
+  function lighten(hex,p){const[r,g,b]=hexToRgb(hex);const m=v=>Math.round(v+(255-v)*p);return`rgb(${m(r)},${m(g)},${m(b)})`;}
+  function wrapText(text,maxW){
+    const words=text.split(' ');const lines=[];let line='';
+    words.forEach(w=>{
+      const test=line?line+' '+w:w;
+      if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=w;}
+      else line=test;
+    });
+    if(line)lines.push(line);
+    return lines;
+  }
+
   const all=allFlatItems();
   const doneItems=all.filter(i=>state[i.id]==='done');
   const todoItems=all.filter(i=>state[i.id]==='todo');
-  const total=doneItems.length+todoItems.length;
   const dateStr=new Date().toLocaleDateString(lang==='fr'?'fr-CA':'en-CA',{year:'numeric',month:'long',day:'numeric'});
-  const itemCountStr=lang==='fr'
-    ? `${total} élément${total>1?'s':''} coché${total>1?'s':''}`
-    : `${total} item${total>1?'s':''} checked`;
-  ctx.fillStyle=MUTED;ctx.font=`${posterPortrait?32:26}px 'DM Sans',sans-serif`;
-  ctx.fillText(`${dateStr}   ·   ${itemCountStr}`,PAD,PAD+120);
-  ctx.strokeStyle=BORDER;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(PAD,PAD+148);ctx.lineTo(W-PAD,PAD+148);ctx.stroke();
-  const COL_Y=PAD+190, FS=posterPortrait?24:20, FScat=posterPortrait?28:24, lineH=FS*1.7, cbSize=FS*0.72;
 
-  function drawCol(items,x,color,title){
-    ctx.fillStyle=color;ctx.font=`italic ${posterPortrait?48:40}px Georgia,serif`;ctx.fillText(title,x,COL_Y);
-    let y=COL_Y+FScat*2;
-    categories.forEach(cat=>{
-      const catItems=items.filter(i=>i.catId===cat.id);
-      if(!catItems.length) return;
-      ctx.fillStyle=MUTED;ctx.font=`500 ${FS*0.65}px 'DM Sans',sans-serif`;
-      ctx.fillText((cat[lang]||cat.fr).toUpperCase(),x,y);
-      ctx.strokeStyle=BORDER;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(x,y+6);ctx.lineTo(x+colW,y+6);ctx.stroke();
-      y+=FScat*0.9;
-      catItems.forEach(item=>{
-        if(y>H-PAD) return;
-        const label=item.prefix?item.prefix+' '+item.label:item.label;
-        const cb=cbSize, cbY=y-cb*0.8;
-        ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.strokeRect(x,cbY,cb,cb);
-        if(color===GREEN){
-          ctx.strokeStyle=GREEN;ctx.lineWidth=2;ctx.beginPath();
-          ctx.moveTo(x+cb*0.18,cbY+cb*0.5);ctx.lineTo(x+cb*0.42,cbY+cb*0.78);ctx.lineTo(x+cb*0.82,cbY+cb*0.22);ctx.stroke();
-          ctx.fillStyle=TEXT;
-        } else {ctx.fillStyle=MUTED;}
-        ctx.font=`${FS}px 'DM Sans',sans-serif`;
-        const textX=x+cb+12, maxW=colW-cb-12;
-        const words=label.split(' ');let line='';
-        words.forEach((w,i)=>{
-          const test=line+w+(i<words.length-1?' ':'');
-          if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,textX,y);line=w+' ';y+=lineH*0.82;}
-          else line=test;
-        });
-        ctx.fillText(line,textX,y);y+=lineH;
-      });
-      y+=lineH*0.25;
-    });
+  ctx.fillStyle=BG; ctx.fillRect(0,0,W,H);
+
+  const PAD=100*sc;
+  const IX=PAD;
+  const IW=W-PAD*2;
+  const FOOT_H=52*sc;
+  const IBOT=H-PAD*0.5-FOOT_H;
+
+  // ═══════════════════════════════════════════════════════
+  // HEADER — dégradé orange→violet
+  // ═══════════════════════════════════════════════════════
+  const HDR_H=(posterPortrait?220:180)*sc;
+  const hGrd=ctx.createLinearGradient(0,0,W,HDR_H);
+  hGrd.addColorStop(0,'#FF6B35');
+  hGrd.addColorStop(0.55,'#E91E8C');
+  hGrd.addColorStop(1,'#9B59B6');
+  ctx.fillStyle=hGrd; ctx.fillRect(0,0,W,HDR_H);
+
+  const TFS=(posterPortrait?120:96)*sc;
+  ctx.font=`italic ${TFS}px Georgia,serif`;
+  ctx.fillStyle=WHITE;
+  ctx.fillText('Bucket',IX,HDR_H*0.72);
+  const bW=ctx.measureText('Bucket').width;
+  ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.fillText('List',IX+bW+20*sc,HDR_H*0.72);
+
+  const SFS=22*sc;
+  ctx.font=`600 ${SFS}px 'Plus Jakarta Sans',sans-serif`;
+  const statsStr=lang==='fr'
+    ?`${doneItems.length} accomplis  ·  ${todoItems.length} à accomplir`
+    :`${doneItems.length} done  ·  ${todoItems.length} to do`;
+  const sW=ctx.measureText(statsStr).width;
+  ctx.fillStyle='rgba(255,255,255,0.65)';
+  ctx.fillText(statsStr,IX+IW-sW,HDR_H*0.72);
+
+  // ═══════════════════════════════════════════════════════
+  // SECTION TITLE — visuellement riche, quasi aussi grand que le header
+  // Bande pleine largeur avec dégradé propre à chaque section
+  // Titre : grande italique Georgia, sur 2 niveaux (petit label + grand titre)
+  // ═══════════════════════════════════════════════════════
+  function drawSectionTitle(superLabel, mainLabel, y, gradStops, titleColor, superColor){
+    const MAIN_FS=(posterPortrait?88:70)*sc;
+    const SUP_FS=(posterPortrait?22:18)*sc;
+    const bandH=MAIN_FS*1.55;
+
+    // Gradient band
+    const g=ctx.createLinearGradient(0,y,W,y+bandH);
+    gradStops.forEach(([stop,color])=>g.addColorStop(stop,color));
+    ctx.fillStyle=g; ctx.fillRect(0,y,W,bandH);
+
+    // Petit label en haut centré (ex: "✓ CE QUE J'AI")
+    ctx.font=`700 ${SUP_FS}px 'Plus Jakarta Sans',sans-serif`;
+    ctx.fillStyle=superColor;
+    const supW=ctx.measureText(superLabel).width;
+    ctx.fillText(superLabel, W/2-supW/2, y+bandH*0.32);
+
+    // Grand titre italique centré
+    ctx.font=`italic ${MAIN_FS}px Georgia,serif`;
+    ctx.fillStyle=titleColor;
+    const mW=ctx.measureText(mainLabel).width;
+    // Si trop large, réduire
+    let fs=MAIN_FS;
+    while(mW>IW*0.95&&fs>MAIN_FS*0.6){
+      fs*=0.96;
+      ctx.font=`italic ${fs}px Georgia,serif`;
+    }
+    const mW2=ctx.measureText(mainLabel).width;
+    ctx.fillText(mainLabel, W/2-mW2/2, y+bandH*0.88);
+
+    return bandH;
   }
-  drawCol(doneItems,PAD,GREEN,t('poster_done'));
-  drawCol(todoItems,PAD+colW+80,TERRA,t('poster_todo'));
-  ctx.fillStyle=DIM;ctx.font=`${posterPortrait?24:20}px 'DM Sans',sans-serif`;
-  ctx.fillText('studioexistence.com/bucket-list',PAD,H-PAD+24);
+
+  // ═══════════════════════════════════════════════════════
+  // ZONE 1 — ACCOMPLIS
+  // ═══════════════════════════════════════════════════════
+  const DONE_TOP=HDR_H;
+  const doneBandH=drawSectionTitle(
+    lang==='fr'?'✓  CE QUE J\'AI':'✓  WHAT I\'VE',
+    lang==='fr'?'Accompli':'Accomplished',
+    DONE_TOP,
+    [[0,'rgba(26,188,156,0.18)'],[0.5,'rgba(26,188,156,0.10)'],[1,'rgba(26,188,156,0.04)']],
+    '#0a6b55',
+    'rgba(10,107,85,0.55)'
+  );
+
+  const CHIP_FS=20*sc;
+  const CHIP_H=40*sc;
+  const CHIP_GAPX=8*sc, CHIP_GAPY=8*sc;
+  const CHIP_PAD=14*sc;
+  const DIT=DONE_TOP+doneBandH+18*sc;
+
+  let cx=IX, cy=DIT, doneH=0;
+  ctx.font=`600 ${CHIP_FS}px 'Plus Jakarta Sans',sans-serif`;
+
+  doneItems.forEach(item=>{
+    const cc=catColor(item.catId);
+    const label=item.prefix?item.prefix+' '+item.label:item.label;
+    const lw=ctx.measureText(label).width;
+    const iconW=CHIP_H;
+    const chipW=iconW+lw+CHIP_PAD;
+    if(cx+chipW>IX+IW&&cx>IX){cx=IX;cy+=CHIP_H+CHIP_GAPY;}
+    ctx.fillStyle=cc.bg; ctx.fillRect(cx,cy,chipW,CHIP_H);
+    ctx.fillStyle='rgba(0,0,0,0.12)'; ctx.fillRect(cx,cy,iconW,CHIP_H);
+    ctx.strokeStyle=WHITE; ctx.lineWidth=2.2*sc; ctx.lineCap='round'; ctx.lineJoin='round';
+    const ckX=cx+iconW/2, ckY=cy+CHIP_H/2, ck=CHIP_H*0.16;
+    ctx.beginPath();
+    ctx.moveTo(ckX-ck,ckY+ck*0.1);
+    ctx.lineTo(ckX-ck*0.2,ckY+ck*0.9);
+    ctx.lineTo(ckX+ck,ckY-ck*0.7);
+    ctx.stroke();
+    ctx.fillStyle=WHITE;
+    ctx.font=`600 ${CHIP_FS}px 'Plus Jakarta Sans',sans-serif`;
+    ctx.fillText(label,cx+iconW+CHIP_PAD*0.4,cy+CHIP_H*0.66);
+    cx+=chipW+CHIP_GAPX;
+    doneH=cy+CHIP_H-DIT;
+  });
+
+  if(doneItems.length===0){
+    ctx.font=`400 italic ${CHIP_FS}px Georgia,serif`;
+    ctx.fillStyle='rgba(0,0,0,0.25)';
+    ctx.fillText(lang==='fr'?'Rien encore — mais ça viendra.':'Nothing yet — but it will come.',IX,DIT+CHIP_H*0.7);
+    doneH=CHIP_H;
+  }
+
+  const SEP_Y=DIT+doneH+28*sc;
+
+  // ═══════════════════════════════════════════════════════
+  // ZONE 2 — À ACCOMPLIR
+  // ═══════════════════════════════════════════════════════
+  const TODO_TITLE_Y=SEP_Y;
+  const todoBandH=drawSectionTitle(
+    lang==='fr'?'☐  CE QUE JE VEUX ENCORE':'☐  WHAT I STILL WANT TO',
+    lang==='fr'?'Accomplir':'Do',
+    TODO_TITLE_Y,
+    [[0,'rgba(255,107,53,0.15)'],[0.45,'rgba(233,30,140,0.10)'],[1,'rgba(155,89,182,0.06)']],
+    '#7A3D9A',
+    'rgba(122,61,154,0.5)'
+  );
+
+  const TIT=TODO_TITLE_Y+todoBandH;
+  const AVAIL_H=IBOT-TIT;
+
+  if(todoItems.length>0){
+    const CAT_HDR_H=38*sc;
+    const TILE_GAP=3*sc;
+    const ROW_GAP=3*sc;
+
+    const catGroups=[];
+    let curG=null;
+    todoItems.forEach(item=>{
+      if(!curG||curG.catId!==item.catId){curG={catId:item.catId,items:[]};catGroups.push(curG);}
+      curG.items.push(item);
+    });
+
+    function estimateH(ncols,tileH){
+      let h=0;
+      catGroups.forEach(g=>{
+        h+=CAT_HDR_H;
+        h+=Math.ceil(g.items.length/ncols)*(tileH+ROW_GAP);
+      });
+      return h;
+    }
+
+    let NCOLS=posterPortrait?4:5;
+    const MIN_TILE_H=58*sc;
+    const MAX_TILE_H=140*sc;
+    for(let nc=(posterPortrait?3:4);nc<=(posterPortrait?8:9);nc++){
+      if(estimateH(nc,MIN_TILE_H)<=AVAIL_H){NCOLS=nc;break;}
+    }
+    let lo=MIN_TILE_H, hi=MAX_TILE_H;
+    for(let k=0;k<20;k++){const mid=(lo+hi)/2;if(estimateH(NCOLS,mid)<AVAIL_H)lo=mid;else hi=mid;}
+    const TILE_H=Math.min(lo,MAX_TILE_H);
+    const TILE_W=(IW-(NCOLS-1)*TILE_GAP)/NCOLS;
+
+    // Police : remplit la hauteur de tuile — on prend 42% de la hauteur,
+    // puis on réduit si le texte le plus long ne rentre pas en 2 lignes max
+    const MAX_TILE_FS=Math.min(TILE_H*0.42,(posterPortrait?38:32)*sc);
+    const TILE_LINE_H_RATIO=1.18;
+
+    // CB_SZ = carré à cocher = hauteur de la tuile (carré parfait)
+    const CB_SZ=TILE_H;
+    const TEXT_GAP=18*sc;
+    const TEXT_PAD_R=16*sc;
+
+    const CAT_FS=14*sc;
+    let gy=TIT;
+
+    catGroups.forEach(group=>{
+      if(gy>=IBOT) return;
+      const cc=catColor(group.catId);
+      const catObj=categories.find(c=>c.id===group.catId)||{};
+      const catLabel=(catObj[lang]||catObj.fr||'').toUpperCase();
+      const nrows=Math.ceil(group.items.length/NCOLS);
+      const bodyH=nrows*(TILE_H+ROW_GAP);
+
+      // Header catégorie — fond plein cc.bg
+      ctx.fillStyle=cc.bg; ctx.fillRect(0,gy,W,CAT_HDR_H);
+      ctx.beginPath();ctx.arc(IX+12*sc,gy+CAT_HDR_H/2,5*sc,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fill();
+      ctx.font=`800 ${CAT_FS}px 'Plus Jakarta Sans',sans-serif`;
+      ctx.fillStyle=WHITE;
+      ctx.fillText(catLabel,IX+24*sc,gy+CAT_HDR_H*0.67);
+      gy+=CAT_HDR_H;
+
+      // Body — fond lighten
+      ctx.fillStyle=lighten(cc.bg,0.82); ctx.fillRect(0,gy,W,bodyH);
+
+      let col=0;
+      let colHeights=Array(NCOLS).fill(gy);
+
+      group.items.forEach(item=>{
+        const tX=IX+col*(TILE_W+TILE_GAP);
+        const tY=colHeights[col];
+        if(tY+TILE_H>IBOT) return;
+
+        const label=item.prefix?item.prefix+' '+item.label:item.label;
+
+        // Fond tuile blanc
+        ctx.fillStyle=WHITE; ctx.fillRect(tX,tY,TILE_W,TILE_H);
+
+        // Carré à cocher — fond lighten(cc.bg, 0.55), carré parfait
+        ctx.fillStyle=lighten(cc.bg,0.55); ctx.fillRect(tX,tY,CB_SZ,TILE_H);
+
+        // Texte : on cherche la plus grande police qui tient en max 2 lignes
+        const textMaxW=TILE_W-CB_SZ-TEXT_GAP-TEXT_PAD_R;
+        let fs=MAX_TILE_FS;
+        let lns;
+        for(let attempt=0;attempt<12;attempt++){
+          ctx.font=`600 ${fs}px 'Plus Jakarta Sans',sans-serif`;
+          lns=wrapText(label,textMaxW);
+          if(lns.length<=2) break;
+          fs*=0.92;
+        }
+        const lineH=fs*TILE_LINE_H_RATIO;
+        const totalH=lns.length*lineH;
+        const textX=tX+CB_SZ+TEXT_GAP;
+        const ty0=tY+(TILE_H-totalH)/2+fs*0.85;
+        ctx.fillStyle=INK;
+        lns.forEach((ln,li)=>ctx.fillText(ln,textX,ty0+li*lineH));
+
+        colHeights[col]+=TILE_H+ROW_GAP;
+        col=(col+1)%NCOLS;
+      });
+
+      gy+=bodyH;
+    });
+
+  } else {
+    ctx.font=`400 italic ${28*sc}px Georgia,serif`;
+    ctx.fillStyle='rgba(0,0,0,0.25)';
+    ctx.fillText(lang==='fr'?'Tout accompli — bravo !':'All done — congratulations!',IX,TIT+60*sc);
+  }
+
+  // Footer
+  const FOOT_Y=H-24*sc;
+  ctx.font=`400 ${18*sc}px 'Plus Jakarta Sans',sans-serif`;
+  ctx.fillStyle='rgba(0,0,0,0.22)';
+  ctx.fillText('studioexistence.com/bucket-list',IX,FOOT_Y);
+  const dateLabel=lang==='fr'?`Généré le ${dateStr}`:`Generated ${dateStr}`;
+  const dlW=ctx.measureText(dateLabel).width;
+  ctx.fillText(dateLabel,IX+IW-dlW,FOOT_Y);
 }
 
 function downloadPoster(){
