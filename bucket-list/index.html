@@ -12,9 +12,9 @@
      Modifier CAT_COLORS dans le JS pour la palette
      ============================================= */
   :root {
-    --bg:          #FFFFFF;
-    --bg-nav:      #F8F8F8;
-    --surface:     #FFFFFF;
+    --bg:          #F7F3ED;
+    --bg-nav:      #EDE9E2;
+    --surface:     #FDFAF6;
     --border:      rgba(0,0,0,0.09);
     --border2:     rgba(0,0,0,0.15);
     --text:        #111111;
@@ -87,7 +87,6 @@
   .progress-separator .progress-track{
     height:2px;
     border-radius:0;
-    background:#EBEBEB;
   }
   .header-top{display:flex;align-items:center;justify-content:space-between;}
   h1{font-family:var(--font-display);font-size:32px;font-weight:400;letter-spacing:-0.3px;line-height:1;color:var(--text);}
@@ -190,7 +189,7 @@
 
   /* ── ITEM default ── */
   .item{
-    background:#fff;
+    background:#FDFAF6;
     border:1.5px solid rgba(var(--cat-r),0.20);
     border-radius:10px;
     padding:10px 13px;
@@ -204,7 +203,7 @@
     transform:translateY(-1px);
   }
   .item.hidden{display:none;}
-  .item-label{flex:1;font-size:13px;line-height:1.4;color:#444;font-weight:500;}
+  .item-label{flex:1;font-size:13px;line-height:1.4;color:#5a5248;font-weight:500;}
   .item:hover .item-label{color:var(--text);}
 
   /* ── ITEM accompli (plein) ── */
@@ -218,7 +217,7 @@
 
   /* ── ITEM à faire (contour) ── */
   .item.is-todo{
-    background:#fff;
+    background:#FDFAF6;
     border-color:var(--cat-bg);
     border-width:2px;
     box-shadow:0 2px 8px rgba(var(--cat-r),0.12);
@@ -228,15 +227,15 @@
   /* ── CHECK BUTTONS ── */
   .item-actions{display:flex;gap:4px;flex-shrink:0;}
   .check-btn{
-    width:28px;height:28px;border-radius:6px;
-    border:1.5px solid rgba(var(--cat-r),0.25);
+    width:32px;height:32px;border-radius:8px;
+    border:2px solid rgba(var(--cat-r),0.25);
     background:none;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
-    font-size:13px;transition:all 0.15s;
+    font-size:14px;transition:all 0.18s;
     color:rgba(var(--cat-r),0.5);
     font-weight:700;
   }
-  .check-btn:hover{border-color:var(--cat-bg);color:var(--cat-bg);}
+  .check-btn:hover{border-color:var(--cat-bg);color:var(--cat-bg);background:rgba(var(--cat-r),0.07);}
   .check-btn.done-btn.active{
     background:rgba(255,255,255,0.25);
     border-color:rgba(255,255,255,0.6);
@@ -348,21 +347,18 @@
   }
   .res-item:last-child{border-bottom:none!important;}
 
-  /* Poster CTA */
-  .poster-cta{
-    margin:32px 0 0;padding:24px 28px;
-    border-radius:12px;
-    background:linear-gradient(105deg, #FF6B35 0%, #E91E8C 55%, #9B59B6 100%);
-    display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  /* Toggle all bar */
+  .results-toggle-bar{
+    display:flex;justify-content:flex-end;
+    padding:14px 0 6px;
   }
-  .poster-cta-text h3{font-family:var(--font-display);font-size:22px;font-weight:400;color:#fff;margin-bottom:4px;}
-  .poster-cta-text p{font-size:13px;color:rgba(255,255,255,0.7);max-width:380px;font-weight:500;}
-  .poster-cta-btn{
-    background:#fff;color:#111;border:none;padding:10px 22px;border-radius:20px;
-    cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:700;
-    transition:opacity 0.2s;white-space:nowrap;
+  .results-toggle-all-btn{
+    background:none;border:1.5px solid var(--border2);
+    color:var(--text-muted);padding:5px 14px;border-radius:20px;
+    cursor:pointer;font-family:var(--font-body);font-size:12px;font-weight:600;
+    transition:all 0.18s;letter-spacing:0.2px;
   }
-  .poster-cta-btn:hover{opacity:0.85;}
+  .results-toggle-all-btn:hover{border-color:var(--text);color:var(--text);}
 
   /* ── POSTER ── */
   #poster-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;overflow-y:auto;padding:36px;align-items:flex-start;justify-content:center;}
@@ -571,20 +567,17 @@
   <div class="results-hero">
     <div class="results-hero-title">Ma <em>Bucket List</em></div>
     <div class="results-actions">
+      <button class="poster-btn-main" onclick="openPoster()">🖼 Générer mon poster →</button>
       <button class="save-url-btn" onclick="saveToUrl()">🔗 Sauvegarder le lien</button>
       <button class="close-btn" onclick="closeResults()">Fermer ✕</button>
     </div>
   </div>
   <div class="results-stats-bar" id="results-stats"></div>
   <div class="results-body">
-    <div class="results-lists" id="results-lists"></div>
-    <div class="poster-cta">
-      <div class="poster-cta-text">
-        <h3>Transformez votre liste en poster</h3>
-        <p>Commandez un poster imprimé de votre bucket list — à afficher chez vous et cocher au fil de votre vie.</p>
-      </div>
-      <button class="poster-cta-btn" onclick="openPoster()">Générer mon poster →</button>
+    <div class="results-toggle-bar">
+      <button class="results-toggle-all-btn" id="results-toggle-all-btn" onclick="toggleAllResultsCats()">Tout révéler</button>
     </div>
+    <div class="results-lists" id="results-lists"></div>
   </div>
 </div>
 
@@ -594,6 +587,12 @@
     <div class="poster-controls">
       <button class="p-btn" onclick="closePoster()">← Retour</button>
       <button class="p-btn" onclick="toggleOrientation()">⟳ Portrait / Paysage</button>
+      <label style="display:flex;flex-direction:column;gap:3px;">
+        <span style="font-size:10px;color:rgba(255,255,255,0.5);font-family:var(--font-body);font-weight:700;letter-spacing:0.8px;text-transform:uppercase;">Personnaliser le titre</span>
+        <input type="text" id="poster-name-input" placeholder="ex : Marie" oninput="drawPoster()"
+          style="background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.25);border-radius:20px;padding:7px 14px;font-size:13px;color:#fff;font-family:var(--font-body);outline:none;font-weight:500;min-width:180px;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='rgba(255,255,255,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.25)'">
+      </label>
       <button class="p-btn primary" onclick="downloadPoster()">⬇ Télécharger PNG</button>
     </div>
     <canvas id="poster-canvas"></canvas>
@@ -672,6 +671,9 @@ let categories = [
       {id:'na15',fr:'Voir un dragon de Komodo',en:'See a Komodo dragon'},{id:'na16',fr:'Voir une baleine à bosse',en:'See a humpback whale'},
       {id:'na17',fr:'Voir une tortue géante',en:'See a giant tortoise'},{id:'na18',fr:'Voir un tigre du Bengale',en:'See a Bengal tiger'},
     ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_nature',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
+    ]},
   ]},
 
   {id:'voyages',fr:'Voyages & Géographie',en:'Travel & Geography',subcats:[
@@ -749,6 +751,9 @@ let categories = [
     {fr:'Pôles',en:'Poles',items:[
       {id:'v62',fr:'Mettre le pied en Antarctique',en:'Set foot in Antarctica'},{id:'v63',fr:'Mettre le pied en Arctique',en:'Set foot in the Arctic'},
     ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_voyages',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
+    ]},
   ]},
 
   {id:'corps',fr:'Corps & Limites physiques',en:'Body & Physical Limits',subcats:[
@@ -765,6 +770,9 @@ let categories = [
       {id:'c_sail',fr:'Apprendre à faire de la voile',en:'Learn to sail'},
       {id:'c_surf',fr:'Apprendre à surfer',en:'Learn to surf'},
       {id:'c_windsurf',fr:'Apprendre à faire de la planche à voile',en:'Learn to windsurf'},
+    ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_corps',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
     ]},
   ]},
 
@@ -793,6 +801,9 @@ let categories = [
       {id:'s_speleo',fr:'Faire de la spéléologie',en:'Go spelunking'},
       {id:'s_paintball',fr:'Faire du paintball',en:'Play paintball'},
     ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_sensations',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
+    ]},
   ]},
 
   {id:'perso',fr:'Accomplissements personnels',en:'Personal Achievements',subcats:[
@@ -805,6 +816,9 @@ let categories = [
       {id:'pp6',fr:'Participer à un open-mic',en:'Perform at an open mic'},
       {id:'pp7',fr:'Faire voler un cerf-volant',en:'Fly a kite'},
       {id:'pp8',fr:'Se faire tatouer',en:'Get a tattoo'},
+    ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_perso',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
     ]},
   ]},
 
@@ -822,6 +836,9 @@ let categories = [
       {id:'r18',fr:"S'asseoir et discuter avec un parfait inconnu",en:'Sit and talk with a complete stranger'},
       {id:'r19',fr:"Envoyer une lettre d'amour",en:'Send a love letter'},
       {id:'r20',fr:'Envoyer une bouteille à la mer',en:'Send a message in a bottle'},
+    ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_relations',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
     ]},
   ]},
 
@@ -871,6 +888,9 @@ let categories = [
       {id:'cu39',fr:'Manger du fugu',en:'Eat fugu (pufferfish)'},{id:'cu40',fr:'Boire un grand cru classé',en:'Drink a grand cru classé wine'},
       {id:'cu41',fr:'Fumer un grand cigare cubain',en:'Smoke a fine Cuban cigar'},
     ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_culture',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
+    ]},
   ]},
 
   {id:'pro',fr:'Accomplissements professionnels',en:'Professional Achievements',subcats:[
@@ -888,6 +908,9 @@ let categories = [
       {id:'p15',fr:'Remporter un championnat national',en:'Win a national championship'},
       {id:'p16',fr:'Remporter un championnat mondial',en:'Win a world championship'},
     ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_pro',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
+    ]},
   ]},
 
   {id:'mystere',fr:'Mystère & Paranormal',en:'Mystery & Paranormal',subcats:[
@@ -898,6 +921,9 @@ let categories = [
       {id:'m4',fr:'Avoir vu un fantôme',en:'See a ghost'},
       {id:'m5',fr:'Avoir communiqué avec un mort',en:'Communicate with the dead'},
       {id:'m6',fr:'Visiter une maison hantée',en:'Visit a haunted house'},
+    ]},
+    {fr:'Mes propres rêves',en:'My own dreams',items:[
+      {id:'mr_mystere',fr:'Mon rêve',en:'My dream',freetext:true,prefix_fr:'',prefix_en:''},
     ]},
   ]},
 ];
@@ -931,6 +957,11 @@ countries.forEach(c=>{const o=document.createElement('option');o.value=c;dl.appe
 
 // ===================== STATE =====================
 let state={}, dynamicItems={}, currentFilter='all', activeCatId='nature', lang='fr';
+
+// ===================== XSS ESCAPE =====================
+// Échappe le HTML pour tout texte injecté dans innerHTML (libellés utilisateur, etc.)
+const _escMap={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>_escMap[c]);}
 
 // ── Search debounce ──
 let _searchTimer=null;
@@ -972,7 +1003,26 @@ function loadFromUrl(){
   const params=new URLSearchParams(window.location.search);
   const bl=params.get('bl');
   if(!bl) return;
-  try{const p=JSON.parse(decodeURIComponent(atob(bl)));state=p.s||{};dynamicItems=p.d||{};saveState();}catch(e){}
+  try{
+    const p=JSON.parse(decodeURIComponent(atob(bl)));
+    // Si l'utilisateur a déjà une liste locale non vide, demander confirmation
+    const hasLocal=Object.keys(state).length>0||Object.keys(dynamicItems).length>0;
+    if(hasLocal){
+      const msg=lang==='fr'
+        ?'Ce lien contient une bucket list partagée. Voulez-vous remplacer votre liste actuelle ?\n\n(Annuler conservera votre liste actuelle.)'
+        :'This link contains a shared bucket list. Do you want to replace your current list?\n\n(Cancel will keep your current list.)';
+      if(!confirm(msg)){
+        // Nettoyer l'URL pour ne pas reproposer à chaque rechargement
+        history.replaceState(null,'',window.location.pathname);
+        return;
+      }
+    }
+    state=p.s||{};
+    dynamicItems=p.d||{};
+    saveState();
+    // Nettoyer l'URL après import réussi
+    history.replaceState(null,'',window.location.pathname);
+  }catch(e){}
 }
 
 // ===================== HELPERS =====================
@@ -1011,9 +1061,9 @@ function renderNav(){
     const items=flatItems(cat);
     const done=items.filter(i=>state[i.id]==='done').length;
     const cc=catColor(cat.id);
-    return `<div class="cat-nav-item ${activeCatId===cat.id?'active':''}" onclick="navClick('${cat.id}')" style="--cat-bg:${cc.bg};--cat-r:${cc.r};">
+    return `<div class="cat-nav-item ${activeCatId===cat.id?'active':''}" onclick="navClick('${esc(cat.id)}')" style="--cat-bg:${cc.bg};--cat-r:${cc.r};">
       <span class="cat-nav-dot"></span>
-      <span>${cat[lang]||cat.fr}</span>
+      <span>${esc(cat[lang]||cat.fr)}</span>
       <span class="cat-count">${done}/${items.length}</span>
     </div>`;
   }).join('');
@@ -1026,9 +1076,9 @@ function renderMobileNav(){
   el.innerHTML=categories.map(cat=>{
     const cc=catColor(cat.id);
     const isActive=activeCatId===cat.id;
-    return `<button class="mob-cat-pill ${isActive?'active':''}" onclick="navClick('${cat.id}')" style="--cat-bg:${cc.bg};--cat-r:${cc.r};--cat-text:${cc.txt};">
+    return `<button class="mob-cat-pill ${isActive?'active':''}" onclick="navClick('${esc(cat.id)}')" style="--cat-bg:${cc.bg};--cat-r:${cc.r};--cat-text:${cc.txt};">
       <span class="mob-cat-dot"></span>
-      ${cat[lang]||cat.fr}
+      ${esc(cat[lang]||cat.fr)}
     </button>`;
   }).join('');
   // Auto-scroll active pill into view
@@ -1065,12 +1115,12 @@ function renderContent(){
           if(currentFilter==='none'&&status!==null) return '';
           const cls=status==='done'?'is-done':status==='todo'?'is-todo':'';
           const sd=status===null||status==='done', st=status===null||status==='todo';
-          return `<div class="item ${cls}" id="item-${di.id}" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
-            <span class="item-label">${full}</span>
+          return `<div class="item ${cls}" id="item-${esc(di.id)}" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
+            <span class="item-label">${esc(full)}</span>
             <div class="item-actions">
-              ${sd?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${di.id}','done','${cat.id}')" title="${t('done_label')}">✓</button>`:''}
-              ${st?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${di.id}','todo','${cat.id}')" title="${t('todo_label')}">☆</button>`:''}
-              <button class="check-btn del-btn" onclick="removeDynamic('${item.id}','${di.id}')">✕</button>
+              ${sd?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${esc(di.id)}','done','${esc(cat.id)}')" title="${esc(t('done_label'))}">✓</button>`:''}
+              ${st?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${esc(di.id)}','todo','${esc(cat.id)}')" title="${esc(t('todo_label'))}">☆</button>`:''}
+              <button class="check-btn del-btn" onclick="removeDynamic('${esc(item.id)}','${esc(di.id)}')">✕</button>
             </div>
           </div>`;
         }).join('');
@@ -1079,15 +1129,15 @@ function renderContent(){
         if(currentFilter!=='all'&&currentFilter!=='none'&&!hasVisible) return '';
         const inputRow=(currentFilter==='all'||currentFilter==='none')
           ? `<div class="freetext-row" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
-               <span class="freetext-prefix">${prefix}</span>
-               <input type="text" class="freetext-input" id="ft-${item.id}" placeholder="${ph}" ${listAttr}
-                 onkeydown="if(event.key==='Enter'){addDynamic('${item.id}');event.preventDefault();}">
-               <button class="freetext-add" onclick="addDynamic('${item.id}')">${t('add')}</button>
+               <span class="freetext-prefix">${esc(prefix)}</span>
+               <input type="text" class="freetext-input" id="ft-${esc(item.id)}" placeholder="${esc(ph)}" ${listAttr}
+                 onkeydown="if(event.key==='Enter'){addDynamic('${esc(item.id)}');event.preventDefault();}">
+               <button class="freetext-add" onclick="addDynamic('${esc(item.id)}')">${esc(t('add'))}</button>
              </div>`
           : '';
         const scTitle=sc[lang]||sc.fr;
         return `<div class="subcat" style="--cat-h:${cc.h};--cat-r:${cc.r};">
-          ${scTitle?`<div class="subcat-title" style="color:${cc.h}">${scTitle}</div>`:''}
+          ${scTitle?`<div class="subcat-title" style="color:${cc.h}">${esc(scTitle)}</div>`:''}
           ${inputRow}
           ${hasVisible?`<div class="items-grid">${dynHtml}</div>`:''}
         </div>`;
@@ -1096,14 +1146,14 @@ function renderContent(){
       // ── Standard subcat ──
       const ihtml=sc.items.map(item=>item.freetext?renderFreetext(item,search,cat.id):renderStatic(item,search,cat.id)).join('');
       if(!ihtml.trim()) return '';
-      return `<div class="subcat" style="--cat-h:${cc.h};--cat-r:${cc.r};">${(sc[lang]||sc.fr)?`<div class="subcat-title" style="color:${cc.h}">${sc[lang]||sc.fr}</div>`:''}<div class="items-grid">${ihtml}</div></div>`;
+      return `<div class="subcat" style="--cat-h:${cc.h};--cat-r:${cc.r};">${(sc[lang]||sc.fr)?`<div class="subcat-title" style="color:${cc.h}">${esc(sc[lang]||sc.fr)}</div>`:''}<div class="items-grid">${ihtml}</div></div>`;
     }).join('');
     const catItems=flatItems(cat);
     const catDone=catItems.filter(i=>state[i.id]==='done').length;
     const catPct=catItems.length?Math.round(catDone/catItems.length*100):0;
-    return `<div class="category-section" id="cat-${cat.id}" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
+    return `<div class="category-section" id="cat-${esc(cat.id)}" style="--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};">
       <div class="cat-sticky" style="background:${cc.bg};">
-        <span class="cat-title">${cat[lang]||cat.fr}</span>
+        <span class="cat-title">${esc(cat[lang]||cat.fr)}</span>
         <div class="cat-progress-wrap">
           <div class="cat-progress-track">
             <div class="cat-progress-fill" style="width:${catPct}%"></div>
@@ -1129,23 +1179,24 @@ function renderStatic(item,search,catId){
   const styleAttr=`--cat-bg:${cc.bg};--cat-h:${cc.h};--cat-r:${cc.r};--cat-text:${cc.txt};`;
   const showDone=status===null||status==='done';
   const showTodo=status===null||status==='todo';
-  return `<div class="item ${cls}" id="item-${item.id}" style="${styleAttr}">
-    <span class="item-label">${label}</span>
+  return `<div class="item ${cls}" id="item-${esc(item.id)}" style="${styleAttr}">
+    <span class="item-label">${esc(label)}</span>
     <div class="item-actions">
-      ${showDone?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${item.id}','done','${catId}')" title="${t('done_label')}">✓</button>`:''}
-      ${showTodo?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${item.id}','todo','${catId}')" title="${t('todo_label')}">☆</button>`:''}
+      ${showDone?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${esc(item.id)}','done','${esc(catId)}')" title="${esc(t('done_label'))}">✓</button>`:''}
+      ${showTodo?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${esc(item.id)}','todo','${esc(catId)}')" title="${esc(t('todo_label'))}">☆</button>`:''}
     </div>
   </div>`;
 }
 
 function renderFreetext(item,search,catId){
-  const prefix=item['prefix_'+lang]||item.prefix_fr;
+  const prefix=(item['prefix_'+lang]!==undefined?item['prefix_'+lang]:item.prefix_fr)||'';
   const isCountry=item.id==='v_pays';
-  const ph=isCountry?t('country_p'):t('author_p');
+  const isReve=item.id&&item.id.startsWith('mr_');
+  const ph=isCountry?t('country_p'):isReve?(lang==='fr'?'Écrire mon rêve...':'Write my dream...'):(lang==='fr'?'Nom de l\'auteur...':'Author name...');
   const dynamics=dynamicItems[item.id]||[];
   const dynHtml=dynamics.map(di=>{
     const status=state[di.id]||null;
-    const full=prefix+' '+di.label;
+    const full=prefix?(prefix+' '+di.label):di.label;
     if(search&&!full.toLowerCase().includes(search)) return '';
     if(currentFilter==='done'&&status!=='done') return '';
     if(currentFilter==='todo'&&status!=='todo') return '';
@@ -1153,22 +1204,22 @@ function renderFreetext(item,search,catId){
     const cls=status==='done'?'is-done':status==='todo'?'is-todo':'';
     const cc2=catColor(catId);
     const sd=status===null||status==='done', st=status===null||status==='todo';
-    return `<div class="item ${cls}" id="item-${di.id}" style="--cat-bg:${cc2.bg};--cat-h:${cc2.h};--cat-r:${cc2.r};--cat-text:${cc2.txt};">
-      <span class="item-label">${full}</span>
+    return `<div class="item ${cls}" id="item-${esc(di.id)}" style="--cat-bg:${cc2.bg};--cat-h:${cc2.h};--cat-r:${cc2.r};--cat-text:${cc2.txt};">
+      <span class="item-label">${esc(full)}</span>
       <div class="item-actions">
-        ${sd?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${di.id}','done','${catId}')" title="${t('done_label')}">✓</button>`:''}
-        ${st?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${di.id}','todo','${catId}')" title="${t('todo_label')}">☆</button>`:''}
-        <button class="check-btn del-btn" onclick="removeDynamic('${item.id}','${di.id}')">✕</button>
+        ${sd?`<button class="check-btn done-btn ${status==='done'?'active':''}" onclick="toggle('${esc(di.id)}','done','${esc(catId)}')" title="${esc(t('done_label'))}">✓</button>`:''}
+        ${st?`<button class="check-btn todo-btn ${status==='todo'?'active':''}" onclick="toggle('${esc(di.id)}','todo','${esc(catId)}')" title="${esc(t('todo_label'))}">☆</button>`:''}
+        <button class="check-btn del-btn" onclick="removeDynamic('${esc(item.id)}','${esc(di.id)}')">✕</button>
       </div>
     </div>`;
   }).join('');
   const listAttr=isCountry?'list="dl-pays"':'';
   const inputRow=(currentFilter==='all'||currentFilter==='none')
     ? `<div class="freetext-row" style="--cat-bg:${catColor(catId).bg};--cat-h:${catColor(catId).h};--cat-r:${catColor(catId).r};--cat-text:${catColor(catId).txt};">
-        <span class="freetext-prefix">${prefix}</span>
-        <input type="text" class="freetext-input" id="ft-${item.id}" placeholder="${ph}" ${listAttr}
-          onkeydown="if(event.key==='Enter'){addDynamic('${item.id}');event.preventDefault();}">
-        <button class="freetext-add" onclick="addDynamic('${item.id}')">${t('add')}</button>
+        ${prefix?`<span class="freetext-prefix">${esc(prefix)}</span>`:''}
+        <input type="text" class="freetext-input" id="ft-${esc(item.id)}" placeholder="${esc(ph)}" ${listAttr}
+          onkeydown="if(event.key==='Enter'){addDynamic('${esc(item.id)}');event.preventDefault();}">
+        <button class="freetext-add" onclick="addDynamic('${esc(item.id)}')">${esc(t('add'))}</button>
        </div>`
     : '';
   return `${inputRow}<div class="dynamic-items">${dynHtml}</div>`;
@@ -1197,8 +1248,8 @@ function toggle(id,type,catId){
       const delBtn=actions.querySelector('.del-btn');
       const delHtml=delBtn?delBtn.outerHTML:'';
       actions.innerHTML=
-        (showDone?`<button class="check-btn done-btn ${s==='done'?'active':''}" onclick="toggle('${id}','done','${catId||''}')" title="${t('done_label')}">✓</button>`:'')+
-        (showTodo?`<button class="check-btn todo-btn ${s==='todo'?'active':''}" onclick="toggle('${id}','todo','${catId||''}')" title="${t('todo_label')}">☆</button>`:'')+
+        (showDone?`<button class="check-btn done-btn ${s==='done'?'active':''}" onclick="toggle('${esc(id)}','done','${esc(catId||'')}')" title="${esc(t('done_label'))}">✓</button>`:'')+
+        (showTodo?`<button class="check-btn todo-btn ${s==='todo'?'active':''}" onclick="toggle('${esc(id)}','todo','${esc(catId||'')}')" title="${esc(t('todo_label'))}">☆</button>`:'')+
         delHtml;
     }
     if(currentFilter!=='all'&&!(currentFilter==='none'&&!s)&&s!==currentFilter) el.classList.add('hidden');
@@ -1212,7 +1263,7 @@ function addDynamic(ftId){
   const val=input.value.trim();
   const alreadyExists=dynamicItems[ftId].some(d=>d.label.toLowerCase()===val.toLowerCase());
   if(alreadyExists){input.select();return;}
-  dynamicItems[ftId].push({id:ftId+'_'+Date.now(),label:val});
+  dynamicItems[ftId].push({id:ftId+'_'+genId(),label:val});
   input.value='';
   saveState();renderContent();updateStats();renderNav();
 }
@@ -1290,9 +1341,9 @@ function openResults(){
       if(!catItems.length) return '';
       const cc=catColor(cat.id);
       const bg=lightenHex(cc.bg,82);
-      return `<div class="res-cat-block open">
+      return `<div class="res-cat-block">
         <div class="res-cat-toggle" onclick="this.parentElement.classList.toggle('open')" style="background:${cc.bg};">
-          <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;color:#fff;">${cat[lang]||cat.fr}</span>
+          <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;color:#fff;">${esc(cat[lang]||cat.fr)}</span>
           <div style="display:flex;align-items:center;gap:6px;">
             <span style="font-size:11px;color:rgba(255,255,255,0.7);font-weight:700;">${catItems.length}</span>
             <span class="res-cat-arrow" style="color:rgba(255,255,255,0.6);">▼</span>
@@ -1304,7 +1355,7 @@ function openResults(){
             const mb=isLast?'0':'5px';
             const itemStyle=isDone
               ? `background:${cc.bg};border-radius:7px;padding:6px 10px;margin-bottom:${mb};border:none;`
-              : `background:#fff;border-radius:7px;padding:5px 10px;margin-bottom:${mb};border:1.5px solid ${cc.bg};box-sizing:border-box;`;
+              : `background:#FDFAF6;border-radius:7px;padding:5px 10px;margin-bottom:${mb};border:1.5px solid ${cc.bg};box-sizing:border-box;`;
             const checkStyle=isDone
               ? `color:#fff;font-size:12px;font-weight:900;flex-shrink:0;`
               : `color:${cc.bg};font-size:12px;font-weight:900;flex-shrink:0;`;
@@ -1313,7 +1364,7 @@ function openResults(){
               : `font-size:13px;font-weight:500;color:#333;`;
             return `<div style="${itemStyle}display:flex;align-items:center;gap:8px;">
               <span style="${checkStyle}">${isDone?'✓':'☆'}</span>
-              <span style="${labelStyle}">${i.prefix?i.prefix+' ':''}${i.label}</span>
+              <span style="${labelStyle}">${esc(i.prefix?i.prefix+' '+i.label:i.label)}</span>
             </div>`;
           }).join('')}
         </div>
@@ -1329,8 +1380,22 @@ function openResults(){
       <div class="res-col-title">☆ ${t('what_todo')}</div>
       ${buildList(todoItems,false)||'<div style="color:var(--text-dim);font-size:13px;padding:8px 0">—</div>'}
     </div>`;
+  // Reset toggle-all button state
+  const tab=document.getElementById('results-toggle-all-btn');
+  if(tab){tab.textContent='Tout révéler';tab.dataset.allOpen='0';}
 }
 function closeResults(){document.getElementById('results-panel').classList.remove('open');}
+
+function toggleAllResultsCats(){
+  const btn=document.getElementById('results-toggle-all-btn');
+  const allOpen=btn.dataset.allOpen==='1';
+  document.querySelectorAll('#results-lists .res-cat-block').forEach(b=>{
+    if(allOpen) b.classList.remove('open');
+    else b.classList.add('open');
+  });
+  btn.dataset.allOpen=allOpen?'0':'1';
+  btn.textContent=allOpen?'Tout révéler':'Tout fermer';
+}
 
 function saveToUrl(){
   const payload={s:state,d:dynamicItems};
@@ -1357,6 +1422,18 @@ function drawPoster(){
   canvas.width=W; canvas.height=H;
   const ctx=canvas.getContext('2d');
   const sc=W/2480;
+
+  // Polyfill roundRect
+  if(!ctx.roundRect){
+    ctx.roundRect=function(x,y,w,h,r){
+      r=Math.min(r,w/2,h/2);
+      ctx.beginPath();
+      ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+      ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+      ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+      ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+    };
+  }
 
   const BG='#F7F3ED';
   const INK='#1A1612';
@@ -1385,145 +1462,272 @@ function drawPoster(){
   const PAD=100*sc;
   const IX=PAD;
   const IW=W-PAD*2;
-  const FOOT_H=52*sc;
-  const IBOT=H-PAD*0.5-FOOT_H;
+  const FOOT_H=32*sc;
+  const FOOT_Y=H-14*sc;
+  const IBOT=H-FOOT_H;
+
+  const personName=(document.getElementById('poster-name-input')?.value||'').trim();
 
   // ═══════════════════════════════════════════════════════
   // HEADER — dégradé orange→violet
   // ═══════════════════════════════════════════════════════
-  const HDR_H=(posterPortrait?220:180)*sc;
+  const HDR_H=(posterPortrait?240:196)*sc;
   const hGrd=ctx.createLinearGradient(0,0,W,HDR_H);
   hGrd.addColorStop(0,'#FF6B35');
   hGrd.addColorStop(0.55,'#E91E8C');
   hGrd.addColorStop(1,'#9B59B6');
   ctx.fillStyle=hGrd; ctx.fillRect(0,0,W,HDR_H);
 
-  const TFS=(posterPortrait?120:96)*sc;
-  ctx.font=`italic ${TFS}px Georgia,serif`;
-  ctx.fillStyle=WHITE;
-  ctx.fillText('Bucket',IX,HDR_H*0.72);
-  const bW=ctx.measureText('Bucket').width;
-  ctx.fillStyle='rgba(255,255,255,0.35)';
-  ctx.fillText('List',IX+bW+20*sc,HDR_H*0.72);
+  const TFS=(posterPortrait?108:86)*sc;
 
-  const SFS=22*sc;
-  ctx.font=`600 ${SFS}px 'Plus Jakarta Sans',sans-serif`;
-  const statsStr=lang==='fr'
-    ?`${doneItems.length} accomplis  ·  ${todoItems.length} à accomplir`
-    :`${doneItems.length} done  ·  ${todoItems.length} to do`;
-  const sW=ctx.measureText(statsStr).width;
-  ctx.fillStyle='rgba(255,255,255,0.65)';
-  ctx.fillText(statsStr,IX+IW-sW,HDR_H*0.72);
+  if(personName){
+    // Avec nom : "La Bucket List de [Prénom]" — une seule ligne centrée
+    // "La Bucket List de" en regular, prénom en italic
+    const prefix=lang==='fr'?'La Bucket List de ':'The Bucket List of ';
+    ctx.font=`400 ${TFS}px Georgia,serif`;
+    const prefW=ctx.measureText(prefix).width;
+    ctx.font=`italic ${TFS}px Georgia,serif`;
+    const nameW=ctx.measureText(personName).width;
+    const totalW=prefW+nameW;
+    const startX=W/2-totalW/2;
+    const baseY=HDR_H*0.70;
+    ctx.font=`400 ${TFS}px Georgia,serif`;
+    ctx.fillStyle='rgba(255,255,255,0.92)';
+    ctx.fillText(prefix, startX, baseY);
+    ctx.font=`italic ${TFS}px Georgia,serif`;
+    ctx.fillStyle=WHITE;
+    ctx.fillText(personName, startX+prefW, baseY);
+  } else {
+    // Sans nom : "Bucket List" centré, "List" en italic semi-transparent
+    ctx.font=`400 ${TFS}px Georgia,serif`;
+    const bW2=ctx.measureText('Bucket ').width;
+    ctx.font=`italic ${TFS}px Georgia,serif`;
+    const lW2=ctx.measureText('List').width;
+    const totalW2=bW2+lW2;
+    const startX2=W/2-totalW2/2;
+    const baseY2=HDR_H*0.70;
+    ctx.font=`400 ${TFS}px Georgia,serif`;
+    ctx.fillStyle=WHITE;
+    ctx.fillText('Bucket ', startX2, baseY2);
+    ctx.font=`italic ${TFS}px Georgia,serif`;
+    ctx.fillStyle='rgba(255,255,255,0.55)';
+    ctx.fillText('List', startX2+bW2, baseY2);
+  }
+
+  // ── Stats centrées sous le titre, dans le bandeau header ──
+  // Format : "45 accomplis · 65 à faire · 30 avril 2026"
+  // Chiffres en gras Georgia, libellés + date en regular, même corps
+  {
+    const STAT_FS=(posterPortrait?28:22)*sc;
+    const baseY=HDR_H*0.91;
+
+    const nDone=doneItems.length, nTodo=todoItems.length;
+    const sep='  ·  ';
+    const doneNum=String(nDone), doneLabel=lang==='fr'?' accomplis':' accomplished';
+    const todoNum=String(nTodo), todoLabel=lang==='fr'?' à faire':' to do';
+    const dateLabel=lang==='fr'?`${dateStr}`:`${dateStr}`;
+
+    // Mesurer chaque segment
+    ctx.font=`700 ${STAT_FS}px Georgia,serif`;
+    const wDoneNum=ctx.measureText(doneNum).width;
+    const wTodoNum=ctx.measureText(todoNum).width;
+    ctx.font=`400 ${STAT_FS}px Georgia,serif`;
+    const wDoneLbl=ctx.measureText(doneLabel).width;
+    const wSep=ctx.measureText(sep).width;
+    const wTodoLbl=ctx.measureText(todoLabel).width;
+    const wDate=ctx.measureText(dateLabel).width;
+
+    const totalW=wDoneNum+wDoneLbl+wSep+wTodoNum+wTodoLbl+wSep+wDate;
+    let x=W/2-totalW/2;
+
+    const draw=(text,bold,alpha=0.90)=>{
+      ctx.font=`${bold?'700':'400'} ${STAT_FS}px Georgia,serif`;
+      ctx.fillStyle=`rgba(255,255,255,${alpha})`;
+      ctx.fillText(text,x,baseY);
+      x+=ctx.measureText(text).width;
+    };
+
+    draw(doneNum,  true);
+    draw(doneLabel,false);
+    draw(sep,      false, 0.40);
+    draw(todoNum,  true);
+    draw(todoLabel,false);
+    draw(sep,      false, 0.40);
+    draw(dateLabel,false, 0.50);
+  }
 
   // ═══════════════════════════════════════════════════════
-  // SECTION TITLE — visuellement riche, quasi aussi grand que le header
-  // Bande pleine largeur avec dégradé propre à chaque section
-  // Titre : grande italique Georgia, sur 2 niveaux (petit label + grand titre)
+  // SECTION TITLE — une seule police, mot-clé en gras
+  // "Ce que j'ai accompli" : normal + BOLD sur "accompli"
+  // "Ce qu'il me reste à faire" : normal + BOLD sur "à faire"
   // ═══════════════════════════════════════════════════════
-  function drawSectionTitle(superLabel, mainLabel, y, gradStops, titleColor, superColor){
-    const MAIN_FS=(posterPortrait?88:70)*sc;
-    const SUP_FS=(posterPortrait?22:18)*sc;
-    const bandH=MAIN_FS*1.55;
+  function drawSectionTitle(prefixText, boldText, y, gradStops, textColor){
+    const FS=(posterPortrait?72:58)*sc;
+    const bandH=FS*1.8;
 
-    // Gradient band
+    // Gradient band subtil
     const g=ctx.createLinearGradient(0,y,W,y+bandH);
     gradStops.forEach(([stop,color])=>g.addColorStop(stop,color));
     ctx.fillStyle=g; ctx.fillRect(0,y,W,bandH);
 
-    // Petit label en haut centré (ex: "✓ CE QUE J'AI")
-    ctx.font=`700 ${SUP_FS}px 'Plus Jakarta Sans',sans-serif`;
-    ctx.fillStyle=superColor;
-    const supW=ctx.measureText(superLabel).width;
-    ctx.fillText(superLabel, W/2-supW/2, y+bandH*0.32);
+    // Mesure des deux parties
+    ctx.font=`400 ${FS}px Georgia,serif`;
+    const prefW=ctx.measureText(prefixText+' ').width;
+    ctx.font=`700 ${FS}px Georgia,serif`;
+    const boldW=ctx.measureText(boldText).width;
+    const totalW=prefW+boldW;
 
-    // Grand titre italique centré
-    ctx.font=`italic ${MAIN_FS}px Georgia,serif`;
-    ctx.fillStyle=titleColor;
-    const mW=ctx.measureText(mainLabel).width;
-    // Si trop large, réduire
-    let fs=MAIN_FS;
-    while(mW>IW*0.95&&fs>MAIN_FS*0.6){
-      fs*=0.96;
-      ctx.font=`italic ${fs}px Georgia,serif`;
-    }
-    const mW2=ctx.measureText(mainLabel).width;
-    ctx.fillText(mainLabel, W/2-mW2/2, y+bandH*0.88);
+    const startX=W/2-totalW/2;
+    const baseY=y+bandH*0.67;
+
+    // Partie normale
+    ctx.font=`400 ${FS}px Georgia,serif`;
+    ctx.fillStyle=textColor;
+    ctx.fillText(prefixText+' ', startX, baseY);
+
+    // Partie en gras
+    ctx.font=`700 ${FS}px Georgia,serif`;
+    ctx.fillText(boldText, startX+prefW, baseY);
 
     return bandH;
   }
 
   // ═══════════════════════════════════════════════════════
-  // ZONE 1 — ACCOMPLIS
+  // ZONE 1 — ACCOMPLIS (4 colonnes, liste par catégorie)
   // ═══════════════════════════════════════════════════════
   const DONE_TOP=HDR_H;
   const doneBandH=drawSectionTitle(
-    lang==='fr'?'✓  CE QUE J\'AI':'✓  WHAT I\'VE',
-    lang==='fr'?'Accompli':'Accomplished',
+    lang==='fr'?'Ce que j\'ai':'What I\'ve',
+    lang==='fr'?'accompli':'accomplished',
     DONE_TOP,
-    [[0,'rgba(26,188,156,0.18)'],[0.5,'rgba(26,188,156,0.10)'],[1,'rgba(26,188,156,0.04)']],
-    '#0a6b55',
-    'rgba(10,107,85,0.55)'
+    [[0,'rgba(26,188,156,0.14)'],[1,'rgba(26,188,156,0.03)']],
+    '#0a6b55'
   );
 
-  const CHIP_FS=20*sc;
-  const CHIP_H=40*sc;
-  const CHIP_GAPX=8*sc, CHIP_GAPY=8*sc;
-  const CHIP_PAD=14*sc;
-  const DIT=DONE_TOP+doneBandH+18*sc;
-
-  let cx=IX, cy=DIT, doneH=0;
-  ctx.font=`600 ${CHIP_FS}px 'Plus Jakarta Sans',sans-serif`;
-
-  doneItems.forEach(item=>{
-    const cc=catColor(item.catId);
-    const label=item.prefix?item.prefix+' '+item.label:item.label;
-    const lw=ctx.measureText(label).width;
-    const iconW=CHIP_H;
-    const chipW=iconW+lw+CHIP_PAD;
-    if(cx+chipW>IX+IW&&cx>IX){cx=IX;cy+=CHIP_H+CHIP_GAPY;}
-    ctx.fillStyle=cc.bg; ctx.fillRect(cx,cy,chipW,CHIP_H);
-    ctx.fillStyle='rgba(0,0,0,0.12)'; ctx.fillRect(cx,cy,iconW,CHIP_H);
-    ctx.strokeStyle=WHITE; ctx.lineWidth=2.2*sc; ctx.lineCap='round'; ctx.lineJoin='round';
-    const ckX=cx+iconW/2, ckY=cy+CHIP_H/2, ck=CHIP_H*0.16;
-    ctx.beginPath();
-    ctx.moveTo(ckX-ck,ckY+ck*0.1);
-    ctx.lineTo(ckX-ck*0.2,ckY+ck*0.9);
-    ctx.lineTo(ckX+ck,ckY-ck*0.7);
-    ctx.stroke();
-    ctx.fillStyle=WHITE;
-    ctx.font=`600 ${CHIP_FS}px 'Plus Jakarta Sans',sans-serif`;
-    ctx.fillText(label,cx+iconW+CHIP_PAD*0.4,cy+CHIP_H*0.66);
-    cx+=chipW+CHIP_GAPX;
-    doneH=cy+CHIP_H-DIT;
-  });
+  const DIT=DONE_TOP+doneBandH+16*sc;
+  let doneH=0;
 
   if(doneItems.length===0){
-    ctx.font=`400 italic ${CHIP_FS}px Georgia,serif`;
+    ctx.font=`400 italic ${20*sc}px Georgia,serif`;
     ctx.fillStyle='rgba(0,0,0,0.25)';
-    ctx.fillText(lang==='fr'?'Rien encore — mais ça viendra.':'Nothing yet — but it will come.',IX,DIT+CHIP_H*0.7);
-    doneH=CHIP_H;
+    ctx.fillText(lang==='fr'?'Rien encore — mais ça viendra.':'Nothing yet — but it will come.',IX,DIT+28*sc);
+    doneH=44*sc;
+  } else {
+    const DONE_NCOLS=posterPortrait?4:5;
+    const COL_GAP=8*sc;
+    const DONE_COL_W=(IW-(DONE_NCOLS-1)*COL_GAP)/DONE_NCOLS;
+    const ITEM_FS=17*sc;
+    const ITEM_H=28*sc;
+    const ITEM_GAP=3*sc;
+    const CAT_LABEL_FS=10*sc;
+    const CAT_LABEL_H=22*sc;
+
+    // Flux continu : on empile tous les items (avec pill de catégorie quand elle change)
+    // dans les colonnes de gauche à droite, sans forcer les ruptures par catégorie
+    // → résultat organique, pas d'écart de hauteur entre colonnes
+
+    // Construire la liste linéaire de "blocs" à dessiner
+    const blocks=[]; // {type:'cat',catId} ou {type:'item',item,catId}
+    let lastCatId=null;
+    doneItems.forEach(item=>{
+      if(item.catId!==lastCatId){
+        blocks.push({type:'cat',catId:item.catId});
+        lastCatId=item.catId;
+      }
+      blocks.push({type:'item',item,catId:item.catId});
+    });
+
+    // Hauteur de chaque bloc
+    function blockH(b){ return b.type==='cat'?(CAT_LABEL_H+3*sc):(ITEM_H+ITEM_GAP); }
+
+    const totalH=blocks.reduce((s,b)=>s+blockH(b),0);
+    const targetColH=totalH/DONE_NCOLS;
+
+    // Flux libre item par item, coupure dès qu'on dépasse la cible.
+    // Règle anti-orphelin : si le dernier bloc d'une colonne est un header 'cat',
+    // on le pousse au début de la colonne suivante.
+    const cols=Array.from({length:DONE_NCOLS},()=>[]);
+    let colIdx=0, colAccH=0;
+    blocks.forEach(b=>{
+      if(colIdx<DONE_NCOLS-1 && colAccH>=targetColH){
+        colIdx++; colAccH=0;
+      }
+      cols[colIdx].push(b);
+      colAccH+=blockH(b);
+    });
+
+    // Anti-orphelin : si la dernière entrée d'une colonne est un 'cat',
+    // la déplacer en tête de la colonne suivante.
+    for(let ci=0;ci<DONE_NCOLS-1;ci++){
+      const col=cols[ci];
+      if(col.length>0 && col[col.length-1].type==='cat'){
+        const orphan=col.pop();
+        cols[ci+1].unshift(orphan);
+      }
+    }
+
+    let maxColH=0;
+    cols.forEach((col,ci)=>{
+      let gy=DIT;
+      const colX=IX+ci*(DONE_COL_W+COL_GAP);
+      col.forEach(b=>{
+        if(b.type==='cat'){
+          const cc=catColor(b.catId);
+          const catObj=categories.find(c=>c.id===b.catId)||{};
+          const catLabel=(catObj[lang]||catObj.fr||'').toUpperCase();
+          ctx.fillStyle=cc.bg;
+          ctx.beginPath();ctx.roundRect(colX,gy,DONE_COL_W,CAT_LABEL_H,3*sc);ctx.fill();
+          ctx.font=`800 ${CAT_LABEL_FS}px 'Plus Jakarta Sans',sans-serif`;
+          ctx.fillStyle=WHITE;
+          let cLbl=catLabel;
+          const maxCW=DONE_COL_W-12*sc;
+          while(ctx.measureText(cLbl).width>maxCW&&cLbl.length>2) cLbl=cLbl.slice(0,-1);
+          if(cLbl!==catLabel) cLbl=cLbl.slice(0,-1)+'…';
+          ctx.fillText(cLbl,colX+7*sc,gy+CAT_LABEL_H*0.73);
+          gy+=CAT_LABEL_H+3*sc;
+        } else {
+          const cc=catColor(b.catId);
+          const label=b.item.prefix?b.item.prefix+' '+b.item.label:b.item.label;
+          ctx.fillStyle=cc.bg;
+          ctx.beginPath();ctx.roundRect(colX,gy,DONE_COL_W,ITEM_H,3*sc);ctx.fill();
+          // Checkmark
+          ctx.strokeStyle=WHITE;ctx.lineWidth=1.8*sc;ctx.lineCap='round';ctx.lineJoin='round';
+          const ckX=colX+12*sc,ckY=gy+ITEM_H/2,ck=4.5*sc;
+          ctx.beginPath();ctx.moveTo(ckX-ck,ckY);ctx.lineTo(ckX-ck*0.1,ckY+ck*0.8);ctx.lineTo(ckX+ck,ckY-ck*0.7);ctx.stroke();
+          ctx.font=`600 ${ITEM_FS}px 'Plus Jakarta Sans',sans-serif`;
+          ctx.fillStyle=WHITE;
+          const maxLW=DONE_COL_W-24*sc-6*sc;
+          let lbl=label;
+          while(ctx.measureText(lbl).width>maxLW&&lbl.length>3) lbl=lbl.slice(0,-1);
+          if(lbl!==label) lbl=lbl.slice(0,-1)+'…';
+          ctx.fillText(lbl,colX+24*sc,gy+ITEM_H*0.68);
+          gy+=ITEM_H+ITEM_GAP;
+        }
+      });
+      maxColH=Math.max(maxColH,gy-DIT);
+    });
+    doneH=maxColH;
   }
 
-  const SEP_Y=DIT+doneH+28*sc;
+  const SEP_Y=DIT+doneH+24*sc;
 
   // ═══════════════════════════════════════════════════════
-  // ZONE 2 — À ACCOMPLIR
+  // ZONE 2 — À FAIRE
   // ═══════════════════════════════════════════════════════
   const TODO_TITLE_Y=SEP_Y;
   const todoBandH=drawSectionTitle(
-    lang==='fr'?'☐  CE QUE JE VEUX ENCORE':'☐  WHAT I STILL WANT TO',
-    lang==='fr'?'Accomplir':'Do',
+    lang==='fr'?'Ce qu\'il me reste':'What I still want',
+    lang==='fr'?'à faire':'to do',
     TODO_TITLE_Y,
-    [[0,'rgba(255,107,53,0.15)'],[0.45,'rgba(233,30,140,0.10)'],[1,'rgba(155,89,182,0.06)']],
-    '#7A3D9A',
-    'rgba(122,61,154,0.5)'
+    [[0,'rgba(233,30,140,0.12)'],[1,'rgba(155,89,182,0.04)']],
+    '#5a1a7a'
   );
 
   const TIT=TODO_TITLE_Y+todoBandH;
   const AVAIL_H=IBOT-TIT;
 
   if(todoItems.length>0){
-    const CAT_HDR_H=38*sc;
+    const CAT_HDR_H=(posterPortrait?58:48)*sc;
     const TILE_GAP=3*sc;
     const ROW_GAP=3*sc;
 
@@ -1564,7 +1768,7 @@ function drawPoster(){
     const TEXT_GAP=18*sc;
     const TEXT_PAD_R=16*sc;
 
-    const CAT_FS=14*sc;
+    const CAT_HDR_H_NEW=(posterPortrait?58:48)*sc;
     let gy=TIT;
 
     catGroups.forEach(group=>{
@@ -1575,14 +1779,24 @@ function drawPoster(){
       const nrows=Math.ceil(group.items.length/NCOLS);
       const bodyH=nrows*(TILE_H+ROW_GAP);
 
-      // Header catégorie — fond plein cc.bg
-      ctx.fillStyle=cc.bg; ctx.fillRect(0,gy,W,CAT_HDR_H);
-      ctx.beginPath();ctx.arc(IX+12*sc,gy+CAT_HDR_H/2,5*sc,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fill();
-      ctx.font=`800 ${CAT_FS}px 'Plus Jakarta Sans',sans-serif`;
+      // Header catégorie — titre centré, pleine hauteur, tracking large
+      ctx.fillStyle=cc.bg; ctx.fillRect(0,gy,W,CAT_HDR_H_NEW);
+
+      // Trouver la plus grande taille qui tient sur une ligne
+      let CAT_FS=CAT_HDR_H_NEW*0.55;
+      ctx.font=`700 ${CAT_FS}px 'Plus Jakarta Sans',sans-serif`;
+      ctx.letterSpacing=`${CAT_HDR_H_NEW*0.08}px`;
+      while(ctx.measureText(catLabel).width>IW*0.92 && CAT_FS>CAT_HDR_H_NEW*0.25){
+        CAT_FS*=0.95;
+        ctx.font=`700 ${CAT_FS}px 'Plus Jakarta Sans',sans-serif`;
+      }
+      const catLabelW=ctx.measureText(catLabel).width;
+      // Centrer verticalement : baseline = milieu + ~0.35*fontSize
+      const catBaseY=gy+CAT_HDR_H_NEW/2+CAT_FS*0.35;
       ctx.fillStyle=WHITE;
-      ctx.fillText(catLabel,IX+24*sc,gy+CAT_HDR_H*0.67);
-      gy+=CAT_HDR_H;
+      ctx.fillText(catLabel, W/2-catLabelW/2, catBaseY);
+      ctx.letterSpacing='0px';
+      gy+=CAT_HDR_H_NEW;
 
       // Body — fond lighten
       ctx.fillStyle=lighten(cc.bg,0.82); ctx.fillRect(0,gy,W,bodyH);
@@ -1597,13 +1811,23 @@ function drawPoster(){
 
         const label=item.prefix?item.prefix+' '+item.label:item.label;
 
-        // Fond tuile blanc
-        ctx.fillStyle=WHITE; ctx.fillRect(tX,tY,TILE_W,TILE_H);
+        // Fond tuile blanc crème
+        ctx.fillStyle='#FDFAF6'; ctx.fillRect(tX,tY,TILE_W,TILE_H);
 
-        // Carré à cocher — fond lighten(cc.bg, 0.55), carré parfait
-        ctx.fillStyle=lighten(cc.bg,0.55); ctx.fillRect(tX,tY,CB_SZ,TILE_H);
+        // Zone checkbox — carré parfait à gauche, fond teinté de la catégorie
+        const cbInner=CB_SZ*0.52;
+        const cbX=tX+(CB_SZ-cbInner)/2;
+        const cbY=tY+(TILE_H-cbInner)/2;
+        const cbR=cbInner*0.18;
 
-        // Texte : on cherche la plus grande police qui tient en max 2 lignes
+        ctx.fillStyle=lighten(cc.bg,0.60); ctx.fillRect(tX,tY,CB_SZ,TILE_H);
+
+        ctx.fillStyle=WHITE;
+        ctx.beginPath();ctx.roundRect(cbX,cbY,cbInner,cbInner,cbR);ctx.fill();
+        ctx.strokeStyle=cc.bg; ctx.lineWidth=2.5*sc;
+        ctx.beginPath();ctx.roundRect(cbX,cbY,cbInner,cbInner,cbR);ctx.stroke();
+
+        // Texte : plus grande police tenant en 2 lignes max
         const textMaxW=TILE_W-CB_SZ-TEXT_GAP-TEXT_PAD_R;
         let fs=MAX_TILE_FS;
         let lns;
@@ -1614,10 +1838,12 @@ function drawPoster(){
           fs*=0.92;
         }
         const lineH=fs*TILE_LINE_H_RATIO;
-        const totalH=lns.length*lineH;
+        const totalTextH=(lns.length-1)*lineH+fs; // hauteur réelle du bloc
         const textX=tX+CB_SZ+TEXT_GAP;
-        const ty0=tY+(TILE_H-totalH)/2+fs*0.85;
-        ctx.fillStyle=INK;
+        // Centrage vertical : milieu de la tuile moins la moitié du bloc,
+        // +fs pour convertir coordonnée de boîte en baseline canvas
+        const ty0=tY+(TILE_H-totalTextH)/2+fs;
+        ctx.fillStyle='#3a332b';
         lns.forEach((ln,li)=>ctx.fillText(ln,textX,ty0+li*lineH));
 
         colHeights[col]+=TILE_H+ROW_GAP;
@@ -1633,14 +1859,12 @@ function drawPoster(){
     ctx.fillText(lang==='fr'?'Tout accompli — bravo !':'All done — congratulations!',IX,TIT+60*sc);
   }
 
-  // Footer
-  const FOOT_Y=H-24*sc;
-  ctx.font=`400 ${18*sc}px 'Plus Jakarta Sans',sans-serif`;
-  ctx.fillStyle='rgba(0,0,0,0.22)';
-  ctx.fillText('studioexistence.com/bucket-list',IX,FOOT_Y);
-  const dateLabel=lang==='fr'?`Généré le ${dateStr}`:`Generated ${dateStr}`;
-  const dlW=ctx.measureText(dateLabel).width;
-  ctx.fillText(dateLabel,IX+IW-dlW,FOOT_Y);
+  // Footer minimal — URL uniquement
+  ctx.font=`400 ${16*sc}px 'Plus Jakarta Sans',sans-serif`;
+  ctx.fillStyle='rgba(0,0,0,0.18)';
+  const urlStr='studioexistence.com/bucket-list';
+  const urlW=ctx.measureText(urlStr).width;
+  ctx.fillText(urlStr,W/2-urlW/2,FOOT_Y);
 }
 
 function downloadPoster(){
@@ -1679,8 +1903,8 @@ function closeAdmin(){
 function renderAdminNav(){
   document.getElementById('admin-nav').innerHTML = categories.map(cat=>{
     const total = cat.subcats.reduce((n,sc)=>n+sc.items.length,0);
-    return `<div class="admin-nav-item ${adminCatId===cat.id?'active':''}" onclick="adminSelectCat('${cat.id}')">
-      <span>${cat.fr}</span><span class="admin-nav-count">${total}</span>
+    return `<div class="admin-nav-item ${adminCatId===cat.id?'active':''}" onclick="adminSelectCat('${esc(cat.id)}')">
+      <span>${esc(cat.fr)}</span><span class="admin-nav-count">${total}</span>
     </div>`;
   }).join('')
   + `<div style="padding:12px;margin-top:8px;border-top:1px solid var(--border)">
@@ -1708,14 +1932,14 @@ function renderAdminContent(){
     const scTitle=sc.fr||'(sans titre)';
     const itemsHtml=sc.items.map((item,ii)=>`
       <div class="admin-item-row">
-        <span class="admin-item-text">${item.fr}</span>
-        ${item.en?`<span class="admin-item-freetext">${item.en}</span>`:''}
-        <button class="admin-del-btn" onclick="adminDeleteItem('${cat.id}',${si},${ii})" title="Supprimer">✕</button>
+        <span class="admin-item-text">${esc(item.fr)}</span>
+        ${item.en?`<span class="admin-item-freetext">${esc(item.en)}</span>`:''}
+        <button class="admin-del-btn" onclick="adminDeleteItem('${esc(cat.id)}',${si},${ii})" title="Supprimer">✕</button>
       </div>`).join('');
 
     // Subcat title (editable for non-empty)
     const titleHtml=sc.fr
-      ? `<div class="admin-subcat-title">${scTitle} <span style="font-size:10px;color:var(--text-dim);font-style:italic">(${sc.items.length} éléments)</span></div>`
+      ? `<div class="admin-subcat-title">${esc(scTitle)} <span style="font-size:10px;color:var(--text-dim);font-style:italic">(${sc.items.length} éléments)</span></div>`
       : `<div class="admin-subcat-title">(sans sous-catégorie)</div>`;
 
     return `<div class="admin-subcat">
@@ -1724,7 +1948,7 @@ function renderAdminContent(){
       <div class="admin-add-row">
         <input type="text" class="admin-add-input" id="add-fr-${si}" placeholder="Libellé français">
         <input type="text" class="admin-add-input" id="add-en-${si}" placeholder="English label">
-        <button class="admin-add-btn" onclick="adminAddItem('${cat.id}',${si})">+ Ajouter</button>
+        <button class="admin-add-btn" onclick="adminAddItem('${esc(cat.id)}',${si})">+ Ajouter</button>
       </div>
     </div>`;
   }).join('');
@@ -1736,21 +1960,21 @@ function renderAdminContent(){
       <input type="text" class="admin-add-input" id="new-subcat-name" placeholder="Nom de la sous-catégorie (optionnel)">
       <input type="text" class="admin-add-input" id="new-subcat-fr" placeholder="Premier élément (français)">
       <input type="text" class="admin-add-input" id="new-subcat-en" placeholder="First item (English)">
-      <button class="admin-add-btn" onclick="adminAddSubcat('${cat.id}')">+ Créer</button>
+      <button class="admin-add-btn" onclick="adminAddSubcat('${esc(cat.id)}')">+ Créer</button>
     </div>
   </div>`;
 
   // Delete category button
   const delCatHtml=`<div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px">
-    <button onclick="adminDeleteCategory('${cat.id}')" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all 0.2s" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">
-      Supprimer la catégorie "${cat.fr}"
+    <button onclick="adminDeleteCategory('${esc(cat.id)}')" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:var(--font-body);font-size:12px;transition:all 0.2s" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'">
+      Supprimer la catégorie "${esc(cat.fr)}"
     </button>
     <span style="font-size:11px;color:var(--text-dim)">Cette action est irréversible</span>
   </div>`;
 
   area.innerHTML=`
     <div class="admin-cat-header">
-      <div class="admin-cat-title">${cat.fr}</div>
+      <div class="admin-cat-title">${esc(cat.fr)}</div>
     </div>
     ${subcatsHtml}
     ${newSubcatHtml}
