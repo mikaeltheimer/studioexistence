@@ -166,6 +166,11 @@
       margin: var(--gap) 4rem 0;
     }
 
+    /* Une carte qui prend toute la largeur de la grille (les deux colonnes) */
+    .card-full {
+      grid-column: 1 / -1;
+    }
+
     /* ══ CARD ══ */
     .card {
       border: 1.5px solid var(--accent);
@@ -646,7 +651,6 @@
       height: auto;
       background: #0a0908;
       border-color: var(--accent);
-      margin: var(--gap) 4rem 0;
     }
 
     .card-photo .card-bg { background: #0a0908; }
@@ -781,8 +785,173 @@
     }
 
     @media(max-width:700px){
-      .card-photo { margin: var(--gap) 1.5rem 0; }
       .film-frame { width: 120px; }
+    }
+
+    /* ══ BUCKET LIST CARD ══ */
+    .card-bucket {
+      min-height: auto;
+      height: auto;
+      background: #f7f3ed;
+      border-color: var(--accent);
+    }
+
+    .card-bucket .card-bg { background: #f7f3ed; }
+
+    .card-content-bucket {
+      flex-direction: column !important;
+      height: 100% !important;
+      padding: 0 !important;
+      gap: 0 !important;
+    }
+
+    /* top visual — gradient sky with floating ticks */
+    .bucket-top {
+      height: 200px;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(105deg, #FF6B35 0%, #E91E8C 55%, #9B59B6 100%);
+    }
+
+    /* subtle stars/specks */
+    .bucket-top::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,.45), transparent 50%),
+        radial-gradient(1px 1px at 27% 65%, rgba(255,255,255,.35), transparent 50%),
+        radial-gradient(1.5px 1.5px at 48% 18%, rgba(255,255,255,.5), transparent 50%),
+        radial-gradient(1px 1px at 64% 78%, rgba(255,255,255,.4), transparent 50%),
+        radial-gradient(1px 1px at 78% 35%, rgba(255,255,255,.3), transparent 50%),
+        radial-gradient(1.5px 1.5px at 91% 60%, rgba(255,255,255,.45), transparent 50%);
+      pointer-events: none;
+    }
+
+    /* scrolling list of bucket items */
+    .bucket-strip {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 14px;
+      animation: bucketRoll 28s linear infinite;
+      will-change: transform;
+      padding: 0 14px;
+    }
+
+    @keyframes bucketRoll {
+      from { transform: translate(0, -50%); }
+      to   { transform: translate(-50%, -50%); }
+    }
+
+    .bucket-item {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 16px;
+      background: rgba(255,255,255,0.96);
+      border-radius: 22px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .78rem;
+      font-weight: 500;
+      color: #1a1612;
+      white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+
+    .bucket-item.is-done {
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      box-shadow: none;
+    }
+
+    .bucket-tick {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: .62rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .bucket-item:not(.is-done) .bucket-tick {
+      border: 1.5px solid #1a1612;
+      color: #1a1612;
+      background: transparent;
+    }
+    .bucket-item.is-done .bucket-tick {
+      background: #fff;
+      color: #E91E8C;
+    }
+
+    /* bottom info bar */
+    .bucket-bottom {
+      padding: 1rem 1.8rem 1.1rem;
+      border-top: 1px solid rgba(0,0,0,.08);
+      background: #fdfaf6;
+    }
+
+    .bucket-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .7rem;
+      gap: 1rem;
+    }
+
+    .bucket-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: .04em;
+      color: #1a1612;
+      line-height: 1;
+    }
+    .bucket-logo em {
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 1.7rem;
+      color: #E91E8C;
+    }
+
+    .bucket-url {
+      font-family: 'Space Mono', monospace;
+      font-size: .48rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .22em .65em;
+      border: 1px solid #c8c4bc;
+      color: #888;
+      white-space: nowrap;
+      transition: color .2s, border-color .2s;
+    }
+    .card-bucket:hover .bucket-url { color: var(--accent); border-color: var(--accent); }
+
+    .bucket-desc {
+      font-size: .78rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: #5a5248;
+      max-width: 100%;
+    }
+
+    .card-bucket .card-visit-hint {
+      border-color: rgba(0,0,0,.12);
+      color: rgba(0,0,0,.35);
+    }
+    .card-bucket:hover .card-visit-hint {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    @media(max-width:700px){
+      .bucket-item { font-size: .72rem; padding: 8px 13px; }
     }
 
     /* ══ FOOTER ══ */
@@ -1126,6 +1295,31 @@
 
 
 
+  <!-- BUCKET LIST (full width) -->
+  <a class="card card-full card-bucket" id="bucket" href="https://studioexistence.com/bucket-list" target="_blank" rel="noopener">
+    <div class="card-bg"></div>
+    <div class="card-content card-content-bucket">
+
+      <!-- TOP : scrolling bucket items on gradient -->
+      <div class="bucket-top">
+        <div class="bucket-strip" id="bucketStrip"></div>
+      </div>
+
+      <!-- BOTTOM : info bar -->
+      <div class="bucket-bottom">
+        <div class="bucket-row">
+          <span class="bucket-logo">Bucket <em>List</em></span>
+          <span class="bucket-url">studioexistence.com/bucket-list</span>
+        </div>
+        <p class="bucket-desc">Créez la liste de votre vie. Cochez ce que vous avez accompli, ce que vous voulez faire, ajoutez vos rêves. Partagez votre liste — ou générez votre poster personnel.</p>
+      </div>
+
+    </div>
+    <span class="card-visit-hint">Visiter →</span>
+  </a>
+
+
+
   <!-- 100 HALL OF FAME -->
   <a class="card" id="hall" href="https://100halloffame.com" target="_blank" rel="noopener">
     <div class="card-bg"></div>
@@ -1186,30 +1380,32 @@
   </a>
 
 
-</div>
 
-<!-- ══ PHOTO CARD ════════════════════════════════ -->
-<a class="card card-photo" id="photo" href="https://www.mikaeltheimer.com" target="_blank" rel="noopener">
-  <div class="card-bg"></div>
-  <div class="card-content card-content-photo">
+  <!-- PHOTO CARD (full width) -->
+  <a class="card card-full card-photo" id="photo" href="https://www.mikaeltheimer.com" target="_blank" rel="noopener">
+    <div class="card-bg"></div>
+    <div class="card-content card-content-photo">
 
-    <!-- FILMSTRIP -->
-    <div class="film-top">
-      <div class="film-track" id="filmTrack"></div>
-    </div>
-
-    <!-- INFO -->
-    <div class="photo-bottom">
-      <div class="photo-row">
-        <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/400368/file/400368O6Z0QtON.png" alt="Mikaël Theimer" class="photo-logo" />
-        <span class="photo-url">mikaeltheimer.com</span>
+      <!-- FILMSTRIP -->
+      <div class="film-top">
+        <div class="film-track" id="filmTrack"></div>
       </div>
-      <p class="photo-desc">Portraitiste de l'humain. Je ne crée pas des images — je fige des instants. Ce n'est pas tant la photographie que j'aime ; ce sont les gens qu'elle me permet de rencontrer.</p>
-    </div>
 
-  </div>
-  <span class="card-visit-hint">Visiter →</span>
-</a>
+      <!-- INFO -->
+      <div class="photo-bottom">
+        <div class="photo-row">
+          <img src="https://dkemhji6i1k0x.cloudfront.net/000_clients/400368/file/400368O6Z0QtON.png" alt="Mikaël Theimer" class="photo-logo" />
+          <span class="photo-url">mikaeltheimer.com</span>
+        </div>
+        <p class="photo-desc">Portraitiste de l'humain. Je ne crée pas des images — je fige des instants. Ce n'est pas tant la photographie que j'aime ; ce sont les gens qu'elle me permet de rencontrer.</p>
+      </div>
+
+    </div>
+    <span class="card-visit-hint">Visiter →</span>
+  </a>
+
+
+</div>
 
 <!-- ══ FOOTER ════════════════════════════════ -->
 <div class="footer-strip">
@@ -1475,6 +1671,46 @@ blipPositions.forEach((pos,i) => {
     track.appendChild(frame);
   });
 })();
+
+/* ── Bucket List: scrolling list of items ── */
+(function() {
+  const strip = document.getElementById('bucketStrip');
+  if (!strip) return;
+
+  // Quelques items emblématiques d'une bucket list, mix de cochés et non cochés
+  const items = [
+    { label: 'Voir une aurore boréale',           done: true  },
+    { label: 'Apprendre une nouvelle langue',     done: false },
+    { label: 'Faire le tour du monde',            done: false },
+    { label: 'Voir la Voie lactée à l\u2019\u0153il nu', done: true  },
+    { label: 'Dormir à la belle étoile',          done: true  },
+    { label: 'Écrire un livre',                   done: false },
+    { label: 'Plonger sur une épave',             done: false },
+    { label: 'Sauter en parachute',               done: true  },
+    { label: 'Visiter le Japon',                  done: true  },
+    { label: 'Courir un marathon',                done: false },
+    { label: 'Voir une baleine',                  done: true  },
+    { label: 'Apprendre à danser le tango',       done: false },
+  ];
+
+  // Échappement HTML pour le label (sécurité, cohérence avec ton fichier bucket list)
+  const escMap = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+  const esc = s => String(s).replace(/[&<>"']/g, c => escMap[c]);
+
+  // Dupliquer la liste pour boucle continue
+  const all = [...items, ...items];
+
+  all.forEach(it => {
+    const el = document.createElement('div');
+    el.className = 'bucket-item' + (it.done ? ' is-done' : '');
+    el.innerHTML = `
+      <span class="bucket-tick">${it.done ? '\u2713' : '\u2606'}</span>
+      <span>${esc(it.label)}</span>
+    `;
+    strip.appendChild(el);
+  });
+})();
+
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
 }, { threshold: 0.05 });
