@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Fond crème arrondi -->
+  <rect width="32" height="32" rx="6" fill="#f0ece4"/>
+  <!-- Bordure violette -->
+  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="5.5" fill="none" stroke="#5B2D8E" stroke-width="1.5"/>
+  <!-- E géométrique style Bebas Neue -->
+  <g fill="#5B2D8E">
+    <rect x="9" y="6" width="4" height="20"/>
+    <rect x="9" y="6" width="14" height="4"/>
+    <rect x="9" y="14" width="11" height="3.5"/>
+    <rect x="9" y="22" width="14" height="4"/>
+  </g>
+</svg>
