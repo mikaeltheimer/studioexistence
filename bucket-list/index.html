@@ -121,8 +121,39 @@
   .filter-btn{background:none;border:1.5px solid var(--border2);color:var(--text-muted);padding:5px 12px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:12px;font-weight:600;transition:all 0.2s;white-space:nowrap;}
   .filter-btn:hover{border-color:var(--text);color:var(--text);}
   .filter-btn.active-done,.filter-btn.active-todo,.filter-btn.active-all,.filter-btn.active-none{border-color:var(--text);color:var(--text);background:#F0F0F0;}
-  .results-btn{margin-left:auto;background:var(--text);color:#fff;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:700;transition:opacity 0.2s;white-space:nowrap;letter-spacing:0.2px;}
-  .results-btn:hover{opacity:0.8;}
+
+  /* CTA group : poster (primary) + liste (secondary) */
+  .header-cta{margin-left:auto;display:flex;gap:8px;align-items:center;}
+  .results-btn-secondary{
+    background:none;
+    border:1.5px solid var(--text);
+    color:var(--text);
+    padding:6px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    font-family:var(--font-body);
+    font-size:13px;
+    font-weight:600;
+    transition:all 0.2s;
+    white-space:nowrap;
+  }
+  .results-btn-secondary:hover{background:var(--text);color:#fff;}
+  .poster-btn-primary{
+    background:var(--text);
+    color:#fff;
+    border:none;
+    padding:8px 18px;
+    border-radius:20px;
+    cursor:pointer;
+    font-family:var(--font-body);
+    font-size:13px;
+    font-weight:700;
+    transition:transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+    white-space:nowrap;
+    letter-spacing:0.2px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.12);
+  }
+  .poster-btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,0.18);}
 
   /* ── MAIN LAYOUT ── */
   #main-layout{display:flex;position:fixed;left:0;right:0;bottom:0;}
@@ -428,8 +459,10 @@
     .search-wrap{ max-width:none; min-width:0; flex:1; }
     /* Filter buttons hidden on mobile (replaced by category pills) */
     .filter-btns{ display:none; }
-    /* Results button: icon only */
-    .results-btn{ padding:7px 12px; font-size:12px; white-space:nowrap; }
+    /* CTA buttons : compacter sur mobile */
+    .header-cta{ gap:6px; }
+    .results-btn-secondary{ padding:5px 10px; font-size:12px; }
+    .poster-btn-primary{ padding:7px 12px; font-size:12px; }
 
     /* ── Mobile category pill nav ── */
     #cat-nav-mobile{
@@ -543,7 +576,10 @@
       <button class="filter-btn" onclick="setFilter('todo',this)">☆ À faire</button>
       <button class="filter-btn" onclick="setFilter('none',this)">Non cochés</button>
     </div>
-    <button class="results-btn" onclick="openResults()">Voir mes résultats →</button>
+    <div class="header-cta">
+      <button class="results-btn-secondary" onclick="openResults()">Voir ma liste</button>
+      <button class="poster-btn-primary" onclick="openPoster()">🖼 Générer mon poster →</button>
+    </div>
   </div>
   <div class="progress-separator">
     <div class="progress-track">
@@ -587,6 +623,7 @@
     <div class="poster-controls">
       <button class="p-btn" onclick="closePoster()">← Retour</button>
       <button class="p-btn" onclick="toggleOrientation()">⟳ Portrait / Paysage</button>
+      <button class="p-btn" id="poster-theme-btn" onclick="togglePosterTheme()">☾ Mode sombre</button>
       <label style="display:flex;flex-direction:column;gap:3px;">
         <span style="font-size:10px;color:rgba(255,255,255,0.5);font-family:var(--font-body);font-weight:700;letter-spacing:0.8px;text-transform:uppercase;">Personnaliser le titre</span>
         <input type="text" id="poster-name-input" placeholder="ex : Marie" oninput="drawPoster()"
@@ -1412,9 +1449,17 @@ function saveToUrl(){
 
 // ===================== POSTER =====================
 let posterPortrait=true;
+let posterTheme='light'; // 'light' | 'dark'
 function openPoster(){document.getElementById('poster-panel').classList.add('open');drawPoster();}
 function closePoster(){document.getElementById('poster-panel').classList.remove('open');}
 function toggleOrientation(){posterPortrait=!posterPortrait;drawPoster();}
+function togglePosterTheme(){
+  posterTheme=posterTheme==='light'?'dark':'light';
+  // Mettre à jour le label du bouton
+  const btn=document.getElementById('poster-theme-btn');
+  if(btn) btn.textContent=posterTheme==='light'?'☾ Mode sombre':'☼ Mode clair';
+  drawPoster();
+}
 
 function drawPoster(){
   const canvas=document.getElementById('poster-canvas');
@@ -1435,12 +1480,109 @@ function drawPoster(){
     };
   }
 
-  const BG='#F7F3ED';
-  const INK='#1A1612';
-  const WHITE='#FFFFFF';
-
   function hexToRgb(hex){return[parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)];}
   function lighten(hex,p){const[r,g,b]=hexToRgb(hex);const m=v=>Math.round(v+(255-v)*p);return`rgb(${m(r)},${m(g)},${m(b)})`;}
+  function darken(hex,p){const[r,g,b]=hexToRgb(hex);const m=v=>Math.round(v*(1-p));return`rgb(${m(r)},${m(g)},${m(b)})`;}
+  // Convertit RGB → HSL (h en degrés 0-360, s/l entre 0 et 1)
+  function rgbToHsl(r,g,b){
+    const rn=r/255,gn=g/255,bn=b/255;
+    const max=Math.max(rn,gn,bn),min=Math.min(rn,gn,bn);
+    const l=(max+min)/2;
+    const d=max-min;
+    let h=0,s=0;
+    if(d!==0){
+      s=l>0.5?d/(2-max-min):d/(max+min);
+      if(max===rn) h=((gn-bn)/d)%6;
+      else if(max===gn) h=(bn-rn)/d+2;
+      else h=(rn-gn)/d+4;
+      h*=60;
+      if(h<0) h+=360;
+    }
+    return [h,s,l];
+  }
+  // Convertit HSL → RGB
+  function hslToRgb(h,s,l){
+    const c=(1-Math.abs(2*l-1))*s;
+    const x=c*(1-Math.abs(((h/60)%2)-1));
+    const m=l-c/2;
+    let r,g,b;
+    if(h<60){r=c;g=x;b=0;}
+    else if(h<120){r=x;g=c;b=0;}
+    else if(h<180){r=0;g=c;b=x;}
+    else if(h<240){r=0;g=x;b=c;}
+    else if(h<300){r=x;g=0;b=c;}
+    else{r=c;g=0;b=x;}
+    return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)];
+  }
+  // Désature et ajuste la luminosité d'une couleur (effet pastel/poudré)
+  function pastelize(hex, satMul, lightShift){
+    const [r,g,b]=hexToRgb(hex);
+    let [h,s,l]=rgbToHsl(r,g,b);
+    s=Math.max(0,Math.min(1,s*satMul));
+    l=Math.max(0,Math.min(1,l+lightShift));
+    const [nr,ng,nb]=hslToRgb(h,s,l);
+    return `rgb(${nr},${ng},${nb})`;
+  }
+  // Dégradé "marque" : couleurs des catégories triées par teinte, version pastel/poudrée
+  function makeBrandGradient(x0,y0,x1,y1){
+    // Récupérer toutes les couleurs définies, calculer leur teinte, trier
+    const seq=Object.values(CAT_COLORS)
+      .map(c=>{const[r,g,b]=hexToRgb(c.bg);const[h]=rgbToHsl(r,g,b);return{bg:c.bg,hue:h};})
+      .sort((a,b)=>a.hue-b.hue);
+    // Désaturation : on coupe la saturation à ~50% et on éclaircit légèrement
+    // En sombre, on éclaircit moins pour que ça reste posé sur fond charbon
+    const SAT_MUL = 0.55;
+    const LIGHT_SHIFT = isDark ? 0.06 : 0.10;
+    const grd=ctx.createLinearGradient(x0,y0,x1,y1);
+    seq.forEach((c,i)=>{
+      const stop = seq.length>1 ? i/(seq.length-1) : 0.5;
+      grd.addColorStop(stop, pastelize(c.bg, SAT_MUL, LIGHT_SHIFT));
+    });
+    return grd;
+  }
+
+  // ─── PALETTE selon le thème ───
+  // Le bandeau header (dégradé) et les couleurs de catégories restent identiques
+  // dans les deux thèmes — elles fonctionnent sur fond clair comme sombre.
+  const isDark=posterTheme==='dark';
+  const PAL=isDark?{
+    bg:        '#1A1A1F',  // fond principal (charbon profond, pas pur noir)
+    text:      '#F0EBE0',  // texte principal
+    textSoft:  'rgba(240,235,224,0.72)', // texte secondaire
+    textMuted: 'rgba(240,235,224,0.40)', // empty state, footer
+    sectionDoneText: '#E8E2D5',     // titre "accompli" — neutre crème (sur fond charbon)
+    sectionTodoText: '#E8E2D5',     // titre "à faire" — neutre crème (sur fond charbon)
+    doneBandStops:[[0,'rgba(78,201,163,0.18)'],[1,'rgba(78,201,163,0.04)']],
+    todoBandStops:[[0,'rgba(195,120,224,0.18)'],[1,'rgba(195,120,224,0.04)']],
+    tileTodoBg:    '#252329',  // fond de tuile "à faire"
+    tileTodoText:  '#E8E2D5',  // texte de tuile "à faire"
+    cbInnerBg:     '#1A1A1F',  // intérieur de la checkbox (creux)
+    cbBorderBoost: 0,
+    catBodyMix:    0.30,       // assombrir la couleur de catégorie pour le fond du body
+    catSideMix:    0.45,       // assombrir pour la barre côté checkbox
+    catBodyMode:   'darken',
+    footerColor:   'rgba(240,235,224,0.30)'
+  }:{
+    bg:        '#F7F3ED',
+    text:      '#1A1612',
+    textSoft:  'rgba(0,0,0,0.55)',
+    textMuted: 'rgba(0,0,0,0.25)',
+    sectionDoneText: '#2D2A26',     // titre "accompli" — anthracite chaud (sur fond crème)
+    sectionTodoText: '#2D2A26',     // titre "à faire" — anthracite chaud (sur fond crème)
+    doneBandStops:[[0,'rgba(26,188,156,0.14)'],[1,'rgba(26,188,156,0.03)']],
+    todoBandStops:[[0,'rgba(233,30,140,0.12)'],[1,'rgba(155,89,182,0.04)']],
+    tileTodoBg:    '#FDFAF6',
+    tileTodoText:  '#3a332b',
+    cbInnerBg:     '#FFFFFF',
+    cbBorderBoost: 0,
+    catBodyMix:    0.82,
+    catSideMix:    0.60,
+    catBodyMode:   'lighten',
+    footerColor:   'rgba(0,0,0,0.18)'
+  };
+  const BG=PAL.bg;
+  const INK=PAL.text;
+  const WHITE='#FFFFFF';
   function wrapText(text,maxW){
     const words=text.split(' ');const lines=[];let line='';
     words.forEach(w=>{
@@ -1469,20 +1611,26 @@ function drawPoster(){
   const personName=(document.getElementById('poster-name-input')?.value||'').trim();
 
   // ═══════════════════════════════════════════════════════
-  // HEADER — dégradé orange→violet
+  // HEADER — fond uni neutre (cohérent avec le fond du poster)
   // ═══════════════════════════════════════════════════════
-  const HDR_H=(posterPortrait?240:196)*sc;
-  const hGrd=ctx.createLinearGradient(0,0,W,HDR_H);
-  hGrd.addColorStop(0,'#FF6B35');
-  hGrd.addColorStop(0.55,'#E91E8C');
-  hGrd.addColorStop(1,'#9B59B6');
-  ctx.fillStyle=hGrd; ctx.fillRect(0,0,W,HDR_H);
+  const HDR_H=(posterPortrait?220:170)*sc;
+  // Pas de bandeau coloré : on garde le fond du poster
+  // Ligne fine de séparation sous le titre
+  ctx.strokeStyle=isDark?'rgba(240,235,224,0.30)':'rgba(0,0,0,0.25)';
+  ctx.lineWidth=1.5*sc;
+  ctx.beginPath();
+  ctx.moveTo(IX,HDR_H);
+  ctx.lineTo(W-IX,HDR_H);
+  ctx.stroke();
 
-  const TFS=(posterPortrait?108:86)*sc;
+  const TFS=(posterPortrait?120:96)*sc;
+
+  // Titre en couleur encre (clair) ou crème (sombre) — pas de blanc, pas d'ombre
+  const TITLE_COL=isDark?'#F0EBE0':'#1A1612';
+  const TITLE_DIM=isDark?'rgba(240,235,224,0.50)':'rgba(0,0,0,0.40)';
 
   if(personName){
     // Avec nom : "La Bucket List de [Prénom]" — une seule ligne centrée
-    // "La Bucket List de" en regular, prénom en italic
     const prefix=lang==='fr'?'La Bucket List de ':'The Bucket List of ';
     ctx.font=`400 ${TFS}px Georgia,serif`;
     const prefW=ctx.measureText(prefix).width;
@@ -1490,104 +1638,90 @@ function drawPoster(){
     const nameW=ctx.measureText(personName).width;
     const totalW=prefW+nameW;
     const startX=W/2-totalW/2;
-    const baseY=HDR_H*0.70;
+    const baseY=HDR_H*0.62;
     ctx.font=`400 ${TFS}px Georgia,serif`;
-    ctx.fillStyle='rgba(255,255,255,0.92)';
+    ctx.fillStyle=TITLE_DIM;
     ctx.fillText(prefix, startX, baseY);
     ctx.font=`italic ${TFS}px Georgia,serif`;
-    ctx.fillStyle=WHITE;
+    ctx.fillStyle=TITLE_COL;
     ctx.fillText(personName, startX+prefW, baseY);
   } else {
-    // Sans nom : "Bucket List" centré, "List" en italic semi-transparent
+    // Sans nom : "Bucket List" centré, "List" en italic légèrement plus discret
     ctx.font=`400 ${TFS}px Georgia,serif`;
     const bW2=ctx.measureText('Bucket ').width;
     ctx.font=`italic ${TFS}px Georgia,serif`;
     const lW2=ctx.measureText('List').width;
     const totalW2=bW2+lW2;
     const startX2=W/2-totalW2/2;
-    const baseY2=HDR_H*0.70;
+    const baseY2=HDR_H*0.62;
     ctx.font=`400 ${TFS}px Georgia,serif`;
-    ctx.fillStyle=WHITE;
+    ctx.fillStyle=TITLE_COL;
     ctx.fillText('Bucket ', startX2, baseY2);
     ctx.font=`italic ${TFS}px Georgia,serif`;
-    ctx.fillStyle='rgba(255,255,255,0.55)';
+    ctx.fillStyle=TITLE_DIM;
     ctx.fillText('List', startX2+bW2, baseY2);
   }
 
-  // ── Stats centrées sous le titre, dans le bandeau header ──
-  // Format : "45 accomplis · 65 à faire · 30 avril 2026"
-  // Chiffres en gras Georgia, libellés + date en regular, même corps
+  // ── Date centrée sous le titre ──
   {
-    const STAT_FS=(posterPortrait?28:22)*sc;
-    const baseY=HDR_H*0.91;
-
-    const nDone=doneItems.length, nTodo=todoItems.length;
-    const sep='  ·  ';
-    const doneNum=String(nDone), doneLabel=lang==='fr'?' accomplis':' accomplished';
-    const todoNum=String(nTodo), todoLabel=lang==='fr'?' à faire':' to do';
-    const dateLabel=lang==='fr'?`${dateStr}`:`${dateStr}`;
-
-    // Mesurer chaque segment
-    ctx.font=`700 ${STAT_FS}px Georgia,serif`;
-    const wDoneNum=ctx.measureText(doneNum).width;
-    const wTodoNum=ctx.measureText(todoNum).width;
-    ctx.font=`400 ${STAT_FS}px Georgia,serif`;
-    const wDoneLbl=ctx.measureText(doneLabel).width;
-    const wSep=ctx.measureText(sep).width;
-    const wTodoLbl=ctx.measureText(todoLabel).width;
-    const wDate=ctx.measureText(dateLabel).width;
-
-    const totalW=wDoneNum+wDoneLbl+wSep+wTodoNum+wTodoLbl+wSep+wDate;
-    let x=W/2-totalW/2;
-
-    const draw=(text,bold,alpha=0.90)=>{
-      ctx.font=`${bold?'700':'400'} ${STAT_FS}px Georgia,serif`;
-      ctx.fillStyle=`rgba(255,255,255,${alpha})`;
-      ctx.fillText(text,x,baseY);
-      x+=ctx.measureText(text).width;
-    };
-
-    draw(doneNum,  true);
-    draw(doneLabel,false);
-    draw(sep,      false, 0.40);
-    draw(todoNum,  true);
-    draw(todoLabel,false);
-    draw(sep,      false, 0.40);
-    draw(dateLabel,false, 0.50);
+    const DATE_FS=(posterPortrait?28:22)*sc;
+    const baseY=HDR_H*0.86;
+    ctx.font=`400 ${DATE_FS}px Georgia,serif`;
+    ctx.fillStyle=TITLE_DIM;
+    const dateW=ctx.measureText(dateStr).width;
+    ctx.fillText(dateStr, W/2-dateW/2, baseY);
   }
 
   // ═══════════════════════════════════════════════════════
-  // SECTION TITLE — une seule police, mot-clé en gras
-  // "Ce que j'ai accompli" : normal + BOLD sur "accompli"
-  // "Ce qu'il me reste à faire" : normal + BOLD sur "à faire"
+  // SECTION TITLE — UPPERCASE, stats "XX éléments" plus visibles
+  // withBand=true → bandeau plein de couleur (À faire)
+  // withBand=false → texte sur fond du poster (Accompli)
   // ═══════════════════════════════════════════════════════
-  function drawSectionTitle(prefixText, boldText, y, gradStops, textColor){
-    const FS=(posterPortrait?72:58)*sc;
-    const bandH=FS*1.8;
+  function drawSectionTitle(label, count, y, textColor, bandSolidColor, withBand){
+    const FS=(posterPortrait?80:64)*sc;
+    const bandH=FS*1.7;
 
-    // Gradient band subtil
-    const g=ctx.createLinearGradient(0,y,W,y+bandH);
-    gradStops.forEach(([stop,color])=>g.addColorStop(stop,color));
-    ctx.fillStyle=g; ctx.fillRect(0,y,W,bandH);
+    if(withBand){
+      // Si bandSolidColor === 'BRAND_GRAD', on utilise le dégradé multi-couleurs
+      if(bandSolidColor==='BRAND_GRAD'){
+        ctx.fillStyle=makeBrandGradient(0,y,W,y);
+      } else {
+        ctx.fillStyle=bandSolidColor;
+      }
+      ctx.fillRect(0,y,W,bandH);
+    }
 
-    // Mesure des deux parties
-    ctx.font=`400 ${FS}px Georgia,serif`;
-    const prefW=ctx.measureText(prefixText+' ').width;
-    ctx.font=`700 ${FS}px Georgia,serif`;
-    const boldW=ctx.measureText(boldText).width;
-    const totalW=prefW+boldW;
+    // Titre centré, en UPPERCASE, grand serif italique
+    const upLabel=label.toUpperCase();
+    ctx.font=`italic 400 ${FS}px Georgia,serif`;
+    const fillCol = withBand ? '#FFFFFF' : textColor;
+    ctx.fillStyle=fillCol;
+    const labelW=ctx.measureText(upLabel).width;
+    const baseY=y+bandH*0.65;
 
-    const startX=W/2-totalW/2;
-    const baseY=y+bandH*0.67;
+    // Si on est sur un bandeau dégradé pastel, on ajoute une ombre portée subtile
+    // pour assurer la lisibilité du blanc sur les zones claires du dégradé
+    const useShadow = withBand && bandSolidColor==='BRAND_GRAD';
+    if(useShadow){
+      ctx.save();
+      ctx.shadowColor='rgba(0,0,0,0.30)';
+      ctx.shadowBlur=6*sc;
+      ctx.shadowOffsetY=2*sc;
+    }
+    ctx.fillText(upLabel, W/2-labelW/2, baseY);
 
-    // Partie normale
-    ctx.font=`400 ${FS}px Georgia,serif`;
-    ctx.fillStyle=textColor;
-    ctx.fillText(prefixText+' ', startX, baseY);
+    // Stats à droite, plus grandes qu'avant : "65 éléments"
+    const STAT_FS=(posterPortrait?44:36)*sc;
+    const word=lang==='fr'?(count===1?' élément':' éléments'):(count===1?' item':' items');
+    ctx.font=`400 ${STAT_FS}px Georgia,serif`;
+    ctx.fillStyle = withBand ? 'rgba(255,255,255,0.65)' : textColor;
+    if(!withBand) ctx.globalAlpha=0.55;
+    const statStr=`${count}${word}`;
+    const statW=ctx.measureText(statStr).width;
+    ctx.fillText(statStr, IW+IX-statW, baseY-FS*0.04);
+    ctx.globalAlpha=1;
 
-    // Partie en gras
-    ctx.font=`700 ${FS}px Georgia,serif`;
-    ctx.fillText(boldText, startX+prefW, baseY);
+    if(useShadow) ctx.restore();
 
     return bandH;
   }
@@ -1595,13 +1729,14 @@ function drawPoster(){
   // ═══════════════════════════════════════════════════════
   // ZONE 1 — ACCOMPLIS (4 colonnes, liste par catégorie)
   // ═══════════════════════════════════════════════════════
-  const DONE_TOP=HDR_H;
+  const DONE_TOP=HDR_H+(posterPortrait?20:16)*sc;
   const doneBandH=drawSectionTitle(
-    lang==='fr'?'Ce que j\'ai':'What I\'ve',
-    lang==='fr'?'accompli':'accomplished',
+    lang==='fr'?'Accompli':'Accomplished',
+    doneItems.length,
     DONE_TOP,
-    [[0,'rgba(26,188,156,0.14)'],[1,'rgba(26,188,156,0.03)']],
-    '#0a6b55'
+    PAL.sectionDoneText,
+    null,
+    false   // pas de bandeau plein
   );
 
   const DIT=DONE_TOP+doneBandH+16*sc;
@@ -1609,7 +1744,7 @@ function drawPoster(){
 
   if(doneItems.length===0){
     ctx.font=`400 italic ${20*sc}px Georgia,serif`;
-    ctx.fillStyle='rgba(0,0,0,0.25)';
+    ctx.fillStyle=PAL.textMuted;
     ctx.fillText(lang==='fr'?'Rien encore — mais ça viendra.':'Nothing yet — but it will come.',IX,DIT+28*sc);
     doneH=44*sc;
   } else {
@@ -1714,13 +1849,15 @@ function drawPoster(){
   // ═══════════════════════════════════════════════════════
   // ZONE 2 — À FAIRE
   // ═══════════════════════════════════════════════════════
+  // drawSectionTitle reçoit un fillStyle pour le bandeau (peut être string ou gradient)
   const TODO_TITLE_Y=SEP_Y;
   const todoBandH=drawSectionTitle(
-    lang==='fr'?'Ce qu\'il me reste':'What I still want',
-    lang==='fr'?'à faire':'to do',
+    lang==='fr'?'À faire':'To do',
+    todoItems.length,
     TODO_TITLE_Y,
-    [[0,'rgba(233,30,140,0.12)'],[1,'rgba(155,89,182,0.04)']],
-    '#5a1a7a'
+    PAL.sectionTodoText,
+    null,
+    false   // pas de bandeau plein — symétrique avec Accompli
   );
 
   const TIT=TODO_TITLE_Y+todoBandH;
@@ -1780,7 +1917,7 @@ function drawPoster(){
       const bodyH=nrows*(TILE_H+ROW_GAP);
 
       // Header catégorie — titre centré, pleine hauteur, tracking large
-      ctx.fillStyle=cc.bg; ctx.fillRect(0,gy,W,CAT_HDR_H_NEW);
+      ctx.fillStyle=cc.bg; ctx.fillRect(IX,gy,IW,CAT_HDR_H_NEW);
 
       // Trouver la plus grande taille qui tient sur une ligne
       let CAT_FS=CAT_HDR_H_NEW*0.55;
@@ -1798,8 +1935,11 @@ function drawPoster(){
       ctx.letterSpacing='0px';
       gy+=CAT_HDR_H_NEW;
 
-      // Body — fond lighten
-      ctx.fillStyle=lighten(cc.bg,0.82); ctx.fillRect(0,gy,W,bodyH);
+      // Body — teinté de la catégorie (clair en mode light, sombre en mode dark)
+      ctx.fillStyle = PAL.catBodyMode==='lighten'
+        ? lighten(cc.bg, PAL.catBodyMix)
+        : darken(cc.bg, PAL.catBodyMix);
+      ctx.fillRect(IX,gy,IW,bodyH);
 
       let col=0;
       let colHeights=Array(NCOLS).fill(gy);
@@ -1811,8 +1951,8 @@ function drawPoster(){
 
         const label=item.prefix?item.prefix+' '+item.label:item.label;
 
-        // Fond tuile blanc crème
-        ctx.fillStyle='#FDFAF6'; ctx.fillRect(tX,tY,TILE_W,TILE_H);
+        // Fond tuile (crème en clair, charbon en sombre)
+        ctx.fillStyle=PAL.tileTodoBg; ctx.fillRect(tX,tY,TILE_W,TILE_H);
 
         // Zone checkbox — carré parfait à gauche, fond teinté de la catégorie
         const cbInner=CB_SZ*0.52;
@@ -1820,9 +1960,14 @@ function drawPoster(){
         const cbY=tY+(TILE_H-cbInner)/2;
         const cbR=cbInner*0.18;
 
-        ctx.fillStyle=lighten(cc.bg,0.60); ctx.fillRect(tX,tY,CB_SZ,TILE_H);
+        // Barre latérale (côté checkbox) : version teintée de la couleur de catégorie
+        ctx.fillStyle = PAL.catBodyMode==='lighten'
+          ? lighten(cc.bg, PAL.catSideMix)
+          : darken(cc.bg, PAL.catSideMix);
+        ctx.fillRect(tX,tY,CB_SZ,TILE_H);
 
-        ctx.fillStyle=WHITE;
+        // Carré à cocher : creux (couleur du fond du poster) + bordure de catégorie
+        ctx.fillStyle=PAL.cbInnerBg;
         ctx.beginPath();ctx.roundRect(cbX,cbY,cbInner,cbInner,cbR);ctx.fill();
         ctx.strokeStyle=cc.bg; ctx.lineWidth=2.5*sc;
         ctx.beginPath();ctx.roundRect(cbX,cbY,cbInner,cbInner,cbR);ctx.stroke();
@@ -1838,12 +1983,10 @@ function drawPoster(){
           fs*=0.92;
         }
         const lineH=fs*TILE_LINE_H_RATIO;
-        const totalTextH=(lns.length-1)*lineH+fs; // hauteur réelle du bloc
+        const totalTextH=(lns.length-1)*lineH+fs;
         const textX=tX+CB_SZ+TEXT_GAP;
-        // Centrage vertical : milieu de la tuile moins la moitié du bloc,
-        // +fs pour convertir coordonnée de boîte en baseline canvas
         const ty0=tY+(TILE_H-totalTextH)/2+fs;
-        ctx.fillStyle='#3a332b';
+        ctx.fillStyle=PAL.tileTodoText;
         lns.forEach((ln,li)=>ctx.fillText(ln,textX,ty0+li*lineH));
 
         colHeights[col]+=TILE_H+ROW_GAP;
@@ -1855,13 +1998,13 @@ function drawPoster(){
 
   } else {
     ctx.font=`400 italic ${28*sc}px Georgia,serif`;
-    ctx.fillStyle='rgba(0,0,0,0.25)';
+    ctx.fillStyle=PAL.textMuted;
     ctx.fillText(lang==='fr'?'Tout accompli — bravo !':'All done — congratulations!',IX,TIT+60*sc);
   }
 
   // Footer minimal — URL uniquement
   ctx.font=`400 ${16*sc}px 'Plus Jakarta Sans',sans-serif`;
-  ctx.fillStyle='rgba(0,0,0,0.18)';
+  ctx.fillStyle=PAL.footerColor;
   const urlStr='studioexistence.com/bucket-list';
   const urlW=ctx.measureText(urlStr).width;
   ctx.fillText(urlStr,W/2-urlW/2,FOOT_Y);
