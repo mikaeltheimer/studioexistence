@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Scale of Impossible Numbers</title>
+<meta name="description" content="A journey from the number 1 to the furthest edges of what the human mind has dared to name — told through the distance you would have to travel to reach each one.">
+<link rel="alternate" hreflang="fr" href="index.html">
+<link rel="alternate" hreflang="en" href="index-en.html">
+<link rel="alternate" hreflang="x-default" href="index.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,400&family=Space+Mono:wght@400;700&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0f;
+  --paper:#f4f0e6;
+  --paper-dim:#e8e2d2;
+  --gold:#c9a227;
+  --rust:#b5471f;
+  --deep:#1a1a2e;
+  --void:#05050a;
+  --star:#f4f0e6;
+  --line:rgba(244,240,230,.14);
+  --serif:"Fraunces",Georgia,serif;
+  --body:"Spectral",Georgia,serif;
+  --mono:"Space Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);
+  color:var(--paper);
+  font-family:var(--body);
+  font-weight:300;
+  line-height:1.7;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- progress rail ---------- */
+#rail{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--rust));
+  z-index:200;transition:width .15s ease-out;
+}
+#regime-tag{
+  position:fixed;top:18px;right:18px;z-index:200;
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);
+  padding:6px 12px;border:1px solid var(--line);border-radius:2px;
+  background:rgba(5,5,10,.6);backdrop-filter:blur(8px);
+  opacity:0;transition:opacity .5s;
+}
+#regime-tag.show{opacity:1}
+#lang-switch{
+  position:fixed;top:16px;left:18px;z-index:200;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  padding:6px 10px;border:1px solid var(--line);border-radius:2px;
+  background:rgba(5,5,10,.6);backdrop-filter:blur(8px);
+}
+#lang-switch a{color:var(--paper-dim);text-decoration:none;opacity:.55;transition:opacity .25s}
+#lang-switch a:hover{opacity:1}
+#lang-switch a.on{color:var(--gold);opacity:1;font-weight:700}
+#lang-switch .sep{color:var(--line);margin:0 .4em}
+
+/* ---------- hero ---------- */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:6vh 7vw;position:relative;
+}
+.hero h1{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(2.6rem,8vw,6.5rem);line-height:.95;
+  letter-spacing:-.02em;margin-bottom:.4em;
+}
+.hero h1 em{font-style:italic;color:var(--gold);font-weight:400}
+.hero .sub{
+  font-family:var(--body);font-style:italic;
+  font-size:clamp(1.05rem,2.6vw,1.5rem);
+  max-width:46ch;color:var(--paper-dim);opacity:.85;
+}
+.hero .premise{
+  margin-top:2.4em;max-width:54ch;font-size:1.02rem;
+  color:var(--paper-dim);opacity:.7;
+}
+.hero .premise b{color:var(--gold);font-weight:600}
+.scroll-cue{
+  position:absolute;bottom:5vh;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--paper-dim);opacity:.5;
+  animation:bob 2.4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* ---------- number sections ---------- */
+.num{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:14vh 7vw;position:relative;border-top:1px solid var(--line);
+  max-width:1100px;margin:0 auto;
+}
+.num .idx{
+  font-family:var(--mono);font-size:12px;letter-spacing:.22em;
+  color:var(--gold);opacity:.7;margin-bottom:1.4em;text-transform:uppercase;
+}
+.num .name{
+  font-family:var(--serif);font-weight:600;font-style:italic;
+  font-size:clamp(1.4rem,3.4vw,2.2rem);color:var(--paper-dim);
+  margin-bottom:.15em;
+}
+.num .value{
+  font-family:var(--serif);font-weight:900;line-height:1.05;
+  letter-spacing:-.02em;margin-bottom:.5em;
+  font-size:clamp(2.4rem,7vw,5.2rem);
+}
+.num .value sup{font-size:.5em;line-height:0}
+.num .value .small{font-size:.42em;font-weight:400;font-style:italic;color:var(--paper-dim);display:block;margin-top:.3em;letter-spacing:0}
+.num .sci{
+  font-family:var(--mono);font-size:clamp(.95rem,2vw,1.3rem);
+  color:var(--gold);margin-bottom:1.6em;font-weight:700;
+}
+.num .sci sup{font-size:.62em;top:-.5em;position:relative}
+sup{font-size:.62em}
+.block{max-width:62ch;margin-bottom:1.5em}
+.block h3{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--rust);margin-bottom:.5em;font-weight:700;
+}
+.block p{font-size:1.06rem;color:var(--paper)}
+.block p+p{margin-top:.7em}
+
+/* tour d'exposants / notation illustrée */
+.tower{
+  font-family:var(--mono);font-size:1.15rem;line-height:1.3;
+  background:rgba(201,162,39,.07);border:1px solid var(--line);
+  border-radius:4px;padding:1em 1.3em;margin:1.1em 0;max-width:60ch;
+  color:var(--paper);overflow-x:auto;
+}
+.tower .tlab{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:.6em}
+.tower sup{font-size:.7em;top:-.4em;position:relative}
+
+/* lien Numberphile */
+.nphile{
+  display:inline-flex;align-items:center;gap:.5em;margin-top:1.4em;
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+  color:var(--gold);text-decoration:none;
+  border:1px solid var(--line);border-radius:3px;padding:.55em .9em;
+  transition:background .25s,border-color .25s;
+}
+.nphile:hover{background:rgba(201,162,39,.12);border-color:var(--gold)}
+.nphile::before{content:"▶";font-size:9px}
+
+/* figures / illustrations d'arbres */
+.figs{
+  display:flex;flex-wrap:wrap;gap:1.6em;margin:1.4em 0;
+  align-items:flex-start;
+}
+.fig{
+  background:rgba(244,240,230,.04);border:1px solid var(--line);
+  border-radius:6px;padding:1.1em 1.2em .9em;text-align:center;
+}
+.fig svg{display:block;margin:0 auto}
+.fig .cap{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+  color:var(--paper-dim);margin-top:.7em;line-height:1.5;max-width:22ch;
+}
+.fig .cap b{color:var(--gold);font-weight:700}
+.tree-node{stroke:var(--void);stroke-width:1.5}
+.tree-edge{stroke:var(--paper);stroke-width:2.5;opacity:.75}
+
+/* the distance line — the through-thread */
+.dist{
+  border-left:2px solid var(--gold);padding:1.1em 0 1.1em 1.4em;
+  margin:1.8em 0;max-width:60ch;
+}
+.dist .lab{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:.5em;
+}
+.dist p{font-family:var(--body);font-style:italic;font-size:1.18rem;line-height:1.55;color:var(--paper)}
+.dist .unit{color:var(--gold);font-style:normal;font-weight:600}
+
+/* régime-0 condensed rows */
+.warmup{max-width:1100px;margin:0 auto;padding:10vh 7vw}
+.warmup .lead{
+  font-family:var(--serif);font-style:italic;font-size:clamp(1.3rem,3vw,1.9rem);
+  color:var(--gold);margin-bottom:.4em;
+}
+.warmup .leadsub{color:var(--paper-dim);opacity:.7;max-width:54ch;margin-bottom:3em}
+.wrow{
+  display:flex;align-items:baseline;gap:1.4em;padding:1.1em 0;
+  border-bottom:1px solid var(--line);flex-wrap:wrap;
+}
+.wrow .wnum{
+  font-family:var(--serif);font-weight:900;font-size:clamp(1.4rem,4vw,2.4rem);
+  min-width:4.5ch;letter-spacing:-.01em;
+}
+.wrow .wsci{font-family:var(--mono);color:var(--gold);font-size:.85rem;min-width:7ch}
+.wrow .wtxt{font-style:italic;color:var(--paper-dim);font-size:1.02rem;flex:1;min-width:14ch}
+
+/* régime divider */
+.divider{
+  min-height:75vh;display:flex;flex-direction:column;justify-content:center;
+  align-items:center;text-align:center;padding:8vh 7vw;
+  border-top:1px solid var(--line);position:relative;
+}
+.divider .kicker{
+  font-family:var(--mono);font-size:12px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--rust);margin-bottom:1.4em;
+}
+.divider h2{
+  font-family:var(--serif);font-weight:900;font-style:italic;
+  font-size:clamp(2rem,6vw,4rem);line-height:1.02;max-width:18ch;
+  margin-bottom:.6em;
+}
+.divider p{max-width:50ch;color:var(--paper-dim);font-size:1.1rem}
+.divider .gold{color:var(--gold)}
+
+/* the final mise en abyme */
+.abyme{
+  background:radial-gradient(ellipse at 50% 30%,#11111e 0%,var(--void) 70%);
+}
+.abyme .value{color:var(--gold)}
+
+/* footer */
+.end{
+  min-height:90vh;display:flex;flex-direction:column;justify-content:center;
+  align-items:center;text-align:center;padding:10vh 7vw;
+  border-top:1px solid var(--line);
+}
+.end h2{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,6vw,3.6rem);margin-bottom:.5em;font-style:italic}
+.end p{max-width:52ch;color:var(--paper-dim);font-size:1.1rem;margin-bottom:.8em}
+.end .sig{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.6;margin-top:3em}
+.end .credit{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--paper-dim);opacity:.85;margin-top:1.4em}
+.end .credit b{color:var(--gold);font-weight:600;font-style:normal}
+.end .credit a{border-bottom-color:rgba(201,162,39,.4);transition:border-color .25s}
+.end .credit a:hover{border-bottom-color:var(--gold)}
+.end a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--line)}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* starfield canvas */
+#stars{position:fixed;inset:0;z-index:-2;opacity:.5}
+#grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+@media(max-width:640px){
+  .wrow{gap:.8em}
+  .wrow .wsci{min-width:100%;order:3}
+  .dist p{font-size:1.05rem}
+}
+</style>
+</head>
+<body>
+<div id="rail"></div>
+<div id="regime-tag"></div>
+<div id="lang-switch"><a href="index.html">FR</a><span class="sep">/</span><a href="index-en.html" class="on">EN</a></div>
+<canvas id="stars"></canvas>
+<div id="grain"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <h1 class="reveal">The scale of<br><em>impossible numbers</em></h1>
+  <p class="sub reveal">A journey from the number 1 to the furthest edges of what the human mind has ever dared to name.</p>
+  <p class="premise reveal">One question will follow us the whole way&nbsp;: <b>how far would you have to travel</b> to get from one number to the next&nbsp;? We'll start in meters. Very soon, meters won't be enough. Then the entire universe won't be enough. And in the end&nbsp;: nothing will be enough — not even the numbers themselves.</p>
+  <div class="scroll-cue">↓ start small</div>
+</header>
+
+<!-- container for JS-injected content -->
+<main id="content"></main>
+
+<script>
+/* ============================================================
+   DONNÉES — chaque nombre : ce qu'il vaut, comment il est
+   construit, à quoi il sert, et la "distance" du fil rouge.
+   ============================================================ */
+
+/* The through-thread metaphor:
+   Regime 0–1 : 1 unit = 1 real meter. We name the closest physical landmark.
+   Physical landmarks (in meters):
+     - soccer field ≈ 105 m
+     - Earth (circumference) ≈ 4.0e7 m
+     - Earth–Moon ≈ 3.84e8 m
+     - Earth–Sun (AU) ≈ 1.496e11 m
+     - solar system (to Neptune) ≈ 9e12 m
+     - 1 light-year ≈ 9.46e15 m
+     - Milky Way (diameter) ≈ 9.5e20 m
+     - observable universe (diameter) ≈ 8.8e26 m
+*/
+
+const NUMBERS = [
+  /* ---------- REGIME 1 ---------- */
+  {
+    regime:1, idx:"Regime 1 · the real distances",
+    name:"The number of cells in a human body",
+    value:"37,200,000,000,000", sci:["3.72","13"],
+    build:"We don't count them one by one, of course. Scientists measure how many cells fit in a small piece of each organ — the skin, the blood, the liver, the brain — then add it all up. The total comes to about 37 trillion.",
+    use:"This is the first number on the journey that truly outruns the imagination&nbsp;: this number is <em>you</em>. It builds you entirely, head to toe, and yet you'll never be able to see it. Thirty-seven trillion tiny living bricks working together to make a single person.",
+    distLab:"If each cell were one meter",
+    dist:"The journey would be <span class='unit'>37 billion kilometers</span> long. Picture it&nbsp;: you leave Earth, race all the way to the Sun, come back… and you do that trip <span class='unit'>125 times over</span>. All of it fits inside one person."
+  },
+  {
+    regime:1,
+    name:"The connections in a brain",
+    value:"1,000,000,000,000,000", sci:["1","15"],
+    build:"Your brain holds about 86 billion neurons. But what really matters are the contact points between them — the <em>synapses</em> — through which they talk to one another. Each neuron has thousands of them. All together&nbsp;: about one quadrillion.",
+    use:"It's the most complicated object we know of in the entire universe. It's thanks to this number that you can read this sentence, remember your last birthday, and imagine a number you'll never see.",
+    distLab:"If each connection were one meter",
+    dist:"<span class='unit'>One quadrillion meters.</span> You'd have left the solar system long ago&nbsp;: it's like traveling out to Neptune, the most distant planet, then doing it again more than a hundred times over. The seat of your thoughts, laid end to end, would stretch beyond the Sun's neighborhood."
+  },
+  {
+    regime:1,
+    name:"The grains of sand on Earth",
+    value:"7,500,000,000,000,000,000", sci:["7.5","18"],
+    build:"We measure the sand of every beach and every desert in the world, and divide by the size of a single grain. The result lands around seven quintillion grains.",
+    use:"It's the image we reach for whenever we want to say « a quantity impossible to count. » In a second we'll see that it's actually quite small — and that's where the journey starts to surprise.",
+    distLab:"If each grain were one meter",
+    dist:"The journey would be <span class='unit'>800 light-years</span> long. For a sense of scale&nbsp;: the nearest star to us is 4 light-years away. Here, you'd cross thousands of star systems. And yet the next number fits in the palm of your hand."
+  },
+  {
+    regime:1,
+    name:"The combinations of a Rubik's Cube",
+    value:"43,252,003,274,489,856,000", sci:["4.32","19"],
+    build:"A Rubik's Cube has 6 faces you can turn. By scrambling them, you can put it into a staggering number of different positions. Counting precisely all the possible positions gives this 20-digit number.",
+    use:"Here's the journey's big surprise&nbsp;: a little cube that fits in one hand has <em>more</em> possible positions than there are grains of sand on all of Earth&nbsp;! Even wilder&nbsp;: no matter how scrambled it is, it can always be solved in 20 moves or fewer. Mathematicians call that « God's number. »",
+    distLab:"If each position were one meter",
+    dist:"We've already beaten every grain of sand on the planet. The journey would be <span class='unit'>4,600 light-years</span> long — enough to cross a good stretch of the galactic arm where the Sun lives. Another image&nbsp;: with that many little cubes, you could cover the entire surface of Earth 300 times over."
+  },
+  {
+    regime:1,
+    name:"The cells of all humanity",
+    value:"about 3 × 10<sup>23</sup>", sci:["3","23"],
+    build:"We take the ~37 trillion cells of one person, and multiply by the ~8 billion humans on Earth. We get a 3 followed by 23 digits.",
+    use:"It's a way of holding all of humanity in a single number&nbsp;: every cell of every living person, counted one by one. And it's almost exactly the same number as a very important constant in chemistry — the one right below.",
+    distLab:"If each human cell were one meter",
+    dist:"Light-years start to get tiring&nbsp;: about <span class='unit'>30 million light-years</span>. You'd have crossed our entire galaxy (which is « only » 100,000 light-years wide), then crossed the great black void to neighboring galaxies."
+  },
+  {
+    regime:1,
+    name:"Avogadro's number",
+    value:"602,214,076,000,000,000,000,000", sci:["6.02","23"],
+    build:"This isn't a count of real objects but a measure chosen by scientists&nbsp;: it's the number of tiny particles (atoms or molecules) you need to gather to get an amount of matter you can weigh on a scale.",
+    use:"It's the magic bridge between the world of atoms, too small to see, and our own world. It answers&nbsp;: « how many atoms do you need to have a few grams of something? » All of chemistry rests on it. And look — it's almost equal to the number of cells in all humanity&nbsp;!",
+    distLab:"If each atom in a small amount were one meter",
+    dist:"A little farther than the previous number&nbsp;: about <span class='unit'>64 million light-years</span>. In other words, a single spoonful of water holds enough atoms to carry you far beyond our galaxy."
+  },
+  {
+    regime:1,
+    name:"The stars in the observable universe",
+    value:"about 10<sup>24</sup>", sci:["1","24"],
+    build:"It's estimated there are about 2 trillion galaxies, and each one holds on average hundreds of billions of stars. Multiply them, and you get a 1 followed by 24 zeros.",
+    use:"That's roughly <em>every star that exists</em> in the part of the universe we can see. Hard to go bigger when you're counting real objects in the sky.",
+    distLab:"If each star were one meter",
+    dist:"The journey would be <span class='unit'>100 million light-years</span> long. Every star you see at night, plus the trillions you'll never see, lined up one by one… and you still haven't reached the next number — which comes from a simple deck of cards."
+  },
+  {
+    regime:1,
+    name:"The ways to shuffle a deck of 52 cards",
+    value:"≈ 8.07 × 10<sup>67</sup>",
+    valueSmall:"80,658,175,170,943,878,571,660,636,856,403,766,975,289,505,440,883,277,824,000,000,000,000",
+    sci:["8.07","67"],
+    build:"When you lay the cards down one by one, you have 52 choices for the first, 51 for the second, 50 for the next… Multiply it all&nbsp;: 52 × 51 × 50 × … × 2 × 1. The result is a 68-digit number.",
+    use:"Here's the most staggering fact of the journey&nbsp;: every time you <em>properly</em> shuffle a deck of cards, you're holding an order that has almost certainly <em>never existed since the dawn of time</em>, and will never exist again. There are more ways to arrange 52 cards than there are stars in the whole universe.",
+    distLab:"If each shuffle were one meter",
+    dist:"We've just blown past every star in the cosmos&nbsp;! Even if someone shuffled a deck every second since the birth of the universe, they wouldn't have covered a billionth of the way. <span class='unit'>This distance is far larger than the entire universe</span> — for an object you keep in your pocket."
+  },
+  {
+    regime:1,
+    name:"The atoms in the observable universe",
+    value:"about 10<sup>80</sup>", sci:["1","80"],
+    build:"We add up all the matter of every star, every gas cloud, and all the dust of the visible universe. We arrive at a 1 followed by 80 zeros.",
+    use:"This is the edge of the real world. <em>Everything</em> that exists and could be counted — every atom of every thing, everywhere — fits inside this number. Beyond it, no real object exists in large enough quantity to serve as a point of comparison. Matter stops here.",
+    distLab:"If each atom in the universe were one meter",
+    dist:"This time, the image of the journey collapses for good. <span class='unit'>There isn't enough universe</span> to contain this distance&nbsp;: it would take billions of billions of entire universes, laid end to end, to cover it. The meter has just given up the ghost."
+  }
+];
+
+/* ---------- REGIME 2 : the unit becomes a previous number ---------- */
+const REGIME2 = [
+  {
+    regime:2, idx:"Regime 2 · the unit folds in on itself",
+    name:"The googol",
+    value:"10<sup>100</sup>",
+    valueSmall:"a 1 followed by 100 zeros",
+    sci:["1","100"],
+    build:"It's a 1 with a hundred zeros behind it. The word was invented in 1920 by a nine-year-old boy, Milton Sirotta&nbsp;: his mathematician uncle had asked him to come up with a fun name for the number.",
+    use:"It was invented on purpose to show the difference between « really, really big » and « infinite. » A little secret&nbsp;: the search engine <em>Google</em> owes its name to a misspelling of « googol »&nbsp;! And the googol is already bigger than the number of atoms in the universe — so it no longer represents any real object, just an idea.",
+    distLab:"The old rule no longer works",
+    dist:"Since no real distance is large enough anymore, we change the rules of the game&nbsp;: from now on, <span class='unit'>our unit of measure becomes the number we just saw</span>. The googol is about <span class='unit'>100 billion billion times</span> « all the atoms in the universe. » As if you took the entire universe, counted atom by atom, and repeated it a hundred billion billion times.",
+    video:"https://www.youtube.com/watch?v=8GEebx72-qs", videoLab:"Numberphile · Googol & Googolplex"
+  },
+  {
+    regime:2,
+    name:"Shannon's number",
+    value:"≈ 10<sup>120</sup>", sci:["1","120"],
+    build:"In 1950, the scientist Claude Shannon estimated the number of different chess games that can be played. He looked at how many moves are possible on each turn, then factored in the length of a game. Result&nbsp;: about a 1 followed by 120 zeros.",
+    use:"Shannon wasn't trying to beat a record. He wanted to prove that no computer, however powerful, could ever « cheat » at chess by calculating every possible game in advance. That's why chess remains a game of intelligence, and not a simple lookup table.",
+    distLab:"Counting in googols",
+    dist:"Now we measure in googols. Shannon's number is roughly <span class='unit'>100 billion billion googols</span> — that is, a hundred billion billion times that famous 1-followed-by-100-zeros we already struggle to picture."
+  },
+  {
+    regime:2,
+    name:"The Jain number (Shirsha Prahelika)",
+    value:"larger than the googol squared",
+    sci:["1","200"],
+    build:"It comes from the sacred texts of Jainism, a religion of India, about 2,500 years ago. To describe the immense durations of their cosmos, Jain thinkers had invented words for gigantic numbers — they even distinguished « what can be counted, » « what cannot be counted, » and « the infinite, » with several kinds of infinities&nbsp;!",
+    use:"It's our oldest very large number. It proves that humans were already imagining numbers bigger than the googol squared <em>twenty-four centuries</em> before the word « googol » was coined. To go even further, the Jains told an image&nbsp;: a well filled with fine hairs, from which one single strand is removed every hundred years — the time it takes to empty it completely.",
+    distLab:"Counting in googols",
+    dist:"Larger than the googol multiplied by itself&nbsp;: that is, <span class='unit'>more than a googol of googols</span>. An idea two thousand five hundred years old that already crushes everything modern science knows how to count.",
+    video:"https://www.youtube.com/watch?v=sJqceEImtew", videoLab:"Numberphile · Jain Numbers"
+  },
+  {
+    regime:2,
+    name:"Skewes's number",
+    value:"10<sup>(10<sup>34</sup>)</sup>",
+    sci:null,
+    build:"First, let's understand « stacked » notation. 10<sup>34</sup> means « a 1 followed by 34 zeros. » Skewes's number, though, is 10<sup>(10<sup>34</sup>)</sup>&nbsp;: « a 1 followed by (a-1-followed-by-34-zeros) zeros. » In other words, the number of zeros is itself a huge number.",
+    use:"Here's what it's for, simply put&nbsp;: mathematicians study prime numbers (2, 3, 5, 7, 11…) and had noticed a rule that seemed always true. In 1933, Stanley Skewes proved that this rule eventually becomes false — but only past a colossal number. That number is this one. For a long time it was famous as « the largest number ever used to prove something useful in math. »",
+    distLab:"Even the zero-counter explodes",
+    dist:"We can't even say « so many googols » anymore&nbsp;: it would take a googol of digits just to write down <em>how many</em> googols it's worth. <span class='unit'>We no longer write the number itself — we just try to describe the size of its number of zeros.</span>"
+  },
+  {
+    regime:2,
+    name:"The googolplex",
+    value:"10<sup>(googol)</sup>",
+    valueSmall:"10 to the power of a googol — a 1 followed by a googol of zeros",
+    sci:null,
+    build:"It's 10 to the power of a googol&nbsp;: a 1 followed not by a hundred zeros, but by <em>a googol</em> of zeros (10<sup>100</sup> zeros&nbsp;!). That's so many zeros that it's <em>impossible</em> to write it out in full&nbsp;: there isn't enough room in the universe.",
+    use:"It's the first number on the journey that can't be written <em>anywhere</em>. Even if you wrote one zero on every atom in the universe, you'd run out of atoms — you'd need a hundred billion billion times more. The number exists, but we'll never see it written.",
+    distLab:"The « one digit per second » image",
+    dist:"Imagine you write one digit every second, never stopping, since the birth of the universe (14 billion years). You'd have written about 10<sup>18</sup> digits. But the googolplex has 10<sup>100</sup> of them. <span class='unit'>You wouldn't even have started the very beginning of the beginning.</span> And this is where our method hits its limit&nbsp;: because the next number can't even be measured in googolplexes anymore.",
+    video:"https://www.youtube.com/watch?v=8GEebx72-qs", videoLab:"Numberphile · Googol & Googolplex"
+  }
+];
+
+/* ---------- REGIME 3 : the reckoning ---------- */
+const REGIME3 = [
+  {
+    regime:3, idx:"Regime 3 · the reckoning",
+    name:"The Mega",
+    value:"2 in a circle",
+    sci:null,
+    build:"Here's a brand-new way to build big numbers&nbsp;: you enclose a number in a shape, and each shape is a « machine » that makes it grow. The rule&nbsp;:",
+    tower:`<span class="tlab">The three machines</span><b>Triangle</b> · a number in a triangle = that number raised to its own power.<br><b>Square</b> · a number in a square = that number placed inside that many nested <i>triangles</i>.<br><b>Circle</b> · a number in a circle = that number placed inside that many nested <i>squares</i>.`,
+    build2:"Let's compute the Mega, that is « 2 in a circle, » working down step by step&nbsp;:",
+    tower2:`<span class="tlab">Computing « 2 in a circle »</span><b>2 in a circle</b> = 2 in 2 nested squares.<br>&nbsp;&nbsp;↳ first we need « 2 in a square. »<br><br><b>2 in a square</b> = 2 in 2 nested triangles.<br>&nbsp;&nbsp;↳ first we need « 2 in a triangle. »<br><br><b>2 in a triangle</b> = 2<sup>2</sup> = <b>4</b><br>&nbsp;&nbsp;↳ so we climb back up&nbsp;: 4 in a triangle = 4<sup>4</sup> = <b>256</b><br>&nbsp;&nbsp;↳ so « 2 in a square » = <b>256</b><br><br>Back up to the circle&nbsp;: one last square left to open…<br><b>256 in a square</b> = 256 placed inside <b>256 triangles</b>&nbsp;!`,
+    build3:"And that's where it explodes&nbsp;: 256 in a triangle is already 256<sup>256</sup> (a 616-digit number). But you have to do it 256 times in a row, each result becoming the base of the next triangle. The Mega is the number you get at the very top of that pile&nbsp;: a <em>tower of 257 stacked tens</em>, 10<sup>10<sup>10<sup>…</sup></sup></sup> with 257 floors.",
+    use:"The triangle is like a rocket. The square, a rocket that launches rockets. The circle, a rocket that launches rockets… that launch rockets of their own. This notation was invented by the mathematician Hugo Steinhaus, purely for the fun of showing how easy it is to build outrageous numbers — and the circle was its peak. But another mathematician, Leo Moser, wondered&nbsp;: what if we could go <em>beyond</em> the circle&nbsp;? That's what leads to the next number.",
+    distLab:"The very last comparison possible",
+    dist:"At last we can compare it to the googolplex, since both are « towers of powers. » The googolplex (10<sup>10<sup>100</sup></sup>) is a tower of just <b>3 floors</b>&nbsp;; the Mega is a tower of <b>257 floors</b> of tens. In other words, <span class='unit'>the googolplex doesn't even reach the 4<sup>th</sup> floor of the Mega's tower</span> — climb up a little and it's crushed, vanishing at the very bottom. And it's the last time we can compare anything at all&nbsp;: after the Mega, no number we've already met will serve as a measure.",
+    video:"https://www.youtube.com/watch?v=Jw_ZPdnHGzg", videoLab:"Numberphile · The Hyper Moser (Mega & Moser)"
+  },
+  {
+    regime:3,
+    name:"Moser's number",
+    value:"2 in a mega-gon",
+    sci:null,
+    build:"Steinhaus's circle was a dead end&nbsp;: once you have « 2 in a circle, » you can't do « more than the circle. » So Leo Moser <em>reinvented</em> the notation. His brilliant idea&nbsp;: replace the circle with an <strong>endless ladder of shapes</strong> — the pentagon (5 sides), the hexagon (6 sides), the heptagon (7 sides)… each more powerful than the last.",
+    tower:`<span class="tlab">Moser's new rule</span>A number in a <b>pentagon</b> = that number placed inside that many nested <i>squares</i>.<br>A number in a <b>hexagon</b> = that number placed inside that many nested <i>pentagons</i>.<br>… and so on&nbsp;: a shape with <i>n</i> sides always opens up that many shapes with <i>(n−1)</i> sides.<br><br>The more sides a shape has, the more devastating it is.`,
+    build2:"And here's the masterstroke. Moser's number is « 2 in a mega-gon »&nbsp;: a 2 placed in a shape that has as many sides as… the Mega itself&nbsp;! And the Mega is already a number we can't write. So we draw a shape with an unimaginable number of sides, and slip a little 2 in the middle.",
+    tower2:`<span class="tlab">How to picture it (a mise en abyme)</span>Imagine a tower of stacked digits, like 9<sup>9<sup>9<sup>9…</sup></sup></sup><br><br>Normally, you choose the <b>height</b> of the tower&nbsp;: 5 floors, 100 floors…<br><br>For Moser, the height of the tower is itself given by <b>another giant tower of digits</b>. And the height of <i>that</i> tower is given by a tower bigger still. And so on, an insane number of times.<br><br>👉 A tower, whose height is a tower, whose height is a tower…`,
+    use:"This is the step where we leave plain « towers of digits » behind for good and enter the world of <em>machines that build machines</em>. Instead of repeating an operation, we repeat the very act of repeating. A fun detail&nbsp;: this way of nesting things strangely resembles the method Jain thinkers used for their immense numbers, two thousand years earlier.",
+    distLab:"No unit possible anymore",
+    dist:"The googolplex, as a measure, is now <span class='unit'>completely useless</span>&nbsp;: Moser's number is so large that saying « so many googolplexes » means nothing. We no longer measure a distance — we simply note that there's no scale left at all.",
+    video:"https://www.youtube.com/watch?v=Jw_ZPdnHGzg", videoLab:"Numberphile · The Hyper Moser"
+  },
+  {
+    regime:3,
+    name:"Graham's number",
+    value:"the unspeakable",
+    sci:null,
+    build:"First, let's understand a « tower of powers. » Instead of multiplying, we stack&nbsp;:",
+    tower:`<span class="tlab">A tower of powers</span>3 × 3 = 9<br>3<sup>3</sup> = 27<br>3<sup>3<sup>3</sup></sup> = 3<sup>27</sup> = 7,625,597,484,987<br>3<sup>3<sup>3<sup>3</sup></sup></sup> = a number with 3.6&nbsp;<i>trillion</i> digits…<br><br>Each floor you add makes the result explode. And Graham is that idea pushed to the infinity of infinity.`,
+    build2:"Graham's number is built from several towers&nbsp;: you compute a first giant number, and that number tells you how many floors the next tower will have. Then that result sets the size of the tower after… and you repeat <em>64 times</em>. Each step makes the previous one look ridiculously small.",
+    use:"This number comes from a real math problem&nbsp;: when you connect the corners of a cube in very high dimensions with lines, at what point are you <em>forced</em> to see a certain pattern appear? Ronald Graham used it in the 1970s as the « largest possible answer. » It became the most famous big number in the world.",
+    distLab:"The scale itself shatters",
+    dist:"We can write neither the number, nor <em>how many digits it has</em>, nor even how many digits <em>that</em> number has. This chain of « how many digits does the digit-count of… have » collapses before it even starts. <span class='unit'>No unit, no image, no distance applies.</span> It exists only as a pure idea. (We do know it ends in …2464195387&nbsp;!)",
+    video:"https://www.youtube.com/watch?v=XTeJ64KD5cg", videoLab:"Numberphile · Graham's Number"
+  },
+  {
+    regime:3,
+    name:"TREE(3)",
+    value:"Graham becomes a speck of dust",
+    sci:null,
+    build:"Imagine a drawing game. We draw « trees »&nbsp;: dots (called nodes) joined by lines, all starting from a single starting point — the root, at the bottom. Each node has a color. Here's what a tree looks like&nbsp;:",
+    figs:`
+      <div class="fig">${treeSVG([
+        {x:60,y:95,c:'g',r:true},
+        {x:35,y:55,c:'r'},{x:85,y:55,c:'b'},
+        {x:85,y:20,c:'g'}
+      ],[[0,1],[0,2],[2,3]])}
+        <div class="cap">A <b>tree</b>&nbsp;: colored nodes, connected from a <b>root</b> (at the bottom).</div>
+      </div>`,
+    build2:"The rule of the game is this&nbsp;: each new tree you draw can be a little bigger, but no <em>earlier</em> tree is allowed to « hide » inside a tree drawn later. The moment you're forced to repeat an old tree, the game stops. The question is&nbsp;: how many trees can you draw before getting stuck&nbsp;?",
+    figs2:`
+      <div class="fig">${treeSVG([{x:50,y:75,c:'g',r:true}],[])}
+        <div class="cap"><b>1 color</b> · you're stuck at the 1<sup>st</sup> tree. Total&nbsp;: <b>1</b>.</div>
+      </div>
+      <div class="fig">${treeSVG([{x:50,y:62,c:'r',r:true},{x:50,y:25,c:'r'}],[[0,1]])}
+        <div class="cap"><b>2 colors</b> · 1<sup>st</sup> tree&nbsp;: a red root and a red node.</div>
+      </div>
+      <div class="fig">${treeSVG([{x:50,y:60,c:'b',r:true}],[])}
+        <div class="cap">2<sup>nd</sup> tree&nbsp;: a single blue node.</div>
+      </div>
+      <div class="fig">${treeSVG([{x:50,y:60,c:'r',r:true}],[])}
+        <div class="cap">3<sup>rd</sup> tree&nbsp;: a single red node · then stuck. Total&nbsp;: <b>3</b>.</div>
+      </div>`,
+    build3:"Why only 3&nbsp;? Once the big red tree is drawn first, only single-dot trees remain. And the rule forbids a tree from hiding inside a later one&nbsp;: a blue dot, then a red dot, and it's over. With <em>2 colors</em>, you get 3 trees. You'd think 3 colors would give 5 or 6… Well, no. With <em>3 colors</em>, the game can last for a number of moves so dizzying that it makes Graham's number look as small as a speck of dust before the universe. <strong>That number of moves is TREE(3).</strong>",
+    use:"TREE(3) belongs to a category of numbers that grow <em>infinitely faster</em> than Graham's. A theorem proves this game always eventually stops — but it doesn't say <em>when</em>. It's the perfect example of a number we're certain is finite, yet whose size completely escapes the mind.",
+    distLab:"The mise en abyme — and its failure",
+    dist:"One last image to grasp the gap. Take the entire « distance » of the journey up to Graham. Repeat it a googolplex of times. Start over a googolplex of times. Start over again, a Graham's-number of times… <span class='unit'>you wouldn't even have taken the first step toward TREE(3)</span>. Even this mise en abyme fails&nbsp;: there is no number — not even Graham — to say « how many times. »",
+    video:"https://www.youtube.com/watch?v=0X9DYRLmTNY", videoLab:"Numberphile · TREE vs Graham's Number"
+  },
+  {
+    regime:3,
+    name:"The endless game",
+    value:"you can always go further",
+    sci:null,
+    build:"Having reached TREE(3), a sly question arises&nbsp;: what if we used it as a starting point to build something even bigger&nbsp;? That's very easy. You just nest the numbers inside one another, like Russian dolls.",
+    tower:`<span class="tlab">The endless staircase</span>TREE(3) — already inconceivable.<br>TREE(Graham) — feed Graham's number into the TREE machine.<br>TREE(TREE(3)) — feed TREE(3) back into the TREE machine.<br>TREE(TREE(TREE(3))) — once more…<br>… and repeat a <i>TREE(3)</i> number of times.<br><br>Each line utterly crushes the one before.`,
+    build2:"And it never stops. Whatever giant number you build, I can always slip it into an even more powerful machine and blow it up. There is no « largest number »&nbsp;: the staircase climbs forever. (Mathematicians actually have machines even more voracious than TREE — for example SCG, the « subcubic graph » function, which crushes TREE as easily as TREE crushes Graham.)",
+    use:"This is the great lesson of the journey — and it sets up the final twist. If we can <em>always</em> build something bigger, nesting endlessly… then how could a single number surpass all of them at once, without even bothering to build them&nbsp;? That's exactly what the very last one does.",
+    distLab:"And yet…",
+    dist:"Even this infinite staircase, climbing for eternity, stays an infinite distance from true infinity. Each of its steps is, after all, a <span class='unit'>finite</span> number. You can climb without end&nbsp;: you never reach the top."
+  },
+  {
+    regime:3,
+    name:"The Busy Beaver · BB(n)",
+    value:"the uncomputable",
+    sci:null,
+    blocks:[
+      {type:"build", c:"Here's a number of a completely new kind. Imagine a very simple little robot moving along a long strip of paper divided into cells. At each moment, it does three things&nbsp;: it reads the cell beneath it, writes a symbol there (a 1 or a 0), then moves one cell left or right. To decide what to do, it follows a little book of instructions. Each instruction is called a « state. »"},
+      {type:"text", c:"An instruction looks like this&nbsp;: <em>« If you're in state A and you read a 0&nbsp;: write a 1, move right, and switch to state B. »</em> A robot's complete book is just a short list of sentences like that. Here, for example, is the book of a very simple two-instruction robot&nbsp;:"},
+      {type:"tower", c:`<span class="tlab">A 2-instruction robot's book</span><b>State A</b> · if you read a 0 → write a <b>1</b>, move right, switch to state B.<br><b>State B</b> · if you read a 0 → write a <b>1</b>, then <b>STOP</b>.<br><br>This robot writes two 1s, then halts. Easy to follow&nbsp;!`},
+      {type:"text", c:"By changing the instructions, you get robots that behave very differently. Here's the strip of another robot, which wrote a few 1s before halting&nbsp;:"},
+      {type:"figs", c:`
+      <div class="fig" style="max-width:none">${tapeSVG(["1","1","0","1","","",""],3)}
+        <div class="cap">The robot's strip. In <b>gold</b>&nbsp;: the cells where it wrote a <b>1</b>. The arrow shows where it is.</div>
+      </div>`},
+      {type:"text", c:"Then we hold a great <strong>contest of patience</strong>. We enter every possible robot with a given number of instructions — say <em>n</em> instructions. We start them all at once. Two things can happen&nbsp;: either a robot eventually halts, or it runs forever. We keep only the ones that <strong>do eventually halt</strong>, and among those, we look for the champion&nbsp;: the one that wrote the most 1s on its strip before halting."},
+      {type:"text", c:"<strong>BB(n) is that record&nbsp;: the largest number of 1s a robot with <em>n</em> instructions can write before halting.</strong> The first champions are tiny and adorable&nbsp;: a 1-instruction robot writes a single 1. With 2 instructions, the record climbs to 4. With 3, it's 6. With 4, it's 13. Then it runs wild&nbsp;: with 5 instructions, the champion runs for nearly 47 million steps. And it only gets worse, faster than TREE(3), faster than <em>any</em> recipe of calculation imaginable."},
+      {type:"tower", c:`<span class="tlab">Why no one will ever be able to compute it</span>The trap hides in a simple question&nbsp;: how do you know whether a robot will <b>eventually halt</b>, or run forever&nbsp;?<br><br>You can't just wait&nbsp;: even after billions of steps, it might halt on the next one… or never. And it's <b>proven</b> that no method can tell for sure.<br><br>Now, if we knew BB(n), we'd have a magic recipe&nbsp;: « run your robot&nbsp;; if it exceeds BB(n) steps, it'll never halt. » Since this recipe is impossible, <b>BB(n) is necessarily out of reach.</b>`},
+      {type:"text", c:"And it goes even deeper&nbsp;: it's been proven that the value of <b>BB(745)</b> is <em>undecidable</em> in standard mathematics. There exists, then, a precise, perfectly defined whole number that mathematics itself will never be able to determine — not for lack of time, but by logical impossibility."},
+      {type:"use", c:"It's the most dizzying landmark of the journey, but not because of its size — because of what it <em>reveals</em>. Until now, the numbers were always, in principle, reachable&nbsp;: with enough time, a machine could write them. BB(n) crosses another frontier&nbsp;: that of the <em>knowable</em>. Here, the large becomes the <em>unknowable</em>."}
+    ],
+    distLab:"Beyond the computable",
+    dist:"We can no longer speak of distance, nor even of a staircase&nbsp;: BB(n) overtakes the entire infinite staircase before it in a single bound, and races toward a region where <span class='unit'>numbers exist but will remain eternally unknown</span>. And yet, even it is not the end of the road.",
+    video:"https://www.youtube.com/watch?v=CE8UhcyJS0I", videoLab:"Computerphile · Busy Beaver"
+  },
+  {
+    regime:3,
+    name:"Rayo's number",
+    value:"at the edge of language",
+    sci:null,
+    build:"Every number before this was built with a recipe&nbsp;: « take this, multiply, stack… » Rayo, though, isn't built at all. Its definition is a stroke of genius&nbsp;:",
+    tower:`<span class="tlab">Rayo's definition</span>« The smallest number that is<br>larger than <b>every</b> number<br>that could be described<br>in fewer than a googol of symbols. »`,
+    build2:"In other words&nbsp;: gather absolutely everything that can be written in the language of mathematics — Graham, TREE(3), and all the numbers from the previous section, however monstrous. Well, Rayo is, <em>by definition</em>, bigger than all of that combined. No matter what recipe you invent&nbsp;: if you can write it down, Rayo is already above it.",
+    use:"It's the final twist. Instead of saying <em>how</em> it's built, this number is defined by <em>what language is capable of expressing</em>. It was invented in 2007 during a « big number duel » at MIT, and was long considered the largest number ever named — far surpassing Graham and TREE(3) combined.",
+    distLab:"At the edge of the nameable",
+    dist:"There's no more distance, no more unit, no more image. Rayo stands just beyond <span class='unit'>everything that could ever be written or described</span>. The journey doesn't end because we've arrived&nbsp;: it ends because <em>language</em> itself has reached its end.",
+    video:"https://www.youtube.com/watch?v=X3l0fPHZja8", videoLab:"Numberphile · The Daddy of Big Numbers (Rayo)"
+  }
+];
+
+/* ---------- les ruptures (dividers) ---------- */
+const DIVIDERS = {
+  toR2:{
+    kicker:"First break",
+    h:"The meter has just died.",
+    p:"No physical distance exists anymore — not even the entire universe — to measure what comes next. So we change the rule&nbsp;: <span class='gold'>from now on, the unit of measure will be a number we've already met.</span> We measure giants with other giants."
+  },
+  toR3:{
+    kicker:"Second break",
+    h:"And now, even numbers are no longer enough.",
+    p:"Until now, we could always say « so many times the previous number. » From here on, that ratio <span class='gold'>no longer exists</span>&nbsp;: there is no number — not even a googolplex of googolplexes — to express the leap. All that's left is the reckoning."
+  }
+};
+
+/* ============================================================
+   RENDU
+   ============================================================ */
+function supSci(arr){
+  if(!arr) return "";
+  return `${arr[0]} × 10<sup>${arr[1]}</sup>`;
+}
+/* dessine un petit arbre : nodes=[{x,y,c,r?}], edges=[[i,j],...]
+   c ∈ {g:vert/or, r:rouge, b:bleu}. r:true => racine (anneau) */
+function treeSVG(nodes, edges){
+  const COL={g:"#c9a227", r:"#b5471f", b:"#5b8fb0"};
+  const W=110,H=110;
+  let e = edges.map(([a,b])=>`<line x1="${nodes[a].x}" y1="${nodes[a].y}" x2="${nodes[b].x}" y2="${nodes[b].y}" stroke="#f4f0e6" stroke-width="2.5" stroke-opacity=".7"/>`).join("");
+  let n = nodes.map(nd=>{
+    const ring = nd.r ? `<circle cx="${nd.x}" cy="${nd.y}" r="9.5" fill="none" stroke="${COL[nd.c]}" stroke-width="1.5" opacity=".55"/>` : "";
+    return `${ring}<circle cx="${nd.x}" cy="${nd.y}" r="5.5" fill="${COL[nd.c]}" stroke="#05050a" stroke-width="1.5"/>`;
+  }).join("");
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${e}${n}</svg>`;
+}
+/* dessine une bande de robot : cells = tableau de "1", "0", "" (vide).
+   head = index de la case où se trouve la tête (ou -1 pour aucune). */
+function tapeSVG(cells, head){
+  const cw=30, h=40, pad=2;
+  const W = cells.length*cw + pad*2;
+  let rects = cells.map((v,i)=>{
+    const x = pad + i*cw;
+    const fill = v==="1" ? "#c9a227" : "transparent";
+    const txt = v==="" ? "" : `<text x="${x+cw/2}" y="${26}" text-anchor="middle" font-family="Space Mono,monospace" font-size="16" font-weight="700" fill="${v==='1'?'#05050a':'#8a8472'}">${v}</text>`;
+    const cellBg = v==="1" ? `<rect x="${x+3}" y="6" width="${cw-6}" height="${h-12}" rx="3" fill="#c9a227"/>` : "";
+    return `<rect x="${x}" y="6" width="${cw}" height="${h-12}" fill="none" stroke="#f4f0e6" stroke-opacity=".25"/>${cellBg}${txt}`;
+  }).join("");
+  let pointer = head>=0 ? `<polygon points="${pad+head*cw+cw/2-6},${h-2} ${pad+head*cw+cw/2+6},${h-2} ${pad+head*cw+cw/2},${h-9}" fill="#b5471f"/>` : "";
+  return `<svg width="${W}" height="${h}" viewBox="0 0 ${W} ${h}" xmlns="http://www.w3.org/2000/svg">${rects}${pointer}</svg>`;
+}
+function numSection(n, extraClass=""){
+  const idx = n.idx ? `<div class="idx reveal">${n.idx}</div>` : "";
+  const small = n.valueSmall ? `<span class="small">${n.valueSmall}</span>` : "";
+  const sci = n.sci ? `<div class="sci reveal">${supSci(n.sci)}</div>` : "";
+  const video = n.video ? `<a class="nphile reveal" href="${n.video}" target="_blank" rel="noopener">${n.videoLab||"Watch on Numberphile"}</a>` : "";
+
+  // Renderers for each block type
+  const R = {
+    build:  t => `<div class="block reveal"><h3>How it's built</h3><p>${t}</p></div>`,
+    text:   t => `<div class="block reveal"><p>${t}</p></div>`,
+    use:    t => `<div class="block reveal"><h3>What it's for</h3><p>${t}</p></div>`,
+    tower:  t => `<div class="tower reveal">${t}</div>`,
+    figs:   t => `<div class="figs reveal">${t}</div>`
+  };
+
+  // A number may declare an explicit ordered "blocks" array; otherwise we
+  // assemble from the legacy named fields in a sensible default order.
+  let body;
+  if(Array.isArray(n.blocks)){
+    body = n.blocks.map(b => (R[b.type]||R.text)(b.c)).join("\n    ");
+  } else {
+    const parts = [];
+    if(n.build) parts.push(R.build(n.build));
+    if(n.figs)  parts.push(R.figs(n.figs));
+    if(n.tower) parts.push(R.tower(n.tower));
+    if(n.build2)parts.push(R.text(n.build2));
+    if(n.tower2)parts.push(R.tower(n.tower2));
+    if(n.figs2) parts.push(R.figs(n.figs2));
+    if(n.build3)parts.push(R.text(n.build3));
+    if(n.use)   parts.push(R.use(n.use));
+    if(n.use2)  parts.push(R.text(n.use2));
+    body = parts.join("\n    ");
+  }
+
+  return `
+  <section class="num ${extraClass}">
+    ${idx}
+    <div class="name reveal">${n.name}</div>
+    <div class="value reveal">${n.value}${small}</div>
+    ${sci}
+    ${body}
+    <div class="dist reveal">
+      <div class="lab">${n.distLab}</div>
+      <p>${n.dist}</p>
+    </div>
+    ${video}
+  </section>`;
+}
+function divider(d){
+  return `
+  <section class="divider reveal">
+    <div class="kicker">${d.kicker}</div>
+    <h2>${d.h}</h2>
+    <p>${d.p}</p>
+  </section>`;
+}
+
+/* régime 0 — condensé mais chacun expliqué brièvement */
+const WARMUP = [
+  {n:"1", sci:"", t:"The beginning. One step. You've already arrived."},
+  {n:"10", sci:"", t:"Your fingers. Ten steps&nbsp;: you've crossed a room."},
+  {n:"100", sci:"", t:"A hundred steps&nbsp;: here you are at the street corner."},
+  {n:"1,000", sci:"10<sup>3</sup>", t:"A thousand steps, about a kilometer&nbsp;: the edge of the neighborhood."},
+  {n:"100,000", sci:"10<sup>5</sup>", t:"A hundred kilometers&nbsp;: from one town to the next. Still entirely human."},
+  {n:"1,000,000", sci:"10<sup>6</sup>", t:"A million seconds is <b>11 and a half days</b>. Hold on to that&nbsp;: it's the key to the surprise just below."},
+  {n:"1,000,000,000", sci:"10<sup>9</sup>", t:"A billion seconds isn't « a bit more » than 11 days… it's <b>almost 32 years</b>&nbsp;! That's the dizzying gap between a million and a billion."},
+  {n:"8,200,000,000", sci:"8.2×10<sup>9</sup>", t:"The entire human population. One meter per person&nbsp;: 21 round trips to the Moon."},
+  {n:"1,000,000,000,000", sci:"10<sup>12</sup>", t:"A trillion. One meter each&nbsp;: nearly the distance to the Sun, seven times over. And it's still the smallest in our whole story."}
+];
+function warmupBlock(){
+  const rows = WARMUP.map(w=>`
+    <div class="wrow reveal">
+      <span class="wnum">${w.n}</span>
+      <span class="wsci">${w.sci||"&nbsp;"}</span>
+      <span class="wtxt">${w.t}</span>
+    </div>`).join("");
+  return `
+  <section class="warmup">
+    <div class="idx reveal" style="margin-bottom:1.4em">Regime 0 · the warm-up</div>
+    <div class="lead reveal">First, some numbers we think we know.</div>
+    <p class="leadsub reveal">One meter per unit. As long as the distances stay human, we move fast. Enjoy it&nbsp;: this comfort won't last.</p>
+    ${rows}
+  </section>`;
+}
+
+/* assemble */
+const content = document.getElementById("content");
+let html = warmupBlock();
+NUMBERS.forEach(n=> html += numSection(n));
+html += divider(DIVIDERS.toR2);
+REGIME2.forEach(n=> html += numSection(n));
+html += divider(DIVIDERS.toR3);
+REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
+
+/* final */
+html += `
+<section class="end reveal">
+  <h2>And after Rayo&nbsp;?</h2>
+  <p>Other numbers exist, bigger still — each defined by overflowing the definition of the last. But none of them comes close to infinity&nbsp;: that's the final vertigo. All these giants, put together, are nothing before infinity. They remain, every last one, <em>finite</em>.</p>
+  <p>That was the point of the journey&nbsp;: to feel, step by step, just how much « a lot » and « infinity » are two countries with no shared border.</p>
+  <div class="sig">End of the scale · thanks for traveling the untravelable</div>
+  <div class="credit">A journey presented by <a href="https://studioexistence.com" target="_blank" rel="noopener"><b>Studio Existence</b></a></div>
+</section>`;
+
+content.innerHTML = html;
+
+/* ============================================================
+   INTERACTIONS : reveal, progress rail, regime tag
+   ============================================================ */
+const REGIME_LABELS = ["Regime 0 · the warm-up","Regime 1 · real distances","Regime 2 · numbers as units","Regime 3 · the reckoning"];
+
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("in"); });
+},{threshold:.12, rootMargin:"0px 0px -8% 0px"});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+const rail = document.getElementById("rail");
+const tag = document.getElementById("regime-tag");
+function onScroll(){
+  const h = document.documentElement;
+  const pct = (h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+  rail.style.width = pct+"%";
+  // crude regime indicator by scroll fraction
+  let label="";
+  if(pct<10) label="";
+  else if(pct<46) label=REGIME_LABELS[1];
+  else if(pct<70) label=REGIME_LABELS[2];
+  else label=REGIME_LABELS[3];
+  if(label){ tag.textContent=label; tag.classList.add("show"); }
+  else tag.classList.remove("show");
+}
+window.addEventListener("scroll", onScroll, {passive:true});
+onScroll();
+
+/* ============================================================
+   STARFIELD — subtle, deepens as you descend
+   ============================================================ */
+const cv = document.getElementById("stars");
+const cx = cv.getContext("2d");
+let stars=[];
+function sizeStars(){
+  cv.width=innerWidth; cv.height=innerHeight;
+  const count = Math.min(220, Math.floor(innerWidth*innerHeight/9000));
+  stars = Array.from({length:count},()=>({
+    x:Math.random()*cv.width, y:Math.random()*cv.height,
+    r:Math.random()*1.3+.2, a:Math.random()*.6+.15,
+    tw:Math.random()*.02+.004, p:Math.random()*Math.PI*2
+  }));
+}
+function drawStars(t){
+  cx.clearRect(0,0,cv.width,cv.height);
+  stars.forEach(s=>{
+    const alpha = s.a + Math.sin(t*s.tw + s.p)*.18;
+    cx.globalAlpha = Math.max(0,alpha);
+    cx.fillStyle = "#f4f0e6";
+    cx.beginPath(); cx.arc(s.x,s.y,s.r,0,Math.PI*2); cx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+sizeStars();
+addEventListener("resize", sizeStars);
+requestAnimationFrame(drawStars);
+</script>
+</body>
+</html>
