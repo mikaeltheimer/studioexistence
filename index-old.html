@@ -819,7 +819,7 @@
 
     /* ══ BUCKET LIST CARD ══ */
     .card-bucket {
-      min-height: 420px;
+      min-height: auto;
       height: auto;
       background: #f7f3ed;
       border-color: var(--accent);
@@ -836,8 +836,8 @@
 
     /* top visual — gradient sky with floating ticks */
     .bucket-top {
-      flex: 1;
-      min-height: 200px;
+      height: 200px;
+      flex-shrink: 0;
       overflow: hidden;
       position: relative;
       background: linear-gradient(105deg, #FF6B35 0%, #E91E8C 55%, #9B59B6 100%);
@@ -1129,18 +1129,6 @@
     #droid .card-name { color: #c8dff0; }
     #droid .card-desc { color: #c8dff0; }
     #droid .card-badge { color: #e8a020; border-color: #e8a020; }
-
-    /* ══════════════════════════════
-       CARD — GRANDS NOMBRES
-       nuit étoilée + or (raccord avec le projet)
-    ══════════════════════════════ */
-    #bignum { min-height: 220px; }
-    #bignum .card-bg { background: #05050a; background-image: radial-gradient(ellipse at 50% 35%, rgba(201,162,39,0.12) 0%, transparent 65%); }
-    #bignum .card-bottom { background: #0a0a12; color: #f4f0e6; border-color: rgba(201,162,39,.14); }
-    #bignum .card-name { color: #f4f0e6; }
-    #bignum .card-desc { color: #f4f0e6; }
-    #bignum .card-badge { color: #c9a227; border-color: #c9a227; }
-    #bignum .card-visit-hint { color: #c9a227; }
     /* ══ ENTRANCE ANIMATION ══ */
     .card {
       opacity: 0;
@@ -1336,28 +1324,8 @@
 
 
 
-  <!-- GRANDS NOMBRES -->
-  <a class="card" id="bignum" href="/big-numbers" target="_blank" rel="noopener">
-    <div class="card-bg"></div>
-    <div class="card-content">
-      <div class="card-top" style="padding:0;overflow:hidden;position:relative;">
-        <canvas id="bignumCanvas" style="width:100%;height:100%;display:block;"></canvas>
-      </div>
-      <div class="card-bottom">
-        <div class="card-row">
-          <span class="card-name">L'échelle des nombres impossibles</span>
-          <span class="card-badge">Live ●</span>
-        </div>
-        <p class="card-desc">Un voyage du chiffre 1 jusqu'aux confins de ce que l'esprit humain a osé nommer — un googol, un googolplex, Graham, TREE(3), Rayo. À chaque étape : quelle distance faudrait-il parcourir pour atteindre le nombre suivant ?</p>
-        <span class="card-visit-hint">studioexistence.com/big-numbers ↗</span>
-      </div>
-    </div>
-  </a>
-
-
-
   <!-- BUCKET LIST (full width) -->
-  <a class="card card-bucket" id="bucket" href="https://studioexistence.com/bucket-list" target="_blank" rel="noopener">
+  <a class="card card-full card-bucket" id="bucket" href="https://studioexistence.com/bucket-list" target="_blank" rel="noopener">
     <div class="card-bg"></div>
     <div class="card-content card-content-bucket">
 
@@ -1621,77 +1589,6 @@ if (droidCanvas) {
     dctx.globalAlpha=.88;dctx.fillText('🤖',W*.78,H*.52);dctx.globalAlpha=1;
   }
   requestAnimationFrame(drawDroid);
-}
-
-/* ── Grands nombres: chiffres flottant vers l'infini ── */
-const bignumCanvas = document.getElementById('bignumCanvas');
-if (bignumCanvas) {
-  const bctx = bignumCanvas.getContext('2d');
-  function resizeBN(){ bignumCanvas.width=bignumCanvas.offsetWidth*devicePixelRatio; bignumCanvas.height=bignumCanvas.offsetHeight*devicePixelRatio; }
-  resizeBN(); window.addEventListener('resize', resizeBN);
-  const GOLD='201,162,39';
-  const TOKENS=['1','10','100','1000','10⁶','10⁹','10²³','10⁸⁰','googol','10¹⁰⁰','googolplex','Graham','TREE(3)','BB(n)','Rayo','∞','42','7','9⁹','π','×10','52!'];
-  // étoiles de fond
-  let bnStars=[];
-  function seedStars(){
-    const W=bignumCanvas.width,H=bignumCanvas.height;
-    bnStars=Array.from({length:Math.max(30,Math.floor(W*H/14000))},()=>({
-      x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.2+.2,
-      a:Math.random()*.5+.15, tw:Math.random()*.02+.004, p:Math.random()*Math.PI*2
-    }));
-  }
-  seedStars(); window.addEventListener('resize', seedStars);
-  // tokens flottants : montent en grandissant
-  function mkToken(){
-    return {
-      txt:TOKENS[Math.floor(Math.random()*TOKENS.length)],
-      x:0.12+Math.random()*0.76,
-      y:1.12+Math.random()*0.25,
-      speed:0.0011+Math.random()*0.0018,
-      size:0.04+Math.random()*0.05,
-      grow:1.0009+Math.random()*0.0014,
-      drift:(Math.random()-0.5)*0.0006
-    };
-  }
-  let bnTokens=Array.from({length:14},()=>{ const t=mkToken(); t.y=Math.random()*1.2; return t; });
-  function drawBignum(ts){
-    requestAnimationFrame(drawBignum);
-    const W=bignumCanvas.width,H=bignumCanvas.height;
-    bctx.clearRect(0,0,W,H);
-    bctx.fillStyle='#05050a'; bctx.fillRect(0,0,W,H);
-    // halo doré central
-    const halo=bctx.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,W*.55);
-    halo.addColorStop(0,`rgba(${GOLD},0.10)`); halo.addColorStop(1,'rgba(0,0,0,0)');
-    bctx.fillStyle=halo; bctx.fillRect(0,0,W,H);
-    // étoiles scintillantes
-    bnStars.forEach(s=>{
-      const al=Math.max(0,s.a+Math.sin(ts*0.001*s.tw*60+s.p)*0.18);
-      bctx.globalAlpha=al; bctx.fillStyle='#f4f0e6';
-      bctx.beginPath(); bctx.arc(s.x,s.y,s.r,0,Math.PI*2); bctx.fill();
-    });
-    bctx.globalAlpha=1;
-    // grand ∞ en filigrane
-    bctx.font=`${Math.round(H*0.5)}px Georgia, serif`;
-    bctx.textAlign='center'; bctx.textBaseline='middle';
-    bctx.fillStyle=`rgba(${GOLD},${0.07+Math.sin(ts*0.0012)*0.02})`;
-    bctx.fillText('∞', W*0.5, H*0.42);
-    // tokens flottants
-    bctx.textAlign='center'; bctx.textBaseline='middle';
-    bnTokens.forEach(t=>{
-      t.y-=t.speed; t.x+=t.drift; t.size*=t.grow;
-      if(t.y< -0.15 || t.size>0.22){ Object.assign(t, mkToken()); }
-      const fade = t.y>0.85 ? (1.12-t.y)/0.27 : (t.y<0.12 ? Math.max(0,t.y/0.12) : 1);
-      const px=t.x*W, py=t.y*H, fs=t.size*H;
-      bctx.font=`${Math.round(fs)}px Georgia, serif`;
-      bctx.fillStyle=`rgba(${GOLD},${Math.min(0.85,Math.max(0,fade))*0.9})`;
-      bctx.fillText(t.txt, px, py);
-    });
-    // léger vignettage bas pour fondre vers la barre d'info
-    const vg=bctx.createLinearGradient(0,H*0.7,0,H);
-    vg.addColorStop(0,'rgba(5,5,10,0)'); vg.addColorStop(1,'rgba(5,5,10,0.55)');
-    bctx.fillStyle=vg; bctx.fillRect(0,H*0.7,W,H*0.3);
-  }
-  requestAnimationFrame(drawBignum);
 }
 
 /* ── Dear Someone: floating dots ── */
