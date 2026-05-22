@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>L'Échelle des nombres impossibles</title>
+<title>Voyage au bout des grands nombres</title>
 <meta name="description" content="Un voyage du chiffre 1 jusqu'aux confins de ce que l'esprit humain a osé nommer — raconté à travers la distance qu'il faudrait parcourir pour atteindre chaque nombre.">
 <link rel="alternate" hreflang="fr" href="https://studioexistence.com/big-numbers/index.html">
 <link rel="alternate" hreflang="en" href="https://studioexistence.com/big-numbers/index-en.html">
@@ -172,7 +172,7 @@ sup{font-size:.62em}
 /* the distance line — the through-thread */
 .dist{
   border-left:2px solid var(--gold);padding:1.1em 0 1.1em 1.4em;
-  margin:1.8em 0;max-width:60ch;
+  margin:1.8em 0;max-width:60ch;flex:1;min-width:min(100%,28ch);
 }
 .dist .lab{
   font-family:var(--mono);font-size:11px;letter-spacing:.2em;
@@ -181,6 +181,25 @@ sup{font-size:.62em}
 .dist p{font-family:var(--body);font-style:italic;font-size:1.18rem;line-height:1.55;color:var(--paper)}
 .dist .unit{color:var(--gold);font-style:normal;font-weight:600}
 
+/* the analog block — alternate image (volume / time / contrast) */
+.analog{
+  border-left:2px solid #4a7fa5;padding:1.1em 0 1.1em 1.4em;
+  margin:1.8em 0;flex:1;min-width:min(100%,28ch);
+}
+.analog .lab{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:#4a7fa5;opacity:.9;margin-bottom:.5em;
+}
+.analog p{font-family:var(--body);font-style:italic;font-size:1.18rem;line-height:1.55;color:var(--paper)}
+.analog .unit{color:#7ab3d4;font-style:normal;font-weight:600}
+
+/* side-by-side container for dist + analog */
+.dist-row{
+  display:flex;flex-wrap:wrap;gap:1.6em;margin:1.8em 0;
+  align-items:flex-start;
+}
+.dist-row .dist,.dist-row .analog{margin:0}
+
 /* régime-0 condensed rows */
 .warmup{max-width:1100px;margin:0 auto;padding:10vh 7vw}
 .warmup .lead{
@@ -188,6 +207,48 @@ sup{font-size:.62em}
   color:var(--gold);margin-bottom:.4em;
 }
 .warmup .leadsub{color:var(--paper-dim);opacity:.7;max-width:54ch;margin-bottom:3em}
+
+/* fortune spotlight — transition entre warmup et régime 1 */
+.fortune{
+  margin-top:4em;padding-top:3.5em;border-top:1px solid var(--line);
+}
+.fortune .ftag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--rust);margin-bottom:1em;
+}
+.fortune .fname{
+  font-family:var(--serif);font-weight:600;font-style:italic;
+  font-size:clamp(1.2rem,2.8vw,1.8rem);color:var(--paper-dim);margin-bottom:.2em;
+}
+.fortune .fvalue{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(2rem,5.5vw,4rem);line-height:1.05;letter-spacing:-.02em;
+  margin-bottom:.3em;
+}
+.fortune .fsci{
+  font-family:var(--mono);font-size:clamp(.85rem,1.8vw,1.1rem);
+  color:var(--gold);margin-bottom:1.6em;font-weight:700;
+}
+.fortune .fblocks{
+  display:flex;flex-wrap:wrap;gap:1.6em;margin-top:1.6em;
+  align-items:flex-start;
+}
+.fortune .fblock{
+  border-left:2px solid var(--gold);padding:.9em 0 .9em 1.2em;
+  flex:1;min-width:min(100%,28ch);
+}
+.fortune .fblock.blue{border-left-color:#4a7fa5;}
+.fortune .fblock .flab{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:.45em;
+}
+.fortune .fblock.blue .flab{color:#4a7fa5;opacity:.9;}
+.fortune .fblock p{
+  font-family:var(--body);font-style:italic;font-size:1.06rem;
+  line-height:1.55;color:var(--paper);
+}
+.fortune .fblock .unit{color:var(--gold);font-style:normal;font-weight:600}
+.fortune .fblock.blue .unit{color:#7ab3d4;font-style:normal;font-weight:600}
 .wrow{
   display:flex;align-items:baseline;gap:1.4em;padding:1.1em 0;
   border-bottom:1px solid var(--line);flex-wrap:wrap;
@@ -263,7 +324,7 @@ sup{font-size:.62em}
 
 <!-- HERO -->
 <header class="hero">
-  <h1 class="reveal">L'échelle des<br><em>nombres impossibles</em></h1>
+  <h1 class="reveal">Voyage au bout des<br><em>grands nombres</em></h1>
   <p class="sub reveal">Un voyage du chiffre 1 jusqu'aux confins de ce que l'esprit humain a osé nommer.</p>
   <p class="premise reveal">Une seule question nous accompagnera tout du long&nbsp;: <b>quelle distance faudrait-il parcourir</b> pour aller d'un nombre au suivant&nbsp;? On commencera en mètres. Très vite, les mètres ne suffiront plus. Puis ce sera l'univers entier qui ne suffira plus. Et à la fin&nbsp;: plus rien ne suffira — pas même les nombres eux-mêmes.</p>
   <div class="scroll-cue">↓ commencer petit</div>
@@ -300,7 +361,9 @@ const NUMBERS = [
     build:"On ne les compte pas une par une, bien sûr. Les scientifiques mesurent combien de cellules tiennent dans un petit morceau de chaque organe — la peau, le sang, le foie, le cerveau — puis ils additionnent le tout. On arrive à environ 37&nbsp;000 milliards.",
     use:"C'est le premier nombre du voyage qui dépasse vraiment l'imagination&nbsp;: ce nombre, c'est <em>toi</em>. Il te fabrique en entier, de la tête aux pieds, et pourtant tu ne pourras jamais le voir. Trente-sept mille milliards de petites briques vivantes qui travaillent ensemble pour faire une seule personne.",
     distLab:"Si chaque cellule valait un mètre",
-    dist:"Le voyage ferait <span class='unit'>37 milliards de kilomètres</span>. Imagine&nbsp;: tu pars de la Terre, tu fonces jusqu'au Soleil, tu reviens… et tu recommences ce trajet <span class='unit'>125 fois de suite</span>. Tout ça tient dans une seule personne."
+    dist:"Le voyage ferait <span class='unit'>37 milliards de kilomètres</span>. Imagine&nbsp;: tu pars de la Terre, tu fonces jusqu'au Soleil, tu reviens… et tu recommences ce trajet <span class='unit'>125 fois de suite</span>. Tout ça tient dans une seule personne.",
+    analogLab:"En temps",
+    analog:"Si tu comptais une cellule par seconde, sans jamais t'arrêter, il te faudrait <span class='unit'>1,18 million d'années</span> pour toutes les dénombrer. Nous étions alors <em>Homo erectus</em> — debout, mais loin de toute ville, de tout livre, de tout nombre."
   },
   {
     regime:1,
@@ -309,7 +372,20 @@ const NUMBERS = [
     build:"Ton cerveau contient environ 86 milliards de neurones. Mais ce qui compte, ce sont les points de contact entre eux — les <em>synapses</em> — par lesquels ils se parlent. Chaque neurone en a des milliers. En tout&nbsp;: environ un million de milliards.",
     use:"C'est l'objet le plus compliqué qu'on connaisse dans tout l'univers. C'est grâce à ce nombre que tu peux lire cette phrase, te rappeler ton dernier anniversaire, et imaginer un nombre que tu ne verras jamais.",
     distLab:"Si chaque connexion valait un mètre",
-    dist:"<span class='unit'>Un million de milliards de mètres.</span> Tu aurais quitté le système solaire depuis longtemps&nbsp;: c'est comme aller jusqu'à Neptune, la planète la plus lointaine, puis recommencer plus de cent fois. Le siège de tes pensées, mis bout à bout, sortirait du voisinage du Soleil."
+    dist:"<span class='unit'>Un million de milliards de mètres.</span> Tu aurais quitté le système solaire depuis longtemps&nbsp;: c'est comme aller jusqu'à Neptune, la planète la plus lointaine, puis recommencer plus de cent fois. Le siège de tes pensées, mis bout à bout, sortirait du voisinage du Soleil.",
+    analogLab:"En temps",
+    analog:"Compter une synapse par seconde prendrait <span class='unit'>31,7 millions d'années</span>. À cette époque, les dinosaures non-aviens s'étaient éteints il y a 34 millions d'années à peine — et nos ancêtres primates n'avaient pas encore l'allure humaine. Tout ça loge dans ton crâne."
+  },
+  {
+    regime:1,
+    name:"L'âge de l'univers en secondes",
+    value:"435 000 000 000 000 000", sci:["4,35","17"],
+    build:"L'univers a environ 13,8 milliards d'années. En multipliant par le nombre de secondes dans une année (environ 31,5 millions), on obtient ce nombre&nbsp;: 435 millions de milliards de secondes. C'est <em>tout le temps qui s'est écoulé</em> depuis le Big Bang, converti en l'unité la plus petite que nous utilisons au quotidien.",
+    use:"C'est notre horloge cosmique. Rappelle-toi le warmup&nbsp;: un milliard de secondes, c'est déjà 32 ans — une vie d'adulte. Ici, on en a 435 millions de milliards. Ce nombre sert de <em>repère fixe</em> tout au long du voyage&nbsp;: dès qu'on compare un nombre au temps de l'univers, on sait exactement où on en est.",
+    distLab:"Si chaque seconde valait un mètre",
+    dist:"Le voyage ferait <span class='unit'>46 années-lumière</span> — une bulle autour du Soleil englobant une poignée d'étoiles voisines. Modeste comparé à ce qui suit, mais c'est <em>tout le temps de l'univers</em> que tu viens de parcourir.",
+    analogLab:"En volume de grains de sable",
+    analog:"Si chaque seconde d'existence de l'univers était un grain de sable, l'ensemble remplirait <span class='unit'>87 000 piscines olympiques</span> — un stade entier noyé sous le sable. Un nombre immense pour nous, microscopique pour la suite."
   },
   {
     regime:1,
@@ -318,7 +394,9 @@ const NUMBERS = [
     build:"On mesure le sable de toutes les plages et de tous les déserts du monde, et on divise par la taille d'un seul grain. Le résultat tourne autour de sept milliards de milliards de grains.",
     use:"C'est l'image qu'on utilise tout le temps pour dire « une quantité impossible à compter ». On va voir dans une seconde qu'elle est, en fait, toute petite — et c'est là que le voyage devient surprenant.",
     distLab:"Si chaque grain valait un mètre",
-    dist:"Le voyage ferait <span class='unit'>800 années-lumière</span>. Pour te donner une idée&nbsp;: l'étoile la plus proche de nous est à 4 années-lumière. Là, tu traverserais des milliers de systèmes d'étoiles. Et pourtant, le nombre suivant tient au creux de ta main."
+    dist:"Le voyage ferait <span class='unit'>800 années-lumière</span>. Pour te donner une idée&nbsp;: l'étoile la plus proche de nous est à 4 années-lumière. Là, tu traverserais des milliers de systèmes d'étoiles. Et pourtant, le nombre suivant tient au creux de ta main.",
+    analogLab:"En volume",
+    analog:"Tous ces grains — plages et déserts confondus — rempliraient <span class='unit'>1,5 million de piscines olympiques</span>. Impressionnant… jusqu'à ce qu'on réalise que le nombre suivant tient dans une main."
   },
   {
     regime:1,
@@ -327,7 +405,9 @@ const NUMBERS = [
     build:"Un Rubik's cube a 6 faces qu'on peut tourner. En les mélangeant, on peut le placer dans un nombre gigantesque de positions différentes. En comptant précisément toutes les positions possibles, on obtient ce nombre à 20 chiffres.",
     use:"Voici la surprise du voyage&nbsp;: un petit cube qui tient dans une main a <em>plus</em> de positions possibles qu'il n'y a de grains de sable sur toute la Terre&nbsp;! Encore plus fou&nbsp;: peu importe à quel point il est mélangé, on peut toujours le résoudre en 20 mouvements ou moins. Les mathématiciens appellent ça « le nombre de Dieu ».",
     distLab:"Si chaque position valait un mètre",
-    dist:"On a déjà battu tous les grains de sable de la planète. Le voyage ferait <span class='unit'>4 600 années-lumière</span> — assez pour traverser une bonne partie du bras de notre galaxie où vit le Soleil. Autre image&nbsp;: avec autant de petits cubes, on pourrait recouvrir toute la surface de la Terre 300 fois."
+    dist:"On a déjà battu tous les grains de sable de la planète. Le voyage ferait <span class='unit'>4 600 années-lumière</span> — assez pour traverser une bonne partie du bras de notre galaxie où vit le Soleil. Autre image&nbsp;: avec autant de petits cubes, on pourrait recouvrir toute la surface de la Terre 300 fois.",
+    analogLab:"En temps",
+    analog:"Si toute l'humanité avait testé une position par seconde depuis le Big Bang, nous n'aurions exploré qu'environ <span class='unit'>1&nbsp;% des configurations</span>. Le cube tient dans une main&nbsp;; l'épuiser dépasse le temps de l'univers."
   },
   {
     regime:1,
@@ -336,16 +416,20 @@ const NUMBERS = [
     build:"On prend les ~37&nbsp;000 milliards de cellules d'une personne, et on multiplie par les ~8 milliards d'humains sur Terre. On obtient 3 suivi de 23 chiffres.",
     use:"C'est une façon de tenir l'humanité entière dans un seul nombre&nbsp;: chaque cellule de chaque personne vivante, comptée une à une. Et c'est presque exactement le même nombre qu'une constante très importante en chimie — celle juste en dessous.",
     distLab:"Si chaque cellule humaine valait un mètre",
-    dist:"Les années-lumière deviennent fatigantes&nbsp;: environ <span class='unit'>30 millions d'années-lumière</span>. Tu aurais traversé toute notre galaxie (qui fait « seulement » 100&nbsp;000 années-lumière de large), puis franchi le grand vide noir jusqu'à des galaxies voisines."
+    dist:"Les années-lumière deviennent fatigantes&nbsp;: environ <span class='unit'>30 millions d'années-lumière</span>. Tu aurais traversé toute notre galaxie (qui fait « seulement » 100&nbsp;000 années-lumière de large), puis franchi le grand vide noir jusqu'à des galaxies voisines.",
+    analogLab:"En grains de sable",
+    analog:"Si chaque cellule de chaque humain vivant était un grain de sable, le tas formerait <span class='unit'>un cube de plus de 50&nbsp;km de côté</span> — une montagne de sable plus haute que l'Everest, large comme une grande ville. Pour te donner l'échelle&nbsp;: un seul corps humain représentait à peine 7 piscines olympiques. Multiplie par 8 milliards de personnes, et tu obtiens cette montagne — environ 60 milliards de piscines."
   },
   {
     regime:1,
     name:"Le nombre d'Avogadro",
     value:"602 214 076 000 000 000 000 000", sci:["6,02","23"],
-    build:"Ce n'est pas un comptage d'objets réels, mais une mesure choisie par les scientifiques&nbsp;: c'est le nombre de toutes petites particules (atomes ou molécules) qu'il faut réunir pour obtenir une quantité de matière qu'on peut peser sur une balance.",
-    use:"C'est le pont magique entre le monde des atomes, trop petits pour être vus, et notre monde à nous. Il répond à&nbsp;: « combien d'atomes faut-il pour avoir quelques grammes de quelque chose&nbsp;? » Toute la chimie repose là-dessus. Et tiens, il est presque égal au nombre de cellules de l'humanité&nbsp;!",
+    build:"Les chimistes ont inventé une unité appelée la <em>mole</em> — leur façon à eux de compter par « paquets », comme on compte les œufs par douzaines. Sauf qu'une mole, c'est un paquet de 602&nbsp;214&nbsp;076&nbsp;000&nbsp;000&nbsp;000&nbsp;000&nbsp;000 particules. Avant 2019, la mole était définie ainsi&nbsp;: une mole de carbone-12 pesait <em>exactement</em> 12 grammes — c'était l'image la plus simple pour l'expliquer. Depuis, la mole est définie directement par ce nombre de particules, qui est désormais exact par définition, et c'est le poids qui devient une approximation.",
+    use:"Grâce à la mole, un chimiste n'a pas besoin de compter les atomes un par un — il suffit de peser. Une cuillère d'eau, c'est environ trois moles, soit presque deux milliards de milliards de milliards de molécules. Toute la chimie repose là-dessus. Et tiens, ce nombre est presque égal au nombre de cellules de toute l'humanité&nbsp;!",
     distLab:"Si chaque atome d'une petite quantité valait un mètre",
-    dist:"Un peu plus loin que le nombre précédent&nbsp;: environ <span class='unit'>64 millions d'années-lumière</span>. Autrement dit, une simple cuillère d'eau contient assez d'atomes pour t'emmener bien au-delà de notre galaxie."
+    dist:"Un peu plus loin que le nombre précédent&nbsp;: environ <span class='unit'>64 millions d'années-lumière</span>. Autrement dit, une simple cuillère d'eau contient assez d'atomes pour t'emmener bien au-delà de notre galaxie.",
+    analogLab:"En grains de sable",
+    analog:"Une mole de grains de sable remplirait <span class='unit'>120 milliards de piscines olympiques</span>. Rappelle-toi&nbsp;: <em>tous</em> les vrais grains de sable de la Terre remplissent 1,5 million de piscines. Avogadro les écrase d'un facteur <span class='unit'>80&nbsp;000</span>."
   },
   {
     regime:1,
@@ -354,7 +438,9 @@ const NUMBERS = [
     build:"On estime qu'il y a environ 2&nbsp;000 milliards de galaxies, et chacune contient en moyenne des centaines de milliards d'étoiles. On multiplie, et on obtient 1 suivi de 24 zéros.",
     use:"C'est à peu près <em>toutes les étoiles qui existent</em> dans la partie de l'univers qu'on peut voir. Difficile de faire plus grand quand on compte des objets réels dans le ciel.",
     distLab:"Si chaque étoile valait un mètre",
-    dist:"Le voyage ferait <span class='unit'>100 millions d'années-lumière</span>. Chaque étoile que tu vois la nuit, plus les milliards de milliards que tu ne verras jamais, alignées une par une… et tu n'es même pas encore arrivé au nombre suivant — qui sort pourtant d'un simple paquet de cartes."
+    dist:"Le voyage ferait <span class='unit'>100 millions d'années-lumière</span>. À cette distance, on a quitté notre galaxie (100&nbsp;000 al de large), traversé le Groupe Local, franchi le superamas de la Vierge, et on commence à atteindre les grandes structures de l'univers — des filaments de galaxies qui s'étendent sur des centaines de millions d'années-lumière. Tout ça pour une seule ligne d'étoiles.",
+    analogLab:"En grains de sable",
+    analog:"Il y a autant d'étoiles dans l'univers que si tu prenais <em>tous</em> les grains de sable de la Terre et que tu recommençais <span class='unit'>133&nbsp;000 fois</span>. Toutes les plages, tous les déserts, multipliés par 133&nbsp;000 — et imagine le nombre de planètes qui pourraient tourner autour de toutes ces étoiles."
   },
   {
     regime:1,
@@ -365,7 +451,9 @@ const NUMBERS = [
     build:"Quand tu poses les cartes une par une, tu as 52 choix pour la première, 51 pour la deuxième, 50 pour la suivante… On multiplie tout&nbsp;: 52 × 51 × 50 × … × 2 × 1. Le résultat est un nombre de 68 chiffres.",
     use:"Voici le fait le plus renversant du voyage&nbsp;: chaque fois que tu mélanges <em>bien</em> un paquet de cartes, tu tiens dans tes mains un ordre qui n'a très probablement <em>jamais existé depuis le début des temps</em>, et qui n'existera plus jamais. Il y a plus de façons de ranger 52 cartes qu'il n'y a d'étoiles dans tout l'univers.",
     distLab:"Si chaque mélange valait un mètre",
-    dist:"On vient de dépasser toutes les étoiles du cosmos&nbsp;! Même si quelqu'un mélangeait un paquet chaque seconde depuis la naissance de l'univers, il n'aurait pas fait un milliardième du chemin. <span class='unit'>Cette distance est bien plus grande que l'univers tout entier</span> — pour un objet qu'on range dans sa poche."
+    dist:"8,07 × 10<sup>67</sup> mètres. C'est ici, en vérité, que <em>le mètre rend l'âme</em>&nbsp;: l'univers observable mesure environ 8,8 × 10<sup>26</sup> mètres de diamètre, et cette distance le dépasse d'un facteur avec <span class='unit'>41 zéros</span>. Si tu pouvais traverser l'univers entier d'un bout à l'autre, puis recommencer, puis encore… il te faudrait répéter ce trajet un nombre de fois qui lui-même écrase l'imagination — juste pour un paquet de cartes. À partir d'ici, le sable prend le relais du mètre.",
+    analogLab:"En temps",
+    analog:"Si chaque être humain ayant jamais vécu (~100 milliards de personnes) avait mélangé un paquet par seconde depuis le Big Bang, l'humanité entière n'aurait couvert qu'une fraction avec <span class='unit'>39 zéros après la virgule</span> avant le premier chiffre. Pas un millionième de milliardième de milliardième du chemin."
   },
   {
     regime:1,
@@ -374,7 +462,9 @@ const NUMBERS = [
     build:"On additionne toute la matière de toutes les étoiles, de tous les nuages de gaz et de toute la poussière de l'univers visible. On arrive à 1 suivi de 80 zéros.",
     use:"C'est la frontière du monde réel. <em>Tout</em> ce qui existe et qu'on pourrait compter — chaque atome de chaque chose, partout — tient dans ce nombre. Après lui, plus aucun objet réel n'existe en assez grande quantité pour servir de point de comparaison. La matière s'arrête ici.",
     distLab:"Si chaque atome de l'univers valait un mètre",
-    dist:"Cette fois, l'image du voyage s'effondre pour de bon. <span class='unit'>Il n'y a pas assez d'univers</span> pour contenir cette distance&nbsp;: il faudrait des milliards de milliards d'univers entiers, mis bout à bout, pour la parcourir. Le mètre vient de rendre l'âme."
+    dist:"Le mètre avait déjà cédé avec les cartes&nbsp;; ici, c'est l'univers lui-même comme unité qui ne suffit plus. <span class='unit'>Il n'y a pas assez d'univers</span> pour contenir cette distance&nbsp;: il faudrait aligner bout à bout un nombre d'univers entiers qui s'écrit lui-même avec 53 chiffres — bien plus que de grains de sable sur Terre.",
+    analogLab:"En grains de sable",
+    analog:"Curieux retournement&nbsp;: si chaque atome de l'univers était un grain de sable, le tas ne remplirait <span class='unit'>même pas un dix-milliardième d'un seul univers</span>. Un grain est si grand devant un atome que toute la matière du cosmos, recomptée en sable, tiendrait dans un coin du ciel. C'est seulement avec le prochain nombre que le sable, à son tour, débordera l'univers."
   }
 ];
 
@@ -389,7 +479,9 @@ const REGIME2 = [
     build:"C'est un 1 avec cent zéros derrière. Le mot a été inventé en 1920 par un garçon de neuf ans, Milton Sirotta&nbsp;: son oncle mathématicien lui avait demandé de trouver un nom rigolo pour ce nombre.",
     use:"Il a été inventé exprès pour montrer la différence entre « très très grand » et « infini ». Petit secret&nbsp;: le moteur de recherche <em>Google</em> doit son nom à une faute d'orthographe de « googol »&nbsp;! Et le googol est déjà plus grand que le nombre d'atomes dans l'univers — il ne représente donc plus aucun objet réel, juste une idée.",
     distLab:"L'ancienne règle ne marche plus",
-    dist:"Comme plus aucune distance réelle n'est assez grande, on change la règle du jeu&nbsp;: à partir de maintenant, <span class='unit'>notre unité de mesure devient le nombre qu'on vient de voir</span>. Le googol, c'est environ <span class='unit'>100 milliards de milliards de fois</span> « tous les atomes de l'univers ». Comme si on prenait l'univers entier, compté atome par atome, et qu'on le répétait cent milliards de milliards de fois.",
+    dist:"Comme plus aucune distance réelle n'est assez grande, on change la règle du jeu&nbsp;: à partir de maintenant, <span class='unit'>notre unité de mesure devient le nombre qu'on vient de voir</span>. Le googol, c'est environ <span class='unit'>100 milliards de milliards de fois</span> le nombre d'atomes de l'univers entier (10<sup>80</sup>). Comme si on prenait chaque atome de chaque chose qui existe, et qu'on recommençait cent milliards de milliards de fois.",
+    analogLab:"En temps",
+    analog:"Imagine que chaque atome de l'univers est un compteur, et que tous comptent en même temps depuis le Big Bang, un nombre par seconde. Ensemble, ils auraient compté <span class='unit'>4 × 10<sup>97</sup></span> au total — soit <em>mille fois moins</em> que le googol. Même en mobilisant toute la matière et tout le temps de l'univers, on n'atteint pas le googol. Il reste un facteur 1&nbsp;000 hors de portée.",
     video:"https://www.youtube.com/watch?v=8GEebx72-qs", videoLab:"Numberphile · Googol & Googolplex"
   },
   {
@@ -399,7 +491,9 @@ const REGIME2 = [
     build:"En 1950, le savant Claude Shannon a estimé le nombre de parties d'échecs différentes qu'on peut jouer. Il a regardé combien de coups sont possibles à chaque tour, puis a tenu compte de la longueur d'une partie. Résultat&nbsp;: environ 1 suivi de 120 zéros.",
     use:"Shannon ne cherchait pas à battre un record. Il voulait prouver qu'aucun ordinateur, même le plus puissant, ne pourra jamais « tricher » aux échecs en calculant à l'avance toutes les parties possibles. C'est pour ça que les échecs restent un jeu d'intelligence, et pas une simple liste de réponses.",
     distLab:"En comptant en googols",
-    dist:"Maintenant on mesure en googols. Le nombre de Shannon vaut à peu près <span class='unit'>100 milliards de milliards de googols</span> — c'est-à-dire cent milliards de milliards de fois ce fameux 1-suivi-de-100-zéros qu'on a déjà du mal à imaginer."
+    dist:"Maintenant on mesure en googols. Le nombre de Shannon vaut à peu près <span class='unit'>100 milliards de milliards de googols</span> — c'est-à-dire cent milliards de milliards de fois ce fameux 1-suivi-de-100-zéros qu'on a déjà du mal à imaginer.",
+    analogLab:"En univers de grains de sable",
+    analog:"Pour contenir un nombre de Shannon de grains de sable, il faudrait <span class='unit'>1 000 milliards de milliards de milliards d'univers</span> — soit 10<sup>30</sup> univers. Le nombre d'univers nécessaires est lui-même un nombre qu'on ne peut plus vraiment imaginer."
   },
   {
     regime:2,
@@ -410,17 +504,21 @@ const REGIME2 = [
     use:"C'est notre plus vieux très grand nombre. Il prouve que des humains imaginaient déjà des nombres plus grands que le googol au carré <em>vingt-quatre siècles</em> avant qu'on invente le mot « googol ». Pour aller encore plus loin, les Jaïns racontaient une image&nbsp;: un puits rempli de fins cheveux, dont on retire un seul brin tous les cent ans — le temps qu'il faut pour le vider complètement.",
     distLab:"En comptant en googols",
     dist:"Plus grand que le googol multiplié par lui-même&nbsp;: c'est-à-dire <span class='unit'>plus d'un googol de googols</span>. Une idée vieille de deux mille cinq cents ans qui écrase déjà tout ce que la science moderne sait compter.",
+    analogLab:"En univers de grains de sable",
+    analog:"Il faudrait 10<sup>110</sup> univers pour contenir autant de grains de sable. C'est un nombre d'univers qui a lui-même <span class='unit'>110 chiffres</span> — le nombre d'univers nécessaires est plus grand que le googol.",
     video:"https://www.youtube.com/watch?v=sJqceEImtew", videoLab:"Numberphile · Jain Numbers"
   },
   {
     regime:2,
     name:"Le nombre de Skewes",
-    value:"10<sup>(10<sup>34</sup>)</sup>",
+    value:"10<sup>(10<sup>(10<sup>34</sup>)</sup>)</sup>",
     sci:null,
-    build:"D'abord, comprenons l'écriture en « étages ». 10<sup>34</sup> veut dire « 1 suivi de 34 zéros ». Le nombre de Skewes, lui, c'est 10<sup>(10<sup>34</sup>)</sup>&nbsp;: « 1 suivi de (1-suivi-de-34-zéros) zéros ». Autrement dit, le nombre de zéros est lui-même un nombre énorme.",
+    build:"D'abord, comprenons l'écriture en « étages ». 10<sup>34</sup> veut dire « 1 suivi de 34 zéros ». Empilons maintenant trois fois&nbsp;: le nombre de Skewes, c'est 10<sup>(10<sup>(10<sup>34</sup>)</sup>)</sup>. Lis-le de haut en bas&nbsp;: tout en haut, 10<sup>34</sup> (déjà 1 suivi de 34 zéros)&nbsp;; cela donne le nombre de zéros d'un deuxième étage&nbsp;; et <em>ce</em> nombre-là donne enfin le nombre de zéros de Skewes. À chaque étage, le vertige est mis à la puissance.",
     use:"Voici à quoi il sert, simplement&nbsp;: les mathématiciens étudient les nombres premiers (2, 3, 5, 7, 11…) et avaient remarqué une règle qui semblait toujours vraie. En 1933, Stanley Skewes a démontré que cette règle finit par devenir fausse — mais seulement à partir d'un nombre colossal. Ce nombre, c'est lui. Il a été longtemps célèbre comme « le plus grand nombre ayant servi à prouver quelque chose d'utile en maths ».",
     distLab:"Même le compteur de zéros explose",
-    dist:"On ne peut même plus dire « tant de googols »&nbsp;: il faudrait écrire un googol de chiffres rien que pour noter <em>combien</em> de googols il vaut. <span class='unit'>On n'écrit plus le nombre lui-même — on essaie juste de décrire la taille de son nombre de zéros.</span>"
+    dist:"Le nombre de Skewes a <span class='unit'>10<sup>(10<sup>34</sup>)</sup> zéros</span> — pas 10<sup>34</sup>, mais 10 puissance (1-suivi-de-34-zéros). Autrement dit, le simple <em>décompte de ses zéros</em> est déjà un nombre qu'on ne peut pas écrire dans l'univers. Si tu inscrivais un zéro sur chaque atome de l'univers (10<sup>80</sup> atomes), tu n'aurais même pas effleuré le début&nbsp;: il te faudrait 10<sup>(10<sup>34</sup>)</sup> atomes, un nombre dont le seul nombre de chiffres dépasse déjà tout ce qu'on a rencontré.",
+    analogLab:"En univers de grains de sable",
+    analog:"Le nombre d'univers nécessaires pour contenir autant de grains de sable aurait lui-même <span class='unit'>10<sup>(10<sup>34</sup>)</sup> chiffres</span>. On ne peut plus écrire le nombre d'univers — ni le nombre de ses chiffres — ni même le nombre de chiffres de <em>ce</em> nombre-là. L'empilement s'écroule sur lui-même."
   },
   {
     regime:2,
@@ -432,6 +530,8 @@ const REGIME2 = [
     use:"C'est le premier nombre du voyage qu'on ne peut écrire <em>nulle part</em>. Même en écrivant un zéro sur chaque atome de l'univers, on manquerait d'atomes — il en faudrait encore cent milliards de milliards de fois plus. Le nombre existe, mais on ne pourra jamais le voir écrit.",
     distLab:"L'image du « un chiffre par seconde »",
     dist:"Imagine que tu écris un chiffre chaque seconde, sans jamais t'arrêter, depuis la naissance de l'univers (14 milliards d'années). Tu aurais écrit environ 10<sup>18</sup> chiffres. Mais le googolplex en a 10<sup>100</sup>. <span class='unit'>Tu n'aurais même pas commencé le tout début du début.</span> Et c'est ici que notre méthode atteint sa limite&nbsp;: car le nombre suivant ne se mesure même plus en googolplex.",
+    analogLab:"En univers de grains de sable",
+    analog:"Le nombre d'univers nécessaires pour contenir un googolplex de grains de sable ne peut <span class='unit'>même plus être écrit</span> — pas même sur tous les atomes de tous ces univers. L'image des grains de sable vient de rendre l'âme, comme le mètre avant elle.",
     video:"https://www.youtube.com/watch?v=8GEebx72-qs", videoLab:"Numberphile · Googol & Googolplex"
   }
 ];
@@ -447,10 +547,12 @@ const REGIME3 = [
     tower:`<span class="tlab">Les trois machines</span><b>Triangle</b> · un nombre dans un triangle = ce nombre à sa propre puissance.<br><b>Carré</b> · un nombre dans un carré = ce nombre placé dans autant de <i>triangles</i> emboîtés.<br><b>Cercle</b> · un nombre dans un cercle = ce nombre placé dans autant de <i>carrés</i> emboîtés.`,
     build2:"Calculons le Mega, c'est-à-dire « 2 dans un cercle », en descendant marche par marche&nbsp;:",
     tower2:`<span class="tlab">Le calcul de « 2 dans un cercle »</span><b>2 dans un cercle</b> = 2 dans 2 carrés emboîtés.<br>&nbsp;&nbsp;↳ il faut d'abord « 2 dans un carré ».<br><br><b>2 dans un carré</b> = 2 dans 2 triangles emboîtés.<br>&nbsp;&nbsp;↳ il faut d'abord « 2 dans un triangle ».<br><br><b>2 dans un triangle</b> = 2<sup>2</sup> = <b>4</b><br>&nbsp;&nbsp;↳ donc on remonte&nbsp;: 4 dans un triangle = 4<sup>4</sup> = <b>256</b><br>&nbsp;&nbsp;↳ donc « 2 dans un carré » = <b>256</b><br><br>On remonte au cercle&nbsp;: il reste un dernier carré à ouvrir…<br><b>256 dans un carré</b> = 256 placé dans <b>256 triangles</b> emboîtés&nbsp;!`,
-    build3:"Et c'est là que ça s'emballe&nbsp;: 256 dans un triangle vaut déjà 256<sup>256</sup> (un nombre de 616 chiffres). Mais on doit recommencer 256 fois de suite, chaque résultat servant de base au triangle suivant. Le Mega, c'est le nombre obtenu tout en haut de cette pile&nbsp;: une <em>tour de 257 dix empilés</em>, 10<sup>10<sup>10<sup>…</sup></sup></sup> avec 257 étages.",
+    build3:"Et c'est là que ça s'emballe&nbsp;: 256 dans un triangle vaut déjà 256<sup>256</sup> (un nombre de 617 chiffres). Mais on doit recommencer 256 fois de suite, chaque résultat servant de base au triangle suivant. Le Mega, c'est le nombre obtenu tout en haut de cette pile&nbsp;: une <em>tour de 257 dix empilés</em>, 10<sup>10<sup>10<sup>…</sup></sup></sup> avec 257 étages.",
     use:"Le triangle, c'est comme une fusée. Le carré, une fusée qui lance des fusées. Le cercle, une fusée qui lance des fusées… qui lancent elles-mêmes des fusées. Cette notation a été inventée par le mathématicien Hugo Steinhaus, juste pour le plaisir de montrer comme il est facile de fabriquer des nombres démesurés — et le cercle en était le sommet. Mais un autre mathématicien, Leo Moser, s'est demandé&nbsp;: et si on pouvait aller <em>au-delà</em> du cercle&nbsp;? C'est ce qui mène au nombre suivant.",
     distLab:"La toute dernière comparaison possible",
     dist:"On peut enfin le comparer au googolplex, puisque les deux sont des « tours de puissances ». Le googolplex (10<sup>10<sup>100</sup></sup>) est une tour de seulement <b>3 étages</b>&nbsp;; le Mega est une tour de <b>257 étages</b> de dix. Autrement dit, <span class='unit'>le googolplex n'atteint même pas le 4<sup>e</sup> étage de la tour du Mega</span> — dès qu'on grimpe un peu, il est écrasé et disparaît tout en bas. Et c'est la dernière fois qu'on peut comparer quoi que ce soit&nbsp;: après le Mega, plus aucun nombre déjà rencontré ne servira de mesure.",
+    analogLab:"En particules élémentaires",
+    analog:"Tentons une dernière image. L'univers contient ~10<sup>124</sup> particules élémentaires. Remplace chaque particule par un univers entier&nbsp;: tu obtiens 10<sup>124</sup> univers, soit 10<sup>248</sup> particules. Recommence — 10<sup>372</sup>. Chaque répétition ajoute 124 à l'exposant. Pour atteindre le Mega (une tour de 257 étages), il faudrait répéter ce procédé un nombre de fois qui est lui-même <span class='unit'>une tour de puissances presque aussi haute que le Mega</span>. L'image s'effondre sous son propre poids.",
     video:"https://www.youtube.com/watch?v=Jw_ZPdnHGzg", videoLab:"Numberphile · The Hyper Moser (Mega & Moser)"
   },
   {
@@ -575,7 +677,7 @@ const DIVIDERS = {
   toR3:{
     kicker:"Seconde rupture",
     h:"Et maintenant, même les nombres ne suffisent plus.",
-    p:"Jusqu'ici, on pouvait toujours dire « tant de fois le nombre précédent ». À partir d'ici, ce rapport <span class='gold'>n'existe plus</span>&nbsp;: il n'y a aucun nombre — pas même un googolplex de googolplex — pour exprimer le saut. Il ne reste que l'aveu."
+    p:"Jusqu'ici, on pouvait toujours dire « tant de fois le nombre précédent ». À partir d'ici, ce rapport <span class='gold'>n'existe plus</span>&nbsp;: il n'y a aucun nombre — pas même un googolplex de googolplex — pour exprimer le saut. Il ne reste que l'aveu. Pour tenter quand même une dernière image&nbsp;: au lieu de grains de sable, on va compter les <span class='gold'>particules élémentaires</span> — les plus petites choses qui existent. Un électron est 10 milliards de fois plus petit qu'un grain de sable&nbsp;: l'univers en contient environ <span class='gold'>10<sup>124</sup></span>. C'est notre dernière unité."
   }
 };
 
@@ -647,6 +749,20 @@ function numSection(n, extraClass=""){
     body = parts.join("\n    ");
   }
 
+  const distBlock = `<div class="dist reveal">
+      <div class="lab">${n.distLab}</div>
+      <p>${n.dist}</p>
+    </div>`;
+
+  const analogBlock = n.analog ? `<div class="analog reveal">
+      <div class="lab">${n.analogLab}</div>
+      <p>${n.analog}</p>
+    </div>` : "";
+
+  const distRow = n.analog
+    ? `<div class="dist-row">${distBlock}${analogBlock}</div>`
+    : distBlock;
+
   return `
   <section class="num ${extraClass}">
     ${idx}
@@ -654,10 +770,7 @@ function numSection(n, extraClass=""){
     <div class="value reveal">${n.value}${small}</div>
     ${sci}
     ${body}
-    <div class="dist reveal">
-      <div class="lab">${n.distLab}</div>
-      <p>${n.dist}</p>
-    </div>
+    ${distRow}
     ${video}
   </section>`;
 }
@@ -677,10 +790,9 @@ const WARMUP = [
   {n:"100", sci:"", t:"Cent pas&nbsp;: te voilà au coin de la rue."},
   {n:"1 000", sci:"10<sup>3</sup>", t:"Mille pas, environ un kilomètre&nbsp;: le bout du quartier."},
   {n:"100 000", sci:"10<sup>5</sup>", t:"Cent kilomètres&nbsp;: d'une ville à l'autre. Encore tout à fait humain."},
-  {n:"1 000 000", sci:"10<sup>6</sup>", t:"Un million de secondes, c'est <b>11 jours et demi</b>. Retiens bien ça&nbsp;: c'est la clé de la surprise juste en dessous."},
-  {n:"1 000 000 000", sci:"10<sup>9</sup>", t:"Un milliard de secondes, ce n'est pas « un peu plus » que 11 jours… c'est <b>presque 32 ans</b>&nbsp;! Voilà l'écart vertigineux entre un million et un milliard."},
-  {n:"8 200 000 000", sci:"8,2×10<sup>9</sup>", t:"Toute la population humaine. Un mètre par personne&nbsp;: 21 fois l'aller-retour Terre–Lune."},
-  {n:"1 000 000 000 000", sci:"10<sup>12</sup>", t:"Mille milliards. Un mètre chacun&nbsp;: presque la distance d'ici au Soleil, sept fois. Et c'est encore le plus petit de toute notre histoire."}
+  {n:"1 000 000", sci:"10<sup>6</sup>", t:"Un million de secondes, c'est <b>11 jours et demi</b>. Un million de millimètres, c'est <b>1 kilomètre</b> — une promenade de quartier. Retiens bien ces deux images&nbsp;: l'écart avec le milliard va te surprendre."},
+  {n:"1 000 000 000", sci:"10<sup>9</sup>", t:"Un milliard de secondes, ce n'est pas « un peu plus » que 11 jours… c'est <b>presque 32 ans</b>&nbsp;! Un milliard de millimètres, c'est <b>1 000 km</b> — de Montréal à New York et au-delà. Voilà le gouffre entre un million et un milliard&nbsp;: mille fois plus grand à chaque fois."},
+  {n:"8 200 000 000", sci:"8,2×10<sup>9</sup>", t:"Toute la population humaine. Un mètre par personne&nbsp;: 21 fois l'aller-retour Terre–Lune. Et si chaque personne était un grain de sable&nbsp;? Le tas entier tiendrait dans <b>un cube de 1,6 mètre de côté</b> — moins grand qu'un déménagement."},
 ];
 function warmupBlock(){
   const rows = WARMUP.map(w=>`
@@ -695,6 +807,29 @@ function warmupBlock(){
     <div class="lead reveal">D'abord, des nombres qu'on croit connaître.</div>
     <p class="leadsub reveal">Un mètre par unité. Tant que les distances restent humaines, on avance vite. Profites-en&nbsp;: ce confort ne durera pas.</p>
     ${rows}
+    <div class="fortune reveal">
+      <div class="ftag">Premier grand nombre · avant de plonger</div>
+      <div class="fname">La fortune de l'homme le plus riche du monde</div>
+      <div class="fvalue">~800 000 000 000 $</div>
+      <div class="fsci">≈ 8 × 10<sup>11</sup></div>
+      <p style="max-width:62ch;color:var(--paper-dim);font-size:1.05rem;margin-bottom:.3em">Plusieurs centaines de milliards de dollars — la plus grosse a récemment franchi le cap des huit cents milliards. Un nombre qu'on lit dans les journaux, qu'on prononce en passant — mais qu'on ne saisit jamais vraiment. Avant de nous lancer dans les nombres vraiment grands, prenons un instant pour mesurer celui-là.</p>
+      <p style="max-width:62ch;color:var(--paper-dim);font-size:1.02rem;margin-bottom:1.4em;font-style:italic">Curiosité&nbsp;: notre galaxie compte environ 300 milliards d'étoiles. Cette fortune, c'est donc à peu près <em>deux dollars et demi pour chaque étoile de la Voie Lactée</em>.</p>
+      <div class="fblocks">
+        <div class="fblock">
+          <div class="flab">En temps — à 1&nbsp;$ par seconde</div>
+          <p>Si tu gagnais <span class='unit'>un dollar par seconde</span>, sans jamais dormir ni dépenser, il te faudrait <span class='unit'>environ 25&nbsp;000 ans</span> pour accumuler cette fortune. Pour donner l'échelle&nbsp;: l'agriculture, les premières villes, l'écriture, toute l'histoire humaine y compris ce qui la précède tiendrait dans ce laps de temps. Ce nombre est si grand que sa seule dimension temporelle écrase toute l'histoire écrite.</p>
+        </div>
+        <div class="fblock blue">
+          <div class="flab">En distance</div>
+          <p>800 milliards de mètres, c'est <span class='unit'>plus de cinq fois la distance Terre–Soleil</span>. Si chaque dollar était un mètre, tu aurais quitté la Terre, dépassé Mercure, Vénus, le Soleil, et tu filerais déjà vers Mars — avant de faire demi-tour et de recommencer, encore et encore.</p>
+        </div>
+      </div>
+      <div class="wrow reveal" style="margin-top:2.8em;border-top:1px solid var(--line);padding-top:1.4em">
+        <span class="wnum" style="font-size:clamp(1.1rem,3vw,1.9rem)">~7 000 000 000 000 $</span>
+        <span class="wsci">≈ 7×10<sup>12</sup></span>
+        <span class="wtxt">Le budget fédéral annuel des États-Unis. La fortune du plus riche des humains représente environ <b>11&nbsp;%</b> de ce que dépense un seul pays en un an. Le prochain palier du voyage commence ici.</span>
+      </div>
+    </div>
   </section>`;
 }
 
@@ -713,7 +848,7 @@ html += `
   <h2>Et après Rayo&nbsp;?</h2>
   <p>D'autres nombres existent, plus grands encore — chacun défini en débordant la définition du précédent. Mais aucun n'approche l'infini&nbsp;: voilà le vertige final. Tous ces géants, mis ensemble, ne sont rien face à l'infini. Ils restent, jusqu'au dernier, <em>finis</em>.</p>
   <p>C'était le sens du voyage&nbsp;: sentir, étape par étape, à quel point « beaucoup » et « infini » sont deux pays sans frontière commune.</p>
-  <div class="sig">Fin de l'échelle · merci d'avoir scrollé l'inscrollable</div>
+  <div class="sig">Fin du voyage · merci d'avoir scrollé l'inscrollable</div>
   <div class="credit">Un voyage présenté par <a href="https://studioexistence.com" target="_blank" rel="noopener"><b>Studio Existence</b></a></div>
 </section>`;
 

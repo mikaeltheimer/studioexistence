@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Scale of Impossible Numbers</title>
+<title>A Journey to the Edge of Big Numbers</title>
 <meta name="description" content="A journey from the number 1 to the furthest edges of what the human mind has dared to name — told through the distance you would have to travel to reach each one.">
 <link rel="alternate" hreflang="fr" href="https://studioexistence.com/big-numbers/index.html">
 <link rel="alternate" hreflang="en" href="https://studioexistence.com/big-numbers/index-en.html">
@@ -188,6 +188,48 @@ sup{font-size:.62em}
   color:var(--gold);margin-bottom:.4em;
 }
 .warmup .leadsub{color:var(--paper-dim);opacity:.7;max-width:54ch;margin-bottom:3em}
+
+/* fortune spotlight — transition between warmup and regime 1 */
+.fortune{
+  margin-top:4em;padding-top:3.5em;border-top:1px solid var(--line);
+}
+.fortune .ftag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--rust);margin-bottom:1em;
+}
+.fortune .fname{
+  font-family:var(--serif);font-weight:600;font-style:italic;
+  font-size:clamp(1.2rem,2.8vw,1.8rem);color:var(--paper-dim);margin-bottom:.2em;
+}
+.fortune .fvalue{
+  font-family:var(--serif);font-weight:900;
+  font-size:clamp(2rem,5.5vw,4rem);line-height:1.05;letter-spacing:-.02em;
+  margin-bottom:.3em;
+}
+.fortune .fsci{
+  font-family:var(--mono);font-size:clamp(.85rem,1.8vw,1.1rem);
+  color:var(--gold);margin-bottom:1.6em;font-weight:700;
+}
+.fortune .fblocks{
+  display:flex;flex-wrap:wrap;gap:1.6em;margin-top:1.6em;
+  align-items:flex-start;
+}
+.fortune .fblock{
+  border-left:2px solid var(--gold);padding:.9em 0 .9em 1.2em;
+  flex:1;min-width:min(100%,28ch);
+}
+.fortune .fblock.blue{border-left-color:#4a7fa5;}
+.fortune .fblock .flab{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:.45em;
+}
+.fortune .fblock.blue .flab{color:#4a7fa5;opacity:.9;}
+.fortune .fblock p{
+  font-family:var(--body);font-style:italic;font-size:1.06rem;
+  line-height:1.55;color:var(--paper);
+}
+.fortune .fblock .unit{color:var(--gold);font-style:normal;font-weight:600}
+.fortune .fblock.blue .unit{color:#7ab3d4;font-style:normal;font-weight:600}
 .wrow{
   display:flex;align-items:baseline;gap:1.4em;padding:1.1em 0;
   border-bottom:1px solid var(--line);flex-wrap:wrap;
@@ -263,7 +305,7 @@ sup{font-size:.62em}
 
 <!-- HERO -->
 <header class="hero">
-  <h1 class="reveal">The scale of<br><em>impossible numbers</em></h1>
+  <h1 class="reveal">A journey to the edge of<br><em>big numbers</em></h1>
   <p class="sub reveal">A journey from the number 1 to the furthest edges of what the human mind has ever dared to name.</p>
   <p class="premise reveal">One question will follow us the whole way&nbsp;: <b>how far would you have to travel</b> to get from one number to the next&nbsp;? We'll start in meters. Very soon, meters won't be enough. Then the entire universe won't be enough. And in the end&nbsp;: nothing will be enough — not even the numbers themselves.</p>
   <div class="scroll-cue">↓ start small</div>
@@ -300,7 +342,9 @@ const NUMBERS = [
     build:"We don't count them one by one, of course. Scientists measure how many cells fit in a small piece of each organ — the skin, the blood, the liver, the brain — then add it all up. The total comes to about 37 trillion.",
     use:"This is the first number on the journey that truly outruns the imagination&nbsp;: this number is <em>you</em>. It builds you entirely, head to toe, and yet you'll never be able to see it. Thirty-seven trillion tiny living bricks working together to make a single person.",
     distLab:"If each cell were one meter",
-    dist:"The journey would be <span class='unit'>37 billion kilometers</span> long. Picture it&nbsp;: you leave Earth, race all the way to the Sun, come back… and you do that trip <span class='unit'>125 times over</span>. All of it fits inside one person."
+    dist:"The journey would be <span class='unit'>37 billion kilometers</span> long. Picture it&nbsp;: you leave Earth, race all the way to the Sun, come back… and you do that trip <span class='unit'>125 times over</span>. All of it fits inside one person.",
+    analogLab:"In time",
+    analog:"If you counted one cell per second, never stopping, it would take you <span class='unit'>1.18 million years</span> to tally them all. Back then we were <em>Homo erectus</em> — upright, but far from any city, any book, any number."
   },
   {
     regime:1,
@@ -309,7 +353,20 @@ const NUMBERS = [
     build:"Your brain holds about 86 billion neurons. But what really matters are the contact points between them — the <em>synapses</em> — through which they talk to one another. Each neuron has thousands of them. All together&nbsp;: about one quadrillion.",
     use:"It's the most complicated object we know of in the entire universe. It's thanks to this number that you can read this sentence, remember your last birthday, and imagine a number you'll never see.",
     distLab:"If each connection were one meter",
-    dist:"<span class='unit'>One quadrillion meters.</span> You'd have left the solar system long ago&nbsp;: it's like traveling out to Neptune, the most distant planet, then doing it again more than a hundred times over. The seat of your thoughts, laid end to end, would stretch beyond the Sun's neighborhood."
+    dist:"<span class='unit'>One quadrillion meters.</span> You'd have left the solar system long ago&nbsp;: it's like traveling out to Neptune, the most distant planet, then doing it again more than a hundred times over. The seat of your thoughts, laid end to end, would stretch beyond the Sun's neighborhood.",
+    analogLab:"In time",
+    analog:"Counting one synapse per second would take <span class='unit'>31.7 million years</span>. At that point in the past, the non-avian dinosaurs had been extinct for barely 34 million years — and our primate ancestors didn't yet look human. All of it fits inside your skull."
+  },
+  {
+    regime:1,
+    name:"The age of the universe in seconds",
+    value:"435,000,000,000,000,000", sci:["4.35","17"],
+    build:"The universe is about 13.8 billion years old. Multiply that by the number of seconds in a year (about 31.5 million), and you get this number&nbsp;: 435 quadrillion seconds. It's <em>all the time that has passed</em> since the Big Bang, converted into the smallest unit we use day to day.",
+    use:"It's our cosmic clock. Remember the warm-up&nbsp;: a billion seconds is already 32 years — an adult lifetime. Here we have 435 quadrillion of them. This number serves as a <em>fixed landmark</em> throughout the journey&nbsp;: whenever we compare a number to the age of the universe, we know exactly where we stand.",
+    distLab:"If each second were one meter",
+    dist:"The journey would be <span class='unit'>46 light-years</span> long — a bubble around the Sun taking in a handful of neighboring stars. Modest compared with what follows, but it's <em>all the time of the universe</em> you've just traveled across.",
+    analogLab:"In volume of sand grains",
+    analog:"If each second of the universe's existence were a grain of sand, the whole lot would fill <span class='unit'>87,000 Olympic swimming pools</span> — an entire stadium drowned in sand. A vast number for us, microscopic for what comes next."
   },
   {
     regime:1,
@@ -318,7 +375,9 @@ const NUMBERS = [
     build:"We measure the sand of every beach and every desert in the world, and divide by the size of a single grain. The result lands around seven quintillion grains.",
     use:"It's the image we reach for whenever we want to say « a quantity impossible to count. » In a second we'll see that it's actually quite small — and that's where the journey starts to surprise.",
     distLab:"If each grain were one meter",
-    dist:"The journey would be <span class='unit'>800 light-years</span> long. For a sense of scale&nbsp;: the nearest star to us is 4 light-years away. Here, you'd cross thousands of star systems. And yet the next number fits in the palm of your hand."
+    dist:"The journey would be <span class='unit'>800 light-years</span> long. For a sense of scale&nbsp;: the nearest star to us is 4 light-years away. Here, you'd cross thousands of star systems. And yet the next number fits in the palm of your hand.",
+    analogLab:"In volume",
+    analog:"All those grains — beaches and deserts combined — would fill <span class='unit'>1.5 million Olympic swimming pools</span>. Impressive… until you realize the next number fits in one hand."
   },
   {
     regime:1,
@@ -327,7 +386,9 @@ const NUMBERS = [
     build:"A Rubik's Cube has 6 faces you can turn. By scrambling them, you can put it into a staggering number of different positions. Counting precisely all the possible positions gives this 20-digit number.",
     use:"Here's the journey's big surprise&nbsp;: a little cube that fits in one hand has <em>more</em> possible positions than there are grains of sand on all of Earth&nbsp;! Even wilder&nbsp;: no matter how scrambled it is, it can always be solved in 20 moves or fewer. Mathematicians call that « God's number. »",
     distLab:"If each position were one meter",
-    dist:"We've already beaten every grain of sand on the planet. The journey would be <span class='unit'>4,600 light-years</span> long — enough to cross a good stretch of the galactic arm where the Sun lives. Another image&nbsp;: with that many little cubes, you could cover the entire surface of Earth 300 times over."
+    dist:"We've already beaten every grain of sand on the planet. The journey would be <span class='unit'>4,600 light-years</span> long — enough to cross a good stretch of the galactic arm where the Sun lives. Another image&nbsp;: with that many little cubes, you could cover the entire surface of Earth 300 times over.",
+    analogLab:"In time",
+    analog:"If all of humanity had tested one position per second since the Big Bang, we'd have explored only about <span class='unit'>1% of the configurations</span>. The cube fits in one hand&nbsp;; exhausting it outlasts the age of the universe."
   },
   {
     regime:1,
@@ -336,16 +397,20 @@ const NUMBERS = [
     build:"We take the ~37 trillion cells of one person, and multiply by the ~8 billion humans on Earth. We get a 3 followed by 23 digits.",
     use:"It's a way of holding all of humanity in a single number&nbsp;: every cell of every living person, counted one by one. And it's almost exactly the same number as a very important constant in chemistry — the one right below.",
     distLab:"If each human cell were one meter",
-    dist:"Light-years start to get tiring&nbsp;: about <span class='unit'>30 million light-years</span>. You'd have crossed our entire galaxy (which is « only » 100,000 light-years wide), then crossed the great black void to neighboring galaxies."
+    dist:"Light-years start to get tiring&nbsp;: about <span class='unit'>30 million light-years</span>. You'd have crossed our entire galaxy (which is « only » 100,000 light-years wide), then crossed the great black void to neighboring galaxies.",
+    analogLab:"In grains of sand",
+    analog:"If each cell of every living human were a grain of sand, the pile would form <span class='unit'>a cube more than 50 km on a side</span> — a mountain of sand taller than Everest, wide as a major city. For scale&nbsp;: a single human body amounted to barely 7 Olympic pools. Multiply by 8 billion people, and you get this mountain — about 60 billion pools."
   },
   {
     regime:1,
     name:"Avogadro's number",
     value:"602,214,076,000,000,000,000,000", sci:["6.02","23"],
-    build:"This isn't a count of real objects but a measure chosen by scientists&nbsp;: it's the number of tiny particles (atoms or molecules) you need to gather to get an amount of matter you can weigh on a scale.",
-    use:"It's the magic bridge between the world of atoms, too small to see, and our own world. It answers&nbsp;: « how many atoms do you need to have a few grams of something? » All of chemistry rests on it. And look — it's almost equal to the number of cells in all humanity&nbsp;!",
+    build:"Chemists invented a unit called the <em>mole</em> — their way of counting in « bundles, » the way we count eggs by the dozen. Except that one mole is a bundle of 602,214,076,000,000,000,000,000 particles. Before 2019, the mole was defined like this&nbsp;: one mole of carbon-12 weighed <em>exactly</em> 12 grams — the simplest image to explain it. Since then, the mole is defined directly by this number of particles, which is now exact by definition, and it's the weight that becomes an approximation.",
+    use:"Thanks to the mole, a chemist doesn't need to count atoms one by one — they just weigh. A spoonful of water is about three moles, that is nearly two billion billion billion molecules. All of chemistry rests on this. And look — this number is almost equal to the number of cells in all humanity&nbsp;!",
     distLab:"If each atom in a small amount were one meter",
-    dist:"A little farther than the previous number&nbsp;: about <span class='unit'>64 million light-years</span>. In other words, a single spoonful of water holds enough atoms to carry you far beyond our galaxy."
+    dist:"A little farther than the previous number&nbsp;: about <span class='unit'>64 million light-years</span>. In other words, a single spoonful of water holds enough atoms to carry you far beyond our galaxy.",
+    analogLab:"In grains of sand",
+    analog:"A mole of sand grains would fill <span class='unit'>120 billion Olympic swimming pools</span>. Remember&nbsp;: <em>all</em> the real grains of sand on Earth fill 1.5 million pools. Avogadro crushes them by a factor of <span class='unit'>80,000</span>."
   },
   {
     regime:1,
@@ -354,7 +419,9 @@ const NUMBERS = [
     build:"It's estimated there are about 2 trillion galaxies, and each one holds on average hundreds of billions of stars. Multiply them, and you get a 1 followed by 24 zeros.",
     use:"That's roughly <em>every star that exists</em> in the part of the universe we can see. Hard to go bigger when you're counting real objects in the sky.",
     distLab:"If each star were one meter",
-    dist:"The journey would be <span class='unit'>100 million light-years</span> long. Every star you see at night, plus the trillions you'll never see, lined up one by one… and you still haven't reached the next number — which comes from a simple deck of cards."
+    dist:"The journey would be <span class='unit'>100 million light-years</span> long. At that distance, you've left our galaxy (100,000 ly wide), crossed the Local Group, passed the Virgo Supercluster, and you're beginning to reach the great structures of the universe — filaments of galaxies stretching across hundreds of millions of light-years. All of that for a single line of stars.",
+    analogLab:"In grains of sand",
+    analog:"There are as many stars in the universe as if you took <em>all</em> the grains of sand on Earth and started over <span class='unit'>133,000 times</span>. Every beach, every desert, multiplied by 133,000 — and imagine the number of planets that could orbit all those stars."
   },
   {
     regime:1,
@@ -365,7 +432,9 @@ const NUMBERS = [
     build:"When you lay the cards down one by one, you have 52 choices for the first, 51 for the second, 50 for the next… Multiply it all&nbsp;: 52 × 51 × 50 × … × 2 × 1. The result is a 68-digit number.",
     use:"Here's the most staggering fact of the journey&nbsp;: every time you <em>properly</em> shuffle a deck of cards, you're holding an order that has almost certainly <em>never existed since the dawn of time</em>, and will never exist again. There are more ways to arrange 52 cards than there are stars in the whole universe.",
     distLab:"If each shuffle were one meter",
-    dist:"We've just blown past every star in the cosmos&nbsp;! Even if someone shuffled a deck every second since the birth of the universe, they wouldn't have covered a billionth of the way. <span class='unit'>This distance is far larger than the entire universe</span> — for an object you keep in your pocket."
+    dist:"8.07 × 10<sup>67</sup> meters. This is truly where <em>the meter gives up the ghost</em>&nbsp;: the observable universe is about 8.8 × 10<sup>26</sup> meters across, and this distance overshoots it by a factor with <span class='unit'>41 zeros</span>. If you could cross the entire universe end to end, then start over, then again… you'd have to repeat that trip a number of times that itself crushes the imagination — just for one deck of cards. From here on, sand takes over from the meter.",
+    analogLab:"In time",
+    analog:"If every human who ever lived (~100 billion people) had shuffled one deck per second since the Big Bang, all of humanity together would have covered only a fraction with <span class='unit'>39 zeros after the decimal point</span> before the first digit. Not a millionth of a billionth of a billionth of the way."
   },
   {
     regime:1,
@@ -374,7 +443,9 @@ const NUMBERS = [
     build:"We add up all the matter of every star, every gas cloud, and all the dust of the visible universe. We arrive at a 1 followed by 80 zeros.",
     use:"This is the edge of the real world. <em>Everything</em> that exists and could be counted — every atom of every thing, everywhere — fits inside this number. Beyond it, no real object exists in large enough quantity to serve as a point of comparison. Matter stops here.",
     distLab:"If each atom in the universe were one meter",
-    dist:"This time, the image of the journey collapses for good. <span class='unit'>There isn't enough universe</span> to contain this distance&nbsp;: it would take billions of billions of entire universes, laid end to end, to cover it. The meter has just given up the ghost."
+    dist:"The meter had already given up with the cards&nbsp;; here it's the universe itself, used as a unit, that no longer suffices. <span class='unit'>There isn't enough universe</span> to contain this distance&nbsp;: you'd have to line up, end to end, a number of entire universes that itself takes 53 digits to write down — far more than there are grains of sand on Earth.",
+    analogLab:"In grains of sand",
+    analog:"If each atom in the universe were a grain of sand, the whole pile wouldn't fill <span class='unit'>even a ten-billionth of the universe's volume</span>. It's the admission of a dizzying truth&nbsp;: the universe is made of emptiness. All the matter it contains — every star, every planet, every atom of every thing — is just a fine dust scattered through a space that is almost entirely empty. And it's only with the next number that the sand, in turn, will overflow the universe."
   }
 ];
 
@@ -390,6 +461,8 @@ const REGIME2 = [
     use:"It was invented on purpose to show the difference between « really, really big » and « infinite. » A little secret&nbsp;: the search engine <em>Google</em> owes its name to a misspelling of « googol »&nbsp;! And the googol is already bigger than the number of atoms in the universe — so it no longer represents any real object, just an idea.",
     distLab:"The old rule no longer works",
     dist:"Since no real distance is large enough anymore, we change the rules of the game&nbsp;: from now on, <span class='unit'>our unit of measure becomes the number we just saw</span>. The googol is about <span class='unit'>100 billion billion times</span> « all the atoms in the universe. » As if you took the entire universe, counted atom by atom, and repeated it a hundred billion billion times.",
+    analogLab:"In time",
+    analog:"Imagine every atom in the universe is a counter, and they all count at once since the Big Bang, one number per second. Together they would have counted <span class='unit'>4 × 10<sup>97</sup></span> in total — that is, <em>a thousand times less</em> than the googol. Even harnessing all the matter and all the time of the universe, you don't reach the googol. It stays a factor of 1,000 out of reach.",
     video:"https://www.youtube.com/watch?v=8GEebx72-qs", videoLab:"Numberphile · Googol & Googolplex"
   },
   {
@@ -399,7 +472,9 @@ const REGIME2 = [
     build:"In 1950, the scientist Claude Shannon estimated the number of different chess games that can be played. He looked at how many moves are possible on each turn, then factored in the length of a game. Result&nbsp;: about a 1 followed by 120 zeros.",
     use:"Shannon wasn't trying to beat a record. He wanted to prove that no computer, however powerful, could ever « cheat » at chess by calculating every possible game in advance. That's why chess remains a game of intelligence, and not a simple lookup table.",
     distLab:"Counting in googols",
-    dist:"Now we measure in googols. Shannon's number is roughly <span class='unit'>100 billion billion googols</span> — that is, a hundred billion billion times that famous 1-followed-by-100-zeros we already struggle to picture."
+    dist:"Now we measure in googols. Shannon's number is roughly <span class='unit'>100 billion billion googols</span> — that is, a hundred billion billion times that famous 1-followed-by-100-zeros we already struggle to picture.",
+    analogLab:"In universes of sand grains",
+    analog:"To hold a Shannon's number of sand grains, you'd need <span class='unit'>a trillion trillion trillion universes</span> — that is, 10<sup>30</sup> universes. The number of universes required is itself a number we can no longer really picture."
   },
   {
     regime:2,
@@ -410,17 +485,21 @@ const REGIME2 = [
     use:"It's our oldest very large number. It proves that humans were already imagining numbers bigger than the googol squared <em>twenty-four centuries</em> before the word « googol » was coined. To go even further, the Jains told an image&nbsp;: a well filled with fine hairs, from which one single strand is removed every hundred years — the time it takes to empty it completely.",
     distLab:"Counting in googols",
     dist:"Larger than the googol multiplied by itself&nbsp;: that is, <span class='unit'>more than a googol of googols</span>. An idea two thousand five hundred years old that already crushes everything modern science knows how to count.",
+    analogLab:"In universes of sand grains",
+    analog:"It would take 10<sup>110</sup> universes to hold that many grains of sand. That's a number of universes that itself has <span class='unit'>110 digits</span> — the number of universes required is larger than the googol.",
     video:"https://www.youtube.com/watch?v=sJqceEImtew", videoLab:"Numberphile · Jain Numbers"
   },
   {
     regime:2,
     name:"Skewes's number",
-    value:"10<sup>(10<sup>34</sup>)</sup>",
+    value:"10<sup>(10<sup>(10<sup>34</sup>)</sup>)</sup>",
     sci:null,
-    build:"First, let's understand « stacked » notation. 10<sup>34</sup> means « a 1 followed by 34 zeros. » Skewes's number, though, is 10<sup>(10<sup>34</sup>)</sup>&nbsp;: « a 1 followed by (a-1-followed-by-34-zeros) zeros. » In other words, the number of zeros is itself a huge number.",
+    build:"First, let's understand « stacked » notation. 10<sup>34</sup> means « a 1 followed by 34 zeros. » Now stack it three times&nbsp;: Skewes's number is 10<sup>(10<sup>(10<sup>34</sup>)</sup>)</sup>. Read it top to bottom&nbsp;: at the very top, 10<sup>34</sup> (already a 1 with 34 zeros)&nbsp;; that gives the number of zeros of a second floor&nbsp;; and <em>that</em> number, in turn, gives the number of zeros of Skewes's number. At each floor, the vertigo is raised to a power.",
     use:"Here's what it's for, simply put&nbsp;: mathematicians study prime numbers (2, 3, 5, 7, 11…) and had noticed a rule that seemed always true. In 1933, Stanley Skewes proved that this rule eventually becomes false — but only past a colossal number. That number is this one. For a long time it was famous as « the largest number ever used to prove something useful in math. »",
     distLab:"Even the zero-counter explodes",
-    dist:"We can't even say « so many googols » anymore&nbsp;: it would take a googol of digits just to write down <em>how many</em> googols it's worth. <span class='unit'>We no longer write the number itself — we just try to describe the size of its number of zeros.</span>"
+    dist:"Skewes's number has <span class='unit'>10<sup>(10<sup>34</sup>)</sup> zeros</span> — not 10<sup>34</sup>, but 10 to the power of (a-1-followed-by-34-zeros). In other words, the mere <em>count of its zeros</em> is already a number you couldn't write down in the universe. If you inscribed one zero on every atom of the universe (10<sup>80</sup> atoms), you wouldn't even have grazed the start&nbsp;: you'd need 10<sup>(10<sup>34</sup>)</sup> atoms, a number whose digit-count alone exceeds everything we've met so far.",
+    analogLab:"In universes of sand grains",
+    analog:"The number of universes needed to hold that many grains of sand would itself have <span class='unit'>10<sup>(10<sup>34</sup>)</sup> digits</span>. We can no longer write the number of universes — nor the number of its digits — nor even the digit-count of <em>that</em> number. The stack collapses in on itself."
   },
   {
     regime:2,
@@ -432,6 +511,8 @@ const REGIME2 = [
     use:"It's the first number on the journey that can't be written <em>anywhere</em>. Even if you wrote one zero on every atom in the universe, you'd run out of atoms — you'd need a hundred billion billion times more. The number exists, but we'll never see it written.",
     distLab:"The « one digit per second » image",
     dist:"Imagine you write one digit every second, never stopping, since the birth of the universe (14 billion years). You'd have written about 10<sup>18</sup> digits. But the googolplex has 10<sup>100</sup> of them. <span class='unit'>You wouldn't even have started the very beginning of the beginning.</span> And this is where our method hits its limit&nbsp;: because the next number can't even be measured in googolplexes anymore.",
+    analogLab:"In universes of sand grains",
+    analog:"The number of universes needed to hold a googolplex of sand grains can <span class='unit'>no longer even be written</span> — not even on all the atoms of all those universes. The image of sand grains has just given up the ghost, like the meter before it.",
     video:"https://www.youtube.com/watch?v=8GEebx72-qs", videoLab:"Numberphile · Googol & Googolplex"
   }
 ];
@@ -447,10 +528,12 @@ const REGIME3 = [
     tower:`<span class="tlab">The three machines</span><b>Triangle</b> · a number in a triangle = that number raised to its own power.<br><b>Square</b> · a number in a square = that number placed inside that many nested <i>triangles</i>.<br><b>Circle</b> · a number in a circle = that number placed inside that many nested <i>squares</i>.`,
     build2:"Let's compute the Mega, that is « 2 in a circle, » working down step by step&nbsp;:",
     tower2:`<span class="tlab">Computing « 2 in a circle »</span><b>2 in a circle</b> = 2 in 2 nested squares.<br>&nbsp;&nbsp;↳ first we need « 2 in a square. »<br><br><b>2 in a square</b> = 2 in 2 nested triangles.<br>&nbsp;&nbsp;↳ first we need « 2 in a triangle. »<br><br><b>2 in a triangle</b> = 2<sup>2</sup> = <b>4</b><br>&nbsp;&nbsp;↳ so we climb back up&nbsp;: 4 in a triangle = 4<sup>4</sup> = <b>256</b><br>&nbsp;&nbsp;↳ so « 2 in a square » = <b>256</b><br><br>Back up to the circle&nbsp;: one last square left to open…<br><b>256 in a square</b> = 256 placed inside <b>256 triangles</b>&nbsp;!`,
-    build3:"And that's where it explodes&nbsp;: 256 in a triangle is already 256<sup>256</sup> (a 616-digit number). But you have to do it 256 times in a row, each result becoming the base of the next triangle. The Mega is the number you get at the very top of that pile&nbsp;: a <em>tower of 257 stacked tens</em>, 10<sup>10<sup>10<sup>…</sup></sup></sup> with 257 floors.",
+    build3:"And that's where it explodes&nbsp;: 256 in a triangle is already 256<sup>256</sup> (a 617-digit number). But you have to do it 256 times in a row, each result becoming the base of the next triangle. The Mega is the number you get at the very top of that pile&nbsp;: a <em>tower of 257 stacked tens</em>, 10<sup>10<sup>10<sup>…</sup></sup></sup> with 257 floors.",
     use:"The triangle is like a rocket. The square, a rocket that launches rockets. The circle, a rocket that launches rockets… that launch rockets of their own. This notation was invented by the mathematician Hugo Steinhaus, purely for the fun of showing how easy it is to build outrageous numbers — and the circle was its peak. But another mathematician, Leo Moser, wondered&nbsp;: what if we could go <em>beyond</em> the circle&nbsp;? That's what leads to the next number.",
     distLab:"The very last comparison possible",
     dist:"At last we can compare it to the googolplex, since both are « towers of powers. » The googolplex (10<sup>10<sup>100</sup></sup>) is a tower of just <b>3 floors</b>&nbsp;; the Mega is a tower of <b>257 floors</b> of tens. In other words, <span class='unit'>the googolplex doesn't even reach the 4<sup>th</sup> floor of the Mega's tower</span> — climb up a little and it's crushed, vanishing at the very bottom. And it's the last time we can compare anything at all&nbsp;: after the Mega, no number we've already met will serve as a measure.",
+    analogLab:"In elementary particles",
+    analog:"Let's try one last image. The universe holds ~10<sup>124</sup> elementary particles. Replace each particle with an entire universe&nbsp;: you get 10<sup>124</sup> universes, or 10<sup>248</sup> particles. Do it again — 10<sup>372</sup>. Each repetition adds 124 to the exponent. To reach the Mega (a tower of 257 floors), you'd have to repeat this process a number of times that is itself <span class='unit'>a tower of powers almost as tall as the Mega</span>. The image collapses under its own weight.",
     video:"https://www.youtube.com/watch?v=Jw_ZPdnHGzg", videoLab:"Numberphile · The Hyper Moser (Mega & Moser)"
   },
   {
@@ -575,7 +658,7 @@ const DIVIDERS = {
   toR3:{
     kicker:"Second break",
     h:"And now, even numbers are no longer enough.",
-    p:"Until now, we could always say « so many times the previous number. » From here on, that ratio <span class='gold'>no longer exists</span>&nbsp;: there is no number — not even a googolplex of googolplexes — to express the leap. All that's left is the reckoning."
+    p:"Until now, we could always say « so many times the previous number. » From here on, that ratio <span class='gold'>no longer exists</span>&nbsp;: there is no number — not even a googolplex of googolplexes — to express the leap. All that's left is the reckoning. To attempt one last image anyway&nbsp;: instead of grains of sand, we'll count <span class='gold'>elementary particles</span> — the smallest things that exist. An electron is 10 billion times smaller than a grain of sand&nbsp;: the universe holds about <span class='gold'>10<sup>124</sup></span> of them. That's our final unit."
   }
 };
 
@@ -677,10 +760,9 @@ const WARMUP = [
   {n:"100", sci:"", t:"A hundred steps&nbsp;: here you are at the street corner."},
   {n:"1,000", sci:"10<sup>3</sup>", t:"A thousand steps, about a kilometer&nbsp;: the edge of the neighborhood."},
   {n:"100,000", sci:"10<sup>5</sup>", t:"A hundred kilometers&nbsp;: from one town to the next. Still entirely human."},
-  {n:"1,000,000", sci:"10<sup>6</sup>", t:"A million seconds is <b>11 and a half days</b>. Hold on to that&nbsp;: it's the key to the surprise just below."},
-  {n:"1,000,000,000", sci:"10<sup>9</sup>", t:"A billion seconds isn't « a bit more » than 11 days… it's <b>almost 32 years</b>&nbsp;! That's the dizzying gap between a million and a billion."},
-  {n:"8,200,000,000", sci:"8.2×10<sup>9</sup>", t:"The entire human population. One meter per person&nbsp;: 21 round trips to the Moon."},
-  {n:"1,000,000,000,000", sci:"10<sup>12</sup>", t:"A trillion. One meter each&nbsp;: nearly the distance to the Sun, seven times over. And it's still the smallest in our whole story."}
+  {n:"1,000,000", sci:"10<sup>6</sup>", t:"A million seconds is <b>11 and a half days</b>. A million millimeters is <b>1 kilometer</b> — a stroll around the block. Hold on to these two images&nbsp;: the gap with a billion is about to surprise you."},
+  {n:"1,000,000,000", sci:"10<sup>9</sup>", t:"A billion seconds isn't « a bit more » than 11 days… it's <b>almost 32 years</b>&nbsp;! A billion millimeters is <b>1,000 km</b> — from New York to Chicago and beyond. That's the chasm between a million and a billion&nbsp;: a thousand times bigger, each time."},
+  {n:"8,200,000,000", sci:"8.2×10<sup>9</sup>", t:"The entire human population. One meter per person&nbsp;: 21 times the distance to the Moon. And if each person were a grain of sand? The whole pile would fit inside <b>a cube 1.6 meters on a side</b> — smaller than a moving van."},
 ];
 function warmupBlock(){
   const rows = WARMUP.map(w=>`
@@ -695,6 +777,29 @@ function warmupBlock(){
     <div class="lead reveal">First, some numbers we think we know.</div>
     <p class="leadsub reveal">One meter per unit. As long as the distances stay human, we move fast. Enjoy it&nbsp;: this comfort won't last.</p>
     ${rows}
+    <div class="fortune reveal">
+      <div class="ftag">First big number · before we dive in</div>
+      <div class="fname">The fortune of the richest person in the world</div>
+      <div class="fvalue">~$800,000,000,000</div>
+      <div class="fsci">≈ 8 × 10<sup>11</sup></div>
+      <p style="max-width:62ch;color:var(--paper-dim);font-size:1.05rem;margin-bottom:.3em">Several hundred billion dollars — the largest recently passed the eight hundred billion mark. A number you read in the papers, say in passing — but never truly grasp. Before we launch into the truly big numbers, let's take a moment to measure this one.</p>
+      <p style="max-width:62ch;color:var(--paper-dim);font-size:1.02rem;margin-bottom:1.4em;font-style:italic">A curiosity&nbsp;: our galaxy holds about 300 billion stars. So this fortune is roughly <em>two and a half dollars for every star in the Milky Way</em>.</p>
+      <div class="fblocks">
+        <div class="fblock">
+          <div class="flab">In time — at $1 per second</div>
+          <p>If you earned <span class='unit'>one dollar per second</span>, never sleeping or spending, it would take you <span class='unit'>about 25,000 years</span> to pile up this fortune. For scale&nbsp;: farming, the first cities, writing, all of human history — including what came before it — would fit inside that span. This number is so large that its time dimension alone dwarfs all of recorded history.</p>
+        </div>
+        <div class="fblock blue">
+          <div class="flab">In distance</div>
+          <p>800 billion meters is <span class='unit'>more than five times the Earth–Sun distance</span>. If each dollar were a meter, you'd have left Earth, passed Mercury, Venus, the Sun, and you'd already be racing toward Mars — before turning back and starting over, again and again.</p>
+        </div>
+      </div>
+      <div class="wrow reveal" style="margin-top:2.8em;border-top:1px solid var(--line);padding-top:1.4em">
+        <span class="wnum" style="font-size:clamp(1.1rem,3vw,1.9rem)">~$7,000,000,000,000</span>
+        <span class="wsci">≈ 7×10<sup>12</sup></span>
+        <span class="wtxt">The annual federal budget of the United States. The richest human's fortune is about <b>11%</b> of what a single country spends in one year. The next leg of the journey begins here.</span>
+      </div>
+    </div>
   </section>`;
 }
 
@@ -713,7 +818,7 @@ html += `
   <h2>And after Rayo&nbsp;?</h2>
   <p>Other numbers exist, bigger still — each defined by overflowing the definition of the last. But none of them comes close to infinity&nbsp;: that's the final vertigo. All these giants, put together, are nothing before infinity. They remain, every last one, <em>finite</em>.</p>
   <p>That was the point of the journey&nbsp;: to feel, step by step, just how much « a lot » and « infinity » are two countries with no shared border.</p>
-  <div class="sig">End of the scale · thanks for traveling the untravelable</div>
+  <div class="sig">End of the journey · thanks for traveling the untravelable</div>
   <div class="credit">A journey presented by <a href="https://studioexistence.com" target="_blank" rel="noopener"><b>Studio Existence</b></a></div>
 </section>`;
 
