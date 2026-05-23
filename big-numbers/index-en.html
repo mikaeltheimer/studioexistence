@@ -188,7 +188,7 @@ sup{font-size:.62em}
 /* the distance line — the through-thread */
 .dist{
   border-left:2px solid var(--gold);padding:1.1em 0 1.1em 1.4em;
-  margin:1.8em 0;max-width:60ch;
+  margin:1.8em 0;max-width:60ch;flex:1;min-width:min(100%,28ch);
 }
 .dist .lab{
   font-family:var(--mono);font-size:11px;letter-spacing:.2em;
@@ -196,6 +196,25 @@ sup{font-size:.62em}
 }
 .dist p{font-family:var(--body);font-style:italic;font-size:1.18rem;line-height:1.55;color:var(--paper)}
 .dist .unit{color:var(--gold);font-style:normal;font-weight:600}
+
+/* the analog block — alternate image (volume / time / contrast) */
+.analog{
+  border-left:2px solid #4a7fa5;padding:1.1em 0 1.1em 1.4em;
+  margin:1.8em 0;flex:1;min-width:min(100%,28ch);
+}
+.analog .lab{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:#4a7fa5;opacity:.9;margin-bottom:.5em;
+}
+.analog p{font-family:var(--body);font-style:italic;font-size:1.18rem;line-height:1.55;color:var(--paper)}
+.analog .unit{color:#7ab3d4;font-style:normal;font-weight:600}
+
+/* side-by-side container for dist + analog */
+.dist-row{
+  display:flex;flex-wrap:wrap;gap:1.6em;margin:1.8em 0;
+  align-items:flex-start;
+}
+.dist-row .dist,.dist-row .analog{margin:0}
 
 /* régime-0 condensed rows */
 .warmup{max-width:1100px;margin:0 auto;padding:10vh 7vw}
@@ -746,6 +765,20 @@ function numSection(n, extraClass=""){
     body = parts.join("\n    ");
   }
 
+  const distBlock = `<div class="dist reveal">
+      <div class="lab">${n.distLab}</div>
+      <p>${n.dist}</p>
+    </div>`;
+
+  const analogBlock = n.analog ? `<div class="analog reveal">
+      <div class="lab">${n.analogLab}</div>
+      <p>${n.analog}</p>
+    </div>` : "";
+
+  const distRow = n.analog
+    ? `<div class="dist-row">${distBlock}${analogBlock}</div>`
+    : distBlock;
+
   return `
   <section class="num ${extraClass}">
     ${idx}
@@ -753,10 +786,7 @@ function numSection(n, extraClass=""){
     <div class="value reveal">${n.value}${small}</div>
     ${sci}
     ${body}
-    <div class="dist reveal">
-      <div class="lab">${n.distLab}</div>
-      <p>${n.dist}</p>
-    </div>
+    ${distRow}
     ${video}
   </section>`;
 }
