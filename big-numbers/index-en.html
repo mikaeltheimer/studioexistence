@@ -514,31 +514,6 @@ const REGIME2 = [
   },
   {
     regime:2,
-    name:"The Jain number (Shirsha Prahelika)",
-    value:"larger than the googol squared",
-    sci:["1","200"],
-    build:"It comes from the sacred texts of Jainism, a religion of India, about 2,500 years ago. To describe the immense durations of their cosmos, Jain thinkers had invented words for gigantic numbers — they even distinguished « what can be counted, » « what cannot be counted, » and « the infinite, » with several kinds of infinities&nbsp;!",
-    use:"It's our oldest very large number. It proves that humans were already imagining numbers bigger than the googol squared <em>twenty-four centuries</em> before the word « googol » was coined. To go even further, the Jains told an image&nbsp;: a well filled with fine hairs, from which one single strand is removed every hundred years — the time it takes to empty it completely.",
-    distLab:"Counting in googols",
-    dist:"Larger than the googol multiplied by itself&nbsp;: that is, <span class='unit'>more than a googol of googols</span>. An idea two thousand five hundred years old that already crushes everything modern science knows how to count.",
-    analogLab:"In universes of sand grains",
-    analog:"It would take 10<sup>110</sup> universes to hold that many grains of sand. That's a number of universes that itself has <span class='unit'>110 digits</span> — the number of universes required is larger than the googol.",
-    video:"https://www.youtube.com/watch?v=sJqceEImtew", videoLab:"Numberphile · Jain Numbers"
-  },
-  {
-    regime:2,
-    name:"Skewes's number",
-    value:"10<sup>(10<sup>(10<sup>34</sup>)</sup>)</sup>",
-    sci:null,
-    build:"First, let's understand « stacked » notation. 10<sup>34</sup> means « a 1 followed by 34 zeros. » Now stack it three times&nbsp;: Skewes's number is 10<sup>(10<sup>(10<sup>34</sup>)</sup>)</sup>. Read it top to bottom&nbsp;: at the very top, 10<sup>34</sup> (already a 1 with 34 zeros)&nbsp;; that gives the number of zeros of a second floor&nbsp;; and <em>that</em> number, in turn, gives the number of zeros of Skewes's number. At each floor, the vertigo is raised to a power.",
-    use:"Here's what it's for, simply put&nbsp;: mathematicians study prime numbers (2, 3, 5, 7, 11…) and had noticed a rule that seemed always true. In 1933, Stanley Skewes proved that this rule eventually becomes false — but only past a colossal number. That number is this one. For a long time it was famous as « the largest number ever used to prove something useful in math. »",
-    distLab:"Even the zero-counter explodes",
-    dist:"Skewes's number has <span class='unit'>10<sup>(10<sup>34</sup>)</sup> zeros</span> — not 10<sup>34</sup>, but 10 to the power of (a-1-followed-by-34-zeros). In other words, the mere <em>count of its zeros</em> is already a number you couldn't write down in the universe. If you inscribed one zero on every atom of the universe (10<sup>80</sup> atoms), you wouldn't even have grazed the start&nbsp;: you'd need 10<sup>(10<sup>34</sup>)</sup> atoms, a number whose digit-count alone exceeds everything we've met so far.",
-    analogLab:"In universes of sand grains",
-    analog:"The number of universes needed to hold that many grains of sand would itself have <span class='unit'>10<sup>(10<sup>34</sup>)</sup> digits</span>. We can no longer write the number of universes — nor the number of its digits — nor even the digit-count of <em>that</em> number. The stack collapses in on itself."
-  },
-  {
-    regime:2,
     name:"The googolplex",
     value:"10<sup>(googol)</sup>",
     valueSmall:"10 to the power of a googol — a 1 followed by a googol of zeros",
@@ -546,17 +521,25 @@ const REGIME2 = [
     build:"It's 10 to the power of a googol&nbsp;: a 1 followed not by a hundred zeros, but by <em>a googol</em> of zeros (10<sup>100</sup> zeros&nbsp;!). That's so many zeros that it's <em>impossible</em> to write it out in full&nbsp;: there isn't enough room in the universe.",
     use:"It's the first number on the journey that can't be written <em>anywhere</em>. Even if you wrote one zero on every atom in the universe, you'd run out of atoms — you'd need a hundred billion billion times more. The number exists, but we'll never see it written.",
     distLab:"The « one digit per second » image",
-    dist:"Imagine you write one digit every second, never stopping, since the birth of the universe (14 billion years). You'd have written about 10<sup>18</sup> digits. But the googolplex has 10<sup>100</sup> of them. <span class='unit'>You wouldn't even have started the very beginning of the beginning.</span> And this is where our method hits its limit&nbsp;: because the next number can't even be measured in googolplexes anymore.",
+    dist:"Imagine you write one digit every second, never stopping, since the birth of the universe (14 billion years). You'd have written about 10<sup>18</sup> digits. But the googolplex has 10<sup>100</sup> of them. <span class='unit'>You wouldn't even have started the very beginning of the beginning.</span> Hold on to its shape&nbsp;: a « tower » of three tens, 10<sup>10<sup>100</sup></sup>, whose top is just 100. The next number keeps exactly this shape — but swaps that little 100 for a monster.",
     analogLab:"In universes of sand grains",
     analog:"The number of universes needed to hold a googolplex of sand grains can <span class='unit'>no longer even be written</span> — not even on all the atoms of all those universes. The image of sand grains has just given up the ghost, like the meter before it.",
     video:"https://www.youtube.com/watch?v=8GEebx72-qs", videoLab:"Numberphile · Googol & Googolplex"
-  }
-];
-
-/* ---------- REGIME 3 : the reckoning ---------- */
-const REGIME3 = [
+  },
   {
-    regime:3, idx:"Regime 3 · the reckoning",
+    regime:2,
+    name:"Skewes's number",
+    value:"10<sup>(10<sup>(10<sup>34</sup>)</sup>)</sup>",
+    sci:null,
+    build:"Take the googolplex's tower again — 10<sup>10<sup>100</sup></sup>, three floors, top of 100. Skewes's number has <em>exactly</em> the same three-floor shape, but we swap the top&nbsp;: instead of the little 100, we put 10<sup>34</sup> (a 1 followed by 34 zeros). Read the tower top to bottom&nbsp;: at the very top 10<sup>34</sup>&nbsp;; that number gives the count of zeros of the middle floor&nbsp;; and <em>that</em> number, in turn, gives the count of zeros of Skewes's number. Same skeleton as the googolplex, vertigo incomparably greater.",
+    use:"Here's what it's for, simply put&nbsp;: mathematicians study prime numbers (2, 3, 5, 7, 11…) and had noticed a rule that seemed always true. In 1933, Stanley Skewes proved that this rule eventually becomes false — but only past a colossal number. That number is this one. For a long time it was famous as « the largest number ever used to prove something useful in math. »",
+    distLab:"Even the zero-counter explodes",
+    dist:"The googolplex had a top of 100&nbsp;; Skewes's is 10<sup>34</sup>, and the result has <span class='unit'>10<sup>(10<sup>34</sup>)</sup> zeros</span>. In other words, the mere <em>count of its zeros</em> is already a number you couldn't write down in the universe. If you inscribed one zero on every atom of the universe (10<sup>80</sup> atoms), you wouldn't even have grazed the start&nbsp;: you'd need 10<sup>(10<sup>34</sup>)</sup> atoms, a number whose digit-count alone exceeds everything we've met so far.",
+    analogLab:"In universes of sand grains",
+    analog:"The number of universes needed to hold that many grains of sand would itself have <span class='unit'>10<sup>(10<sup>34</sup>)</sup> digits</span>. We can no longer write the number of universes — nor the number of its digits — nor even the digit-count of <em>that</em> number. The stack collapses in on itself."
+  },
+  {
+    regime:2,
     name:"The Mega",
     value:"2 in a circle",
     sci:null,
@@ -565,25 +548,51 @@ const REGIME3 = [
     build2:"Let's compute the Mega, that is « 2 in a circle, » working down step by step&nbsp;:",
     tower2:`<span class="tlab">Computing « 2 in a circle »</span><b>2 in a circle</b> = 2 in 2 nested squares.<br>&nbsp;&nbsp;↳ first we need « 2 in a square. »<br><br><b>2 in a square</b> = 2 in 2 nested triangles.<br>&nbsp;&nbsp;↳ first we need « 2 in a triangle. »<br><br><b>2 in a triangle</b> = 2<sup>2</sup> = <b>4</b><br>&nbsp;&nbsp;↳ so we climb back up&nbsp;: 4 in a triangle = 4<sup>4</sup> = <b>256</b><br>&nbsp;&nbsp;↳ so « 2 in a square » = <b>256</b><br><br>Back up to the circle&nbsp;: one last square left to open…<br><b>256 in a square</b> = 256 placed inside <b>256 triangles</b>&nbsp;!`,
     build3:"And that's where it explodes&nbsp;: 256 in a triangle is already 256<sup>256</sup> (a 617-digit number). But you have to do it 256 times in a row, each result becoming the base of the next triangle. The Mega is the number you get at the very top of that pile&nbsp;: a <em>tower of 257 stacked tens</em>, 10<sup>10<sup>10<sup>…</sup></sup></sup> with 257 floors.",
-    use:"The triangle is like a rocket. The square, a rocket that launches rockets. The circle, a rocket that launches rockets… that launch rockets of their own. This notation was invented by the mathematician Hugo Steinhaus, purely for the fun of showing how easy it is to build outrageous numbers — and the circle was its peak. But another mathematician, Leo Moser, wondered&nbsp;: what if we could go <em>beyond</em> the circle&nbsp;? That's what leads to the next number.",
+    use:"The triangle is like a rocket. The square, a rocket that launches rockets. The circle, a rocket that launches rockets… that launch rockets of their own. This notation was invented by the mathematician Hugo Steinhaus, purely for the fun of showing how easy it is to build outrageous numbers — and the circle was its peak. The Mega closes our Regime&nbsp;2&nbsp;: it's still a number whose <em>construction you can follow</em> from end to end, and whose tower, despite its 257 floors, stays within reach of the human mind.",
     distLab:"The very last comparison possible",
-    dist:"At last we can compare it to the googolplex, since both are « towers of powers. » The googolplex (10<sup>10<sup>100</sup></sup>) is a tower of just <b>3 floors</b>&nbsp;; the Mega is a tower of <b>257 floors</b> of tens. In other words, <span class='unit'>the googolplex doesn't even reach the 4<sup>th</sup> floor of the Mega's tower</span> — climb up a little and it's crushed, vanishing at the very bottom. And it's the last time we can compare anything at all&nbsp;: after the Mega, no number we've already met will serve as a measure.",
+    dist:"Skewes and the Mega are both « towers of powers » — so we can set them side by side. Skewes's number is a tower of <b>3 floors</b> (top: 10<sup>34</sup>)&nbsp;; the Mega is a tower of <b>257 floors</b> of tens. In other words, <span class='unit'>all of Skewes fits inside the first three floors of the Mega's tower</span> — climb up a little and it's crushed, vanishing at the very bottom. And it's the last time we can compare two numbers this cleanly&nbsp;: right after, a very old number will tip us into a region where no measure holds anymore.",
     analogLab:"In elementary particles",
-    analog:"Let's try one last image. The universe holds ~10<sup>124</sup> elementary particles. Replace each particle with an entire universe&nbsp;: you get 10<sup>124</sup> universes, or 10<sup>248</sup> particles. Do it again — 10<sup>372</sup>. Each repetition adds 124 to the exponent. To reach the Mega (a tower of 257 floors), you'd have to repeat this process a number of times that is itself <span class='unit'>a tower of powers almost as tall as the Mega</span>. The image collapses under its own weight.",
+    analog:"Let's try one last measurable image. The universe holds ~10<sup>124</sup> elementary particles. Replace each particle with an entire universe&nbsp;: you get 10<sup>124</sup> universes, or 10<sup>248</sup> particles. Do it again — 10<sup>372</sup>. Each repetition adds 124 to the exponent. To reach the Mega (a tower of 257 floors), you'd have to repeat this process a number of times that is itself <span class='unit'>a tower of powers almost as tall as the Mega</span>. The image collapses under its own weight — and yet the next number will dwarf it as if it were a single grain.",
     video:"https://www.youtube.com/watch?v=Jw_ZPdnHGzg", videoLab:"Numberphile · The Hyper Moser (Mega & Moser)"
+  }
+];
+
+/* ---------- REGIME 3 : the reckoning ---------- */
+const REGIME3 = [
+  {
+    regime:3, idx:"Regime 3 · the reckoning",
+    name:"The Jain number — Jaghanya Parīta Asaṃkhyāta",
+    value:"the oldest of the giants",
+    valueSmall:"a tower of powers of ten whose height nothing can measure — and our most ancient very large number",
+    sci:null,
+    blocks:[
+      {type:"build", c:"Here it is, the first number of the reckoning — and it's also the <em>oldest</em> of the whole journey. It comes from the sacred texts of Jainism, a religion of India, and it's recorded as early as the 1<sup>st</sup> century in the <em>Anuyogadvāra Sūtra</em>. Its name means « the smallest of the innumerables » — for Jain thinkers sorted numbers into three families&nbsp;: those you <em>can</em> count, those you <em>cannot</em> count, and the <em>infinite</em> (with, already, several kinds of infinities&nbsp;!). This number marks the exact frontier&nbsp;: the last one called « countable, » plus one."},
+      {type:"text", c:"But the most beautiful thing isn't its size — it's the <strong>recipe</strong> they imagined to build it. It's a thought experiment, and it has stayed almost unchanged for two thousand years."},
+      {type:"tower", c:`<span class="tlab">The thought experiment — the mechanism</span><b>1. The universe in rings.</b> Picture the world as a giant target&nbsp;: at the center, a round island&nbsp;; around it, an ocean&nbsp;; around that, land… rings out to infinity, <i>each one twice as wide as the last</i>.<br><br><b>2. The container.</b> We fill an enormous cylindrical container — the size of the Earth — with tiny mustard seeds, right to the brim.<br><br><b>3. The god sows.</b> A god drops <i>a single seed</i> on the first ring, one on the second, one on the third… until the container is <i>empty</i>. It took a staggering number of rings — but it's still an « ordinary » number.`},
+      {type:"text", c:"And here's the real tour de force, the one that tips everything over&nbsp;: it's not the container we enlarge. The god has just emptied it a first time&nbsp;? We record that first pass by <strong>dropping a single token into a little pot, pot A</strong>. Then we gather up <em>all</em> the seeds it sowed, and the god sets off again, dropping them on the <em>following</em> rings, further still — until they run out once more. Second emptying&nbsp;: second token into pot A. And so on, emptying after emptying."},
+      {type:"tower", c:`<span class="tlab">The pots that count the pots</span>Pot <b>A</b> doesn't count seeds&nbsp;: it counts <i>complete emptyings</i> of the container. One token = a whole universe of rings traveled.<br><br>When pot <b>A</b> is itself full of tokens → we drop <i>one</i> token into pot <b>B</b>, empty A, and start over.<br>When pot <b>B</b> is full → <i>one</i> token into pot <b>C</b>, empty B, start over.<br><br>👉 Each pot counts « how many times I filled the pot before it. » Three stages of counters nested one inside the other.`},
+      {type:"text", c:"<strong>The stopping point is sharp.</strong> We stop at the precise instant pot <strong>C</strong> is filled for the first time. At that moment, we create one final container — as wide as the last ring we just reached — and <strong>the number of seeds it holds when full, that's it, the Jain number.</strong> Not one step more&nbsp;: the recipe has a perfectly defined end."},
+      {type:"text", c:"How much is it, exactly&nbsp;? The ancient text gives no figure&nbsp;: it gives the recipe. It was the Indian historian of mathematics <strong>Radha Charan Gupta</strong> who, in the 20<sup>th</sup> century, reconstructed the dimensions (a <em>yojana</em> equals a fixed number of seed-widths) and worked the whole procedure through. His result&nbsp;: the Jain number is roughly <span class='unit'>10↑↑(1.285 × 10<sup>136</sup>)</span>. If that arrow notation is unfamiliar, that's fine&nbsp;: we'll meet it a little further down, with Graham's number. For now, just hold on to this&nbsp;: it's a <em>tower of stacked tens</em> — 10<sup>10<sup>10<sup>…</sup></sup></sup> — whose <strong>height</strong> is a number with 137 digits."},
+      {type:"use", c:"It's our oldest very large number — and it's built exactly like the giants to come&nbsp;: not by counting, but by <em>repeating the act of counting</em>. Each pot measures not seeds, but how many times we filled the pot before it&nbsp;; the recipe stacks on itself. Twenty centuries before the word « googol, » humans had already understood that to reach the unimaginable, you don't count faster&nbsp;: you <em>nest the counting machines one inside another</em>. That's the whole spirit of the regime we've just entered."}
+    ],
+    distLab:"The scale has just given way",
+    dist:"Remember the Mega that just closed the previous regime&nbsp;: a tower of <b>257</b> stacked tens, already at the edge of the imaginable. The Jain number, by contrast, is a tower of tens whose <span class='unit'>height has 137 digits</span> — billions of billions of billions… of floors. <span class='unit'>The Mega doesn't even reach the very beginning of this tower.</span> Here's the vertigo specific to Regime 3&nbsp;: we thought we'd touched the summit, and the very first number of « the reckoning » — two thousand years old — already leaves yesterday's tallest giant at the very bottom of the scale.",
+    analogLab:"No measure holds anymore",
+    analog:"And this is where our through-thread gives up the ghost for good. We can no longer say « so many Megas, » nor « so many googolplexes »&nbsp;: we'd need a counter that is itself <span class='unit'>a dizzying tower</span>. The Jain number opens the regime squarely — without our noticing, it carried us from numbers we <em>measure</em> to numbers we only <em>build</em>. Everything that follows will merely push that door wider.",
+    video:"https://www.youtube.com/watch?v=sJqceEImtew", videoLab:"Numberphile · Jain Numbers"
   },
   {
     regime:3,
     name:"Moser's number",
     value:"2 in a mega-gon",
     sci:null,
-    build:"Steinhaus's circle was a dead end&nbsp;: once you have « 2 in a circle, » you can't do « more than the circle. » So Leo Moser <em>reinvented</em> the notation. His brilliant idea&nbsp;: replace the circle with an <strong>endless ladder of shapes</strong> — the pentagon (5 sides), the hexagon (6 sides), the heptagon (7 sides)… each more powerful than the last.",
+    build:"Let's go back to the Mega for a moment&nbsp;: its <em>circle</em> of Steinhaus was really a dead end — once you have « 2 in a circle, » you can't do « more than the circle. » The Jain number showed us how high a good recipe can climb&nbsp;; now let's see how modern mathematicians, too, broke through the ceiling. Leo Moser <em>reinvented</em> Steinhaus's notation. His brilliant idea&nbsp;: replace the circle with an <strong>endless ladder of shapes</strong> — the pentagon (5 sides), the hexagon (6 sides), the heptagon (7 sides)… each more powerful than the last.",
     tower:`<span class="tlab">Moser's new rule</span>A number in a <b>pentagon</b> = that number placed inside that many nested <i>squares</i>.<br>A number in a <b>hexagon</b> = that number placed inside that many nested <i>pentagons</i>.<br>… and so on&nbsp;: a shape with <i>n</i> sides always opens up that many shapes with <i>(n−1)</i> sides.<br><br>The more sides a shape has, the more devastating it is.`,
     build2:"And here's the masterstroke. Moser's number is « 2 in a mega-gon »&nbsp;: a 2 placed in a shape that has as many sides as… the Mega itself&nbsp;! And the Mega is already a number we can't write. So we draw a shape with an unimaginable number of sides, and slip a little 2 in the middle.",
     tower2:`<span class="tlab">How to picture it (a mise en abyme)</span>Imagine a tower of stacked digits, like 9<sup>9<sup>9<sup>9…</sup></sup></sup><br><br>Normally, you choose the <b>height</b> of the tower&nbsp;: 5 floors, 100 floors…<br><br>For Moser, the height of the tower is itself given by <b>another giant tower of digits</b>. And the height of <i>that</i> tower is given by a tower bigger still. And so on, an insane number of times.<br><br>👉 A tower, whose height is a tower, whose height is a tower…`,
-    use:"This is the step where we leave plain « towers of digits » behind for good and enter the world of <em>machines that build machines</em>. Instead of repeating an operation, we repeat the very act of repeating. A fun detail&nbsp;: this way of nesting things strangely resembles the method Jain thinkers used for their immense numbers, two thousand years earlier.",
+    use:"This is the step where we leave plain « towers of digits » behind for good and enter the world of <em>machines that build machines</em>. Instead of repeating an operation, we repeat the very act of repeating. You just saw it at work, in fact&nbsp;: it's <em>exactly</em> the idea of the nested Jain pots, where each pot counted how many times you'd filled the one before it. Two thousand years apart, and the same intuition for crossing the unimaginable.",
     distLab:"No unit possible anymore",
-    dist:"The googolplex, as a measure, is now <span class='unit'>completely useless</span>&nbsp;: Moser's number is so large that saying « so many googolplexes » means nothing. We no longer measure a distance — we simply note that there's no scale left at all.",
+    dist:"The Jain number, as a measure, is now <span class='unit'>completely useless</span>&nbsp;: Moser's number is so large that saying « so many times the Jain tower » means nothing. We no longer measure a distance — we simply note that there's no scale left at all.",
     video:"https://www.youtube.com/watch?v=Jw_ZPdnHGzg", videoLab:"Numberphile · The Hyper Moser"
   },
   {
@@ -697,7 +706,7 @@ const DIVIDERS = {
   toR3:{
     kicker:"Second break",
     h:"And now, even numbers are no longer enough.",
-    p:"Until now, we could always say « so many times the previous number. » From here on, that ratio <span class='gold'>no longer exists</span>&nbsp;: there is no number — not even a googolplex of googolplexes — to express the leap. All that's left is the reckoning. To attempt one last image anyway&nbsp;: instead of grains of sand, we'll count <span class='gold'>elementary particles</span> — the smallest things that exist. An electron is 10 billion times smaller than a grain of sand&nbsp;: the universe holds about <span class='gold'>10<sup>124</sup></span> of them. That's our final unit."
+    p:"With the Mega, we pushed measurement to its very last image — entire universes shrunk to grains, stacked again and again. Until now, we could always say « so many times the previous number. » From here on, that ratio <span class='gold'>no longer exists</span>&nbsp;: there is no number — not even a googolplex of googolplexes — to express the leap. All that's left is the reckoning&nbsp;: numbers we no longer <em>measure</em>, only <em>build</em>. And there's a poetic justice in the very first of them being also the <span class='gold'>most ancient</span> of the journey — imagined two thousand years ago, long before any modern mathematician dared to look that far."
   }
 };
 
@@ -784,7 +793,7 @@ function numSection(n, extraClass=""){
     : distBlock;
 
   return `
-  <section class="num ${extraClass}">
+  <section class="num ${extraClass}" data-regime="${n.regime}">
     ${idx}
     <div class="name reveal">${n.name}</div>
     <div class="value reveal">${n.value}${small}</div>
@@ -794,9 +803,9 @@ function numSection(n, extraClass=""){
     ${video}
   </section>`;
 }
-function divider(d){
+function divider(d, toRegime){
   return `
-  <section class="divider reveal">
+  <section class="divider reveal" data-regime="${toRegime}">
     <div class="kicker">${d.kicker}</div>
     <h2>${d.h}</h2>
     <p>${d.p}</p>
@@ -822,7 +831,7 @@ function warmupBlock(){
       <span class="wtxt">${w.t}</span>
     </div>`).join("");
   return `
-  <section class="warmup">
+  <section class="warmup" data-regime="0">
     <div class="idx reveal" style="margin-bottom:1.4em">Regime 0 · the warm-up</div>
     <div class="lead reveal">First, some numbers we think we know.</div>
     <p class="leadsub reveal">One meter per unit. As long as the distances stay human, we move fast. Enjoy it&nbsp;: this comfort won't last.</p>
@@ -857,9 +866,9 @@ function warmupBlock(){
 const content = document.getElementById("content");
 let html = warmupBlock();
 NUMBERS.forEach(n=> html += numSection(n));
-html += divider(DIVIDERS.toR2);
+html += divider(DIVIDERS.toR2, 2);
 REGIME2.forEach(n=> html += numSection(n));
-html += divider(DIVIDERS.toR3);
+html += divider(DIVIDERS.toR3, 3);
 REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
 
 /* final */
@@ -886,20 +895,29 @@ document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 
 const rail = document.getElementById("rail");
 const tag = document.getElementById("regime-tag");
+/* Sections marked with a regime, in document order.
+   The tag switches exactly when each transition crosses the reference line. */
+const regimeSections = Array.from(document.querySelectorAll("[data-regime]"));
 function onScroll(){
   const h = document.documentElement;
   const pct = (h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
   rail.style.width = pct+"%";
-  // crude regime indicator by scroll fraction
-  let label="";
-  if(pct<10) label="";
-  else if(pct<46) label=REGIME_LABELS[1];
-  else if(pct<70) label=REGIME_LABELS[2];
-  else label=REGIME_LABELS[3];
+
+  // Reference line: a little below the top of the viewport, where the eye lands.
+  const refLine = innerHeight*0.35;
+  // The "active" section is the last one whose top has crossed the reference line.
+  let current = null;
+  for(const sec of regimeSections){
+    if(sec.getBoundingClientRect().top <= refLine) current = sec;
+    else break;
+  }
+  const reg = current ? +current.dataset.regime : 0;
+  const label = reg>=1 ? REGIME_LABELS[reg] : "";
   if(label){ tag.textContent=label; tag.classList.add("show"); }
   else tag.classList.remove("show");
 }
 window.addEventListener("scroll", onScroll, {passive:true});
+addEventListener("resize", onScroll, {passive:true});
 onScroll();
 
 /* ============================================================
