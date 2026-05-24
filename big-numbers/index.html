@@ -315,6 +315,17 @@ sup{font-size:.62em}
 .end .credit a{border-bottom-color:rgba(201,162,39,.4);transition:border-color .25s}
 .end .credit a:hover{border-bottom-color:var(--gold)}
 .end a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--line)}
+.share{margin-top:3em;display:flex;flex-direction:column;align-items:center;gap:.5em}
+.share .invite{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(1.3rem,3.2vw,1.9rem);color:var(--paper)}
+.share .invite-sub{font-family:var(--body);font-style:italic;color:var(--paper-dim);opacity:.75;font-size:1rem;max-width:42ch}
+.share .btns{display:flex;gap:.8em;flex-wrap:wrap;justify-content:center;margin-top:1.2em}
+.share button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);background:transparent;border:1px solid rgba(201,162,39,.4);
+  padding:.85em 1.5em;border-radius:2px;cursor:pointer;transition:all .25s;
+}
+.share button:hover{border-color:var(--gold);background:rgba(201,162,39,.08)}
+.share button.copied{color:var(--paper);border-color:var(--gold);background:rgba(201,162,39,.14)}
 
 /* reveal on scroll */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
@@ -691,8 +702,65 @@ const REGIME3 = [
     build2:"Autrement dit&nbsp;: imagine la liste de tous les nombres qu'on peut <em>décrire</em> en moins d'un googol de symboles mathématiques (10<sup>100</sup> symboles — assez pour écrire la définition de Graham, de TREE(3), et de n'importe quelle recette qu'un humain pourrait coucher sur le papier). Cette liste est gigantesque, mais elle est <em>finie</em>&nbsp;: avec un nombre limité de symboles, on ne peut former qu'un nombre limité de descriptions. Rayo est alors défini comme <strong>le plus petit nombre qui n'apparaît dans aucune de ces descriptions</strong> — c'est-à-dire le premier nombre trop complexe pour être décrit en moins d'un googol de symboles. Peu importe la recette que tu inventes&nbsp;: si tu peux l'écrire, ton nombre est dans la liste, et Rayo est déjà au-dessus.",
     use:"C'est le coup de théâtre final. Au lieu de dire <em>comment</em> il est fabriqué, ce nombre est défini par <em>ce que le langage est capable d'exprimer</em>. Il a été inventé en 2007 lors d'un « duel de grands nombres » au MIT, et il a longtemps été considéré comme le plus grand nombre jamais nommé — dépassant de très loin Graham et TREE(3) ensemble.",
     distLab:"Au bout du nommable",
-    dist:"Il n'y a plus de distance, plus d'unité, plus d'image. Rayo se tient juste au-delà de <span class='unit'>tout ce qu'on pourrait un jour écrire ou décrire</span>. Le voyage ne s'arrête pas parce qu'on est arrivés&nbsp;: il s'arrête parce que c'est le <em>langage</em>, lui, qui est arrivé au bout.",
+    dist:"Il n'y a plus de distance, plus d'unité, plus d'image. Rayo se tient juste au-delà de <span class='unit'>tout ce qu'on pourrait un jour écrire ou décrire</span>. Et pourtant — aussi vertigineux soit-il — Rayo reste un nombre <em>fini</em>. Comme tous ceux d'avant lui, il est, en principe, atteignable. Ce qui nous amène à la dernière frontière du voyage&nbsp;: celle qu'aucun nombre fini, si grand soit-il, ne franchit jamais.",
     video:"https://www.youtube.com/watch?v=X3l0fPHZja8", videoLab:"Numberphile · The Daddy of Big Numbers (Rayo)"
+  }
+];
+
+/* ---------- RÉGIME 4 : l'infini ---------- */
+const REGIME4 = [
+  {
+    regime:4, idx:"Régime 4 · l'infini",
+    name:"Le premier infini · ω",
+    value:"ω",
+    valueSmall:"oméga — ce qui vient juste après tous les nombres entiers",
+    sci:null,
+    blocks:[
+      {type:"build", c:"Voici le plus vieux malentendu sur l'infini&nbsp;: ce n'est pas « le plus grand nombre ». Il n'y a pas de plus grand nombre — quel qu'il soit, on peut toujours ajouter 1. L'infini, ce n'est pas le bout de la file des entiers. C'est ce qui vient <strong>après la file tout entière</strong>."},
+      {type:"tower", c:`<span class="tlab">La file d'attente sans fin</span>Imagine une file d'attente avec une infinité de personnes&nbsp;: une première, une deuxième, une troisième… sans jamais de dernière. Après chaque personne, il y en a toujours une suivante.<br><br>Maintenant, demande à la première personne de <b>sortir de la file et d'aller se placer tout au fond</b> — derrière l'infinité de gens qui attendent. Où se tient-elle&nbsp;?<br><br>Pas à une place numérotée&nbsp;: il n'existe aucune « dernière place » à occuper. Elle se tient <i>après toute la file infinie</i>. Ce point, situé au-delà de tous les rangs, porte un nom&nbsp;: <b>ω</b>.`},
+      {type:"text", c:"Et voici ce qui rend ω vivant plutôt que figé&nbsp;: une fois ce point atteint, <strong>la file peut continuer derrière lui</strong>. La personne juste après ω, c'est ω+1&nbsp;; puis ω+2… puis une deuxième file infinie tout entière à la suite, ω+ω (ou ω·2)… L'infini n'était pas une fin&nbsp;: c'était un nouveau début de file."},
+      {type:"use", c:"La file révèle une propriété de ω qui dérange l'intuition&nbsp;: <strong>le sens dans lequel on ajoute compte.</strong> Glisse une personne <em>au tout début</em>, devant la file infinie, puis recompte tout le monde&nbsp;: tu retombes exactement sur la même file — ce nouveau venu s'est noyé dans l'infini, et 1 + ω ne fait que ω. Mais envoie une personne <em>tout au fond</em>, après le point ω&nbsp;: elle occupe un rang strictement au-delà de la file entière, et ω + 1 est plus grand que ω. Chez les infinis, « devant » et « derrière » ne se valent pas. Premier signe que ces objets ont leurs propres règles."}
+    ],
+    distLab:"Un infini qu'on peut parcourir",
+    dist:"Retiens une chose sur ω, parce qu'elle va voler en éclats deux sections plus loin&nbsp;: cet infini-là <span class='unit'>se laisse parcourir dans l'ordre</span>, personne après personne, sans en sauter aucune. C'est un infini, mais un infini <em>qu'on peut énumérer</em>.",
+    video:"https://www.youtube.com/watch?v=47qEMTMKRdA", videoLab:"Numberphile · Ordinal Numbers"
+  },
+  {
+    regime:4,
+    name:"L'infini qui ne grandit pas · ℵ₀",
+    value:"ℵ₀",
+    valueSmall:"aleph-zéro — combien il y a de nombres entiers",
+    sci:null,
+    blocks:[
+      {type:"build", c:"On vient de voir l'infini comme une <em>position</em> (le point ω, après toute la file). Regardons-le maintenant autrement&nbsp;: comme une <strong>quantité</strong>. Combien y a-t-il de nombres entiers, au juste&nbsp;? Une infinité, bien sûr. Mais cette quantité-là cache une bizarrerie que rien dans le monde fini ne laisse deviner."},
+      {type:"tower", c:`<span class="tlab">L'hôtel de Hilbert</span>Imagine un hôtel avec une infinité de chambres, numérotées 1, 2, 3… <b>toutes occupées</b>. Complet.<br><br>Un voyageur arrive. Pas de chambre libre&nbsp;? Si&nbsp;: on demande à chaque client de se décaler d'une chambre — le client 1 passe en 2, le 2 en 3, le 3 en 4… Chacun a toujours une chambre où aller (il y en a une suivante), et la <b>chambre 1 se libère</b>. Le nouveau venu s'installe. L'hôtel était plein&nbsp;; il a pourtant fait de la place.`},
+      {type:"text", c:"Mieux encore&nbsp;: un car arrive avec une <em>infinité</em> de voyageurs. On demande cette fois à chaque client de passer à la chambre <strong>du double</strong> de son numéro (1→2, 2→4, 3→6…). Toutes les chambres <strong>impaires</strong> se libèrent d'un coup — une infinité de chambres&nbsp;! — et le car entier s'installe. Un hôtel plein vient d'absorber une infinité de clients de plus."},
+      {type:"use", c:"C'est la signature de ce premier infini&nbsp;: <strong>on a beau lui ajouter, il ne grandit pas.</strong> L'infini des entiers + 1 = le même infini. + une infinité = encore le même. Il y a « autant » de nombres pairs que de nombres entiers, « autant » de multiples de mille que d'entiers&nbsp;: à chaque fois, on peut les apparier un à un, sans reste. C'est l'infini où <strong>la partie est aussi grande que le tout</strong>.<br><br>Cet infini-là, celui qu'on peut numéroter chambre par chambre, les mathématiciens lui ont donné un nom&nbsp;: <b>ℵ₀</b> (aleph-zéro). On dit aussi qu'il est <em>dénombrable</em> — un mot qui veut simplement dire « qu'on peut mettre en liste ». Retiens bien ce mot. Tout l'enjeu de la suite tient dans une question&nbsp;: <strong>existe-t-il un infini qu'on ne peut PAS mettre en liste&nbsp;?</strong>"}
+    ],
+    distLab:"Tous énumérables… vraiment ?",
+    dist:"Jusqu'ici, tous nos infinis — le point ω, l'hôtel ℵ₀ — partagent une même vertu&nbsp;: on peut les <span class='unit'>énumérer</span>, leur attribuer un numéro de chambre, les parcourir dans l'ordre. On pourrait croire que c'est le propre de l'infini. C'est faux. Et la preuve qui suit est l'une des plus belles jamais écrites.",
+    video:"https://www.youtube.com/watch?v=uezOrcmHzrQ", videoLab:"Numberphile · A Problem with Infinite Hotel Keys"
+  },
+  {
+    regime:4,
+    name:"L'infini qui déborde · le continu",
+    value:"plus grand que ℵ₀",
+    valueSmall:"l'infinité des nombres réels — un infini qu'aucune liste ne peut contenir",
+    sci:null,
+    blocks:[
+      {type:"build", c:"Quittons les entiers pour les nombres <strong>réels</strong>&nbsp;: tous les points d'une ligne continue, décimales comprises — 0,5&nbsp;; 0,333…&nbsp;; π&nbsp;; √2. Et reposons la question qui définissait le premier infini&nbsp;: peut-on leur donner à chacun un rang, les mettre dans une liste numérotée&nbsp;?"},
+      {type:"tower", c:`<span class="tlab">Ce qui se cache entre deux nombres</span>Prends deux réels tout proches&nbsp;: 0,1 et 0,2. Combien y en a-t-il entre les deux&nbsp;?<br><br>0,15&nbsp;? Oui — mais aussi 0,151, et 0,1500001, et 0,15000000001…<br><br><b>Entre deux réels, aussi collés soient-ils, il y en a toujours une infinité d'autres.</b> Et entre ces nouveaux-là, encore une infinité. Sans fin. Impossible de dire quel réel vient « juste après » 0,1&nbsp;: il n'existe pas de « réel suivant » par où commencer la liste.`},
+      {type:"text", c:"En 1891, Georg Cantor a transformé ce soupçon en certitude — par un raisonnement d'une élégance restée célèbre, et qui tient en une image."},
+      {type:"tower", c:`<span class="tlab">La diagonale de Cantor</span>Supposons qu'on ait <b>réussi</b> à mettre tous les réels entre 0 et 1 dans une liste numérotée&nbsp;:<br><br>1.&nbsp;&nbsp;0,<b style="color:var(--gold)">1</b>429…<br>2.&nbsp;&nbsp;0,3<b style="color:var(--gold)">0</b>71…<br>3.&nbsp;&nbsp;0,72<b style="color:var(--gold)">8</b>5…<br>&nbsp;&nbsp;&nbsp;&nbsp;⋮<br><br>Lis les chiffres en <b>diagonale</b> (1ᵉʳ chiffre de la 1ʳᵉ ligne, 2ᵉ de la 2ᵉ, 3ᵉ de la 3ᵉ…)&nbsp;: 1, 0, 8…<br>Fabrique un nouveau nombre en <b>changeant chacun de ces chiffres</b> (par exemple +1)&nbsp;: 2, 1, 9… soit 0,219…<br><br>Ce nombre diffère de la ligne 1 (à la 1ʳᵉ décimale), de la ligne 2 (à la 2ᵉ), de la ligne 3 (à la 3ᵉ)… il diffère de <b>chaque ligne</b>, par construction. Donc il <b>n'est nulle part dans la liste</b> — alors qu'on prétendait les avoir tous. Contradiction.`},
+      {type:"text", c:"La conclusion est sans échappatoire&nbsp;: <strong>aucune liste ne peut contenir tous les réels.</strong> Quelle que soit la numérotation qu'on invente, il existe toujours un réel oublié. Les réels sont tout simplement trop nombreux pour être alignés un par un — on dit qu'ils sont <em>non dénombrables</em>. Voilà&nbsp;: on tient un infini <strong>strictement plus grand</strong> que celui des entiers."},
+      {type:"use", c:"Et maintenant, le vertige se rouvre une dernière fois. On a deux tailles d'infini&nbsp;: celui des entiers, <b>ℵ₀</b> (« celui qu'on peut compter »), et celui des réels, plus grand. Mais pourquoi s'arrêter à deux&nbsp;?<br><br>Cantor a découvert une machine qui, à partir de <em>n'importe quel</em> infini, en fabrique un strictement plus grand&nbsp;: il suffit de considérer <strong>toutes les façons possibles de regrouper ses éléments</strong>. Un exemple concret&nbsp;: prends un sac de 3 objets — 🍎, 🍌, 🍒. Combien de façons d'y piocher (rien prendre et tout prendre compris)&nbsp;? Le sac vide&nbsp;; {🍎}, {🍌}, {🍒}&nbsp;; {🍎🍌}, {🍎🍒}, {🍌🍒}&nbsp;; et {🍎🍌🍒} — soit <b>8 regroupements</b> pour seulement 3 objets. Avec 4 objets, 16&nbsp;; le nombre de regroupements explose toujours plus vite que le nombre d'objets. Appliquée à l'infini des entiers, cette machine donne un infini strictement plus grand — et on peut la relancer sur le résultat, encore et encore, sans jamais s'arrêter.<br><br>Il y a donc une <em>suite</em> de tailles d'infini, de plus en plus grandes, sans fin. Les mathématiciens les rangent par ordre croissant et les baptisent <b>ℵ₀, ℵ₁, ℵ₂, ℵ₃…</b> — ℵ₀ étant le plus petit (les entiers), et chaque aleph nommant la taille d'infini juste au-dessus du précédent. Comme la machine ne s'arrête jamais, il n'y a pas de plus grand aleph, comme il n'y avait pas de plus grand entier. <strong>L'échelle des infinis est elle-même… infinie.</strong>"}
+    ],
+    distLab:"Le vertige recommence",
+    dist:"On a passé des heures à empiler des géants finis pour « s'approcher » de l'infini, sans jamais l'effleurer. Et à l'instant où on l'atteint, il se dédouble, puis se démultiplie&nbsp;: une tour d'infinis, chacun écrasant le précédent comme nos grands nombres écrasaient les petits. Le vertige ne s'est pas arrêté&nbsp;: il a <span class='unit'>recommencé un étage plus haut.</span>",
+    video:[
+      {url:"https://www.youtube.com/watch?v=elvOZm0d4H0", lab:"Numberphile · Infinity is bigger than you think"},
+      {url:"https://www.youtube.com/watch?v=sq-ntG5Mcus", lab:"Numberphile · Absolute Infinity"}
+    ]
   }
 ];
 
@@ -707,6 +775,11 @@ const DIVIDERS = {
     kicker:"Seconde rupture",
     h:"Et maintenant, même les nombres ne suffisent plus.",
     p:"Avec le Mega, on a poussé la mesure jusqu'à sa toute dernière image — des univers entiers réduits à des grains, empilés encore et encore. Jusqu'ici, on pouvait toujours dire « tant de fois le nombre précédent ». À partir d'ici, ce rapport <span class='gold'>n'existe plus</span>&nbsp;: il n'y a aucun nombre — pas même un googolplex de googolplex — pour exprimer le saut. Il ne reste que l'aveu&nbsp;: des nombres qu'on ne <em>mesure</em> plus, qu'on ne fait plus que <em>fabriquer</em>. Et il y a une justice poétique à ce que le tout premier d'entre eux soit aussi le <span class='gold'>plus ancien</span> du voyage — imaginé il y a deux mille ans, bien avant qu'aucun mathématicien moderne n'ose regarder si loin."
+  },
+  toR4:{
+    kicker:"Dernière rupture",
+    h:"Et si on quittait les nombres entiers&nbsp;?",
+    p:"Arrête-toi un instant sur ce qu'on vient de vivre. Rayo, Graham, le Castor affairé&nbsp;: des monstres — mais des monstres <em>finis</em>. Chacun est un nombre entier précis, qu'on pourrait, en principe, atteindre en comptant. Aucun, absolument aucun, n'est plus proche de l'infini que le chiffre 3. C'était la vraie leçon du voyage&nbsp;: « énorme » et « infini » sont deux mondes séparés. Alors franchissons la frontière, pour de bon. On laisse derrière nous les nombres qu'on <em>atteint</em>, et on va regarder ceux qui sont infinis dès le départ. Et là, une surprise nous attend — la plus belle peut-être&nbsp;: <span class='gold'>l'infini n'est pas un. Il en existe de plusieurs tailles.</span>"
   }
 };
 
@@ -748,7 +821,9 @@ function numSection(n, extraClass=""){
   const idx = n.idx ? `<div class="idx reveal">${n.idx}</div>` : "";
   const small = n.valueSmall ? `<span class="small">${n.valueSmall}</span>` : "";
   const sci = n.sci ? `<div class="sci reveal">${supSci(n.sci)}</div>` : "";
-  const video = n.video ? `<a class="nphile reveal" href="${n.video}" target="_blank" rel="noopener">${n.videoLab||"Voir sur Numberphile"}</a>` : "";
+  const video = Array.isArray(n.video)
+    ? n.video.map(v => `<a class="nphile reveal" href="${v.url}" target="_blank" rel="noopener">${v.lab||"Voir sur Numberphile"}</a>`).join("")
+    : (n.video ? `<a class="nphile reveal" href="${n.video}" target="_blank" rel="noopener">${n.videoLab||"Voir sur Numberphile"}</a>` : "");
 
   // Renderers for each block type
   const R = {
@@ -756,7 +831,11 @@ function numSection(n, extraClass=""){
     text:   t => `<div class="block reveal"><p>${t}</p></div>`,
     use:    t => `<div class="block reveal"><h3>À quoi il sert</h3><p>${t}</p></div>`,
     tower:  t => `<div class="tower reveal">${t}</div>`,
-    figs:   t => `<div class="figs reveal">${t}</div>`
+    figs:   t => `<div class="figs reveal">${t}</div>`,
+    video:  c => {
+      const arr = Array.isArray(c) ? c : [c];
+      return arr.map(v => `<a class="nphile reveal" href="${v.url}" target="_blank" rel="noopener">${v.lab||"Voir sur Numberphile"}</a>`).join("");
+    }
   };
 
   // A number may declare an explicit ordered "blocks" array; otherwise we
@@ -871,13 +950,24 @@ REGIME2.forEach(n=> html += numSection(n));
 html += divider(DIVIDERS.toR3, 3);
 REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
 
+html += divider(DIVIDERS.toR4, 4);
+REGIME4.forEach(n=> html += numSection(n));
+
 /* final */
 html += `
-<section class="end reveal">
-  <h2>Et après Rayo&nbsp;?</h2>
-  <p>D'autres nombres existent, plus grands encore — chacun défini en débordant la définition du précédent. Mais aucun n'approche l'infini&nbsp;: voilà le vertige final. Tous ces géants, mis ensemble, ne sont rien face à l'infini. Ils restent, jusqu'au dernier, <em>finis</em>.</p>
-  <p>C'était le sens du voyage&nbsp;: sentir, étape par étape, à quel point « beaucoup » et « infini » sont deux pays sans frontière commune.</p>
+<section class="end reveal" data-regime="4">
+  <h2>Où s'arrête le vertige&nbsp;?</h2>
+  <p>Nulle part. C'est la réponse — et c'est toute la beauté de la chose. On a commencé par des grains de sable&nbsp;; on finit en découvrant que l'infini lui-même se décline en une hiérarchie sans fin. À chaque fois qu'on croyait toucher le sommet — le googol, Graham, Rayo, puis l'infini en personne — un autre se révélait, plus haut.</p>
+  <p>Peut-être est-ce ça, la vraie leçon du voyage&nbsp;: non pas qu'il existe de grands nombres, mais qu'il n'existe <em>aucun dernier</em>. Ni parmi les nombres, ni même parmi les infinis. À chaque palier, l'esprit humain a trouvé le moyen de poser une marche de plus.</p>
   <div class="sig">Fin du voyage · merci d'avoir scrollé l'inscrollable</div>
+  <div class="share reveal">
+    <div class="invite">Tu as aimé le voyage&nbsp;? Fais voyager les autres.</div>
+    <div class="invite-sub">Offre-le à quelqu'un qui aime se retourner le cerveau.</div>
+    <div class="btns">
+      <button id="share-btn" type="button">Partager</button>
+      <button id="copy-btn" type="button">Copier le lien</button>
+    </div>
+  </div>
   <div class="credit">Un voyage présenté par <a href="https://studioexistence.com" target="_blank" rel="noopener"><b>Studio Existence</b></a></div>
 </section>`;
 
@@ -886,7 +976,7 @@ content.innerHTML = html;
 /* ============================================================
    INTERACTIONS : reveal, progress rail, regime tag
    ============================================================ */
-const REGIME_LABELS = ["Régime 0 · l'échauffement","Régime 1 · distances réelles","Régime 2 · nombres comme unités","Régime 3 · l'aveu"];
+const REGIME_LABELS = ["Régime 0 · l'échauffement","Régime 1 · distances réelles","Régime 2 · nombres comme unités","Régime 3 · l'aveu","Régime 4 · l'infini"];
 
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("in"); });
@@ -919,6 +1009,47 @@ function onScroll(){
 window.addEventListener("scroll", onScroll, {passive:true});
 addEventListener("resize", onScroll, {passive:true});
 onScroll();
+
+/* ============================================================
+   PARTAGE — Web Share natif, repli sur copie du lien
+   ============================================================ */
+(function(){
+  const shareBtn = document.getElementById("share-btn");
+  const copyBtn  = document.getElementById("copy-btn");
+  if(!copyBtn) return;
+  const url = location.href.split("#")[0];
+  const title = document.title;
+  const text = "Voyage au bout des grands nombres — du comptable à l'indicible.";
+
+  async function copyLink(btn){
+    const original = btn.textContent;
+    try{
+      await navigator.clipboard.writeText(url);
+    }catch(e){
+      // repli ultime : sélection manuelle via un champ temporaire
+      const ta=document.createElement("textarea");
+      ta.value=url; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); }catch(_){}
+      document.body.removeChild(ta);
+    }
+    btn.textContent="Lien copié ✓"; btn.classList.add("copied");
+    setTimeout(()=>{ btn.textContent=original; btn.classList.remove("copied"); }, 2200);
+  }
+
+  if(shareBtn){
+    shareBtn.addEventListener("click", async ()=>{
+      if(navigator.share){
+        try{ await navigator.share({title, text, url}); }
+        catch(e){ /* annulé par l'utilisateur : on ne fait rien */ }
+      }else{
+        // pas d'API native (desktop) : on copie le lien à la place
+        copyLink(shareBtn);
+      }
+    });
+  }
+  copyBtn.addEventListener("click", ()=>copyLink(copyBtn));
+})();
 
 /* ============================================================
    STARFIELD — subtle, deepens as you descend

@@ -315,6 +315,17 @@ sup{font-size:.62em}
 .end .credit a{border-bottom-color:rgba(201,162,39,.4);transition:border-color .25s}
 .end .credit a:hover{border-bottom-color:var(--gold)}
 .end a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--line)}
+.share{margin-top:3em;display:flex;flex-direction:column;align-items:center;gap:.5em}
+.share .invite{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(1.3rem,3.2vw,1.9rem);color:var(--paper)}
+.share .invite-sub{font-family:var(--body);font-style:italic;color:var(--paper-dim);opacity:.75;font-size:1rem;max-width:42ch}
+.share .btns{display:flex;gap:.8em;flex-wrap:wrap;justify-content:center;margin-top:1.2em}
+.share button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);background:transparent;border:1px solid rgba(201,162,39,.4);
+  padding:.85em 1.5em;border-radius:2px;cursor:pointer;transition:all .25s;
+}
+.share button:hover{border-color:var(--gold);background:rgba(201,162,39,.08)}
+.share button.copied{color:var(--paper);border-color:var(--gold);background:rgba(201,162,39,.14)}
 
 /* reveal on scroll */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
@@ -691,8 +702,65 @@ const REGIME3 = [
     build2:"In other words&nbsp;: imagine the list of all numbers you can <em>describe</em> in fewer than a googol of mathematical symbols (10<sup>100</sup> symbols — enough to write the definition of Graham, of TREE(3), and of any recipe a human could ever put on paper). This list is gigantic, but it is <em>finite</em>&nbsp;: with a limited number of symbols, you can form only a limited number of descriptions. Rayo is then defined as <strong>the smallest number that appears in none of those descriptions</strong> — that is, the first number too complex to be described in fewer than a googol of symbols. No matter what recipe you invent&nbsp;: if you can write it down, your number is on the list, and Rayo is already above it.",
     use:"It's the final twist. Instead of saying <em>how</em> it's built, this number is defined by <em>what language is capable of expressing</em>. It was invented in 2007 during a « big number duel » at MIT, and was long considered the largest number ever named — far surpassing Graham and TREE(3) combined.",
     distLab:"At the edge of the nameable",
-    dist:"There's no more distance, no more unit, no more image. Rayo stands just beyond <span class='unit'>everything that could ever be written or described</span>. The journey doesn't end because we've arrived&nbsp;: it ends because <em>language</em> itself has reached its end.",
+    dist:"There's no more distance, no more unit, no more image. Rayo stands just beyond <span class='unit'>everything that could ever be written or described</span>. And yet — however dizzying it is — Rayo is still a <em>finite</em> number. Like all the ones before it, it is, in principle, reachable. Which brings us to the journey's final frontier&nbsp;: the one no finite number, however large, ever crosses.",
     video:"https://www.youtube.com/watch?v=X3l0fPHZja8", videoLab:"Numberphile · The Daddy of Big Numbers (Rayo)"
+  }
+];
+
+/* ---------- REGIME 4 : infinity ---------- */
+const REGIME4 = [
+  {
+    regime:4, idx:"Regime 4 · infinity",
+    name:"The first infinity · ω",
+    value:"ω",
+    valueSmall:"omega — what comes right after all the whole numbers",
+    sci:null,
+    blocks:[
+      {type:"build", c:"Here's the oldest misunderstanding about infinity&nbsp;: it is not « the largest number. » There is no largest number — whatever it is, you can always add 1. Infinity isn't the end of the line of whole numbers. It's what comes <strong>after the whole line at once</strong>."},
+      {type:"tower", c:`<span class="tlab">The endless queue</span>Imagine a queue with infinitely many people&nbsp;: a first, a second, a third… and never a last. After each person, there's always a next one.<br><br>Now ask the first person to <b>step out of the queue and go stand all the way at the back</b> — behind the infinity of people waiting. Where do they end up&nbsp;?<br><br>Not at a numbered spot&nbsp;: there is no « last place » to take. They stand <i>after the entire infinite queue</i>. That point, beyond every rank, has a name&nbsp;: <b>ω</b>.`},
+      {type:"text", c:"And here's what makes ω alive rather than frozen&nbsp;: once that point is reached, <strong>the queue can keep going behind it</strong>. The person right after ω is ω+1&nbsp;; then ω+2… then a whole second infinite queue after the first, ω+ω (or ω·2)… Infinity wasn't an end&nbsp;: it was the start of a new queue."},
+      {type:"use", c:"The queue reveals a property of ω that unsettles intuition&nbsp;: <strong>the direction in which you add matters.</strong> Slip a person in <em>at the very front</em>, ahead of the infinite queue, then recount everyone&nbsp;: you land back on exactly the same queue — that newcomer drowned in the infinity, and 1 + ω is just ω. But send a person <em>all the way to the back</em>, past the point ω&nbsp;: they take a rank strictly beyond the entire queue, and ω + 1 is larger than ω. Among infinities, « before » and « after » are not the same. First sign that these objects play by their own rules."}
+    ],
+    distLab:"An infinity you can walk through",
+    dist:"Hold on to one thing about ω, because it's about to shatter two sections from now&nbsp;: this infinity <span class='unit'>can be walked through in order</span>, person after person, without skipping any. It's an infinity — but an infinity <em>you can enumerate</em>.",
+    video:"https://www.youtube.com/watch?v=47qEMTMKRdA", videoLab:"Numberphile · Ordinal Numbers"
+  },
+  {
+    regime:4,
+    name:"The infinity that doesn't grow · ℵ₀",
+    value:"ℵ₀",
+    valueSmall:"aleph-zero — how many whole numbers there are",
+    sci:null,
+    blocks:[
+      {type:"build", c:"We've just seen infinity as a <em>position</em> (the point ω, after the whole queue). Now let's look at it differently&nbsp;: as a <strong>quantity</strong>. How many whole numbers are there, exactly&nbsp;? Infinitely many, of course. But that quantity hides an oddity nothing in the finite world could let you guess."},
+      {type:"tower", c:`<span class="tlab">Hilbert's Hotel</span>Imagine a hotel with infinitely many rooms, numbered 1, 2, 3… <b>all occupied</b>. Full.<br><br>A traveler arrives. No free room&nbsp;? There is&nbsp;: ask each guest to shift over by one — guest 1 moves to 2, 2 to 3, 3 to 4… Everyone always has a room to go to (there's always a next one), and <b>room 1 frees up</b>. The newcomer checks in. The hotel was full&nbsp;; it made room anyway.`},
+      {type:"text", c:"Better still&nbsp;: a coach arrives with an <em>infinity</em> of travelers. This time, ask each guest to move to the room with <strong>double</strong> their number (1→2, 2→4, 3→6…). Every <strong>odd-numbered</strong> room frees up at once — infinitely many rooms&nbsp;! — and the whole coach checks in. A full hotel just absorbed an infinity more guests."},
+      {type:"use", c:"That's the signature of this first infinity&nbsp;: <strong>no matter how much you add, it doesn't grow.</strong> The infinity of whole numbers + 1 = the same infinity. + an infinity = still the same. There are « as many » even numbers as whole numbers, « as many » multiples of a thousand as whole numbers&nbsp;: each time, you can pair them up one to one, with nothing left over. It's the infinity where <strong>the part is as large as the whole</strong>.<br><br>This infinity, the one you can number room by room, mathematicians gave a name&nbsp;: <b>ℵ₀</b> (aleph-zero). They also call it <em>countable</em> — a word that simply means « you can put it in a list. » Remember that word. The whole point of what follows hangs on one question&nbsp;: <strong>is there an infinity you CANNOT put in a list&nbsp;?</strong>"}
+    ],
+    distLab:"All enumerable… really ?",
+    dist:"So far, all our infinities — the point ω, the hotel ℵ₀ — share one virtue&nbsp;: you can <span class='unit'>enumerate</span> them, assign them a room number, walk through them in order. You might think that's just what infinity is. It isn't. And the proof that follows is one of the most beautiful ever written.",
+    video:"https://www.youtube.com/watch?v=uezOrcmHzrQ", videoLab:"Numberphile · A Problem with Infinite Hotel Keys"
+  },
+  {
+    regime:4,
+    name:"The infinity that overflows · the continuum",
+    value:"larger than ℵ₀",
+    valueSmall:"the infinity of the real numbers — an infinity no list can contain",
+    sci:null,
+    blocks:[
+      {type:"build", c:"Let's leave the whole numbers for the <strong>reals</strong>&nbsp;: every point on a continuous line, decimals included — 0.5&nbsp;; 0.333…&nbsp;; π&nbsp;; √2. And let's ask again the question that defined the first infinity&nbsp;: can we give each of them a rank, put them in a numbered list&nbsp;?"},
+      {type:"tower", c:`<span class="tlab">What hides between two numbers</span>Take two reals very close together&nbsp;: 0.1 and 0.2. How many are there between them&nbsp;?<br><br>0.15&nbsp;? Yes — but also 0.151, and 0.1500001, and 0.15000000001…<br><br><b>Between two reals, however close, there are always infinitely many others.</b> And between those new ones, infinitely many again. Without end. Impossible to say which real comes « right after » 0.1&nbsp;: there is no « next real » to start the list from.`},
+      {type:"text", c:"In 1891, Georg Cantor turned this hunch into certainty — with a piece of reasoning whose elegance is still famous, and that fits in a single image."},
+      {type:"tower", c:`<span class="tlab">Cantor's diagonal</span>Suppose we'd <b>succeeded</b> in putting all the reals between 0 and 1 into a numbered list&nbsp;:<br><br>1.&nbsp;&nbsp;0.<b style="color:var(--gold)">1</b>429…<br>2.&nbsp;&nbsp;0.3<b style="color:var(--gold)">0</b>71…<br>3.&nbsp;&nbsp;0.72<b style="color:var(--gold)">8</b>5…<br>&nbsp;&nbsp;&nbsp;&nbsp;⋮<br><br>Read the digits along the <b>diagonal</b> (1st digit of line 1, 2nd of line 2, 3rd of line 3…)&nbsp;: 1, 0, 8…<br>Build a new number by <b>changing each of those digits</b> (say +1)&nbsp;: 2, 1, 9… that is 0.219…<br><br>This number differs from line 1 (at the 1st decimal), from line 2 (at the 2nd), from line 3 (at the 3rd)… it differs from <b>every line</b>, by construction. So it is <b>nowhere in the list</b> — even though we claimed to have them all. Contradiction.`},
+      {type:"text", c:"The conclusion is inescapable&nbsp;: <strong>no list can contain all the reals.</strong> Whatever numbering you invent, there's always a real left out. The reals are simply too many to be lined up one by one — they're said to be <em>uncountable</em>. There it is&nbsp;: an infinity <strong>strictly larger</strong> than the one of the whole numbers."},
+      {type:"use", c:"And now the vertigo opens one last time. We have two sizes of infinity&nbsp;: that of the whole numbers, <b>ℵ₀</b> (« the one you can count »), and that of the reals, larger. But why stop at two&nbsp;?<br><br>Cantor found a machine that, from <em>any</em> infinity, builds a strictly larger one&nbsp;: just consider <strong>all the possible ways to group its elements together</strong>. A concrete example&nbsp;: take a bag of 3 objects — 🍎, 🍌, 🍒. How many ways to pick from it (taking nothing and taking everything included)&nbsp;? The empty bag&nbsp;; {🍎}, {🍌}, {🍒}&nbsp;; {🍎🍌}, {🍎🍒}, {🍌🍒}&nbsp;; and {🍎🍌🍒} — that's <b>8 groupings</b> for just 3 objects. With 4 objects, 16&nbsp;; the number of groupings explodes ever faster than the number of objects. Applied to the infinity of whole numbers, this machine yields a strictly larger infinity — and you can run it again on the result, over and over, without ever stopping.<br><br>So there is a <em>sequence</em> of sizes of infinity, larger and larger, without end. Mathematicians order them from smallest up and name them <b>ℵ₀, ℵ₁, ℵ₂, ℵ₃…</b> — ℵ₀ being the smallest (the whole numbers), and each aleph naming the size of infinity just above the previous one. Since the machine never stops, there is no largest aleph, just as there was no largest whole number. <strong>The ladder of infinities is itself… infinite.</strong>"}
+    ],
+    distLab:"The vertigo begins again",
+    dist:"We spent hours stacking finite giants to « get close » to infinity, never grazing it. And the instant we reach it, it splits, then multiplies&nbsp;: a tower of infinities, each crushing the previous one the way our big numbers crushed the small. The vertigo didn't stop&nbsp;: it <span class='unit'>started again one floor higher.</span>",
+    video:[
+      {url:"https://www.youtube.com/watch?v=elvOZm0d4H0", lab:"Numberphile · Infinity is bigger than you think"},
+      {url:"https://www.youtube.com/watch?v=sq-ntG5Mcus", lab:"Numberphile · Absolute Infinity"}
+    ]
   }
 ];
 
@@ -707,6 +775,11 @@ const DIVIDERS = {
     kicker:"Second break",
     h:"And now, even numbers are no longer enough.",
     p:"With the Mega, we pushed measurement to its very last image — entire universes shrunk to grains, stacked again and again. Until now, we could always say « so many times the previous number. » From here on, that ratio <span class='gold'>no longer exists</span>&nbsp;: there is no number — not even a googolplex of googolplexes — to express the leap. All that's left is the reckoning&nbsp;: numbers we no longer <em>measure</em>, only <em>build</em>. And there's a poetic justice in the very first of them being also the <span class='gold'>most ancient</span> of the journey — imagined two thousand years ago, long before any modern mathematician dared to look that far."
+  },
+  toR4:{
+    kicker:"Final break",
+    h:"What if we left the whole numbers behind&nbsp;?",
+    p:"Pause for a moment on what we've just lived through. Rayo, Graham, the Busy Beaver&nbsp;: monsters — but <em>finite</em> monsters. Each is a precise whole number that we could, in principle, reach by counting. None of them, not a single one, is any closer to infinity than the number 3. That was the real lesson of the journey&nbsp;: « enormous » and « infinite » are two separate worlds. So let's cross the border, for good. We leave behind the numbers we <em>reach</em>, and we go look at the ones that are infinite from the start. And there, a surprise awaits — the most beautiful one perhaps&nbsp;: <span class='gold'>infinity is not one. It comes in several sizes.</span>"
   }
 };
 
@@ -748,7 +821,9 @@ function numSection(n, extraClass=""){
   const idx = n.idx ? `<div class="idx reveal">${n.idx}</div>` : "";
   const small = n.valueSmall ? `<span class="small">${n.valueSmall}</span>` : "";
   const sci = n.sci ? `<div class="sci reveal">${supSci(n.sci)}</div>` : "";
-  const video = n.video ? `<a class="nphile reveal" href="${n.video}" target="_blank" rel="noopener">${n.videoLab||"Watch on Numberphile"}</a>` : "";
+  const video = Array.isArray(n.video)
+    ? n.video.map(v => `<a class="nphile reveal" href="${v.url}" target="_blank" rel="noopener">${v.lab||"Watch on Numberphile"}</a>`).join("")
+    : (n.video ? `<a class="nphile reveal" href="${n.video}" target="_blank" rel="noopener">${n.videoLab||"Watch on Numberphile"}</a>` : "");
 
   // Renderers for each block type
   const R = {
@@ -756,7 +831,11 @@ function numSection(n, extraClass=""){
     text:   t => `<div class="block reveal"><p>${t}</p></div>`,
     use:    t => `<div class="block reveal"><h3>What it's for</h3><p>${t}</p></div>`,
     tower:  t => `<div class="tower reveal">${t}</div>`,
-    figs:   t => `<div class="figs reveal">${t}</div>`
+    figs:   t => `<div class="figs reveal">${t}</div>`,
+    video:  c => {
+      const arr = Array.isArray(c) ? c : [c];
+      return arr.map(v => `<a class="nphile reveal" href="${v.url}" target="_blank" rel="noopener">${v.lab||"Watch on Numberphile"}</a>`).join("");
+    }
   };
 
   // A number may declare an explicit ordered "blocks" array; otherwise we
@@ -871,13 +950,24 @@ REGIME2.forEach(n=> html += numSection(n));
 html += divider(DIVIDERS.toR3, 3);
 REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
 
+html += divider(DIVIDERS.toR4, 4);
+REGIME4.forEach(n=> html += numSection(n));
+
 /* final */
 html += `
-<section class="end reveal">
-  <h2>And after Rayo&nbsp;?</h2>
-  <p>Other numbers exist, bigger still — each defined by overflowing the definition of the last. But none of them comes close to infinity&nbsp;: that's the final vertigo. All these giants, put together, are nothing before infinity. They remain, every last one, <em>finite</em>.</p>
-  <p>That was the point of the journey&nbsp;: to feel, step by step, just how much « a lot » and « infinity » are two countries with no shared border.</p>
+<section class="end reveal" data-regime="4">
+  <h2>Where does the vertigo stop&nbsp;?</h2>
+  <p>Nowhere. That's the answer — and that's the whole beauty of it. We started with grains of sand&nbsp;; we end by discovering that infinity itself comes in an endless hierarchy. Every time we thought we'd touched the summit — the googol, Graham, Rayo, then infinity itself — another revealed itself, higher up.</p>
+  <p>Maybe that's the real lesson of the journey&nbsp;: not that large numbers exist, but that there is <em>no last one</em>. Not among the numbers, not even among the infinities. At every landing, the human mind found a way to lay down one more step.</p>
   <div class="sig">End of the journey · thanks for traveling the untravelable</div>
+  <div class="share reveal">
+    <div class="invite">Enjoyed the journey&nbsp;? Send others on it.</div>
+    <div class="invite-sub">Pass it to someone who likes having their mind bent.</div>
+    <div class="btns">
+      <button id="share-btn" type="button">Share</button>
+      <button id="copy-btn" type="button">Copy link</button>
+    </div>
+  </div>
   <div class="credit">A journey presented by <a href="https://studioexistence.com" target="_blank" rel="noopener"><b>Studio Existence</b></a></div>
 </section>`;
 
@@ -886,7 +976,7 @@ content.innerHTML = html;
 /* ============================================================
    INTERACTIONS : reveal, progress rail, regime tag
    ============================================================ */
-const REGIME_LABELS = ["Regime 0 · the warm-up","Regime 1 · real distances","Regime 2 · numbers as units","Regime 3 · the reckoning"];
+const REGIME_LABELS = ["Regime 0 · the warm-up","Regime 1 · real distances","Regime 2 · numbers as units","Regime 3 · the reckoning","Regime 4 · infinity"];
 
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("in"); });
@@ -919,6 +1009,45 @@ function onScroll(){
 window.addEventListener("scroll", onScroll, {passive:true});
 addEventListener("resize", onScroll, {passive:true});
 onScroll();
+
+/* ============================================================
+   SHARE — native Web Share, falls back to copying the link
+   ============================================================ */
+(function(){
+  const shareBtn = document.getElementById("share-btn");
+  const copyBtn  = document.getElementById("copy-btn");
+  if(!copyBtn) return;
+  const url = location.href.split("#")[0];
+  const title = document.title;
+  const text = "A Journey to the End of Big Numbers — from the countable to the unspeakable.";
+
+  async function copyLink(btn){
+    const original = btn.textContent;
+    try{
+      await navigator.clipboard.writeText(url);
+    }catch(e){
+      const ta=document.createElement("textarea");
+      ta.value=url; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); }catch(_){}
+      document.body.removeChild(ta);
+    }
+    btn.textContent="Link copied ✓"; btn.classList.add("copied");
+    setTimeout(()=>{ btn.textContent=original; btn.classList.remove("copied"); }, 2200);
+  }
+
+  if(shareBtn){
+    shareBtn.addEventListener("click", async ()=>{
+      if(navigator.share){
+        try{ await navigator.share({title, text, url}); }
+        catch(e){ /* cancelled by the user: do nothing */ }
+      }else{
+        copyLink(shareBtn);
+      }
+    });
+  }
+  copyBtn.addEventListener("click", ()=>copyLink(copyBtn));
+})();
 
 /* ============================================================
    STARFIELD — subtle, deepens as you descend
