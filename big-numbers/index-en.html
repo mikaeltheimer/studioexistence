@@ -129,9 +129,10 @@ body{
   font-family:var(--serif);font-weight:900;line-height:1.05;
   letter-spacing:-.02em;margin-bottom:.5em;
   font-size:clamp(2.4rem,7vw,5.2rem);
+  overflow-wrap:break-word;word-break:break-word;
 }
 .num .value sup{font-size:.5em;line-height:0}
-.num .value .small{font-size:.42em;font-weight:400;font-style:italic;color:var(--paper-dim);display:block;margin-top:.3em;letter-spacing:0}
+.num .value .small{font-size:.42em;font-weight:400;font-style:italic;color:var(--paper-dim);display:block;margin-top:.3em;letter-spacing:0;overflow-wrap:break-word;word-break:break-word}
 .num .sci{
   font-family:var(--mono);font-size:clamp(.95rem,2vw,1.3rem);
   color:var(--gold);margin-bottom:1.6em;font-weight:700;
@@ -474,7 +475,7 @@ const NUMBERS = [
     regime:1,
     name:"The ways to shuffle a deck of 52 cards",
     value:"≈ 8.07 × 10<sup>67</sup>",
-    valueSmall:"80,658,175,170,943,878,571,660,636,856,403,766,975,289,505,440,883,277,824,000,000,000,000",
+    valueSmall:"80,<wbr>658,<wbr>175,<wbr>170,<wbr>943,<wbr>878,<wbr>571,<wbr>660,<wbr>636,<wbr>856,<wbr>403,<wbr>766,<wbr>975,<wbr>289,<wbr>505,<wbr>440,<wbr>883,<wbr>277,<wbr>824,<wbr>000,<wbr>000,<wbr>000,<wbr>000",
     sci:["8.07","67"],
     build:"When you lay the cards down one by one, you have 52 choices for the first, 51 for the second, 50 for the next… Multiply it all&nbsp;: 52 × 51 × 50 × … × 2 × 1. The result is a 68-digit number.",
     use:"Here's the most staggering fact of the journey&nbsp;: every time you <em>properly</em> shuffle a deck of cards, you're holding an order that has almost certainly <em>never existed since the dawn of time</em>, and will never exist again. There are more ways to arrange 52 cards than there are stars in the whole universe.",
