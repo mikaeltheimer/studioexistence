@@ -38,10 +38,46 @@
   --void:#05050a;
   --star:#f4f0e6;
   --line:rgba(244,240,230,.14);
+  --blue:#4a7fa5;
+  --blue-bright:#7ab3d4;
+  --node-blue:#5b8fb0;
+  --svg-ink:#f4f0e6;       /* « encre claire » des SVG sur fond sombre */
+  --svg-bg:#05050a;        /* fond sombre derrière les pastilles SVG */
+  --svg-dim:#8a8472;       /* gris neutre des SVG */
+  --tag-bg:rgba(5,5,10,.6);
   --serif:"Fraunces",Georgia,serif;
   --body:"Spectral",Georgia,serif;
   --mono:"Space Mono",monospace;
 }
+body.light{
+  --paper:#2a2620;         /* « texte » devient gris-encre profond */
+  --paper-dim:#4a443a;     /* texte secondaire */
+  --void:#f4f0e6;          /* « fond » devient ivoire chaud */
+  --deep:#e8e2d2;
+  --gold:#9a7b16;          /* or assombri en ocre/bronze, lisible sur clair */
+  --rust:#a33d18;          /* rouille à peine foncée */
+  --line:rgba(42,38,32,.18);
+  --blue:#3a6f96;
+  --blue-bright:#2f6f95;
+  --node-blue:#3a6f96;
+  --svg-ink:#2a2620;       /* « encre » des SVG devient sombre */
+  --svg-bg:#f4f0e6;        /* fond derrière les pastilles devient ivoire */
+  --svg-dim:#8a8472;
+  --tag-bg:rgba(244,240,230,.72);
+}
+/* En mode clair, l'esthétique nocturne (étoiles, grain) disparaît,
+   mais le hero reste une fenêtre sombre — moment d'immersion d'ouverture. */
+body.light #stars,
+body.light #grain{display:none}
+body.light .hero{
+  background:radial-gradient(ellipse at 50% 35%,#11111e 0%,#05050a 75%);
+  color:#f4f0e6;
+}
+body.light .hero .sub,
+body.light .hero .premise{color:#e8e2d2}
+body.light .hero h1 em,
+body.light .hero .premise b{color:#c9a227}
+body.light .scroll-cue{color:#c9a227}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
@@ -65,7 +101,7 @@ body{
   font-family:var(--mono);font-size:11px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--gold);
   padding:6px 12px;border:1px solid var(--line);border-radius:2px;
-  background:rgba(5,5,10,.6);backdrop-filter:blur(8px);
+  background:var(--tag-bg);backdrop-filter:blur(8px);
   opacity:0;transition:opacity .5s;
 }
 #regime-tag.show{opacity:1}
@@ -73,12 +109,22 @@ body{
   position:fixed;top:16px;left:18px;z-index:200;
   font-family:var(--mono);font-size:11px;letter-spacing:.12em;
   padding:6px 10px;border:1px solid var(--line);border-radius:2px;
-  background:rgba(5,5,10,.6);backdrop-filter:blur(8px);
+  background:var(--tag-bg);backdrop-filter:blur(8px);
 }
 #lang-switch a{color:var(--paper-dim);text-decoration:none;opacity:.55;transition:opacity .25s}
 #lang-switch a:hover{opacity:1}
 #lang-switch a.on{color:var(--gold);opacity:1;font-weight:700}
 #lang-switch .sep{color:var(--line);margin:0 .4em}
+#theme-toggle{
+  position:fixed;top:16px;left:96px;z-index:200;
+  font-family:var(--mono);font-size:14px;line-height:1;
+  width:30px;height:29px;display:flex;align-items:center;justify-content:center;
+  color:var(--gold);cursor:pointer;
+  border:1px solid var(--line);border-radius:2px;
+  background:var(--tag-bg);backdrop-filter:blur(8px);
+  transition:color .25s,border-color .25s;
+}
+#theme-toggle:hover{border-color:var(--gold)}
 
 /* ---------- hero ---------- */
 .hero{
@@ -201,15 +247,15 @@ sup{font-size:.62em}
 
 /* the analog block — alternate image (volume / time / contrast) */
 .analog{
-  border-left:2px solid #4a7fa5;padding:1.1em 0 1.1em 1.4em;
+  border-left:2px solid var(--blue);padding:1.1em 0 1.1em 1.4em;
   margin:1.8em 0;flex:1;min-width:min(100%,28ch);
 }
 .analog .lab{
   font-family:var(--mono);font-size:11px;letter-spacing:.2em;
-  text-transform:uppercase;color:#4a7fa5;opacity:.9;margin-bottom:.5em;
+  text-transform:uppercase;color:var(--blue);opacity:.9;margin-bottom:.5em;
 }
 .analog p{font-family:var(--body);font-style:italic;font-size:1.18rem;line-height:1.55;color:var(--paper)}
-.analog .unit{color:#7ab3d4;font-style:normal;font-weight:600}
+.analog .unit{color:var(--blue-bright);font-style:normal;font-weight:600}
 
 /* side-by-side container for dist + analog */
 .dist-row{
@@ -255,18 +301,18 @@ sup{font-size:.62em}
   border-left:2px solid var(--gold);padding:.9em 0 .9em 1.2em;
   flex:1;min-width:min(100%,28ch);
 }
-.fortune .fblock.blue{border-left-color:#4a7fa5;}
+.fortune .fblock.blue{border-left-color:var(--blue);}
 .fortune .fblock .flab{
   font-family:var(--mono);font-size:11px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:.45em;
 }
-.fortune .fblock.blue .flab{color:#4a7fa5;opacity:.9;}
+.fortune .fblock.blue .flab{color:var(--blue);opacity:.9;}
 .fortune .fblock p{
   font-family:var(--body);font-style:italic;font-size:1.06rem;
   line-height:1.55;color:var(--paper);
 }
 .fortune .fblock .unit{color:var(--gold);font-style:normal;font-weight:600}
-.fortune .fblock.blue .unit{color:#7ab3d4;font-style:normal;font-weight:600}
+.fortune .fblock.blue .unit{color:var(--blue-bright);font-style:normal;font-weight:600}
 .wrow{
   display:flex;align-items:baseline;gap:1.4em;padding:1.1em 0;
   border-bottom:1px solid var(--line);flex-wrap:wrap;
@@ -298,7 +344,7 @@ sup{font-size:.62em}
 
 /* the final mise en abyme */
 .abyme{
-  background:radial-gradient(ellipse at 50% 30%,#11111e 0%,var(--void) 70%);
+  background:radial-gradient(ellipse at 50% 30%,var(--deep) 0%,var(--void) 70%);
 }
 .abyme .value{color:var(--gold)}
 
@@ -348,6 +394,7 @@ sup{font-size:.62em}
 <div id="rail"></div>
 <div id="regime-tag"></div>
 <div id="lang-switch"><a href="/big-numbers/index.html" class="on">FR</a><span class="sep">/</span><a href="/big-numbers/index-en.html">EN</a></div>
+<button id="theme-toggle" type="button" aria-label="Basculer le thème clair/sombre" title="Thème clair / sombre">☾</button>
 <canvas id="stars"></canvas>
 <div id="grain"></div>
 
@@ -616,7 +663,7 @@ const REGIME3 = [
     tower:`<span class="tlab">La règle des flèches de Knuth</span><b>Une</b> flèche, c'est une puissance — une multiplication répétée&nbsp;:<br>3↑3 = 3<sup>3</sup> = 3 × 3 × 3 = 27.<br><br><b>Deux</b> flèches, c'est une <i>tour</i> de puissances dont la hauteur est le second nombre&nbsp;:<br>3↑↑3 = 3<sup>3<sup>3</sup></sup> = 7&nbsp;625&nbsp;597&nbsp;484&nbsp;987 (une tour haute de 3, soit 13 chiffres).<br>De façon générale, a↑↑n = a<sup>a<sup>a<sup>...</sup></sup></sup> — une tour de a empilée sur <b>n étages</b> (a apparaît n fois).<br><br><b>Attention au piège.</b> Trois flèches, ce n'est <u>pas</u> 3<sup>3<sup>3<sup>3</sup></sup></sup> (une tour de 4 étages). La règle est ailleurs&nbsp;: chaque flèche en plus dit « <b>répète l'opération précédente, autant de fois que le second nombre l'indique</b> ». Deux flèches empilent des puissances&nbsp;; trois flèches <i>enchaînent des tours</i>, chacune fixant la hauteur de la suivante.<br><br><b>Trois</b> flèches&nbsp;: a↑↑↑n enchaîne <i>n tours</i>, chacune fixant la hauteur de la suivante. Concrètement&nbsp;:<br>3↑↑↑3 = 3↑↑(3↑↑3) = une tour de 3 dont la hauteur est 3↑↑3, soit <b>7&nbsp;625&nbsp;597&nbsp;484&nbsp;987 étages</b>.<br><br>👉 On ne passe pas de 3 à 4 étages&nbsp;: on passe de 3 étages à sept mille milliards d'étages.`,
     build2:"Pousse l'escalade d'un cran. Une tour de seulement <b>4 étages</b>, 3<sup>3<sup>3<sup>3</sup></sup></sup>, vaut déjà environ 1,25 × 10<sup>3638334640024</sup> — un nombre de <b>3,6 mille milliards de chiffres</b>. Et ce n'est que le 4<sup>e</sup> étage&nbsp;: pour atteindre 3↑↑↑3, il reste encore 7&nbsp;625&nbsp;597&nbsp;484&nbsp;983 étages à gravir, chacun élevant 3 à la puissance du précédent.<br><br>Et <b>quatre</b> flèches&nbsp;? On monte encore d'un cran dans l'abstraction&nbsp;: 3↑↑↑↑3 enchaîne des <em>opérations à trois flèches</em>. Le résultat de 3↑↑↑3 — déjà indicible — ne sert plus de nombre, mais de <strong>compteur</strong>&nbsp;: il dit combien de fois répéter l'opération à trois flèches. À chaque flèche ajoutée, ce n'est pas le nombre qui change de taille&nbsp;: c'est la <em>vitesse à laquelle il grandit</em> qui change de nature.<br><br>Avec les flèches de Knuth, les nombres grandissent déjà à une vitesse folle. Mais Graham trouvait encore ça trop lent. Son idée&nbsp;: ne plus faire grandir la hauteur de la tour d'exposants, mais <strong>directement le nombre de flèches</strong>.",
     tower2:`<span class="tlab">La construction, étage par étage</span>On part de <b>quatre</b> flèches&nbsp;: 3↑↑↑↑3. Appelons ce premier nombre <b>G1</b>. Il est déjà au-delà de tout ce qu'on a croisé.<br><br>Pour l'étape suivante, on ne change pas les nombres&nbsp;: on prend 3, puis 3, et entre les deux on met <b>G1 flèches</b>. Oui — le <i>nombre de flèches</i> est G1 lui-même. Ça donne <b>G2</b>.<br><br>Puis G2 devient le nombre de flèches de l'étape d'après. Puis G3. Et ainsi de suite…`,
-    figs2:`<svg viewBox="0 0 600 370" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono',monospace"><defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a227"/><stop offset="1" stop-color="#b5471f"/></linearGradient><marker id="ah" markerWidth="8" markerHeight="8" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c9a227"/></marker></defs><text x="30" y="28" fill="#c9a227" font-size="10.5" letter-spacing="1.5" opacity=".75">CHAQUE RÉSULTAT = LE NOMBRE DE FLÈCHES DU NIVEAU SUIVANT</text><text x="40" y="100" fill="#f4f0e6" font-size="19">3 <tspan fill="#c9a227">↑…(G63 flèches)…↑</tspan> 3</text><text x="470" y="100" fill="url(#gld)" font-size="15" font-weight="700">= G64</text><text x="120" y="160" fill="#7a86b3" font-size="22" opacity=".7">⋮</text><text x="40" y="225" fill="#f4f0e6" font-size="19">3 <tspan fill="#c9a227">↑…(G2 flèches)…↑</tspan> 3</text><text x="470" y="225" fill="#c9a227" font-size="14" font-style="italic">= G3</text><text x="40" y="290" fill="#f4f0e6" font-size="19">3 <tspan fill="#c9a227">↑…(G1 flèches)…↑</tspan> 3</text><text x="470" y="290" fill="#c9a227" font-size="14" font-style="italic">= G2</text><text x="40" y="350" fill="#f4f0e6" font-size="19">3 ↑↑↑↑ 3</text><text x="210" y="350" fill="#c9a227" font-size="14" font-style="italic">= G1 (4 flèches)</text><!-- flèches montantes : le résultat d'un niveau alimente le niveau du dessus --><g stroke="#c9a227" stroke-width="1.3" opacity=".6" fill="none"><path d="M155 334 C 185 318, 185 308, 158 296" marker-end="url(#ah)"/><path d="M155 274 C 185 258, 185 248, 158 236" marker-end="url(#ah)"/><path d="M155 144 C 185 128, 185 118, 158 106" marker-end="url(#ah)"/></g><!-- accolade 64 niveaux --><path d="M548 88 q13 0 13 15 v83 q0 15 13 15 q-13 0 -13 15 v83 q0 15 -13 15" fill="none" stroke="#c9a227" stroke-width="1.5" opacity=".7"/><text x="582" y="233" fill="#c9a227" font-size="12.5" transform="rotate(90 582 233)" text-anchor="middle">64 niveaux</text></svg>`,
+    figs2:`<svg viewBox="0 0 600 370" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono',monospace"><defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)"/><stop offset="1" stop-color="var(--rust)"/></linearGradient><marker id="ah" markerWidth="8" markerHeight="8" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--gold)"/></marker></defs><text x="30" y="28" fill="var(--gold)" font-size="10.5" letter-spacing="1.5" opacity=".75">CHAQUE RÉSULTAT = LE NOMBRE DE FLÈCHES DU NIVEAU SUIVANT</text><text x="40" y="100" fill="var(--svg-ink)" font-size="19">3 <tspan fill="var(--gold)">↑…(G63 flèches)…↑</tspan> 3</text><text x="470" y="100" fill="url(#gld)" font-size="15" font-weight="700">= G64</text><text x="120" y="160" fill="var(--svg-dim)" font-size="22" opacity=".7">⋮</text><text x="40" y="225" fill="var(--svg-ink)" font-size="19">3 <tspan fill="var(--gold)">↑…(G2 flèches)…↑</tspan> 3</text><text x="470" y="225" fill="var(--gold)" font-size="14" font-style="italic">= G3</text><text x="40" y="290" fill="var(--svg-ink)" font-size="19">3 <tspan fill="var(--gold)">↑…(G1 flèches)…↑</tspan> 3</text><text x="470" y="290" fill="var(--gold)" font-size="14" font-style="italic">= G2</text><text x="40" y="350" fill="var(--svg-ink)" font-size="19">3 ↑↑↑↑ 3</text><text x="210" y="350" fill="var(--gold)" font-size="14" font-style="italic">= G1 (4 flèches)</text><!-- flèches montantes : le résultat d'un niveau alimente le niveau du dessus --><g stroke="var(--gold)" stroke-width="1.3" opacity=".6" fill="none"><path d="M155 334 C 185 318, 185 308, 158 296" marker-end="url(#ah)"/><path d="M155 274 C 185 258, 185 248, 158 236" marker-end="url(#ah)"/><path d="M155 144 C 185 128, 185 118, 158 106" marker-end="url(#ah)"/></g><!-- accolade 64 niveaux --><path d="M548 88 q13 0 13 15 v83 q0 15 13 15 q-13 0 -13 15 v83 q0 15 -13 15" fill="none" stroke="var(--gold)" stroke-width="1.5" opacity=".7"/><text x="582" y="233" fill="var(--gold)" font-size="12.5" transform="rotate(90 582 233)" text-anchor="middle">64 niveaux</text></svg>`,
     build3:"…jusqu'à <strong>G64</strong>. Ce dernier nombre, c'est le nombre de Graham. Prends une seconde pour réaliser ce qui se passe à chaque étape&nbsp;: ce n'est plus la <i>taille</i> du nombre qui augmente, c'est le <i>nombre de flèches</i> — donc la puissance même de l'opération — et ce compteur de flèches est lui-même un nombre géant fabriqué à l'étape d'avant. Arrivé là, le mot « grandir » ne veut plus rien dire. On ne fait plus grossir un nombre&nbsp;: on fait grossir la machine qui le fait grossir, soixante-quatre fois de suite.",
     use:"Ce nombre vient d'un vrai problème de maths&nbsp;: en reliant par des traits les coins d'un cube en très grande dimension, à partir de quand est-on <em>obligé</em> de voir apparaître un certain motif&nbsp;? Ronald Graham s'en est servi dans les années 1970 comme « plus grande réponse possible ». C'est devenu le grand nombre le plus célèbre du monde. <em>Curiosité</em>&nbsp;: on pense que la toute première étape, G1, suffit déjà à dépasser le nombre de Moser — alors qu'il en reste soixante-trois. On dit « on pense », car à ce niveau, <strong>simplement comparer deux nombres</strong> devient un problème de recherche&nbsp;: ni les ordinateurs ni les IA ne peuvent les calculer, il faut le démontrer à la main.",
     distLab:"L'échelle elle-même se brise",
@@ -794,12 +841,12 @@ function supSci(arr){
 /* dessine un petit arbre : nodes=[{x,y,c,r?}], edges=[[i,j],...]
    c ∈ {g:vert/or, r:rouge, b:bleu}. r:true => racine (anneau) */
 function treeSVG(nodes, edges){
-  const COL={g:"#c9a227", r:"#b5471f", b:"#5b8fb0"};
+  const COL={g:"var(--gold)", r:"var(--rust)", b:"var(--node-blue)"};
   const W=110,H=110;
-  let e = edges.map(([a,b])=>`<line x1="${nodes[a].x}" y1="${nodes[a].y}" x2="${nodes[b].x}" y2="${nodes[b].y}" stroke="#f4f0e6" stroke-width="2.5" stroke-opacity=".7"/>`).join("");
+  let e = edges.map(([a,b])=>`<line x1="${nodes[a].x}" y1="${nodes[a].y}" x2="${nodes[b].x}" y2="${nodes[b].y}" stroke="var(--svg-ink)" stroke-width="2.5" stroke-opacity=".7"/>`).join("");
   let n = nodes.map(nd=>{
     const ring = nd.r ? `<circle cx="${nd.x}" cy="${nd.y}" r="9.5" fill="none" stroke="${COL[nd.c]}" stroke-width="1.5" opacity=".55"/>` : "";
-    return `${ring}<circle cx="${nd.x}" cy="${nd.y}" r="5.5" fill="${COL[nd.c]}" stroke="#05050a" stroke-width="1.5"/>`;
+    return `${ring}<circle cx="${nd.x}" cy="${nd.y}" r="5.5" fill="${COL[nd.c]}" stroke="var(--svg-bg)" stroke-width="1.5"/>`;
   }).join("");
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${e}${n}</svg>`;
 }
@@ -810,12 +857,11 @@ function tapeSVG(cells, head){
   const W = cells.length*cw + pad*2;
   let rects = cells.map((v,i)=>{
     const x = pad + i*cw;
-    const fill = v==="1" ? "#c9a227" : "transparent";
-    const txt = v==="" ? "" : `<text x="${x+cw/2}" y="${26}" text-anchor="middle" font-family="Space Mono,monospace" font-size="16" font-weight="700" fill="${v==='1'?'#05050a':'#8a8472'}">${v}</text>`;
-    const cellBg = v==="1" ? `<rect x="${x+3}" y="6" width="${cw-6}" height="${h-12}" rx="3" fill="#c9a227"/>` : "";
-    return `<rect x="${x}" y="6" width="${cw}" height="${h-12}" fill="none" stroke="#f4f0e6" stroke-opacity=".25"/>${cellBg}${txt}`;
+    const txt = v==="" ? "" : `<text x="${x+cw/2}" y="${26}" text-anchor="middle" font-family="Space Mono,monospace" font-size="16" font-weight="700" fill="${v==='1'?'var(--svg-bg)':'var(--svg-dim)'}">${v}</text>`;
+    const cellBg = v==="1" ? `<rect x="${x+3}" y="6" width="${cw-6}" height="${h-12}" rx="3" fill="var(--gold)"/>` : "";
+    return `<rect x="${x}" y="6" width="${cw}" height="${h-12}" fill="none" stroke="var(--svg-ink)" stroke-opacity=".25"/>${cellBg}${txt}`;
   }).join("");
-  let pointer = head>=0 ? `<polygon points="${pad+head*cw+cw/2-6},${h-2} ${pad+head*cw+cw/2+6},${h-2} ${pad+head*cw+cw/2},${h-9}" fill="#b5471f"/>` : "";
+  let pointer = head>=0 ? `<polygon points="${pad+head*cw+cw/2-6},${h-2} ${pad+head*cw+cw/2+6},${h-2} ${pad+head*cw+cw/2},${h-9}" fill="var(--rust)"/>` : "";
   return `<svg width="${W}" height="${h}" viewBox="0 0 ${W} ${h}" xmlns="http://www.w3.org/2000/svg">${rects}${pointer}</svg>`;
 }
 function numSection(n, extraClass=""){
@@ -1050,6 +1096,19 @@ onScroll();
     });
   }
   copyBtn.addEventListener("click", ()=>copyLink(copyBtn));
+})();
+
+/* ============================================================
+   THÈME clair / sombre — bouton manuel, défaut sombre, sans persistance
+   ============================================================ */
+(function(){
+  const btn = document.getElementById("theme-toggle");
+  if(!btn) return;
+  btn.addEventListener("click", ()=>{
+    const light = document.body.classList.toggle("light");
+    btn.textContent = light ? "☀" : "☾";
+    btn.setAttribute("aria-pressed", light ? "true" : "false");
+  });
 })();
 
 /* ============================================================
