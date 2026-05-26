@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Constants — a journey through the numbers that hold the universe together</title>
+
+<!-- KaTeX pour le rendu des équations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+  :root {
+    --bg:        #0b0e14;
+    --bg-soft:   #11151d;
+    --ink:       #e9ebef;
+    --ink-dim:   #aab2bf;
+    --muted:     #727a87;
+    --line:      #232a35;
+    --svg-ink:   #e9ebef;   /* « encre » des SVG : claire sur fond sombre */
+    --svg-strong:#ffffff;   /* points/traits forts dans les SVG */
+    --diam:      #b98ce0;   /* violet du diamètre (viz π) */
+    --remainder: #d96a6a;   /* rouge du reste (réservé) */
+    --euler-bg1: #16203a;   /* dégradé carte Euler */
+    --euler-border: #2c3b5a;
+    --star:      220,228,242; /* RGB des étoiles (mode sombre) */
+    --mono: "SF Mono","JetBrains Mono","Cascadia Code",Menlo,monospace;
+    --serif: "Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+
+    /* couleur d'accent, redéfinie par section */
+    --accent: #6fb3c9;
+  }
+
+  /* ===== MODE CLAIR ===== le hero reste nocturne (défini plus bas) ===== */
+  body.light {
+    --bg:        #f4f1ea;   /* ivoire chaud */
+    --bg-soft:   #ebe6db;   /* panneaux légèrement plus foncés */
+    --ink:       #2a2620;   /* encre gris-profond */
+    --ink-dim:   #57514593; /* texte secondaire (fallback ci-dessous) */
+    --ink-dim:   #514b40;
+    --muted:     #837c6e;
+    --line:      #d8d1c2;
+    --svg-ink:   #2a2620;   /* l'encre des SVG devient sombre */
+    --svg-strong:#1a1712;
+    --diam:      #9163c4;   /* violet assombri */
+    --euler-bg1: #e6ddc8;
+    --euler-border: #cfc4aa;
+    --star:      120,110,90; /* (sans objet : étoiles masquées) */
+  }
+  /* en mode clair, l'esthétique nocturne disparaît… */
+  body.light #stars,
+  body.light #grain { display: none; }
+  /* …sauf le hero, qui reste une fenêtre sombre — l'immersion d'ouverture */
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* fond fixe : étoiles (canvas) + grain — le contenu flotte au-dessus */
+  #stars { position: fixed; inset: 0; z-index: -2; opacity: 0.55; }
+  #grain {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* barre de progression de lecture */
+  #rail {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+    background: linear-gradient(90deg, #6fb3c9, #7fc99a, #d98fb5, #8fa6d4);
+    z-index: 200; transition: width 0.15s ease-out;
+  }
+
+  /* bouton bascule thème clair / sombre */
+  #theme-toggle {
+    position: fixed; top: 16px; right: 18px; z-index: 210;
+    width: 38px; height: 38px; border-radius: 999px;
+    background: var(--bg-soft); border: 1px solid var(--line);
+    color: var(--ink-dim); font-size: 1rem; cursor: pointer;
+    display: grid; place-items: center;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+  }
+  #theme-toggle:hover { border-color: var(--accent); color: var(--ink); }
+
+  /* lang switch */
+  #lang-switch {
+    position: fixed; top: 16px; right: 64px; z-index: 210;
+    height: 38px; padding: 0 12px; border-radius: 999px;
+    background: var(--bg-soft); border: 1px solid var(--line);
+    color: var(--ink-dim); font-size: 0.78rem; font-family: inherit;
+    cursor: pointer; letter-spacing: 0.04em; text-decoration: none;
+    display: grid; place-items: center;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+  }
+  #lang-switch:hover { border-color: var(--accent); color: var(--ink); }
+
+  main { position: relative; z-index: 1; }
+
+  /* apparition au scroll */
+  .reveal { opacity: 0; transform: translateY(28px);
+    transition: opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* sélection de texte : fond sombre teinté de l'accent courant, texte clair */
+  ::selection { background: color-mix(in srgb, var(--accent) 38%, #0b0e14); color: #fff; }
+  ::-moz-selection { background: color-mix(in srgb, var(--accent) 38%, #0b0e14); color: #fff; }
+
+  /* ---------- barre de symboles latérale (outil de repérage, discret) ---------- */
+  nav.symbols {
+    position: fixed;
+    top: 50%; left: 0;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.6rem 0.4rem;
+    z-index: 10;
+    font-family: var(--mono);
+  }
+  nav.symbols a {
+    width: 30px; height: 30px;
+    display: grid; place-items: center;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    opacity: 0.45;
+    transition: opacity 0.25s, color 0.25s, background 0.25s;
+  }
+  nav.symbols a:hover { opacity: 1; color: var(--ink); background: var(--bg-soft); }
+  nav.symbols a.active { opacity: 1; color: var(--accent); }
+  @media (max-width: 820px) {
+    nav.symbols { flex-direction: row; top: auto; bottom: 0; left: 50%; transform: translateX(-50%);
+      background: rgba(11,14,20,0.85); backdrop-filter: blur(8px); border-top: 1px solid var(--line);
+      border-radius: 12px 12px 0 0; max-width: 100vw; overflow-x: auto; }
+  }
+
+  /* ---------- hero ---------- */
+  header.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    overflow: hidden;
+  }
+  /* symbole géant en filigrane, qui respire derrière le titre */
+  header.hero .ghost {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -54%);
+    font-family: var(--serif); font-style: italic;
+    font-size: min(78vh, 60vw);
+    line-height: 1;
+    color: transparent;
+    background: radial-gradient(circle at 50% 40%, #2b3a5e 0%, #1a2236 45%, transparent 72%);
+    -webkit-background-clip: text; background-clip: text;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    animation: ghostIn 2.4s ease 0.3s forwards, ghostBreath 9s ease-in-out 2.7s infinite;
+  }
+  @keyframes ghostIn { from{opacity:0; transform:translate(-50%,-50%) scale(0.94);} to{opacity:1; transform:translate(-50%,-54%) scale(1);} }
+  @keyframes ghostBreath { 0%,100%{filter:blur(0px); opacity:1;} 50%{filter:blur(1px); opacity:0.82;} }
+
+  header.hero > * { position: relative; z-index: 1; }
+
+  header.hero .kicker {
+    font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.42em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 2.2rem;
+    opacity: 0; animation: riseIn 0.9s ease 0.2s forwards;
+  }
+  header.hero .kicker::before,
+  header.hero .kicker::after {
+    content: "—"; color: var(--line); margin: 0 0.8em;
+  }
+  header.hero h1 {
+    font-weight: 500;
+    font-size: clamp(2.6rem, 8vw, 6rem);
+    line-height: 1.04;
+    margin: 0 0 1.8rem; max-width: 14ch;
+    letter-spacing: -0.015em;
+    background: linear-gradient(180deg, #ffffff 0%, #c5cede 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    opacity: 0; animation: riseIn 1s ease 0.45s forwards;
+  }
+  header.hero h1 em {
+    font-style: italic; font-weight: 500;
+    background: linear-gradient(180deg, #9ec6da 0%, #6fb3c9 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  header.hero p {
+    color: var(--ink-dim); max-width: 48ch; margin: 0 auto; font-size: 1.12rem; line-height: 1.75;
+    opacity: 0; animation: riseIn 1s ease 0.75s forwards;
+  }
+  header.hero .scroll-cue {
+    margin-top: 4rem; color: var(--muted); font-family: var(--mono); font-size: 0.72rem;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    opacity: 0; animation: riseIn 1s ease 1.1s forwards, bob 2.4s ease-in-out 2.1s infinite;
+  }
+  @keyframes riseIn { from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(7px);} }
+
+  /* en mode clair, le hero garde sa nuit — fenêtre d'immersion d'ouverture */
+  body.light header.hero {
+    background: radial-gradient(ellipse at 50% 38%, #11151d 0%, #0b0e14 78%);
+    border-bottom: 1px solid var(--line);
+  }
+  body.light header.hero .scroll-cue { color: #8a93a3; }
+
+  /* ---------- section constante ---------- */
+  section.constant {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 8rem 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  /* en-tête monumental */
+  .const-head {
+    display: flex; align-items: center; gap: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .const-symbol {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(4.5rem, 16vw, 8rem); line-height: 1.05;
+    padding: 0.05em 0.04em 0;
+    background: linear-gradient(165deg, color-mix(in srgb, var(--accent) 95%, #fff) 0%, var(--accent) 55%, color-mix(in srgb, var(--accent) 65%, #000) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 40px color-mix(in srgb, var(--accent) 25%, transparent);
+    flex-shrink: 0;
+  }
+  /* le α grec en serif italique ressemble à un 'a' latin : on le rend droit, où le glyphe grec est sans ambiguïté */
+  .const-symbol.greek { font-style: normal; }
+  .const-headtext { display: flex; flex-direction: column; gap: 0.5rem; padding-top: 0.4rem; }
+  .const-index {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.2em;
+    color: var(--accent); opacity: 0.7;
+  }
+  .const-title { font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-dim); }
+  .const-tagline {
+    font-family: var(--serif); font-style: italic; color: var(--ink);
+    font-size: clamp(1.3rem, 3vw, 1.7rem); line-height: 1.4; margin: 0.6rem 0 1.8rem;
+    max-width: 30ch;
+  }
+  .const-value {
+    font-family: var(--mono); font-size: 1.05rem; color: var(--ink);
+    background: var(--bg-soft); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    padding: 0.7rem 1rem; border-radius: 8px; margin-bottom: 2.4rem; overflow-x: auto; white-space: nowrap;
+  }
+  .pull {
+    font-family: var(--serif); font-style: italic; font-size: 1.25rem; line-height: 1.6;
+    color: var(--ink); border-left: 3px solid var(--accent); padding-left: 1.2rem;
+    margin: 0 0 2.4rem; max-width: 40ch;
+  }
+  h3.rubric {
+    font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin: 2.6rem 0 0.8rem; font-weight: 600;
+  }
+  section.constant p { margin: 0 0 1.2rem; color: var(--ink-dim); }
+  section.constant p strong, section.constant p b { color: var(--ink); font-weight: 600; }
+  .katex-block { margin: 1.6rem 0; text-align: center; color: var(--ink); overflow-x: auto; }
+
+  /* ---------- bloc SVG ---------- */
+  .viz {
+    background: var(--bg-soft); border: 1px solid var(--line);
+    border-radius: 14px; padding: 1.3rem 1.2rem 1rem; margin: 2rem 0;
+  }
+  .viz svg { width: 100%; height: auto; display: block; }
+  .viz .controls { display:flex; gap:0.6rem; align-items:center; margin-top:1rem; flex-wrap:wrap; }
+  .viz button {
+    background: transparent; color: var(--accent); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 0.45rem 1.1rem; font: inherit; font-size: 0.82rem;
+    cursor: pointer; transition: background 0.2s, color 0.2s;
+  }
+  .viz button:hover { background: var(--accent); color: var(--bg); }
+  .viz button:disabled { opacity: 0.4; cursor: default; }
+  .viz .readout { margin-left:auto; font-family:var(--mono); color:var(--muted); font-size:0.8rem; }
+  .viz .readout b { color: var(--accent); font-weight: 400; }
+  .viz .legend { display:flex; gap:1.1rem; margin-top:0.7rem; font-size:0.72rem; color:var(--muted); flex-wrap:wrap; }
+  .viz .legend span { display:inline-flex; align-items:center; gap:0.4rem; }
+  .viz .dot { width:13px; height:3px; border-radius:2px; display:inline-block; }
+  figcaption { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-top: 0.6rem; text-align:center; }
+
+  /* ---------- encart spécial (identité d'Euler) ---------- */
+  section.feature {
+    max-width: 720px; margin: 0 auto; padding: 7rem 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .euler-card {
+    background: radial-gradient(120% 140% at 50% 0%, #16203a 0%, #11151d 55%, #0b0e14 100%);
+    border: 1px solid #2c3b5a; border-radius: 18px; padding: 3rem 2rem; text-align: center;
+    box-shadow: 0 0 80px rgba(80,120,200,0.08) inset;
+  }
+  .euler-card .kicker { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: #8fa6d4; margin-bottom: 1.5rem; }
+  .euler-eq { font-size: clamp(1.8rem, 6vw, 2.8rem); margin: 1rem 0 1.6rem; color: #fff; }
+  .euler-card p { color: #aab2bf; max-width: 48ch; margin: 0 auto 1rem; text-align: left; }
+  .euler-card .euler-eq .katex { color: #fff; }
+
+  footer.end { text-align: center; padding: 6rem 1.5rem 8rem; color: var(--muted);
+    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.15em; border-top: 1px solid var(--line); }
+
+  /* ---------- encart d'aparté (callout) ---------- */
+  .callout {
+    background: color-mix(in srgb, var(--accent) 7%, var(--bg-soft));
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 1.3rem 1.4rem; margin: 2rem 0;
+  }
+  .callout .callout-kicker {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 0.6rem; font-weight: 600;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .callout p { margin: 0 0 0.8rem; color: var(--ink-dim); font-size: 0.96rem; line-height: 1.7; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout p strong, .callout p b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- section de conclusion ---------- */
+  section.conclusion {
+    max-width: 720px; margin: 0 auto; padding: 7rem 1.5rem 4rem;
+    border-top: 1px solid var(--line);
+  }
+  section.conclusion .kicker {
+    font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 2.2rem; text-align: center;
+  }
+  section.conclusion h2 {
+    font-family: var(--serif); font-weight: 400; font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+    line-height: 1.3; color: var(--ink); text-align: center; margin: 0 0 2.4rem; letter-spacing: -0.01em;
+  }
+  section.conclusion p {
+    color: var(--ink-dim); font-size: 1.08rem; line-height: 1.8; margin: 0 0 1.4rem; max-width: 56ch;
+    margin-left: auto; margin-right: auto;
+  }
+  section.conclusion p strong { color: var(--ink); font-weight: 600; }
+  section.conclusion .closing {
+    font-family: var(--serif); font-style: italic; font-size: 1.25rem; line-height: 1.6;
+    color: var(--ink); text-align: center; margin: 2.6rem auto 0; max-width: 44ch;
+  }
+
+  /* ---------- bloc de partage ---------- */
+  .share {
+    max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 2rem; text-align: center;
+  }
+  .share p { color: var(--ink-dim); font-size: 1.05rem; line-height: 1.7; margin: 0 auto 1.6rem; max-width: 46ch; }
+  .share .share-actions { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+  .share button {
+    background: transparent; color: var(--accent); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 0.6rem 1.4rem; font: inherit; font-size: 0.9rem;
+    cursor: pointer; transition: background 0.2s, color 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .share button:hover { background: var(--accent); color: var(--bg); }
+  .share button svg { width: 16px; height: 16px; }
+  .share button.primary { background: var(--accent); color: var(--bg); }
+  .share button.primary:hover { background: color-mix(in srgb, var(--accent) 80%, #000); border-color: color-mix(in srgb, var(--accent) 80%, #000); }
+  .share .copied-note { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin-top: 1rem; min-height: 1.1em; transition: opacity 0.3s; }
+</style>
+</head>
+<body>
+
+<div id="rail"></div>
+<a id="lang-switch" href="https://www.studioexistence.com/constantes/index.html" title="Version française">FR</a>
+<button id="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Light / dark theme" aria-pressed="false">☾</button>
+<canvas id="stars"></canvas>
+<div id="grain"></div>
+
+<!-- barre de repérage : seulement les symboles -->
+<nav class="symbols" id="symnav">
+  <a href="#pi" data-accent="#6fb3c9">π</a>
+  <a href="#e" data-accent="#7fc99a">e</a>
+  <a href="#i" data-accent="#d98fb5">i</a>
+  <a href="#euler" data-accent="#8fa6d4">∗</a>
+  <a href="#sqrt2" data-accent="#d8b46a">√2</a>
+  <a href="#phi" data-accent="#e0a96d">φ</a>
+  <a href="#gamma" data-accent="#9bd1c4">γ</a>
+  <a href="#c" data-accent="#f0d674">c</a>
+  <a href="#G" data-accent="#9db4d0">G</a>
+  <a href="#planck" data-accent="#c89bd8">ℏ</a>
+  <a href="#planck-time" data-accent="#c89bd8">∗</a>
+  <a href="#kb" data-accent="#e08a6d">k<sub style="font-size:0.6em;">B</sub></a>
+  <a href="#zero" data-accent="#7fb0d8">0K</a>
+  <a href="#alpha" data-accent="#cf8fa0">α</a>
+  <a href="#hubble" data-accent="#8fb89b">H₀</a>
+  <a href="#lambda" data-accent="#9b8fd0">Λ</a>
+</nav>
+
+<main>
+
+  <!-- ======================= HERO ======================= -->
+  <header class="hero">
+    <div class="ghost" aria-hidden="true">π</div>
+    <div class="kicker">A journey through fourteen numbers</div>
+    <h1>The constants that hold <em>the universe</em> together</h1>
+    <p>Some numbers are not inventions — they are discoveries. They hide in circles, in the growth of living things, in light, in matter. Here are a few of them — to meet one by one, without rushing.</p>
+    <div class="scroll-cue">↓ begin the journey</div>
+  </header>
+
+  <!-- ======================= π ======================= -->
+  <section class="constant" id="pi" style="--accent:#6fb3c9;">
+    <div class="const-head reveal">
+      <span class="const-symbol">π</span>
+      <span class="const-headtext">
+        <span class="const-index">01 / 14</span>
+        <span class="const-title">Pi · the circle number</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The circle's number, and it never ends.</p>
+    <div class="const-value reveal">3,14159 26535 89793 23846 26433 83279 50288…</div>
+
+    <p class="pull reveal">Draw any circle. The distance around is always a little more than three times the width. That "a little more" is π — and nobody will ever see it whole.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Take a circle — any circle — measure the distance around it, then measure its width. Divide the first by the second. Whether your circle is a coin or the Moon's orbit, you always get the same number: 3.14159… That's π — not a property of <em>one</em> circle, but of <em>every</em> circle at once. The ratio is baked into the shape itself.</p>
+    <p class="reveal">And since everything that turns, waves, or curves hides a circle somewhere, π shows up far beyond geometry: in the swing of a pendulum, the vibration of a guitar string, the waves crossing the ocean, the current from your wall socket. Wherever there's a rhythm or a roundness, π is waiting.</p>
+
+    <!-- VIZ : le cercle qui se déroule -->
+    <figure class="viz reveal" id="viz-pi" style="margin:2rem 0;">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <line x1="40" y1="270" x2="640" y2="270" stroke="var(--line)" stroke-width="1"/>
+        <g class="ticks" font-family="monospace" font-size="11"></g>
+        <path class="curve" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+        <line class="segWhole" x1="40" y1="270" x2="40" y2="270" stroke="#6fb3c9" stroke-width="4" stroke-linecap="round" opacity="0"/>
+        <line class="segFrac"  x1="40" y1="270" x2="40" y2="270" stroke="#e0a96d" stroke-width="4" stroke-linecap="round" opacity="0"/>
+        <line class="diam" stroke="#b98ce0" stroke-width="3" stroke-linecap="round" opacity="0"/>
+        <g class="stamps"></g>
+        <text class="diamLabel" font-family="monospace" font-size="12" fill="#b98ce0" text-anchor="middle" opacity="0">the diameter</text>
+      </svg>
+      <div class="controls">
+        <button class="play">Measure, then unroll</button>
+        <button class="reset">Recommencer</button>
+        <span class="readout">circumference = <b class="val">3.000</b> diameters</span>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#b98ce0"></i> the diameter = 1 unit</span>
+        <span><i class="dot" style="background:#6fb3c9"></i> 3 full diameters</span>
+        <span><i class="dot" style="background:#e0a96d"></i> the 0.14159… left over</span>
+      </div>
+      <figcaption>A circle's circumference unrolled: three full diameters, plus a remainder of 0.14159…</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we calculate it</h3>
+    <p class="reveal">Humanity has been chasing π for nearly 4,000 years. The Babylonians approximated it as 3 + 1/8, the Egyptians had their own estimate — all through measurement and trial. The first real leap came from Archimedes, around 250 BCE: unable to measure a curve directly, he sandwiched a circle between two polygons — one inside, one outside — and multiplied the sides up to 96, tightening the squeeze. He proved that π lies between 3.1408 and 3.1429, without ever "seeing" it. The method was so sound it was used for nearly two thousand years.</p>
+    <p class="reveal">The real turning point was realizing you don't need a circle at all. π can be written as an infinite sum of fractions that, added term by term, closes in on its value relentlessly. The most famous, found by Leibniz, is disarmingly simple:</p>
+    <div class="katex-block reveal" data-tex="\pi = 4\left(1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \frac{1}{9} - \cdots\right)"></div>
+    <p class="reveal">It's slow going by hand — you need hundreds of terms for just a few correct decimals — but that's exactly the kind of repetitive task machines excel at. And machines have delivered: we now know more than 100 trillion decimal places of π. Yet here's the delicious paradox: NASA uses only about 15 of them to navigate the solar system. With 40 decimal places, you could calculate the circumference of the observable universe to within the width of an atom. Beyond that, π stops being a tool — it becomes a challenge we set for ourselves.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">The obvious first: π is everywhere in technology. Your GPS locating you on a spherical Earth, music digitized into waves, the screen you're reading — all rest on mathematics where π is unavoidable. But that's not where the poetry lives. It's elsewhere, in places nobody invited π and it shows up anyway.</p>
+    <p class="reveal">Take a river. It's been observed that rivers almost never flow in a straight line: they meander, carve bends, and the more you study them, the more a strange regularity emerges. If you measure the actual length of a river's course — every twist and turn — and divide by the straight-line distance from source to mouth, the ratio tends — averaged across many rivers — to approach π. The river knows nothing of circles; it simply obeys erosion and gradient. And yet, in its hesitant dance between the straight line and the loop, π seems to be keeping time.</p>
+    <p class="reveal">More unsettling still: you can conjure π from pure chance, without drawing a single circle. Drop a needle onto a floor made of parallel floorboards, spaced exactly one needle-length apart. Do it a thousand times, ten thousand times, noting how often the needle lands across a crack. Divide the number of drops by the number of crossings, multiply by two — and you get π. This is Buffon's needle, conceived in the 18th century. The rawest randomness imaginable, a needle falling however it likes, and in the end it's the number of the circle that floats back to the surface. As if it were lurking beneath reality, ready to answer whenever called — even by accident.</p>
+
+    <h3 class="rubric reveal">The vertigo · does π contain everything?</h3>
+    <p class="reveal">The digits of π never repeat and follow no pattern — they flow, apparently, like pure chance. This leads to a hypnotic idea. It is suspected — though never yet proven — that π is a <em>normal number</em>: a sequence where every imaginable string of digits eventually appears, somewhere, if you look far enough.</p>
+    <p class="reveal">If that's true, then your birthday is in π. So is your phone number. And encoding letters as digits, the full text of this paragraph, the novel you'll read next summer, and the list of all your days to come — all of it already sleeps somewhere in the infinite tail of π, waiting for the right decimal place. Nothing is <em>written</em> there, though: π contains no message, it contains <em>all combinations</em>, which amounts to favoring none. But the idea is vertiginous — a number born from the simplest of drawings, a circle, carrying within it the totality of the sayable.</p>
+  </section>
+
+  <!-- ======================= e ======================= -->
+  <section class="constant" id="e" style="--accent:#7fc99a;">
+    <div class="const-head reveal">
+      <span class="const-symbol">e</span>
+      <span class="const-headtext">
+        <span class="const-index">02 / 14</span>
+        <span class="const-title">e · Euler's number</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The constant behind everything that grows and decays.</p>
+    <div class="const-value reveal">2,71828 18284 59045 23536 02874 71352 66249…</div>
+
+    <p class="pull reveal">π is the number of things that turn; e is the number of things that grow. Whenever something grows in proportion to what it already is, e is never far away.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Imagine you deposit $1 in a bank at a jaw-dropping 100% annual interest rate. After one year, you have $2. But ask the bank to compound twice a year — 50% at six months, then 50% on the new total — and you get $2.25. The second interest earned on the first: interest on interest. Push further: monthly compounding gives $2.61, daily gives $2.71. What if the bank compounded at <em>every instant</em>, continuously? The total doesn't fly off to infinity as you might fear. It settles, precisely, on 2.71828… — on e.</p>
+    <p class="reveal">That's e: the result of perfectly continuous growth, where each gain immediately feeds the next. Nature never proceeds in jumps. A population, a sum of money, a quantity of radioactive material doesn't leap from level to level — it changes smoothly, at every instant. And every growth of this kind is governed by e.</p>
+
+    <!-- VIZ : convergence vers e -->
+    <figure class="viz reveal" id="viz-e" style="margin:2rem 0;">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- axes -->
+        <line x1="60" y1="40" x2="60" y2="280" stroke="var(--line)" stroke-width="1"/>
+        <line x1="60" y1="280" x2="640" y2="280" stroke="var(--line)" stroke-width="1"/>
+        <!-- ligne asymptote e -->
+        <line class="eLine" x1="60" x2="640" stroke="#7fc99a" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.7"/>
+        <text class="eLabel" font-family="monospace" font-size="12" fill="#7fc99a" opacity="0.9">e ≈ 2,718</text>
+        <text x="48" y="284" font-family="monospace" font-size="10" fill="var(--muted)" text-anchor="end">1$</text>
+        <text x="48" y="44" font-family="monospace" font-size="10" fill="var(--muted)" text-anchor="end">3$</text>
+        <!-- barres : (1+1/n)^n pour n croissant -->
+        <g class="bars"></g>
+      </svg>
+      <div class="controls">
+        <button class="play">Compound more often</button>
+        <button class="reset">Recommencer</button>
+        <span class="readout"><b class="freq">1 fois / an</b> → <b class="amt">2,000 $</b></span>
+      </div>
+      <figcaption>The more often interest is compounded, the closer the total gets to e — without ever exceeding it.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we calculate it</h3>
+    <p class="reveal">Curiously, e was first glimpsed not by a pure mathematician, but through that very question of compound interest, studied by Jacob Bernoulli around 1683. He understood that the sequence was converging on a precise value, without managing to name it. It was Leonhard Euler who, in the 18th century, made it a genuine mathematical celebrity, gave it its letter — e, now associated with his name — and proved it is irrational.</p>
+    <p class="reveal">Like π, e can be written as an infinite sum, and its series has a remarkable elegance: you add the reciprocals of the factorials.</p>
+    <div class="katex-block reveal" data-tex="e = 1 + \frac{1}{1} + \frac{1}{1\cdot 2} + \frac{1}{1\cdot 2\cdot 3} + \frac{1}{1\cdot 2\cdot 3\cdot 4} + \cdots"></div>
+    <p class="reveal">This series converges very quickly — far faster than π's — because the factorials in the denominator grow at a staggering rate. A dozen terms are already enough for impressive precision.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">Pour a cup of hot coffee and leave it: the temperature drops quickly at first, then more and more slowly as it approaches room temperature. That cooling curve is governed by e. The same shape describes a phone battery discharging, sound fading in a room, or a radioactive atom decaying — the famous "half-life" is just another way of talking about e.</p>
+    <p class="reveal">But e's most baffling appearance has nothing to do with growth. Picture a party where everyone checks their coat, and at the end, the coats are returned completely at random. What's the probability that <em>nobody</em> gets their own coat back? About 1-in-e, roughly 37%. And the strangest part: that result barely depends on the number of guests — ten or ten thousand, the probability stays glued to 37%. Again, e was waiting, hidden in a question where no circle, no interest, no growth was anywhere in sight.</p>
+  </section>
+
+  <!-- ======================= i ======================= -->
+  <section class="constant" id="i" style="--accent:#d98fb5;">
+    <div class="const-head reveal">
+      <span class="const-symbol">i</span>
+      <span class="const-headtext">
+        <span class="const-index">03 / 14</span>
+        <span class="const-title">i · the imaginary unit</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The impossible number — that turned out to be indispensable.</p>
+    <div class="const-value reveal">i = √(−1)　　·　　i² = −1</div>
+
+    <p class="pull reveal">For a long time, it seemed obvious that no number, multiplied by itself, could give a negative result. i is the audacious move of asking: "what if we just invented one?"</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Here's a rule learned early on: a number multiplied by itself is always positive. 3 × 3 = 9, and (−3) × (−3) = 9 as well, since negative times negative gives positive. No ordinary number, squared, can produce −1. The question "what is the square root of −1?" seemed to have no answer — a dead end, a walled door.</p>
+    <p class="reveal">Mathematicians did something bold: rather than give up, they <em>postulated</em> the existence of such a number and called it i, for "imaginary." By definition, i² = −1. It looks like cheating, but the real key came from a shift in perspective. What if numbers didn't live only on a line — the axis from negatives to positives — but in a <em>plane</em>? On that line, multiplying by −1 means a half-turn: 3 becomes −3, a 180° rotation. So what would multiplying by i be? A quarter-turn. A 90° rotation. i is not a point on the number line: it's the perpendicular direction, the move that lifts numbers off their track and sets them spinning in a plane.</p>
+
+    <!-- VIZ : multiplier par i = tourner de 90° -->
+    <figure class="viz reveal" id="viz-i" style="margin:2rem 0;">
+      <svg viewBox="0 0 680 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- grille / axes -->
+        <line x1="40" y1="180" x2="640" y2="180" stroke="var(--line)" stroke-width="1"/>
+        <line x1="340" y1="20" x2="340" y2="340" stroke="var(--line)" stroke-width="1"/>
+        <text x="630" y="174" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="end">réels +</text>
+        <text x="348" y="32" font-family="monospace" font-size="11" fill="var(--muted)">imaginaires (i)</text>
+        <!-- graduations -->
+        <g class="axticks" font-family="monospace" font-size="10" fill="var(--muted)"></g>
+        <!-- vecteur tournant -->
+        <line class="vec" x1="340" y1="180" x2="460" y2="180" stroke="#d98fb5" stroke-width="3" stroke-linecap="round"/>
+        <circle class="vtip" cx="460" cy="180" r="6" fill="#d98fb5"/>
+        <text class="vlabel" font-family="monospace" font-size="13" fill="#d98fb5">1</text>
+        <!-- trace de l'arc -->
+        <path class="arc" fill="none" stroke="#d98fb5" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+      </svg>
+      <div class="controls">
+        <button class="play">Multiply by i</button>
+        <button class="reset">Recommencer</button>
+        <span class="readout">position: <b class="pos">1</b></span>
+      </div>
+      <figcaption>Multiplying by i doesn't change the size of the number — it rotates it by a quarter-turn. Four multiplications, and you're back where you started.</figcaption>
+    </figure>
+
+    <p class="reveal">This picture explains everything. Multiply 1 by i: you rotate 90°, landing on i. Multiply again by i: another 90°, and you're on −1 — confirming i × i = −1. Again: −i. One more time: back to 1. Four quarter-turns make one full turn. Far from being a quirk, i reveals that multiplication is, at its core, a matter of rotation.</p>
+    <p class="reveal">And since numbers now inhabit a plane, you can be anywhere — not just on the two axes. A point like "3 + 2i" means: move 3 to the right (the real part), then 2 upward (the imaginary part). This is what we call a <strong>complex number</strong> — not "complicated," but "composed" of two parts. Where an ordinary number is an address on a line, a complex number is an address in a plane, with two coordinates. The numbers you already knew haven't disappeared: they're simply the ones with no imaginary part, sitting on the horizontal axis. i didn't replace the real numbers — it added a dimension to them.</p>
+
+    <h3 class="rubric reveal">Its history and how it was found</h3>
+    <p class="reveal">i didn't arise from a whim, but from a concrete necessity. In the 16th century, Italian mathematicians solving certain cubic equations kept stumbling, mid-calculation, onto square roots of negative numbers. Remarkably, if they pressed on and kept manipulating these "impossible" quantities, they cancelled out by the end, and perfectly real solutions emerged. The impossible was serving as a bridge between two real shores.</p>
+    <p class="reveal">At first they were treated with suspicion — the term "imaginary," coined by Descartes, was originally a jibe. It took two centuries, and in particular the geometric picture in the plane, for these numbers to be fully accepted. Today nobody says "imaginary" with disdain: i is just as legitimate as any other number, it simply lives in another dimension.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">Anything that waves, rotates, or oscillates is beautifully described with i, precisely because i <em>is</em> rotation. The electricity in your home is alternating: it oscillates sixty times per second, and engineers compute it using complex numbers. The Wi-Fi signal carrying these words to your screen, the music compressed in your files, the MRI image reconstructed from waves — all depend on i.</p>
+    <p class="reveal">And at the deepest level, quantum mechanics — the physics of atoms and particles — simply cannot be written without i. The Schrödinger equation, which describes how matter behaves at its finest scale, has i at its core. The number once judged "impossible" turns out to be one of the pillars of the description of reality. Nature, it seems, had no objection to the imaginary.</p>
+  </section>
+
+  <!-- ======================= ENCART : IDENTITÉ D'EULER ======================= -->
+  <section class="feature" id="euler" style="--accent:#8fa6d4;">
+    <div class="euler-card reveal">
+      <div class="kicker">When three numbers meet</div>
+      <div class="euler-eq reveal" data-tex="e^{\,i\pi} + 1 = 0"></div>
+      <p>You've just met three characters separately. <b>π</b>, born from the circle. <b>e</b>, born from growth. <b>i</b>, born from the impossible. Nothing suggested they had any connection — they come from different worlds, discovered centuries apart, to solve unrelated problems.</p>
+      <p>And yet, here they are, united in a single line often called the most beautiful equation in mathematics. It says: take e, raise it to the power of i times π, add 1 — and you get exactly zero. Nothing left over, nothing missing.</p>
+      <p>With the rotation picture, it becomes almost transparent. Raising e to an imaginary power means rotating in the number plane. The exponent "iπ" corresponds to a half-turn — an angle of π, or 180°. Starting from 1 and making a half-turn around the origin lands you exactly on −1. Hence: e<sup>iπ</sup> = −1, and so e<sup>iπ</sup> + 1 = 0. The circle (π), growth (e), and rotation (i) were, at heart, all part of the same story — a point going around.</p>
+      <p style="text-align:center; font-style:italic; color:#e9ebef; margin-top:1.8rem;">"It is the most remarkable formula in mathematics."<br><span style="font-size:0.85rem; color:#8a93a3;">— Richard Feynman</span></p>
+    </div>
+  </section>
+
+  <!-- ======================= √2 ======================= -->
+  <!-- ======================= √2 ======================= -->
+  <section class="constant" id="sqrt2" style="--accent:#d8b46a;">
+    <div class="const-head reveal">
+      <span class="const-symbol">√2</span>
+      <span class="const-headtext">
+        <span class="const-index">04 / 14</span>
+        <span class="const-title">Square root of two · the first irrational</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The number you could draw, but that no fraction could ever write.</p>
+    <div class="const-value reveal">1,41421 35623 73095 04880 16887 24209 69807 85696…</div>
+
+    <p class="pull reveal">Draw a square with side length 1. You can trace its diagonal in one stroke — it's right there in front of you. And yet its length cannot be written as any fraction. Not one.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Take a simple square, with each side equal to 1. Draw the diagonal, corner to corner. What's its length? The Pythagorean theorem answers: it's the number that, multiplied by itself, gives 2 — since 1² + 1² = 2. We write it √2, "square root of two." So far, nothing alarming: the number exists, we just drew it, it's roughly 1.414.</p>
+    <p class="reveal">The scandal is that it can't be written exactly. Not as a fraction, never — not 7/5, not 99/70, not any ratio of two whole numbers, however large. Its decimal places go on forever without repeating or forming any pattern. This is what we call an <strong>irrational number</strong>: not "unreasonable," but literally "not a ratio" — not a fraction. √2 was the very first of this kind humanity ever encountered — and its discovery struck like a thunderclap.</p>
+
+    <!-- VIZ √2 : décimales défilantes -->
+    <figure class="viz reveal" id="viz-sqrt2">
+      <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="70" y="60" width="160" height="160" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="70" y1="220" x2="230" y2="60" stroke="var(--svg-ink)" stroke-width="2.5"/>
+        <text x="150" y="242" font-family="monospace" font-size="12" fill="var(--accent)" text-anchor="middle">côté = 1</text>
+        <text x="58" y="145" font-family="monospace" font-size="12" fill="var(--accent)" text-anchor="end">1</text>
+        <text x="135" y="128" font-family="monospace" font-size="11" fill="var(--svg-ink)" transform="rotate(-45 135 128)" text-anchor="middle">diagonale</text>
+        <text x="290" y="105" font-family="monospace" font-size="12" fill="var(--ink-dim)">longueur de la diagonale :</text>
+        <text x="290" y="145" font-family="monospace" font-size="22" fill="var(--svg-ink)">√2</text>
+        <text x="333" y="145" font-family="monospace" font-size="22" fill="var(--ink-dim)">=</text>
+        <text class="dec" x="358" y="145" font-family="monospace" font-size="22" fill="var(--accent)">1,41421356…</text>
+        <text x="290" y="185" font-family="monospace" font-size="11" fill="var(--muted)">… then, endlessly and without repetition:</text>
+        <text class="window" x="290" y="212" font-family="monospace" font-size="15" fill="var(--ink-dim)" letter-spacing="2"></text>
+      </svg>
+      <div class="controls">
+        <button class="toggle">Let them scroll ▶</button>
+        <span class="readout">already computed: over <b>100 trillion</b> decimal places</span>
+      </div>
+      <figcaption>The digits of √2 never end and form no pattern. A handful scroll here — but the sequence is infinite, and no screen could ever contain them all.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we calculate it</h3>
+    <p class="reveal">We're in the 5th century BCE, at the school of Pythagoras. For these thinkers, the universe was number — and "number" meant whole numbers, or ratios of whole numbers. Fractions were enough to describe everything: it was a near-religious conviction, the very order of the world. Then someone, studying the most ordinary of squares, proved that its diagonal broke the rule. √2 could not be any fraction. The supposed harmony of whole numbers had just cracked on the simplest object in geometry.</p>
+    <p class="reveal">Legend — unverifiable, but persistent — credits this discovery to Hippasus of Metapontum, and tells that he was thrown into the sea for revealing the disturbing secret. True or not, the story captures the turmoil √2 caused: a truth so inconvenient it was supposedly worth drowning someone over. As for calculating it, the Babylonians were already doing so with stunning accuracy a thousand years earlier, carving onto a clay tablet a value correct to six decimal places — without even having the notation that could express what it was.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">Take a sheet of A4 paper. The ratio of its length to its width is exactly √2 — and that hides a remarkably useful property. Fold an A4 in half across its width: you get two A5 sheets, with precisely the same proportions as the original A4. Fold an A5 in half: two A6s, same proportions again. Going the other way, place two A4s side by side and you get an A3; two A3s give an A2, and so on. The entire A-paper series — A0, A1, A2… — rests on one single trick: √2 is the only ratio that is preserved when you fold or double. It's quietly at work every time a printer scales your document "from A4 to A5."</p>
+    <p class="reveal">But √2's most striking appearance is auditory. In music, an octave divides into twelve semitones. Go up six semitones — exactly half an octave — and the frequency ratio between the two notes is exactly √2. This interval has a name: the tritone. In the Middle Ages it was considered so unstable, so unsettling to the ear, that it was nicknamed <em>diabolus in musica</em> — "the devil in music" — and some composers avoided it entirely. History's strange coincidence: the first number to frighten Greek mathematicians is also the interval musicians considered diabolical. Two civilizations, two discomforts, the same number lurking beneath.</p>
+
+    <h3 class="rubric reveal">The vertigo · a proof 2,300 years old</h3>
+    <p class="reveal">How can we be <em>certain</em> that √2 is no fraction? Not "we haven't found one," but "it is impossible for one to exist." The Greeks proved it, and their argument remains one of the most beautiful ever devised. It's called proof by contradiction: assume the opposite of what you want to show, follow that path until it contradicts itself. So suppose √2 <em>is</em> a fraction, fully reduced — meaning no common factor between numerator and denominator:</p>
+    <div class="katex-block reveal" data-tex="\sqrt{2} = \frac{p}{q}\quad\text{(fully reduced fraction)}"></div>
+    <p class="reveal">Squaring both sides and rearranging, we get a clean equality:</p>
+    <div class="katex-block reveal" data-tex="2 = \frac{p^2}{q^2}\quad\Longrightarrow\quad p^2 = 2\,q^2"></div>
+    <p class="reveal">That last line says p² is even (it's two times something). But if p² is even, then p itself must be even. Which means p² is actually divisible by 4 — and carrying that through, we find q² is also even, so q is too. Catastrophe: p and q are <em>both</em> even, which means they share the factor 2. That contradicts our starting point, "fully reduced, no common factor." The assumption collapses under its own weight. So √2 is not a fraction. Twenty-three centuries later, this proof still stands, intact — evidence that a mathematical truth, once established, never ages.</p>
+  </section>
+
+  <!-- ======================= φ ======================= -->
+  <section class="constant" id="phi" style="--accent:#e0a96d;">
+    <div class="const-head reveal">
+      <span class="const-symbol">φ</span>
+      <span class="const-headtext">
+        <span class="const-index">05 / 14</span>
+        <span class="const-title">Phi · the golden ratio</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The most famous number in the world — and the most misunderstood.</p>
+    <div class="const-value reveal">1,61803 39887 49894 84820 45868 34365 63811 77203…</div>
+
+    <p class="pull reveal">It gets credited with a thousand powers it doesn't have — in paintings, temples, faces. Its real magic lies elsewhere, and sunflowers understand it better than any artist.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Take a simple wooden stick and break it in two — but not just anywhere. There's exactly one way to break it so the two pieces are "in tune" in the following sense: the longer piece must stand in the same relation to the shorter as the whole stick stands to the longer piece. When you find that precise cut, the ratio of long to short is always the same number: 1.618… That's φ, the golden ratio.</p>
+
+    <!-- VIZ φ : la ligne coupée -->
+    <figure class="viz reveal" id="viz-philine">
+      <svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="70" x2="620" y2="70" stroke="var(--line)" stroke-width="8" stroke-linecap="round"/>
+        <line class="partA" x1="60" y1="70" x2="406" y2="70" stroke="var(--accent)" stroke-width="8" stroke-linecap="round"/>
+        <line class="partB" x1="406" y1="70" x2="620" y2="70" stroke="#9bbfd8" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="406" cy="70" r="6" fill="var(--svg-strong)"/>
+        <text x="233" y="48" font-family="monospace" font-size="13" fill="var(--accent)" text-anchor="middle">the long piece (a)</text>
+        <text x="513" y="48" font-family="monospace" font-size="13" fill="#9bbfd8" text-anchor="middle">the short (b)</text>
+        <line x1="60" y1="92" x2="620" y2="92" stroke="var(--muted)" stroke-width="1" stroke-dasharray="3 4"/>
+        <text x="340" y="110" font-family="monospace" font-size="12" fill="var(--muted)" text-anchor="middle">the whole stick (a + b)</text>
+        <text x="340" y="158" font-family="monospace" font-size="14" fill="var(--ink)" text-anchor="middle">long ÷ short  =  whole ÷ long  =  φ</text>
+        <text x="340" y="188" font-family="monospace" font-size="13" fill="var(--accent)" text-anchor="middle">a / b = 1.618   and   (a + b) / a = 1.618</text>
+      </svg>
+      <figcaption>The stick is cut at one precise point: where the long piece relates to the short exactly as the whole stick relates to the long. That shared ratio is φ.</figcaption>
+    </figure>
+
+    <p class="reveal">From this definition follows a property that looks like a magic trick. Square φ and you get the same number, simply increased by 1. Take its reciprocal and you get the same number again, decreased by 1 — the same decimals, 0.618…, reappear on both sides of the equation:</p>
+    <div class="katex-block reveal" data-tex="\varphi^2 = \varphi + 1 \qquad\qquad \frac{1}{\varphi} = \varphi - 1"></div>
+    <p class="reveal">No other number behaves this way. φ has a relationship with itself of startling simplicity — and that, as we'll see, is where its true power comes from, far more so than the artistic legends attached to it.</p>
+
+    <h3 class="rubric reveal">Its history and how we calculate it</h3>
+    <p class="reveal">Euclid, around 300 BCE, was the first to describe this "division in extreme and mean ratio" — his austere name for what we now call the golden ratio. He studied it through pure geometry, to construct the regular pentagon, without attaching any mysticism to it. It was much later, during the Renaissance and especially in the 19th century, that people began attributing aesthetic and cosmic powers to it — usually without a shred of evidence.</p>
+    <p class="reveal">The most elegant way to conjure φ is through a famous sequence: Fibonacci's. Each number is the sum of the two before it — 1, 1, 2, 3, 5, 8, 13, 21, 34… Divide each term by the one before it (3/2, then 5/3, then 8/5…) and the result zigzags toward φ. The further you go, the more precise it gets. Nature, as it happens, often counts in Fibonacci.</p>
+    <p class="reveal">There's also a geometric beauty unique to φ: the <strong>golden rectangle</strong>. Its sides are in the ratio φ. Its magic: remove a square from it, and the remaining rectangle is itself a golden rectangle, just smaller. You can keep going indefinitely, and by connecting the corners of these nested squares with quarter-circles, you watch the golden spiral emerge.</p>
+
+    <!-- VIZ φ : rectangle d'or + spirale -->
+    <figure class="viz reveal" id="viz-phirect">
+      <svg viewBox="0 0 680 440" xmlns="http://www.w3.org/2000/svg">
+        <g class="rects"></g>
+        <path class="spiral" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+      </svg>
+      <div class="controls">
+        <button class="step">Divide again</button>
+        <button class="reset">Recommencer</button>
+        <span class="readout">the rectangle splits into <b>square + golden rectangle</b></span>
+      </div>
+      <figcaption>A golden rectangle conceals a square, and what remains is… a smaller golden rectangle. Repeat to infinity, and the quarter-circles trace out the golden spiral.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">First, an honest correction: no, the golden ratio is not the hidden secret of the Mona Lisa, the Parthenon, or credit cards. These claims, repeated endlessly, almost never survive actual measurement — we tend to "see" φ everywhere once we start looking, adjusting our outlines just a little. The real home of φ is not the museum. It's the garden.</p>
+    <p class="reveal">Look at the center of a sunflower, the scales of a pine cone, the arrangement of seeds in a flower. You'll see spirals — two overlapping families, in fact: some coiling clockwise, others counterclockwise. Count the spirals in each family separately: you'll get two numbers (say, 34 one way and 55 the other), and those two numbers are almost always neighboring terms of the Fibonacci sequence — closely tied to φ. The reasoning is beautifully logical: each new seed grows at a fixed angle from the previous one. If that angle corresponds to φ — the "golden angle," about 137.5° — then no seed ever lines up with another, and space is packed as densely as possible. The plant hasn't learned geometry: evolution simply favored those that packed the most seeds and captured the most light, and they converged on φ.</p>
+
+    <!-- VIZ φ : tournesol explicatif -->
+    <figure class="viz reveal" id="viz-phi">
+      <svg viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
+        <g class="seeds"></g>
+      </svg>
+      <div class="controls">
+        <button class="gold">↺ Return to golden angle (137.5°)</button>
+        <label style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);display:flex;align-items:center;gap:0.6rem;flex:1;min-width:200px;">
+          angle
+          <input class="angle" type="range" min="90" max="180" step="0.1" value="137.5" style="flex:1;accent-color:var(--accent);">
+        </label>
+        <span class="readout"><b class="angval">137,5°</b></span>
+      </div>
+      <figcaption>At 137.5°, seeds never align and fill all the space. Move the slider: at almost any other angle, spokes and empty corridors appear, and space is wasted. Only the golden angle is optimal.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">The vertigo · the most irrational of all numbers</h3>
+    <p class="reveal">We've seen that √2 is irrational. But there are degrees of irrationality: some numbers are "almost" fractions — you can get very close with small ratios — while others resist. The absolute champion of that resistance, the number hardest to approximate by any fraction, is φ.</p>
+    <p class="reveal">The reason lies in a strange way of writing it. Any number can be expanded as a "continued fraction," a cascading nest of fractions. For φ, that cascade is the most stripped-down imaginable: nothing but 1s, forever.</p>
+    <div class="katex-block reveal" data-tex="\varphi = 1 + \cfrac{1}{1 + \cfrac{1}{1 + \cfrac{1}{1 + \cdots}}}"></div>
+    <p class="reveal">In such a cascade, large numbers provide "shortcuts" for approximating a number with a good fraction. But φ has only 1s — not a single large number, not a single shortcut. That's what makes it so elusive. And there's the real wonder: the number so many people believe is the secret of easy beauty is, in truth, the most stubbornly unruly of all. And that is exactly why sunflowers chose it — so no two seeds would ever line up.</p>
+  </section>
+
+  <!-- ======================= γ ======================= -->
+  <section class="constant" id="gamma" style="--accent:#9bd1c4;">
+    <div class="const-head reveal">
+      <span class="const-symbol">γ</span>
+      <span class="const-headtext">
+        <span class="const-index">06 / 14</span>
+        <span class="const-title">Gamma · the Euler-Mascheroni constant</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">Mathematics' oldest and best-kept mystery.</p>
+    <div class="const-value reveal">0,57721 56649 01532 86060 65120 90082 40243 10422…</div>
+
+    <p class="pull reveal">Two ways of growing: one by staircase steps, the other along a smooth ramp. The gap between them never closes — it settles on this number. And nobody really knows what it is.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Add the simplest fractions in the world: 1, then 1/2, then 1/3, then 1/4, and so on, forever. This sum has a name: the <strong>harmonic series</strong>:</p>
+    <div class="katex-block reveal" data-tex="1 + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \frac{1}{5} + \cdots"></div>
+    <p class="reveal">It grows forever, but more and more slowly, in shrinking jumps: it climbs like a staircase whose steps flatten out. Alongside it, place the <strong>natural logarithm</strong>, written ln. Without getting into its technical definition, keep its role here in mind: it's a perfectly smooth ascent, a steady ramp that also grows more and more gently — the "continuous" version of what the staircase does in steps. It's the function that answers "how many times must you multiply to reach a given number?" and it naturally accompanies anything that grows by accumulation.</p>
+    <p class="reveal">Now, the staircase and the ramp follow almost the same path: they climb at the same pace. Almost — because the staircase keeps a small, constant lead over the ramp. And that gap, as you climb toward infinity, never vanishes: it settles on a precise value, 0.5772… That's γ, the residual difference between the harmonic sum and the logarithm. The trace left by the gap between counting in chunks and measuring continuously.</p>
+
+    <!-- VIZ γ : escalier vs rampe, double flèche -->
+    <figure class="viz reveal" id="viz-gamma">
+      <svg viewBox="0 0 680 360" xmlns="http://www.w3.org/2000/svg">
+        <line x1="55" y1="40" x2="55" y2="300" stroke="var(--line)" stroke-width="1"/>
+        <line x1="55" y1="300" x2="650" y2="300" stroke="var(--line)" stroke-width="1"/>
+        <path class="logcurve" fill="none" stroke="#9bd1c4" stroke-width="2"/>
+        <text class="loglab" font-family="monospace" font-size="11" fill="#9bd1c4">ln(n) — the smooth ramp</text>
+        <path class="stairs" fill="none" stroke="#e0a96d" stroke-width="2"/>
+        <text class="stairlab" font-family="monospace" font-size="11" fill="#e0a96d">1 + 1/2 + 1/3 + … — the staircase</text>
+        <g class="fracs"></g>
+        <g class="gap"></g>
+      </svg>
+      <div class="controls">
+        <button class="play">Add one step</button>
+        <button class="reset">Recommencer</button>
+        <span class="readout">gap = <b class="gval">—</b></span>
+      </div>
+      <figcaption>Each step adds the fraction shown. The dotted line measures the gap between the staircase and the ramp — it settles toward γ ≈ 0.5772.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we calculate it</h3>
+    <p class="reveal">It was Leonhard Euler — again — who noticed this constant in 1734 while studying the harmonic series. The Italian mathematician Lorenzo Mascheroni later calculated it more precisely, earning his name a place alongside Euler's. Today we can compute hundreds of billions of its decimal places.</p>
+    <p class="reveal">And yet — here's the real scandal — we still don't know the most fundamental thing about it: is γ rational or irrational? For π, for e, for √2, the verdict has been in for centuries: irrational, proven, settled. But γ holds out. After nearly three hundred years, despite the efforts of the greatest mathematical minds, nobody has managed to prove whether it can or cannot be written as a fraction. It's one of the oldest open questions in mathematics, dangling there, mockingly, right before our eyes.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">Remember those sticker albums, where you buy packets hoping to complete the set? Imagine a collection of 100 different stickers, each packet delivering one at random. At first, it goes quickly: almost every packet brings something new. But near the end, it's agony — three left to find, and duplicates keep coming. How many packets do you need, on average, to finish the set?</p>
+    <p class="reveal">The answer involves, naturally, the harmonic series — and therefore the logarithm and γ. That maddening slowdown at the end of a collection, those last stickers that take forever to appear, is exactly the logarithmic gap that γ measures. The same number turns up in the average waiting time of certain queues, in the analysis of sorting algorithms, in the theory of prime numbers. Whenever a system accumulates contributions of 1, 1/2, 1/3, 1/4… — a surprisingly common pattern — γ slips quietly into the final answer: the silent signature of the gap between counting and measuring.</p>
+  </section>
+
+
+  <!-- ======================= CHARNIÈRE MATHS → PHYSIQUE ======================= -->
+  <section class="feature" id="bascule" style="--accent:#c2a878;">
+    <div class="euler-card reveal" style="background:radial-gradient(120% 140% at 50% 0%, #1a1408 0%, #11151d 55%, #0b0e14 100%); border-color:#3a3320;">
+      <div class="kicker" style="color:#c2a878;">Crossing a border</div>
+      <p style="color:#cdd2da;">The six numbers you've just met share a secret: they don't need <em>any</em> universe to exist. In any conceivable world — with different stars, different laws, or no matter at all — the ratio of a circle's circumference to its diameter would still be π, and √2 would still be irrational. We didn't measure them: we <em>proved</em> them. No ruler, no scale was ever needed. They are eternal truths, true before the first atom and after the last star.</p>
+      <p style="color:#cdd2da;">The numbers that follow are of an entirely different nature. They're not written in logic, but in <em>matter</em> — engraved in the fabric of <em>our</em> universe, and ours alone. The speed of light, the strength of gravity, the grain size of energy: nothing in pure reason required their values. We don't prove them; we <em>measure</em> them — with instruments, and always with a margin of uncertainty. They could have been otherwise. And that is precisely what makes the next question so vertiginous: <em>what if they had been?</em></p>
+      <p style="color:#8a93a3; font-style:italic; text-align:center; margin-top:1.6rem;">You are leaving the kingdom of numbers that <strong style="color:#cdd2da;">must</strong> be,<br>for the kingdom of numbers that <strong style="color:#cdd2da;">happen</strong> to be.</p>
+    </div>
+  </section>
+
+  <!-- ======================= c ======================= -->
+  <section class="constant" id="c" style="--accent:#f0d674;">
+    <div class="const-head reveal">
+      <span class="const-symbol">c</span>
+      <span class="const-headtext">
+        <span class="const-index">07 / 14</span>
+        <span class="const-title">c · the speed of light</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">Not just the speed of light — the universe's own speed limit.</p>
+    <div class="const-value reveal">299,792,458 metres per second &nbsp;(exact)</div>
+
+    <p class="pull reveal">Nothing goes faster. Not a rocket, not a signal, not even a cause producing its effect. c is not just another speed limit: it's the maximum rate at which the universe allows anything to happen.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">We call it "the speed of light," but that name almost sells it short. c is indeed the speed at which light travels — but also every radio wave, every signal, and more fundamentally: it's the maximum speed at which a cause can produce an effect, anywhere in the universe. It's the speed of <em>causality</em> itself. If the Sun vanished right now, Earth would keep orbiting empty space for eight minutes — not from inertia, but because the information "the Sun is gone," including its gravitational pull, cannot travel faster than c.</p>
+    <p class="reveal">And this speed is staggering: in a single second, light circles the Earth seven and a half times. At our scale it seems instantaneous — flip a light switch, the room lights up "instantly." Only at astronomical distances does its slowness reveal itself. Because yes, on the scale of the cosmos, c is maddeningly slow.</p>
+
+    <!-- VIZ c : le photon Soleil -> Terre -->
+    <figure class="viz reveal" id="viz-c">
+      <svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
+        <line x1="95" y1="80" x2="600" y2="80" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="95" cy="80" r="26" fill="#f0d674"/>
+        <circle cx="95" cy="80" r="26" fill="none" stroke="#f0d674" stroke-width="1" opacity="0.4">
+          <animate attributeName="r" values="26;32;26" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <text x="95" y="135" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">Sun</text>
+        <circle cx="600" cy="80" r="11" fill="#5b8fb0"/>
+        <text x="600" y="135" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">Earth</text>
+        <circle class="photon" cx="121" cy="80" r="5" fill="var(--svg-strong)" opacity="0">
+          <animate attributeName="opacity" values="1;0.4;1" dur="0.4s" repeatCount="indefinite"/>
+        </circle>
+        <line class="trail" x1="121" y1="80" x2="121" y2="80" stroke="#f0d674" stroke-width="2" opacity="0.5"/>
+        <text class="clock" x="347" y="45" font-family="monospace" font-size="22" fill="var(--accent)" text-anchor="middle">0 min 00 s</text>
+        <text x="347" y="170" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="middle">light takes 8 min 20 s to cross this distance</text>
+      </svg>
+      <div class="controls">
+        <button class="play">Launch a ray from the Sun</button>
+        <button class="reset">Recommencer</button>
+        <span class="readout">arrival time: <b class="arr">—</b></span>
+      </div>
+      <figcaption>When you look at the Sun, you see it as it was 8 minutes ago: the time it took its light to reach you. Looking far away means looking into the past.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we measure it</h3>
+    <p class="reveal">For centuries, light was assumed to be instantaneous. It was the Danish astronomer Ole Rømer who, in 1676, proved otherwise with remarkable elegance: observing Jupiter's moons, he noticed they seemed "late" when Earth was far from Jupiter, and "early" when it was close. The only explanation: light took time to cross that varying distance. For the first time, there was a speed — approximate, but finite.</p>
+    <p class="reveal">Measurements improved over three centuries, until a beautiful reversal in 1983. Rather than measuring c ever more precisely, it was decided to <em>fix</em> it, by convention, at 299,792,458 metres per second — and to redefine the metre from it: a metre is now the distance light travels in 1/299,792,458 of a second. In other words, c is no longer measured: it does the measuring. It became the standard, the universe's own tape measure.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">Your GPS wouldn't work without accounting for c. Satellites send you signals travelling at that speed, and it's by measuring the tiny delay of their journey that your phone calculates your position. An error of one millionth of a second, and you'd be located 300 metres from where you actually are. The response time of a website hosted on the other side of the world also bumps into c: even at the speed of light through fiber, information takes an irreducible amount of time to cross an ocean.</p>
+    <p class="reveal">But the most beautiful part is in the sky. Every time you look up at night, you're not seeing the universe as it is, but as it <em>was</em>. Starlight has traveled for years, centuries, sometimes millions of years before reaching your eye. Some of those stars may have been dead for a long time: you're contemplating the luminous ghost of vanished suns. The night sky is not a photograph of the present — it's a collage of countless pasts, each arriving with its own delay.</p>
+    <p class="reveal">And that mirror works both ways. The light that Earth reflected into space seventy million years ago is still traveling, somewhere among the stars. If a creature lived today on a sufficiently distant planet, equipped with a powerful enough telescope, and pointed it at us, they would see no cities, no humans: they would see dinosaurs. For them, right now, those creatures are very much alive. Our past is someone else's present — and it's c, and c alone, that makes this possible.</p>
+
+    <!-- VIZ c : échelle du regard dans le passé -->
+    <figure class="viz reveal" id="viz-clook">
+      <svg viewBox="0 0 680 310" xmlns="http://www.w3.org/2000/svg">
+        <g class="rows"></g>
+      </svg>
+      <figcaption>The farther away a star, the older the image that reaches us. The night sky is a mosaic of different eras.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">On the knife's edge · what if c were different?</h3>
+    <p class="reveal">This is the first of our physical constants, and therefore the first time we can seriously ask: what if its value weren't what it is? For c, the question isn't about life or chemistry, but about something even more fundamental — the very structure of reality.</p>
+    <p class="reveal">Imagine c much smaller — say, the speed of a bicycle. Strange phenomena would then occur that seem like science fiction today, yet physics has confirmed them a thousand times: the faster an object moves, the more slowly time passes for it, and the more it contracts in the direction of motion. At our scale, these effects are so tiny we never notice them — precisely because c is enormous. But if c were the speed of a bicycle, then by picking up your pace you would watch passersby's clocks slow down and their bodies compress. These oddities are not inventions: they're real, but c hides them by pushing them to speeds we never reach.</p>
+    <p class="reveal">Conversely, imagine c being infinite: every effect would follow its cause instantaneously, everywhere. There would be no delay, hence no "far away" and no "past" — the entire universe would be one single present, connected as a block, and the light-travel wonder we just marveled at wouldn't exist. And crucially, the famous equation E = mc² would collapse: it's precisely because c has this enormous value that converting a tiny bit of matter releases the colossal energy that makes the Sun shine. Without that value, no stars, no heat, no light to cross the void. c is not just a number: it's the quantity that gives the universe its depth of space and time.</p>
+  </section>
+
+
+  <!-- ======================= G ======================= -->
+  <section class="constant" id="G" style="--accent:#9db4d0;">
+    <div class="const-head reveal">
+      <span class="const-symbol">G</span>
+      <span class="const-headtext">
+        <span class="const-index">08 / 14</span>
+        <span class="const-title">G · the gravitational constant</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The same number drops the apple and sets galaxies dancing.</p>
+    <div class="const-value reveal">G = 6,674 × 10⁻¹¹ &nbsp;N·m²·kg⁻²</div>
+
+    <p class="pull reveal">Gravity is the force you feel most — it holds you to the ground every second. And yet, at the scale of atoms, it is by far the weakest force in nature. The whole paradox of G lives in that sentence.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Any two masses attract each other. You and the person sitting next to you, two raindrops, the Earth and the Moon: every mass pulls on every other mass. G is the number that says <em>how strongly</em>. It's the universal exchange rate of gravity — setting the force of attraction between two bodies from their masses and the distance between them. Newton was the first to grasp the incredible: it's the <em>same</em> law, the <em>same</em> G, that drops an apple from a tree and keeps the Moon in its orbit. The heavens and the Earth, thought to obey different rules, answered to the same number.</p>
+    <p class="reveal">And this number is tiny. So tiny that the attraction between two people sitting side by side equals the weight of a grain of sand — imperceptible. Gravity only becomes noticeable when one of the masses is enormous, like a planet. That's why it seems so powerful in daily life (Earth is enormous) while being, fundamentally, the weakest force in the universe.</p>
+    <p class="reveal" style="border-left:3px solid var(--accent); padding-left:1.2rem; color:var(--ink-dim);">A common mix-up worth clearing up: <strong>G</strong> (upper case) is not <strong>g</strong> (lower case). G is the <em>universal</em> gravitational constant, the same throughout the galaxy. g is the acceleration due to gravity <em>at Earth's surface</em> — the famous 9.8 m/s² that makes objects fall here. But g is not universal: it follows from G combined with the mass and radius of <em>our</em> planet. On the Moon, g is six times smaller; on Mars, about three times smaller. Change the planet and g changes; G never moves. One is local and derived, the other is cosmic and fundamental.</p>
+
+    <h3 class="rubric reveal">G, master of the fate of worlds</h3>
+    <p class="reveal">Since G sets the strength of every attraction, it decides the fate of an entire system. Take the Earth and Moon, at their current distance and speed, and imagine being able to turn a dial on G. At its real value, the Moon traces a stable orbit, as it has for billions of years. But if G were much stronger, gravity would win: the Moon would spiral toward us and crash. And if G were much weaker, Earth would hold nothing: the Moon would drift off in a straight line and be lost in the void. Same Earth, same Moon, same initial speed — it's G's value alone that separates a stable world from catastrophe. Try all three.</p>
+
+    <!-- VIZ G : trois destins selon la valeur de G -->
+    <figure class="viz reveal" id="viz-g">
+      <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg">
+        <path class="traj" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+        <circle cx="340" cy="210" r="24" fill="#1c3a52" stroke="#2f5a7a" stroke-width="1.5"/>
+        <text x="340" y="248" font-family="monospace" font-size="11" fill="var(--svg-ink)" text-anchor="middle">Terre</text>
+        <circle class="moon" cx="460" cy="210" r="7" fill="#c8cdd4"/>
+        <text class="verdict" x="340" y="34" font-family="monospace" font-size="14" fill="var(--accent)" text-anchor="middle"></text>
+      </svg>
+      <div class="controls">
+        <button class="sc" data-g="0.25">G very weak</button>
+        <button class="sc active" data-g="1">G normal (ours)</button>
+        <button class="sc" data-g="3.2">G very strong</button>
+      </div>
+      <figcaption>Same Earth, same Moon, same starting speed. Only the value of G changes. It alone decides whether the Moon orbits peacefully, crashes, or escapes into the void.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we measure it</h3>
+    <p class="reveal">Strangely, Newton formulated his law of gravitation in 1687 without ever knowing the value of G. His law said "force is proportional to masses and inversely proportional to the square of distance," but the exact coefficient remained unknown. It took until 1798 and an extraordinarily delicate experiment by Henry Cavendish to measure it at last. Cavendish suspended two small masses on a thin rod, brought two large lead balls close, and measured the infinitesimal twist of the wire under their mutual attraction. An experiment so sensitive he sealed himself out of the room, watching from afar through a telescope so his own body heat wouldn't skew the result.</p>
+    <p class="reveal">And here appears the great paradox of G, which you may find astonishing. Gravity is the force most familiar to us, the one that governs our entire lives — yet G is by far the <em>least</em> precisely known fundamental constant in all of physics. We know the speed of light to the exact decimal; we know the electron's mass to ten significant figures. But G we only have to four or five digits, because gravity is so weak it's nearly impossible to isolate from disturbances. The most ever-present force is the most mysterious.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">Every step you take is a negotiation with G: it's what gives weight to your legs, what pulls back the spoon you drop, what holds the atmosphere around the planet for you to breathe. Without G at its precise value, the air would either escape into space or crush us. The tides that pulse through the oceans? That's the Moon's gravity, via G, lifting the water twice a day.</p>
+    <p class="reveal">At larger scales, G has literally sculpted the visible universe. After the Big Bang, matter was almost perfectly uniform — but not quite. Wherever there was a tiny overdensity, G pulled in a little more matter, which pulled in still more, spreading outward over billions of years. That slow accumulation transformed a uniform fog into stars, galaxies, clusters. Every structure in the cosmos, including the one that made your existence possible, is the patient work of G acting across deep time.</p>
+
+    <h3 class="rubric reveal">On the knife's edge · what if G were different?</h3>
+    <p class="reveal">G governs a cosmic tug-of-war that has been going on since the beginning: on one side gravity, wanting to pull everything together; on the other, pressure and expansion, wanting to spread everything apart. The value of G determines who wins, and by how much — and the current balance is breathtakingly narrow.</p>
+    <p class="reveal">If G were significantly larger, gravity would crush everything: stars would collapse under themselves, burning their fuel in a flash rather than shining for billions of years, and there would never have been the quiet time needed for life to arise. Conversely, if G were significantly smaller, matter would never have gathered densely enough: no stars, no planets, no galaxies — just cold gas thinning forever into the dark. Between these two disasters lies a narrow window where stars can form, endure, and forge in their cores the heavy atoms — carbon, oxygen — that we're made of. Our universe sits in that window. G is not just the number that drops apples: it's one of the finest tunings that makes a habitable cosmos possible.</p>
+  </section>
+
+
+  <!-- ======================= ℏ ======================= -->
+  <section class="constant" id="planck" style="--accent:#c89bd8;">
+    <div class="const-head reveal">
+      <span class="const-symbol">ℏ</span>
+      <span class="const-headtext">
+        <span class="const-index">09 / 14</span>
+        <span class="const-title">ℏ · Planck's constant</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">Proof that the universe isn't smooth — it's made of grains.</p>
+    <div class="const-value reveal">h = 6,626 × 10⁻³⁴ &nbsp;J·s &nbsp;&nbsp;(ℏ = h ⁄ 2π)</div>
+
+    <p class="pull reveal">For centuries, energy was thought to flow like water from a tap: a perfectly continuous stream, adjustable as finely as you liked. Planck's constant revealed the opposite: energy is exchanged only in indivisible packets. Reality, at its core, is made of grains.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Think of a car accelerating. Its speedometer needle seems to sweep through every value without any jump: 30, then 30.1, then 30.12 km/h… a perfectly smooth climb. That's exactly how energy was imagined before 1900: a continuous quantity, adjustable as finely as you wanted. At the atomic scale, reality is entirely different: energy is exchanged only in precise little packets, called <em>quanta</em>. You can't give "half a packet" — it's a whole packet, or nothing. Planck's constant is the number that fixes the size of these packets: the smallest amount of energy exchangeable at a given frequency. It's the elementary grain of reality.</p>
+    <p class="reveal">What does that mean in practice? Take an atom. Its electron can't have just any energy: it's confined to precise "levels," like steps on a staircase, with no intermediate values possible. To move from one step to the next, it must absorb an energy packet of an exact size — no more, no less. And when it drops back down, it spits out that packet as a grain of light, of a well-defined color. That's literally what produces colors: the hue of a flame, a neon sign, a star, tells the story of the precise jumps electrons make inside. Nature doesn't do in-between.</p>
+    <p class="reveal">We never notice this graininess in daily life because the grains are mind-bogglingly small — ℏ's value is tiny. A simple light bulb emits billions of billions of light quanta every second. At that scale, the packets are so numerous and so fine that light seems a smooth, continuous flow, just as a beach seen from a distance looks like a uniform surface, even though it's made of countless grains of sand.</p>
+
+    <!-- VIZ ℏ : le robinet, le filet d'eau révélé fait de gouttes -->
+    <figure class="viz reveal" id="viz-planck">
+      <svg viewBox="0 0 680 380" xmlns="http://www.w3.org/2000/svg">
+        <g class="tap">
+          <rect x="250" y="30" width="120" height="20" rx="5" fill="#3a4250"/>
+          <rect x="330" y="46" width="22" height="26" rx="3" fill="#3a4250"/>
+          <rect x="236" y="22" width="24" height="36" rx="4" fill="#4a5460"/>
+        </g>
+        <g class="water"></g>
+        <ellipse class="pool" cx="341" cy="350" rx="80" ry="12" fill="#2a4a64" opacity="0.5"/>
+        <text class="zoomlab" x="341" y="375" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="middle"></text>
+      </svg>
+      <div class="controls">
+        <label style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);display:flex;align-items:center;gap:0.6rem;flex:1;min-width:240px;">
+          💧 what if water behaved like energy?
+          <input class="zoom" type="range" min="0" max="100" value="0" style="flex:1;accent-color:var(--accent);">
+        </label>
+      </div>
+      <figcaption><strong>A thought experiment.</strong> In reality, water does flow continuously. But imagine for a moment it behaved like energy: it couldn't flow in a smooth stream — it would have to fall drop by drop, in indivisible packets, with gaps between them. That's quantization: energy is exchanged only in precise amounts, and ℏ sets the size of the smallest possible "drop."</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we measure it</h3>
+    <p class="reveal">The story of ℏ begins with an admission of failure. In 1900, Max Planck was trying to explain the color of light emitted by hot objects — a problem where every theory of the day failed miserably, predicting absurdities. In desperation, Planck tried a calculation "as an act of despair," in his own words: what if energy could only be exchanged in small packets, proportional to frequency? To his great surprise, the trick worked perfectly. He thought it was just a mathematical shortcut. It was the birth of quantum physics, the greatest scientific revolution of the 20th century — and Planck spent years accepting that his packets were real.</p>
+    <p class="reveal">Since 2019, ℏ has shared the fate of the speed of light: we stopped measuring it and instead <em>fixed</em> it. Its value is now set by convention, and it's what defines the kilogram. The principle is elegant: a machine called a Kibble balance compares an object's weight not to a reference mass, but to an electrical force that can be measured with extreme precision. And electricity, at its finest level, is governed by quantum effects where ℏ appears. Through this chain, a mass is tied to Planck's constant. Before, the kilogram was a cylinder of metal stored in a vault near Paris; today, any well-equipped lab can "manufacture" a kilogram from a fundamental number. A physical object has been replaced by a constant of the universe.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">All modern technology is steeped in quantum physics, and therefore in ℏ. The chips in your phone and computer rely on the quantum behavior of electrons in semiconductors. The LEDs that light your screen emit light in precise quanta — that's why their color can be chosen exactly. Your laser disc reader, your camera sensor, medical imaging: none of these inventions would exist without our understanding of quanta.</p>
+    <p class="reveal">But ℏ's deepest appearance is a limit that nature imposes on knowledge itself: the <strong>uncertainty principle</strong>, stated by Werner Heisenberg in 1927. It says you can never know, simultaneously and with perfect precision, both a particle's position <em>and</em> its speed. The more precisely you pin down one, the more blurry the other becomes — and ℏ sets exactly the scale of this trade-off.</p>
+    <p class="reveal">Why such a prohibition? Because at the quantum scale, a particle isn't a tiny well-localized ball: it behaves like a <em>wave</em>, a vibration spread across space. And there is an unavoidable geometric tension here. A wave with a very precise position must be a single sharp, narrow spike — but such a spike has no clear wavelength, and hence no defined speed. Conversely, a wave with a perfectly defined speed must be a beautiful regular ripple spread everywhere — but then it's nowhere in particular. You can't have both: it's a property of waves themselves, not a weakness in our instruments. The universe, at its finest grain, refuses to be fully determined. It keeps an irreducible portion of fuzziness.</p>
+
+    <h3 class="rubric reveal">On the knife's edge · what if ℏ were different?</h3>
+    <p class="reveal">ℏ sets the "dose" of quantum weirdness in the universe. Its tiny value explains why the world at our scale seems so orderly, so continuous, so predictable — quantum effects are drowned out by the sheer number of grains.</p>
+    <p class="reveal">If ℏ were much larger, quantum graininess and fuzziness would spill into daily life: ordinary objects would become blurry, unpredictable, able to be in several places at once. A thrown ball would have no clear trajectory. Conversely, if ℏ were zero, quantum physics would vanish — and with it the very stability of matter. Because here's a stunning fact: without quantization, electrons would spiral into atomic nuclei in a fraction of a second. Nothing would hold together. Solid matter, your body, this page, exist only because energy is quantized and ℏ has precisely this value. The grain of reality is not a technical footnote: it's what keeps the universe from collapsing in on itself.</p>
+  </section>
+
+  <!-- ======================= ENCART : TEMPS DE PLANCK ======================= -->
+  <section class="feature" id="planck-time" style="--accent:#c89bd8;">
+    <div class="euler-card reveal" style="background:radial-gradient(120% 140% at 50% 0%, #221733 0%, #11151d 55%, #0b0e14 100%); border-color:#3d2c52;">
+      <div class="kicker" style="color:#c89bd8;">When three giants meet</div>
+      <div class="euler-eq reveal" data-tex="t_P = \sqrt{\dfrac{\hbar\,G}{c^5}} \approx 5{,}4 \times 10^{-44}\ \text{s}"></div>
+      <p style="color:#cdd2da;">You've just met the three giants of physics, each ruling its own domain. <b style="color:#fff;">c</b>, the universe's speed limit. <b style="color:#fff;">G</b>, the force that sculpts worlds. <b style="color:#fff;">ℏ</b>, the grain of energy. Like π, e, and i before them, they seemed to belong to separate kingdoms — spacetime, gravity, the quantum.</p>
+      <p style="color:#cdd2da;">And yet, combining all three in a single formula produces a duration: the <strong style="color:#fff;">Planck time</strong>. It is, as far as we know, the shortest interval of time with any physical meaning — roughly a ten-millionth of a billionth of a billionth of a billionth of a billionth of a second. Below it, our theories themselves break down: "before" and "after" cease to have any clear meaning.</p>
+      <p style="color:#cdd2da;">Its cousin, the <em>Planck length</em>, plays the same role for space: the smallest conceivable distance, the ultimate pixel of reality. Below it, the very notion of "smaller" collapses. Where Euler's identity was the hidden beauty of mathematics, Planck time is the ultimate frontier of physics — the point where the universe stops letting itself be described.</p>
+      <p style="text-align:center; font-style:italic; color:#8a93a3; margin-top:1.6rem;">Three constants measured in <strong style="color:#cdd2da;">our</strong> universe,<br>combined to reveal the ultimate grain of time and space.</p>
+    </div>
+  </section>
+
+
+  <!-- ======================= k_B ======================= -->
+  <section class="constant" id="kb" style="--accent:#e08a6d;">
+    <div class="const-head reveal">
+      <span class="const-symbol">k<sub style="font-size:0.5em;">B</sub></span>
+      <span class="const-headtext">
+        <span class="const-index">10 / 14</span>
+        <span class="const-title">k<sub>B</sub> · Boltzmann's constant</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The translator between the swarming of atoms and the warmth on your skin.</p>
+    <div class="const-value reveal">k = 1,380 649 × 10⁻²³ &nbsp;J·K⁻¹ &nbsp;&nbsp;(exacte)</div>
+
+    <p class="pull reveal">Temperature is not a substance you have more or less of. It's motion: the jostling of billions of atoms. Heat is fast; cold is slow. And k<sub>B</sub> is the number that converts one into the other.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">When you put your hand on a scalding mug, you're not feeling a "heat fluid" passing into your skin. You're feeling billions of molecules vibrating frantically and bombarding your hand. Temperature, at bottom, is nothing more than the <em>average speed of agitation</em> of atoms: the more they wiggle, the hotter it is; when they nearly freeze, it's icy. Heat is motion in disguise.</p>
+    <p class="reveal">But there's a gap between these two descriptions. The atomic world speaks in <em>energy</em> — joules, the energy of agitation, tiny numbers. Our human world speaks in <em>temperature</em> — degrees, what the thermometer reads. How do you go from one to the other? That's precisely k<sub>B</sub>'s role: it's the exact exchange rate between microscopic agitation energy and macroscopic temperature. Hand it the atoms' kinetic energy, and it hands you back degrees. It's the bridge, the dictionary between the invisible and the felt.</p>
+
+    <!-- VIZ k_B : les deux mondes reliés par k_B -->
+    <figure class="viz reveal" id="viz-kb">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <text x="135" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">THE ATOMIC WORLD</text>
+        <rect x="40" y="44" width="190" height="190" rx="6" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <g class="particles"></g>
+        <text x="135" y="262" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="middle">average agitation energy</text>
+        <text class="joules" x="135" y="284" font-family="monospace" font-size="15" fill="var(--accent)" text-anchor="middle">6,1 × 10⁻²¹ J</text>
+        <text x="340" y="120" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="middle">÷ k<tspan baseline-shift="sub" font-size="8">B</tspan></text>
+        <line x1="245" y1="140" x2="430" y2="140" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#kbArr)"/>
+        <defs><marker id="kbArr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="var(--accent)"/></marker></defs>
+        <text x="340" y="162" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="middle">k<tspan baseline-shift="sub" font-size="9">B</tspan> translates</text>
+        <text x="340" y="178" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="middle">agitation into degrees</text>
+        <text x="545" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">WHAT YOU FEEL</text>
+        <rect x="535" y="50" width="20" height="160" rx="10" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="545" cy="222" r="20" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <rect class="merc" x="539" y="120" width="12" height="98" rx="6" fill="var(--accent)"/>
+        <circle cx="545" cy="222" r="14" fill="var(--accent)"/>
+        <text class="temp" x="500" y="60" font-family="monospace" font-size="17" fill="var(--accent)" text-anchor="end">+20 °C</text>
+        <text class="kelvin" x="500" y="80" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="end">293 K</text>
+      </svg>
+      <div class="controls">
+        <label style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);display:flex;align-items:center;gap:0.7rem;flex:1;min-width:260px;">
+          ❄ cold
+          <input class="temp-slider" type="range" min="1" max="3000" value="293" style="flex:1;accent-color:var(--accent);">
+          hot 🔥
+        </label>
+        <span class="readout" style="font-family:var(--mono);color:var(--muted);font-size:0.8rem;">slide to heat or cool</span>
+      </div>
+      <figcaption>On the left, atomic agitation — energy in joules, invisible and minute. On the right, the temperature you feel. k<sub>B</sub> bridges the two: it translates microscopic jostling into degrees. Slide the cursor: from near-stillness to full frenzy, k<sub>B</sub> always converts agitation into temperature.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how we measure it</h3>
+    <p class="reveal">Ludwig Boltzmann, in the 1870s, was one of the first to take atoms seriously — at a time when many scientists still doubted their existence. He understood that all the laws of heat, previously mysterious, could be explained by the statistical motion of countless particles. His constant was born from that bridge between the microscopic and the macroscopic. Tragically, his ideas were so fiercely resisted during his lifetime that they contributed to his despair; he took his own life in 1906, just a few years before the existence of atoms was definitively proven and his work triumphed.</p>
+    <p class="reveal">Like several of its siblings, k<sub>B</sub> ceased to be measured and was instead <em>fixed</em> in 2019: its value now defines the kelvin, the unit of temperature. A degree is no longer anchored to the quirks of water freezing or boiling, but directly to the energy of atoms, via k<sub>B</sub>. Again, a fundamental number has replaced a physical reference.</p>
+
+    <h3 class="rubric reveal">Where you encounter it without knowing</h3>
+    <p class="reveal">At every moment, the air around you is an invisible storm: the molecules surrounding you zip along at nearly 1,800 km/h and strike you billions of times per second. You don't feel it as impacts, but as a gentle ambient temperature — that's k<sub>B</sub> performing its silent translation. Your tire pressure, a balloon swelling in the sun, the whistle of a pressure cooker: all obey the relationship between agitation and temperature that k<sub>B</sub> encodes.</p>
+    <p class="reveal">It also governs the background noise of all electronics. In any circuit, the thermal agitation of electrons creates a random hiss — "thermal noise" — whose intensity is set by k<sub>B</sub>. This is an unavoidable limit for the most sensitive detectors, from telescopes to cameras: to "hear" very faint signals, the instrument often has to be cooled, meaning the very agitation that k<sub>B</sub> puts into equations must be quieted.</p>
+
+    <h3 class="rubric reveal">The arrow of time · why the past is not the future</h3>
+    <p class="reveal">k<sub>B</sub> conceals the most vertiginous idea of all: it's the key to <strong>entropy</strong>, the quantity that measures disorder, and explains why time flows in only one direction. A glass falls and shatters, never the reverse; a drop of ink disperses in water, never gathers itself back; hot coffee cools, never reheats itself. Why? Because there are countless ways to be "disordered" and very few to be "ordered" — so the random motion of billions of particles almost always leads toward more disorder. That's the second law of thermodynamics.</p>
+    <p class="reveal">Boltzmann turned that intuition into an equation, and the formula is so beautiful it's engraved on his tombstone: <em>S = k · log W</em> (where k is k<sub>B</sub>). It says that the entropy (S) of a state is tied, via k<sub>B</sub>, to the number of ways (W) atoms can rearrange themselves with no visible difference. The more ways there are, the greater the entropy. And since the universe slides inexorably toward the most probable states — the most numerous, the most disordered — it acquires a direction: a before and an after. Here's the most stunning fact: the <em>arrow of time</em>, the obvious truth that you can't go back, is not written into the fundamental laws of physics (which work just as well in reverse). It emerges from the pure play of probabilities across countless particles — and k<sub>B</sub> is its measure. Time itself, in its one-way race, bears the signature of this small constant.</p>
+  </section>
+
+
+  <!-- ======================= ZÉRO ABSOLU ======================= -->
+  <section class="constant" id="zero" style="--accent:#7fb0d8;">
+    <div class="const-head reveal">
+      <span class="const-symbol">0 K</span>
+      <span class="const-headtext">
+        <span class="const-index">11 / 14</span>
+        <span class="const-title">Absolute zero</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The lowest temperature that can exist — and which can never be reached.</p>
+    <div class="const-value reveal">0 K &nbsp;=&nbsp; −273,15 °C</div>
+
+    <p class="pull reveal">There's no upper limit to heat: you can always agitate atoms more. But there is a floor to cold, a point below which nothing can descend — because you can't slow down atoms that are already perfectly still.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">As we just saw with k<sub>B</sub>: temperature is simply atomic agitation. Heat is fast; cold is slow. So ask the obvious question: how far down can you cool something? The answer is clear. Cooling means slowing atoms; you reach the ultimate cold when atoms stop moving entirely. At that precise point, there's nothing left to remove — you can't be "more still than perfect stillness." That's absolute zero: the temperature at which all thermal agitation ceases.</p>
+    <p class="reveal">Its value lands at a place that owes nothing to the accident of our thermometer scales: −273.15 °C. Our Celsius scale puts it at that strange number because it was built around water (0 for ice, 100 for boiling), with no knowledge of where the true floor lay. That's why physicists prefer the Kelvin scale, which starts precisely <em>at</em> absolute zero: simply 0 K. On this scale, temperature directly measures agitation, and zero means what it says — nothing.</p>
+
+    <!-- VIZ zéro absolu : refroidissement vers l'immobilité -->
+    <figure class="viz reveal" id="viz-zero">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <text x="160" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">ATOMIC AGITATION</text>
+        <rect x="60" y="44" width="200" height="200" rx="6" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <g class="particles"></g>
+        <text class="state" x="160" y="272" font-family="monospace" font-size="12" fill="var(--accent)" text-anchor="middle">atoms are agitating</text>
+        <text x="500" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">TEMPERATURE</text>
+        <rect x="490" y="50" width="20" height="200" rx="10" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="500" cy="262" r="20" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <rect class="merc" x="494" y="120" width="12" height="138" rx="6" fill="var(--accent)"/>
+        <circle cx="500" cy="262" r="14" fill="var(--accent)"/>
+        <line x1="512" y1="250" x2="524" y2="250" stroke="var(--muted)" stroke-width="1"/>
+        <text x="530" y="254" font-family="monospace" font-size="10" fill="var(--muted)">0 K</text>
+        <text class="kelvin" x="575" y="120" font-family="monospace" font-size="18" fill="var(--accent)">293 K</text>
+        <text class="celsius" x="575" y="142" font-family="monospace" font-size="12" fill="var(--muted)">+20 °C</text>
+      </svg>
+      <div class="controls">
+        <label style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);display:flex;align-items:center;gap:0.7rem;flex:1;min-width:260px;">
+          cool →
+          <input class="cool" type="range" min="0" max="293" value="293" style="flex:1;accent-color:var(--accent);">
+        </label>
+        <span style="font-family:var(--mono);color:var(--muted);font-size:0.8rem;">slide to the left</span>
+      </div>
+      <figcaption>Cooling means slowing atoms. As temperature drops, their agitation weakens. At absolute zero — 0 kelvin, −273.15 °C — motion ceases entirely: that is, by definition, the most complete cold that can exist.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Its history and how close we've gotten</h3>
+    <p class="reveal">The idea dates to the 17th century, when it was noticed that a cooled gas contracts regularly: extending the trend inevitably points to a temperature where its volume would reach zero — an impassable wall. In the 19th century, Lord Kelvin formalized this limit and gave it its scale. The universe itself never reaches this zero: intergalactic space, bathed in the fossil glow of the Big Bang, hovers around 2.7 K, and the coldest naturally occurring place ever found, the Boomerang Nebula, drops to about 1 K — without touching the bottom.</p>
+    <p class="reveal">Laboratories do infinitely better than nature. Using lasers and magnetic fields that slow atoms one by one, physicists have reached astonishing temperatures: the current record, set by a German team, is 38 <em>picokelvins</em> — that's 0.000 000 000 038 degrees above absolute zero. One way to write it: −273.149 999 999 999 96 °C. More decimal places, closer and closer to the wall… but never touching it.</p>
+
+    <h3 class="rubric reveal">Where it hides in your life</h3>
+    <p class="reveal">Absolute zero isn't just a laboratory curiosity: it's the reference point that makes temperature <em>absolute</em>, meaning true. When you say one object is "twice as hot" as another, that only makes sense in kelvins, counted from absolute zero — never in Celsius. It's also by approaching this floor that matter's strangest states appear: superconductivity (electricity flowing with zero resistance) and superfluidity (a liquid flowing with zero friction, capable of climbing the walls of its container). The MRI machine at your hospital runs on superconducting magnets cooled to within a whisker of absolute zero.</p>
+
+    <h3 class="rubric reveal">The unreachable · why the wall always recedes</h3>
+    <p class="reveal">Here is the most beautiful paradox of absolute zero: it is defined with perfect precision, and yet no creature, no machine, anywhere in the universe, will ever reach it. This is not a matter of technical means — it's a matter of principle, inscribed in the laws of physics.</p>
+    <p class="reveal">The reason lies in the very way cooling works. To remove heat from an object, you must transfer it to something colder — and each such operation can carry away only a <em>fraction</em> of the remaining agitation, never all of it at once. So you advance in steps: remove half the heat, then half of what remains, then half again… You approach zero in ever-smaller jumps, but since there will always be half of something left, you never arrive. It would take infinitely many steps.</p>
+
+    <!-- VIZ : l'asymptote du refroidissement -->
+    <figure class="viz reveal" id="viz-asymp">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- axes -->
+        <line x1="70" y1="50" x2="70" y2="290" stroke="var(--line)" stroke-width="1"/>
+        <line x1="70" y1="290" x2="610" y2="290" stroke="var(--line)" stroke-width="1"/>
+        <text x="58" y="64" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="end">hot</text>
+        <text x="600" y="328" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="end">time, effort →</text>
+        <!-- ligne du zéro absolu, jamais touchée -->
+        <line x1="70" y1="290" x2="610" y2="290" stroke="#e07a7a" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="610" y="310" font-family="monospace" font-size="12" fill="#e07a7a" text-anchor="end">0 K — never reached</text>
+        <!-- la courbe asymptotique -->
+        <path d="M 70.0 60.0 L 74.4 70.3 L 78.8 80.1 L 83.3 89.5 L 87.7 98.5 L 92.1 107.1 L 96.5 115.3 L 100.9 123.1 L 105.3 130.6 L 109.8 137.7 L 114.2 144.6 L 118.6 151.1 L 123.0 157.3 L 127.4 163.2 L 131.8 168.9 L 136.3 174.3 L 140.7 179.5 L 145.1 184.5 L 149.5 189.2 L 153.9 193.7 L 158.3 198.0 L 162.8 202.2 L 167.2 206.1 L 171.6 209.8 L 176.0 213.4 L 180.4 216.9 L 184.8 220.1 L 189.3 223.3 L 193.7 226.3 L 198.1 229.1 L 202.5 231.8 L 206.9 234.5 L 211.3 236.9 L 215.8 239.3 L 220.2 241.6 L 224.6 243.8 L 229.0 245.8 L 233.4 247.8 L 237.8 249.7 L 242.3 251.5 L 246.7 253.2 L 251.1 254.9 L 255.5 256.4 L 259.9 258.0 L 264.3 259.4 L 268.8 260.8 L 273.2 262.1 L 277.6 263.3 L 282.0 264.5 L 286.4 265.7 L 290.8 266.7 L 295.3 267.8 L 299.7 268.8 L 304.1 269.7 L 308.5 270.6 L 312.9 271.5 L 317.3 272.3 L 321.8 273.1 L 326.2 273.9 L 330.6 274.6 L 335.0 275.3 L 339.4 276.0 L 343.8 276.6 L 348.3 277.2 L 352.7 277.8 L 357.1 278.3 L 361.5 278.8 L 365.9 279.3 L 370.3 279.8 L 374.8 280.3 L 379.2 280.7 L 383.6 281.1 L 388.0 281.5 L 392.4 281.9 L 396.8 282.3 L 401.3 282.6 L 405.7 282.9 L 410.1 283.3 L 414.5 283.6 L 418.9 283.8 L 423.3 284.1 L 427.8 284.4 L 432.2 284.6 L 436.6 284.9 L 441.0 285.1 L 445.4 285.3 L 449.8 285.5 L 454.3 285.7 L 458.7 285.9 L 463.1 286.1 L 467.5 286.3 L 471.9 286.4 L 476.3 286.6 L 480.8 286.8 L 485.2 286.9 L 489.6 287.0 L 494.0 287.2 L 498.4 287.3 L 502.8 287.4 L 507.3 287.5 L 511.7 287.6 L 516.1 287.8 L 520.5 287.9 L 524.9 288.0 L 529.3 288.0 L 533.8 288.1 L 538.2 288.2 L 542.6 288.3 L 547.0 288.4 L 551.4 288.4 L 555.8 288.5 L 560.3 288.6 L 564.7 288.6 L 569.1 288.7 L 573.5 288.8 L 577.9 288.8 L 582.3 288.9 L 586.8 288.9 L 591.2 289.0 L 595.6 289.0 L 600.0 289.1" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+        <!-- flèche soulignant que la courbe frôle sans toucher -->
+        <text x="600" y="92" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="end">the curve flattens and grazes zero…</text>
+        <text x="600" y="110" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="end">without ever touching it</text>
+      </svg>
+      <figcaption>Temperature drops quickly at first, then more and more slowly: the curve lies down along absolute zero and follows it to infinity without ever touching it. This is an asymptote — a limit you approach forever, but which remains forever out of reach.</figcaption>
+    </figure>
+
+    <p class="reveal" style="border-left:3px solid var(--accent); padding-left:1.2rem; color:var(--ink-dim);">Another way to <em>feel</em> the impossibility, through pure logic: cooling means transferring heat to something colder. But to strip an object of its last trace of heat and bring it to 0 K, you would need a reservoir… <em>colder than absolute zero</em> — which doesn't exist, since nothing can be more still than total stillness. The ultimate cold has nowhere to go. (Physicists don't cool only by contact: they use tricks like gas expansion or laser atom-braking. But all these methods run into the same limit, exactly where this logic predicts it.)</p>
+    <p class="reveal">And there's an even deeper reason, lurking beneath the first. Even if, by some miracle, you reached the end of that infinite series of steps, a "perfectly still" atom would remain impossible. Remember ℏ and the uncertainty principle: a completely frozen particle would have both a perfectly defined position and a perfectly defined velocity — precisely what nature forbids. There always remains one last irreducible tremor, the "zero-point motion," that nothing can ever extinguish. Absolute zero is thus an ideal boundary: you can aim for it, approach it to within billionths of a degree, define it with perfect rigor — but it remains, forever, on the other side of the possible.</p>
+  </section>
+
+
+  <!-- ======================= α ======================= -->
+  <section class="constant" id="alpha" style="--accent:#cf8fa0;">
+    <div class="const-head reveal">
+      <span class="const-symbol greek">α</span>
+      <span class="const-headtext">
+        <span class="const-index">12 / 14</span>
+        <span class="const-title">Alpha · the fine-structure constant</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">A pure number, without units, that every civilization in the universe would measure the same — and that nobody can explain.</p>
+    <div class="const-value reveal">α ≈ 1 ⁄ 137,036 ≈ 0,007 297</div>
+
+    <p class="pull reveal">Most constants depend on our units: the speed of light changes in value depending on whether you measure in metres or miles. Not α. It's a bare number, the same everywhere, for everyone. And its value, 1/137, remains one of the greatest puzzles in physics.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">The universe holds together through a handful of fundamental forces. One of them, electromagnetism, governs light, electricity, and above all the attraction between electric charges — it's what binds electrons to the nucleus in every atom, and therefore what makes atoms, molecules, solid matter, chemistry, and you possible. α is the number that says <em>how strongly</em> this interaction acts. It is, in a sense, the strength of the electromagnetic glue of the universe: the vigor with which light and charged matter talk to each other.</p>
+    <p class="reveal">More precisely, every time a charged particle — an electron, say — emits or absorbs a photon, α measures the probability of that exchange occurring. A value of about 1/137 means electromagnetism is a <em>moderate</em> force: strong enough to firmly hold electrons around nuclei and build stable atoms, but not so strong as to lock everything in a rigid grip. All the delicacy of matter lives in that intermediate value.</p>
+
+    <h3 class="rubric reveal">A number that belongs to no one</h3>
+    <p class="reveal">Here is what makes α unique among our constants. The speed of light is 299,792,458… <em>metres per second</em> — change the unit, and the number changes. Boltzmann's constant is counted in joules per kelvin. All constants drag units behind them, inherited from human conventions: the metre, the second, the degree. α has none. It's a pure ratio, a bare number: you get it by combining other constants (the electron's charge, the speed of light, Planck's constant) in a way that cancels all the units. What's left is just a number: 0.007 297…, about 1/137.</p>
+    <p class="reveal">The consequence is vertiginous. If we ever encountered a civilization from another star, we would share with them neither metres, nor seconds, nor kilograms — those units are earthly conventions. But we would <em>necessarily</em> agree on α. They would measure 1/137, just as we do, because it's a property of the universe itself, not of our way of carving it up. α is one of the very few numbers you could exchange with an extraterrestrial and be certain of being understood. It's a word in the fundamental vocabulary of the cosmos.</p>
+
+    <h3 class="rubric reveal">A number that appears everywhere</h3>
+    <p class="reveal">What feeds α's aura of mystery is that it doesn't stay quietly in its spectral corner: it resurfaces, again and again, in corners of physics that seem to have nothing to do with each other. As if the same number were tattooed just beneath the skin of matter, everywhere at once.</p>
+    <p class="reveal">A few examples, among dozens. In the simplest hydrogen atom, the electron orbits the nucleus at a very precise speed: exactly α times the speed of light, 0.73% of c — about 2,200 kilometres per second. Why that fraction? Because α governs the strength of the electrical bond holding it there. Another appearance: compare the force with which two electrons repel each other to the energy of a photon whose wavelength equals their separation — the ratio, again, is α. Or this: α dictates by exactly how much the light emitted by atoms is very slightly shifted, doubled, structured. Each time, seemingly unrelated situations, and yet the same 1/137 reappears, like a signature slipped into the margins. This ubiquity is what convinced physicists that α is not an accident, but a deep key to the universe — a key whose lock has yet to be found.</p>
+
+    <h3 class="rubric reveal">Its history and the mystery of 137</h3>
+    <p class="reveal">α first appeared in 1916 from the pen of Arnold Sommerfeld, who was trying to explain a troubling detail: looking very closely at the light emitted by atoms, certain spectral lines that seemed simple were actually split into very close pairs. This delicate lace pattern in the spectrum was called the "fine structure" — and α is the number that governs the splitting. Hence its name.</p>
+    <p class="reveal">But quickly, α became an obsession far beyond this spectral detail. Why 1/137? Richard Feynman, who devoted his life to quantum electrodynamics, described it as "one of the greatest mysteries of physics: a magic number that comes to us with no understanding by man," and said every good physicist should have it on their wall to remind themselves of everything they don't know.</p>
+    <p class="reveal">No one was more haunted by this number than Wolfgang Pauli, Nobel laureate and one of the founders of quantum physics. He spent part of his life trying, in vain, to crack the secret of 137, to the point of joking: "When I die, my first question to the devil will be: what is the meaning of the fine-structure constant?" Fate reserved for him a coincidence that symbol-lovers have never forgotten: admitted to hospital with cancer, he was assigned room number… 137. He died there. "Did you see the room number?" he asked a visitor. A century later, the mystery is intact: no theory <em>predicts</em> the value of α. We measure it with prodigious precision — to the tenth decimal place — without knowing why nature chose that one.</p>
+    <p class="reveal">The puzzle has even spilled beyond science. For some, the fact that a number so precise, so perfectly tuned to make matter and life possible, should appear "without reason," resembles an intention — a signature left in the foundations of the universe, which some have wished to read as God's. Others see it instead as proof that we're missing a deeper theory, which will someday explain this 1/137 as naturally as we today explain the rainbow. Physics, prudently, does not decide: it only observes that a dimensionless number, nestled at the heart of everything, keeps its secret jealously. And perhaps that's the most beautiful part — that at the center of such a powerful science there remains a child's question that no one can answer: why that one?</p>
+
+    <h3 class="rubric reveal">On the knife's edge · what if α were different?</h3>
+    <p class="reveal">α may be the most finely tuned of all our constants — the one where even the slightest variation would have the most devastating consequences. Since it sets the strength of the bond between light and matter, it governs all of chemistry, and therefore all possibility of complexity, and therefore of life.</p>
+    <p class="reveal">If α were appreciably larger, electromagnetic attraction would become so strong that reactions at the cores of stars would be thrown into chaos, and above all, an exquisitely delicate process would be ruined: the forging of carbon. Stars make carbon — the key element of life — through an energetic resonance of breathtaking precision, which depends directly on α. A shift of a few percent in either direction, and stars would produce almost no carbon, nor oxygen: the universe would remain sterile, without the rich chemistry we are made of. If α were instead much weaker, chemical bonds would be too floppy to hold complex molecules together. Between these two failures opens a narrow window — and α sits in it, almost exactly at the center. We exist because a number nobody can explain happens to have precisely the value it needs to.</p>
+  </section>
+
+
+  <!-- ======================= H₀ ======================= -->
+  <section class="constant" id="hubble" style="--accent:#8fb89b;">
+    <div class="const-head reveal">
+      <span class="const-symbol">H₀</span>
+      <span class="const-headtext">
+        <span class="const-index">13 / 14</span>
+        <span class="const-title">H-zero · the Hubble constant</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The rate at which the universe expands — and the very measure of its age.</p>
+    <div class="const-value reveal">H₀ ≈ 70 &nbsp;(km ⁄ s) par mégaparsec</div>
+
+    <p class="pull reveal">The universe is not a fixed stage on which things play out. It's inflating. Every galaxy is moving away from every other, space itself is stretching — and H₀ is the number that says how fast.</p>
+
+    <h3 class="rubric reveal">What it is</h3>
+    <p class="reveal">Here is one of the greatest discoveries in human history: the universe is expanding. Distant galaxies are all moving away from us, and the farther a galaxy is, the faster it recedes. H₀ — the Hubble constant — is the exact rate of this recession: it links a galaxy's distance to the speed at which it's pulling away, through a beautifully simple rule: velocity = H₀ × distance. A galaxy twice as far recedes twice as fast; three times as far, three times as fast. It's not that distant galaxies have more powerful engines: it's that there is more stretching space between them and us, and therefore more accumulated recession.</p>
+    <p class="reveal">A word about the name "constant," which can be misleading. H₀ is constant <em>in space</em>: at any given moment, it has the same value everywhere in the universe — it's today's expansion rate, the same for all observers. But it's not fixed <em>in time</em>: its value changes very slowly over billions of years. That's the whole point of the small subscript "zero": H₀ denotes the <em>current</em> rate, its value in our era.</p>
+    <p class="reveal">The crucial and most counter-intuitive point is this: galaxies are not moving <em>through</em> space like shrapnel from an explosion. It's space itself, between them, that is stretching and expanding. Picture raisins in a rising bread dough: no raisin "moves" through the dough, yet all of them drift apart as the dough expands. Seen from any raisin, all the others are fleeing — and the farthest ones flee fastest, because there's more dough expanding between them. There is no center to this expansion: every point sees the same thing. We are not at the middle of an explosion; we are everywhere at once in a dilation.</p>
+
+    <!-- VIZ : l'expansion de l'espace (loi de Hubble) -->
+    <figure class="viz reveal" id="viz-hubble" style="margin:2rem 0;">
+      <svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg">
+        <!-- clip : tout ce qui dépasse le cadre est masqué -->
+        <defs>
+          <clipPath id="hubble-frame"><rect x="2" y="2" width="676" height="396" rx="10"/></clipPath>
+          <radialGradient id="galGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#cfe0ee" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#cfe0ee" stop-opacity="0"/>
+          </radialGradient>
+          <marker id="hub-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#8fb89b"/>
+          </marker>
+        </defs>
+        <rect x="2" y="2" width="676" height="396" rx="10" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <g clip-path="url(#hubble-frame)">
+          <!-- la grille comobile (espace-temps) : dilatée par le même facteur que les galaxies -->
+          <g class="grid" stroke="var(--accent)" stroke-width="1" opacity="0"></g>
+          <!-- vecteurs de fuite : longueur proportionnelle à la distance (v = H0 d) -->
+          <g class="vectors" stroke="#8fb89b" stroke-width="1.6" opacity="0"></g>
+          <!-- galaxies (taille fixe : les objets liés ne se dilatent pas) -->
+          <g class="galaxies"></g>
+        </g>
+        <!-- readout dans le cadre -->
+        <text class="scaleReadout" x="18" y="384" font-family="monospace" font-size="12" fill="var(--muted)"></text>
+      </svg>
+      <div class="controls">
+        <button class="play">Start expansion</button>
+        <button class="reset">Recommencer</button>
+        <button class="toggle-grid">Show grid</button>
+        <button class="toggle-obs">Change observer</button>
+        <span class="readout">scale factor <b class="aval">×1.00</b></span>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#cfe0ee;width:9px;height:9px;border-radius:50%"></i> observed galaxy</span>
+        <span><i class="dot" style="background:#8fb89b;width:9px;height:9px;border-radius:50%"></i> our vantage point</span>
+        <span><i class="dot" style="background:#8fb89b"></i> recession speed (∝ distance)</span>
+      </div>
+      <figcaption>It's not galaxies racing through space: it's space itself — the grid — that expands and carries them along. Each galaxy stays fixed on the grid; only distances grow. A galaxy twice as far recedes twice as fast: that's Hubble's law. And the picture is the same from any point — there is no center.</figcaption>
+    </figure>
+
+
+    <h3 class="rubric reveal">Its history and how we measure it</h3>
+    <p class="reveal">At the start of the 20th century, it was still believed that the universe consisted only of our galaxy — unchanging and eternal. Then, in the 1920s, Edwin Hubble — building crucially on the work of astronomer Henrietta Leavitt, who had figured out how to measure cosmic distances — observed that distant galaxies were fleeing, and the farther away they were, the faster. It was proof that the universe was growing. The implication was staggering: if everything is moving apart today, then everything was closer yesterday, and closer still before that. Rewind the film far enough, and you reach a moment when everything was concentrated in a single point. That's how the concept of the Big Bang was born.</p>
+    <p class="reveal">And here is a hidden gift inside H₀: its value gives the age of the universe. Since it describes the rate of expansion, "rewinding" at that rate lets you calculate the time elapsed since the beginning — about 13.8 billion years. The same number that measures the swelling of space also measures the age of time.</p>
+    <p class="reveal">How do you actually measure H₀? For any given galaxy, you need two pieces of information: how far away it is, and how fast it's receding. The <em>speed</em> is the easy part: you read it in the color of its light. A source moving away sees its light stretched toward the red — the faster it flees, the greater the shift. The <em>distance</em> is the real puzzle, and the key lies in the idea of a "standard candle." Imagine every light bulb in the universe were exactly 100 watts: seeing one glowing dimly in the distance, you could deduce its distance from its apparent brightness alone. Nature provides such calibrated candles — certain pulsating stars (Cepheids), which Henrietta Leavitt discovered betray their true luminosity through their pulsation rhythm, and certain supernova explosions, which all shine at nearly the same wattage. By comparing their known true brightness to their apparent brightness, you work backwards to their distance.</p>
+    <p class="reveal">Once you have, for hundreds of galaxies, the distance-speed pair, you plot them: recession speed as a function of distance. The points line up on a straight line, and the slope of that line <em>is</em> H₀. That's exactly what Edwin Hubble first plotted in the late 1920s — the graph that revealed the universe is growing.</p>
+
+    <h3 class="rubric reveal">Where it hides in your life</h3>
+    <p class="reveal">H₀ seems remote, yet it touches you through light. The "redshift" used to measure it is the same phenomenon that makes an ambulance siren sound lower as it drives away: the light from fleeing galaxies is stretched toward the red, exactly as sound is stretched toward lower pitches. That color drift, visible in any telescope, is what betrays the expansion.</p>
+    <p class="reveal">More deeply, H₀ defines the entire extent of what you can ever know about the universe. Because space is expanding and light takes time to reach us, there is a horizon beyond which galaxies are receding from us faster than their light can reach us: their image will never arrive. H₀ sets the size of this observable "bubble," the volume of cosmos that will forever be accessible to us. Everything else — the vast majority of the universe, possibly infinite — will remain forever out of view.</p>
+
+    <h3 class="rubric reveal">On the knife's edge · the Hubble tension</h3>
+    <p class="reveal">Here is one of the biggest mysteries in <em>current</em> physics — not an old puzzle long since resolved, but a crisis unfolding right now. To set the stage: H₀ has one true value today, the same everywhere. Whatever method you use to measure it, you should arrive at the same number. And yet two major methods stubbornly refuse to agree.</p>
+    <p class="reveal">The first looks at the <em>recent</em> universe: measuring standard candles in nearby galaxies directly gives an expansion rate of about 73. The second starts from the universe <em>as it was at its beginning</em>: analyzing the fossil glow emitted 380,000 years after the Big Bang — the "cosmic microwave background," the oldest light in the cosmos — and running the expansion equations forward to today predicts a current value of about 67. Note: these two approaches are not comparing "nearby" galaxies to "distant" ones. They're confronting two <em>eras</em> and two <em>calculation paths</em> — one anchored in the present, the other at the dawn of time — that should nonetheless arrive at the same H₀ today.</p>
+    <p class="reveal">They don't. The gap between 73 and 67 has become too sharp, too persistent, to be dismissed as a simple measurement error: this is the <strong>Hubble tension</strong>. What does it mean? Perhaps something fundamental is missing in our understanding of the early universe, or of dark energy, or perhaps entirely new physics is needed. Two perspectives on the same cosmos return two irreconcilable answers, and nobody yet knows why. It may be the crack through which the next revolution in physics will pour.</p>
+  </section>
+
+  <!-- ======================= Λ ======================= -->
+  <section class="constant" id="lambda" style="--accent:#9b8fd0;">
+    <div class="const-head reveal">
+      <span class="const-symbol">Λ</span>
+      <span class="const-headtext">
+        <span class="const-index">14 / 14</span>
+        <span class="const-title">Lambda · the cosmological constant</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">The invisible energy that fills the void, accelerates the universe, and will seal its fate.</p>
+    <div class="const-value reveal">Λ ≈ 1,1 × 10⁻⁵² m⁻²</div>
+
+    <p class="pull reveal">We just saw that the universe is expanding. But here is the final twist: not only is it expanding, its expansion is <em>accelerating</em>. Something is pushing the cosmos to stretch faster and faster — and we have no idea what it is.</p>
+
+    <h3 class="rubric reveal">What it represents</h3>
+    <p class="reveal">Everyone expected the expansion of the universe to gradually slow down: after all, the gravity of all that matter should act as a brake, the way Earth slows a stone thrown skyward. In 1998, while measuring distant supernovae, astronomers found exactly the opposite — and the shock was seismic. The expansion isn't slowing: it's <em>accelerating</em>. Something is acting as a kind of cosmic anti-gravity, pushing space apart faster and faster. We gave this something a name that confesses our ignorance: <strong>dark energy</strong>. And Λ, the cosmological constant, is the number that measures its strength.</p>
+    <p class="reveal">The dizzying idea is that dark energy might be a property of the vacuum itself. In physics, the void is not nothing: even perfectly empty space carries an intrinsic energy, vanishingly small per cubic metre, that nudges space to expand. Because this push is tied to the vacuum, the bigger the universe grows, the more vacuum there is, and the stronger the total push becomes — which is why the acceleration keeps building. The most staggering part? Dark energy accounts for roughly 68% of everything in the universe. Ordinary matter — stars, planets, you, everything ever seen or touched — comes to just 5%. We live in a cosmos whose essence is almost entirely unknown to us.</p>
+
+    <!-- VIZ : composition de l'univers — camembert statique -->
+    <figure class="viz reveal" id="viz-darkenergy" style="margin:2rem 0;">
+      <svg viewBox="0 0 680 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Composition of the universe: 68% dark energy, 27% dark matter, 5% ordinary matter">
+        <!-- camembert (départ à midi, sens horaire) -->
+        <g>
+          <path d="M 175 125 L 175.00 30.00 A 95 95 0 0 1 204.36 34.65 Z" fill="#9ec6da" stroke="var(--bg-soft)" stroke-width="2"/>
+          <path d="M 175 125 L 204.36 34.65 A 95 95 0 0 1 260.96 165.45 Z" fill="#5a6175" stroke="var(--bg-soft)" stroke-width="2"/>
+          <path d="M 175 125 L 260.96 165.45 A 95 95 0 1 1 175.00 30.00 Z" fill="#9b8fd0" stroke="var(--bg-soft)" stroke-width="2"/>
+        </g>
+        <!-- pourcentages internes (parts assez grandes) -->
+        <text x="227" y="98"  font-family="Georgia,serif" font-size="14" fill="#e9ebef" text-anchor="middle" font-weight="bold">27 %</text>
+        <text x="130" y="158" font-family="Georgia,serif" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="bold">68 %</text>
+        <!-- ligne de rappel + label pour la part 5 % (trop fine) -->
+        <line x1="189" y1="55" x2="225" y2="22" stroke="var(--muted)" stroke-width="1"/>
+        <text x="228" y="19" font-family="Georgia,serif" font-size="12" fill="var(--ink-dim)" text-anchor="start">5 %</text>
+
+        <!-- légende détaillée à droite -->
+        <g font-family="Georgia,serif">
+          <rect x="360" y="56"  width="14" height="14" rx="2" fill="#9b8fd0"/>
+          <text x="384" y="64"  font-size="14" fill="var(--ink)">dark energy</text>
+          <text x="384" y="82"  font-size="11" fill="var(--muted)">68% — what Λ measures</text>
+
+          <rect x="360" y="108" width="14" height="14" rx="2" fill="#5a6175"/>
+          <text x="384" y="116" font-size="14" fill="var(--ink)">dark matter</text>
+          <text x="384" y="134" font-size="11" fill="var(--muted)">27% — invisible, revealed by its gravity</text>
+
+          <rect x="360" y="160" width="14" height="14" rx="2" fill="#9ec6da"/>
+          <text x="384" y="168" font-size="14" fill="var(--ink)">ordinary matter</text>
+          <text x="384" y="186" font-size="11" fill="var(--muted)">5% — everything we've ever observed</text>
+        </g>
+        <!-- synthèse -->
+        <text x="340" y="240" font-family="Georgia,serif" font-size="13" fill="var(--ink-dim)" text-anchor="middle" font-style="italic">95% of the universe remains, to this day, unknown to us.</text>
+      </svg>
+      <figcaption>Of all the content of the universe, dark energy (Λ) accounts for roughly 68%, dark matter for 27%, and ordinary matter — the stuff everything we've ever observed is made of — for barely 5%.</figcaption>
+    </figure>
+
+    <div class="callout reveal">
+      <p class="callout-kicker">⟡ &nbsp;Don't confuse them · dark matter ≠ dark energy</p>
+      <p>The word "dark" appears twice, for two completely opposite things. <strong>Dark matter</strong> is matter: invisible — it emits no light — but it has mass, and therefore gravity that <em>attracts</em>. We infer it because galaxies spin too fast to be held together by visible matter alone: something unseen keeps them from flying apart. It makes up 27% of the universe.</p>
+      <p><strong>Dark energy</strong>, by contrast, is not matter at all, and does exactly the opposite: instead of attracting, it <em>repels</em> — it is what pushes space apart and accelerates the expansion. It, and it alone, is what Λ measures.</p>
+      <p>In short: one holds, the other scatters. Dark matter glues the universe together; dark energy tears it apart. And caught between the two, ordinary matter — stars, planets, us — barely registers on the scales.</p>
+    </div>
+
+    <p class="reveal">What is the value of Λ, and how do we know it? Its official unit is baffling — "metre to the power of minus two" — because in Einstein's equations, Λ expresses a kind of curvature of space, the inverse of an area. The raw number (roughly 0.000…1 with a hundred and fifty zeros, in m⁻²) means nothing to anyone; cosmologists prefer to express it as that famous 68% share of the universe's content. Its measurement rests on distant supernovae: in 1998, two independent teams found that these explosions, used as standard candles, appeared <em>fainter</em> — and therefore farther — than a decelerating expansion would predict. The only explanation that held up: the expansion is accelerating. Since then, Λ has been confirmed and refined by cross-checking with the cosmic microwave background and the large-scale distribution of galaxies across the sky.</p>
+
+    <h3 class="rubric reveal">Its history and the worst prediction in physics</h3>
+    <p class="reveal">Λ has had a rollercoaster history. Einstein introduced it first, in 1917, for a reason that is now deeply ironic: he wanted to <em>stop</em> his universe from moving. His equations predicted a cosmos that had to collapse or expand, while he believed it to be eternal and static; so he added Λ as a counterweight to hold it still. When Hubble demonstrated that the universe was indeed expanding, Einstein removed Λ, reportedly calling it — so the legend goes — "the greatest mistake of my life." Eighty years later, the discovery of acceleration brought it back in triumph: Einstein had been wrong about the reason, but the term he invented was entirely real.</p>
+    <p class="reveal">One problem remains, and it is colossal. When physicists try to <em>calculate</em> the energy of the vacuum from quantum theory, they get a number vastly larger than the observed value — not ten times larger, not a thousand times, but around 10<sup>120</sup> times too large. A 1 followed by a hundred and twenty zeros. This is, by an enormous margin, the worst disagreement between theory and observation in the history of science — soberly dubbed "the vacuum catastrophe." Either our understanding of the quantum vacuum is profoundly incomplete, or some unknown mechanism cancels this energy with near-perfect precision, but not quite. Λ is tiny, but not zero — and nobody knows why it has precisely this value, neither too large nor exactly nothing.</p>
+
+    <h3 class="rubric reveal">On the razor's edge · the fate of everything</h3>
+    <p class="reveal">Λ is not merely the greatest theoretical puzzle in cosmology: it is the number that decides the end of the world — literally, the end of the universe. The tug of war between gravity (which wants to gather everything together) and dark energy (which wants to scatter it all apart) seals the fate of the cosmos, and the value of Λ determines which side wins.</p>
+    <p class="reveal">With the value we observe, dark energy wins. The expansion will keep accelerating, and in the far future — tens of billions of years from now — galaxies will be receding from one another so fast that their light will cease to reach us. The sky will slowly empty. Beings alive then would see only a dark and solitary cosmos, with no hint of the billions of galaxies that will have vanished beyond the horizon. Over the very longest timescales, this fate has a chilling name: the Big Freeze — a universe stretching toward cold and void, forever. And had Λ been just a little larger, the expansion would have been so violent, so early, that no galaxy, no star, no planet would ever have had time to form — the universe would have torn itself apart before it contained anything at all. That Λ is so extraordinarily small, just enough to give the universe time to build stars and planets and us before sweeping it all away: this is the last, and perhaps the deepest, of the fine-tunings that make our existence possible.</p>
+  </section>
+
+
+  <!-- ======================= conclusion ======================= -->
+  <section class="conclusion" id="conclusion">
+    <p class="kicker reveal">epilogue</p>
+    <h2 class="reveal">Fourteen numbers, and the whole universe fits inside.</h2>
+
+    <p class="reveal">We started with a circle. With the simplest ratio imaginable — one turn divided by one width — and here we are, a handful of numbers later, standing before the void that pushes galaxies apart and decides the end of time. In between, there was the growth that feeds on itself, the impossible number that turned out to be indispensable, the proportion that haunts seashells and sunflowers, the speed that nothing can exceed, the ultimate grain of reality, and the absolute cold where even motion comes to a stop.</p>
+
+    <p class="reveal">Along the way, a dividing line emerged. Some of these numbers are <strong>necessary truths</strong>: π, e, i, φ would be the same in any universe, because they describe nothing — they simply <em>are</em>, inscribed in logic before a single star existed. The others are <strong>measurements</strong>: c, G, ℏ, α, H₀, Λ cannot be derived, only observed, and nothing tells us why they have the values they do rather than any other. The first kind, you discover with a pencil. The second, you have to wrench from the sky.</p>
+
+    <p class="reveal">And that is where the vertigo hides. Nothing compelled these measured values to be what they are. Gravity just a shade stronger, dark energy a little less restrained, the fine-structure constant shifted by a hair — and there would be no stars, no heavy atoms, no chemistry, no time for anything to assemble itself and eventually ask why. That all fourteen of these numbers should have, each of them, precisely the values needed for a universe to contemplate itself: that is the mystery neither the pencil nor the telescope has yet solved.</p>
+
+    <p class="closing reveal">You are made of the same constants as the stars. To know them a little is to know yourself a little.</p>
+  </section>
+
+  <!-- ======================= partage ======================= -->
+  <section class="share reveal" id="partage">
+    <p>Enjoyed the journey? Share it with someone who wonders about the mysteries of the universe.</p>
+    <div class="share-actions">
+      <button type="button" id="share-btn" class="primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+      <button type="button" id="copy-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copy link
+      </button>
+    </div>
+    <p class="copied-note" id="copied-note" role="status" aria-live="polite"></p>
+  </section>
+
+  <footer class="end">end of the journey · fourteen numbers that hold the universe</footer>
+
+</main>
+
+<script>
+  // ----- apparition au scroll (reveal) -----
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold: 0.12, rootMargin: "0px 0px -8% 0px"});
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+  // ----- bascule thème clair / sombre -----
+  (function(){
+    const btn=document.getElementById('theme-toggle'); if(!btn) return;
+    btn.addEventListener('click',()=>{
+      const light=document.body.classList.toggle('light');
+      btn.textContent = light ? '☀' : '☾';
+      btn.setAttribute('aria-pressed', light ? 'true' : 'false');
+    });
+  })();
+
+  // ----- barre de progression de lecture -----
+  const rail = document.getElementById('rail');
+  function onScroll(){
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+    if(rail) rail.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // ----- champ d'étoiles fixe (canvas) -----
+  (function(){
+    const c = document.getElementById('stars'); if(!c) return;
+    const ctx = c.getContext('2d');
+    let stars = [], w, hgt;
+    function resize(){
+      w = c.width = window.innerWidth;
+      hgt = c.height = window.innerHeight;
+      const n = Math.round(w*hgt/9000);
+      stars = [];
+      for(let i=0;i<n;i++){
+        stars.push({
+          x: Math.random()*w, y: Math.random()*hgt,
+          r: Math.random()*1.1+0.2,
+          base: Math.random()*0.5+0.25,
+          tw: Math.random()*0.02+0.004,
+          ph: Math.random()*Math.PI*2
+        });
+      }
+    }
+    function draw(t){
+      ctx.clearRect(0,0,w,hgt);
+      for(const s of stars){
+        const a = s.base + 0.35*Math.sin(s.ph + t*s.tw);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(220,228,242,'+Math.max(0,a).toFixed(3)+')';
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(draw);
+  })();
+
+  document.addEventListener("DOMContentLoaded", function () {
+    function renderTex() {
+      document.querySelectorAll('[data-tex]').forEach(el => {
+        try { katex.render(el.getAttribute('data-tex'), el, {displayMode:true, throwOnError:false}); }
+        catch(e){ el.textContent = el.getAttribute('data-tex'); }
+      });
+    }
+    if (window.katex) renderTex(); else window.addEventListener('load', renderTex);
+  });
+
+  // ----- barre de symboles : surlignage de la section courante -----
+  const navLinks = Array.from(document.querySelectorAll('nav.symbols a'));
+  const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        const id = '#'+en.target.id;
+        navLinks.forEach(a=>{
+          const on = a.getAttribute('href')===id;
+          a.classList.toggle('active', on);
+          if(on){ document.documentElement.style.setProperty('--nav-accent', a.dataset.accent); a.style.color = a.dataset.accent; }
+          else { a.style.color=''; }
+        });
+      }
+    });
+  }, {rootMargin: "-45% 0px -45% 0px"});
+  sections.forEach(s=> s && obs.observe(s));
+
+  // =================== VIZ π : le cercle qui se déroule ===================
+  (function(){
+    const root = document.getElementById('viz-pi'); if(!root) return;
+    const NS='http://www.w3.org/2000/svg', PI=Math.PI;
+    const r=60, d=2*r, C=2*PI*r, baseY=270, startX=40, cxC=startX+r, cyC=baseY-r;
+    const curve=root.querySelector('.curve'), diam=root.querySelector('.diam'),
+          diamLabel=root.querySelector('.diamLabel'), stamps=root.querySelector('.stamps'),
+          segWhole=root.querySelector('.segWhole'), segFrac=root.querySelector('.segFrac'),
+          val=root.querySelector('.val'), ticksG=root.querySelector('.ticks'),
+          playBtn=root.querySelector('.play');
+    [{n:1,l:'1'},{n:2,l:'2'},{n:3,l:'3'},{n:PI,l:'π'}].forEach(t=>{
+      const x=startX+t.n*d, isPi=t.l==='π';
+      const tk=document.createElementNS(NS,'line');
+      tk.setAttribute('x1',x);tk.setAttribute('x2',x);tk.setAttribute('y1',baseY-6);tk.setAttribute('y2',baseY+6);
+      tk.setAttribute('stroke',isPi?'#e0a96d':'var(--line)');tk.setAttribute('stroke-width',isPi?1.5:1);ticksG.appendChild(tk);
+      const tx=document.createElementNS(NS,'text');tx.setAttribute('x',x);tx.setAttribute('y',baseY+22);
+      tx.setAttribute('text-anchor','middle');tx.setAttribute('fill',isPi?'#e0a96d':'var(--muted)');
+      tx.setAttribute('font-family','monospace');tx.setAttribute('font-size','11');tx.textContent=t.l;ticksG.appendChild(tx);
+    });
+    function buildPath(p){
+      const flat=p*C, arc=C-flat, ex=startX+flat;
+      if(arc<0.5) return `M ${startX} ${baseY} L ${startX+C} ${baseY}`;
+      const th=arc/r, cx=ex, cy=baseY-r, a0=PI/2, s=Math.max(2,Math.ceil(th*24/PI));
+      let pts=[]; for(let i=0;i<=s;i++){const a=a0-th*i/s;pts.push(`${(cx+r*Math.cos(a)).toFixed(2)} ${(cy+r*Math.sin(a)).toFixed(2)}`);}
+      return `M ${startX} ${baseY} L ${ex} ${baseY} L `+pts.join(' L ');
+    }
+    function drawCircle(){let pts=[];for(let i=0;i<=64;i++){const a=-PI/2+2*PI*i/64;pts.push(`${(cxC+r*Math.cos(a)).toFixed(2)} ${(cyC+r*Math.sin(a)).toFixed(2)}`);}curve.setAttribute('d','M '+pts.join(' L ')+' Z');curve.setAttribute('opacity',1);}
+    function setUnroll(p){
+      curve.setAttribute('d',buildPath(p)); const dist=p*C;
+      if(p>=0.999){val.innerHTML='π';segWhole.setAttribute('x2',startX+3*d);segWhole.setAttribute('opacity',1);
+        segFrac.setAttribute('x1',startX+3*d);segFrac.setAttribute('x2',startX+C);segFrac.setAttribute('opacity',1);curve.setAttribute('opacity',0.22);}
+      else{val.textContent=(dist/d).toFixed(3).replace('.',',');segWhole.setAttribute('opacity',0);segFrac.setAttribute('opacity',0);curve.setAttribute('opacity',1);}
+    }
+    let raf=null;
+    function intro(){return new Promise(res=>{drawCircle();diamLabel.setAttribute('opacity',1);const dur=1500,t0=performance.now();
+      function fr(now){let p=(now-t0)/dur;if(p>1)p=1;const e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;const y=cyC+(baseY-cyC)*e;
+        diam.setAttribute('x1',startX);diam.setAttribute('x2',startX+d);diam.setAttribute('y1',y);diam.setAttribute('y2',y);diam.setAttribute('opacity',1);
+        diamLabel.setAttribute('x',startX+d/2);diamLabel.setAttribute('y',y-12);
+        if(p<1)requestAnimationFrame(fr);else stamp();}
+      function stamp(){[1,2].forEach((k,idx)=>{setTimeout(()=>{const s=document.createElementNS(NS,'line');
+        s.setAttribute('x1',startX+k*d);s.setAttribute('x2',startX+(k+1)*d);s.setAttribute('y1',baseY);s.setAttribute('y2',baseY);
+        s.setAttribute('stroke','#b98ce0');s.setAttribute('stroke-width',3);s.setAttribute('stroke-linecap','round');s.setAttribute('opacity',0);stamps.appendChild(s);
+        let o0=performance.now();(function fd(now){let q=(now-o0)/420;if(q>1)q=1;s.setAttribute('opacity',String(0.7*Math.sin(q*PI)));if(q<1)requestAnimationFrame(fd);})(performance.now());},idx*260);});
+        setTimeout(()=>{let o0=performance.now();(function fo(now){let q=(now-o0)/500;if(q>1)q=1;diam.setAttribute('opacity',String(1-q));diamLabel.setAttribute('opacity',String(1-q));
+          if(q<1)requestAnimationFrame(fo);else{stamps.innerHTML='';res();}})(performance.now());},700);}
+      requestAnimationFrame(fr);});}
+    function unroll(){return new Promise(res=>{const dur=3200,t0=performance.now();
+      function fr(now){let p=(now-t0)/dur;if(p>1)p=1;const e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;setUnroll(e);if(p<1)requestAnimationFrame(fr);else res();}requestAnimationFrame(fr);});}
+    async function play(){playBtn.disabled=true;reset(false);await intro();await unroll();playBtn.disabled=false;}
+    function reset(redraw=true){if(raf)cancelAnimationFrame(raf);diam.setAttribute('opacity',0);diamLabel.setAttribute('opacity',0);stamps.innerHTML='';
+      segWhole.setAttribute('opacity',0);segFrac.setAttribute('opacity',0);val.textContent='3,000';if(redraw)drawCircle();}
+    playBtn.addEventListener('click',play);
+    root.querySelector('.reset').addEventListener('click',()=>{playBtn.disabled=false;reset(true);});
+    drawCircle();
+  })();
+
+  // =================== VIZ e : convergence des intérêts ===================
+  (function(){
+    const root=document.getElementById('viz-e'); if(!root) return;
+    const NS='http://www.w3.org/2000/svg';
+    const barsG=root.querySelector('.bars'), freqEl=root.querySelector('.freq'), amtEl=root.querySelector('.amt'),
+          eLine=root.querySelector('.eLine'), eLabel=root.querySelector('.eLabel'), playBtn=root.querySelector('.play');
+    const x0=60, x1=640, yBot=280, yTop=40;   // y: 1$ -> yBot, 3$ -> yTop
+    const e=Math.E;
+    const steps=[{n:1,lab:'1 fois / an'},{n:2,lab:'2 fois / an'},{n:4,lab:'4 fois (trimestre)'},
+                 {n:12,lab:'chaque mois'},{n:365,lab:'chaque jour'},{n:1e6,lab:'à chaque instant'}];
+    function val(n){return Math.pow(1+1/n,n);}     // entre 2 et e
+    function yOf(amount){ return yBot - (amount-1)/(3-1)*(yBot-yTop); } // 1$..3$
+    // place la ligne e
+    const ey=yOf(e); eLine.setAttribute('y1',ey); eLine.setAttribute('y2',ey);
+    eLabel.setAttribute('x',x0+6); eLabel.setAttribute('y',ey-7); eLabel.setAttribute('text-anchor','start');
+    const bw=58, gap=( (x1-x0) - steps.length*bw )/(steps.length+1);
+    let bars=[];
+    function build(){
+      barsG.innerHTML=''; bars=[];
+      steps.forEach((st,k)=>{
+        const x=x0+gap+(bw+gap)*k;
+        const rect=document.createElementNS(NS,'rect');
+        rect.setAttribute('x',x); rect.setAttribute('width',bw);
+        rect.setAttribute('y',yBot); rect.setAttribute('height',0);
+        rect.setAttribute('rx',4); rect.setAttribute('fill','#7fc99a'); rect.setAttribute('opacity',0.25);
+        barsG.appendChild(rect);
+        const cap=document.createElementNS(NS,'text');
+        cap.setAttribute('x',x+bw/2); cap.setAttribute('y',yBot+16); cap.setAttribute('text-anchor','middle');
+        cap.setAttribute('font-family','monospace'); cap.setAttribute('font-size','9'); cap.setAttribute('fill','var(--muted)');
+        cap.textContent = st.n>=1e6?'∞':st.n; barsG.appendChild(cap);
+        const amt=document.createElementNS(NS,'text');
+        amt.setAttribute('x',x+bw/2); amt.setAttribute('y',yBot-6); amt.setAttribute('text-anchor','middle');
+        amt.setAttribute('font-family','monospace'); amt.setAttribute('font-size','10'); amt.setAttribute('fill','#7fc99a'); amt.setAttribute('opacity',0);
+        barsG.appendChild(amt);
+        bars.push({rect,amt,st,x,target:val(st.n)});
+      });
+    }
+    let idx=-1;
+    function reveal(k){
+      const b=bars[k]; const v=b.target; const yT=yOf(v);
+      const t0=performance.now(), dur=600, hEnd=yBot-yT;
+      (function fr(now){let p=(now-t0)/dur;if(p>1)p=1;const ez=1-Math.pow(1-p,3);
+        b.rect.setAttribute('y',yBot-hEnd*ez);b.rect.setAttribute('height',hEnd*ez);b.rect.setAttribute('opacity',0.25+0.55*ez);
+        if(p<1)requestAnimationFrame(fr);})(performance.now());
+      b.amt.textContent=v.toFixed(3).replace('.',',')+' $'; b.amt.setAttribute('opacity',1); b.amt.setAttribute('y',yT-6);
+      freqEl.textContent=b.st.lab; amtEl.textContent=v.toFixed(3).replace('.',',')+' $';
+    }
+    function step(){ if(idx<bars.length-1){ idx++; reveal(idx); if(idx>=bars.length-1) playBtn.textContent='Au plus proche de e'; } }
+    function reset(){ idx=-1; build(); freqEl.textContent='1 fois / an'; amtEl.textContent='2,000 $'; playBtn.textContent="Calculer l'intérêt plus souvent"; playBtn.disabled=false; }
+    playBtn.addEventListener('click',step);
+    root.querySelector('.reset').addEventListener('click',reset);
+    build();
+  })();
+
+  // =================== VIZ i : multiplier par i = tourner 90° ===================
+  (function(){
+    const root=document.getElementById('viz-i'); if(!root) return;
+    const NS='http://www.w3.org/2000/svg';
+    const cx=340, cy=180, R=120;
+    const vec=root.querySelector('.vec'), tip=root.querySelector('.vtip'), vlabel=root.querySelector('.vlabel'),
+          arc=root.querySelector('.arc'), posEl=root.querySelector('.pos'), axticks=root.querySelector('.axticks'), playBtn=root.querySelector('.play');
+    // graduations 1 et -1 sur chaque axe
+    [['1',cx+R,cy+14,'middle'],['−1',cx-R,cy+14,'middle'],['i',cx+8,cy-R+4,'start'],['−i',cx+8,cy+R+4,'start']].forEach(g=>{
+      const t=document.createElementNS(NS,'text');t.setAttribute('x',g[1]);t.setAttribute('y',g[2]);t.setAttribute('text-anchor',g[3]);
+      t.setAttribute('font-family','monospace');t.setAttribute('font-size','11');t.setAttribute('fill','var(--muted)');t.textContent=g[0];axticks.appendChild(t);
+    });
+    const labels=['1','i','−1','−i'];     // après 0,1,2,3 quarts de tour
+    let quarter=0;
+    function placeAt(angleRad,label){
+      const x=cx+R*Math.cos(angleRad), y=cy-R*Math.sin(angleRad);
+      vec.setAttribute('x2',x); vec.setAttribute('y2',y); tip.setAttribute('cx',x); tip.setAttribute('cy',y);
+      vlabel.setAttribute('x',x+ (Math.cos(angleRad)>=0?10:-18)); vlabel.setAttribute('y',y+ (Math.sin(angleRad)>0?-10:18)); vlabel.textContent=label;
+    }
+    function reset(){quarter=0; arc.setAttribute('d',''); placeAt(0,'1'); posEl.textContent='1'; playBtn.disabled=false;}
+    function rotate(){
+      if(quarter>=4){ reset(); return; }
+      const a0=quarter*Math.PI/2, a1=(quarter+1)*Math.PI/2;
+      const t0=performance.now(), dur=700;
+      playBtn.disabled=true;
+      (function fr(now){let p=(now-t0)/dur;if(p>1)p=1;const e=p<0.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+        const a=a0+(a1-a0)*e; placeAt(a, p<1?'':labels[(quarter+1)%4]);
+        // arc de trace
+        const sx=cx+ (R+0)*Math.cos(a0), sy=cy-(R)*Math.sin(a0);
+        const ex=cx+R*Math.cos(a), ey=cy-R*Math.sin(a);
+        arc.setAttribute('d',`M ${sx.toFixed(1)} ${sy.toFixed(1)} A ${R} ${R} 0 0 0 ${ex.toFixed(1)} ${ey.toFixed(1)}`);
+        if(p<1)requestAnimationFrame(fr); else { quarter++; posEl.textContent=labels[quarter%4]; placeAt(a1,labels[quarter%4]);
+          playBtn.disabled=false; playBtn.textContent = quarter>=4?'Back to start':'Multiply by i again'; }
+      })(performance.now());
+    }
+    playBtn.addEventListener('click',rotate);
+    root.querySelector('.reset').addEventListener('click',()=>{playBtn.textContent='Multiplier par i';reset();});
+    placeAt(0,'1');
+  })();
+
+  // =================== VIZ √2 : décimales défilantes ===================
+  (function(){
+    const root=document.getElementById('viz-sqrt2'); if(!root) return;
+    const win=root.querySelector('.window'), btn=root.querySelector('.toggle');
+    const D="41421356237309504880168872420969807856967187537694807317667973799073247846210703885038753432764157273501384623091229702492483605585073721264412149709993583141322266592750559275579995050115278206057147010955997160597027453459686201472851741864088919860955232923048430871432145083976260362799525140798968725339654633180882964062061525835239505474575028775996172983557522033753185701135437460340849884716038689997069900481503054402779031645424782306849293691862158057846311159666871301301561856898723724";
+    const WIN=26; let pos=8, timer=null;
+    function update(){ let s=''; for(let k=0;k<WIN;k++){ s+=D[(pos+k)%D.length]; } win.textContent=s; }
+    function tick(){ pos=(pos+1)%D.length; update(); }
+    btn.addEventListener('click',()=>{
+      if(timer){ clearInterval(timer); timer=null; btn.textContent="Auto-scroll ▶"; }
+      else { timer=setInterval(tick,90); btn.textContent="Stop ❚❚"; }
+    });
+    update();
+  })();
+
+  // =================== VIZ φ : rectangle d'or + spirale ===================
+  (function(){
+    const root=document.getElementById('viz-phirect'); if(!root) return;
+    const rectsG=root.querySelector('.rects'), spiral=root.querySelector('.spiral');
+    const PHI=(1+Math.sqrt(5))/2;
+    const X0=70,Y0=60, W=400, H=W/PHI;
+    function compute(depth){
+      let x=X0,y=Y0,w=W,h=H, sqs=[], dir=0, arcs=[];
+      for(let i=0;i<depth;i++){
+        const s=Math.min(w,h); let sx,sy;
+        if(dir===0){ sx=x; sy=y; sqs.push({x:sx,y:sy,s}); arcs.push({cx:sx+s,cy:sy+s,r:s,a0:Math.PI,a1:1.5*Math.PI}); x+=s; w-=s; }
+        else if(dir===1){ sx=x; sy=y; sqs.push({x:sx,y:sy,s}); arcs.push({cx:sx,cy:sy+s,r:s,a0:1.5*Math.PI,a1:2*Math.PI}); y+=s; h-=s; }
+        else if(dir===2){ sx=x+w-s; sy=y; sqs.push({x:sx,y:sy,s}); arcs.push({cx:sx,cy:sy,r:s,a0:0,a1:0.5*Math.PI}); w-=s; }
+        else { sx=x; sy=y+h-s; sqs.push({x:sx,y:sy,s}); arcs.push({cx:sx+s,cy:sy,r:s,a0:0.5*Math.PI,a1:Math.PI}); h-=s; }
+        dir=(dir+1)%4;
+      }
+      return {sqs,arcs,rem:{x,y,w,h}};
+    }
+    function render(depth){
+      const {sqs,arcs,rem}=compute(depth); let html='';
+      html+=`<rect x="${rem.x.toFixed(1)}" y="${rem.y.toFixed(1)}" width="${rem.w.toFixed(1)}" height="${rem.h.toFixed(1)}" fill="rgba(224,169,109,0.12)" stroke="var(--accent)" stroke-width="2"/>`;
+      sqs.forEach(q=>{ html+=`<rect x="${q.x.toFixed(1)}" y="${q.y.toFixed(1)}" width="${q.s.toFixed(1)}" height="${q.s.toFixed(1)}" fill="none" stroke="var(--line)" stroke-width="1.5"/>`; });
+      rectsG.innerHTML=html;
+      let d='';
+      arcs.forEach((ar,i)=>{
+        const x1=ar.cx+ar.r*Math.cos(ar.a0), y1=ar.cy+ar.r*Math.sin(ar.a0);
+        const x2=ar.cx+ar.r*Math.cos(ar.a1), y2=ar.cy+ar.r*Math.sin(ar.a1);
+        if(i===0) d+=`M ${x1.toFixed(1)} ${y1.toFixed(1)} `;
+        d+=`A ${ar.r.toFixed(1)} ${ar.r.toFixed(1)} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)} `;
+      });
+      spiral.setAttribute('d',d);
+    }
+    let depth=1;
+    root.querySelector('.step').addEventListener('click',()=>{ if(depth<8){depth++; render(depth);} });
+    root.querySelector('.reset').addEventListener('click',()=>{ depth=1; render(depth); });
+    render(depth);
+  })();
+
+  // =================== VIZ φ : phyllotaxie (tournesol) ===================
+  (function(){
+    const root=document.getElementById('viz-phi'); if(!root) return;
+    const seedsG=root.querySelector('.seeds'), slider=root.querySelector('.angle'),
+          angval=root.querySelector('.angval'), goldBtn=root.querySelector('.gold');
+    const cx=340,cy=190,N=380,c=8.2;
+    function render(angleDeg){
+      const ga=angleDeg*Math.PI/180; let html='';
+      for(let i=0;i<N;i++){
+        const r=c*Math.sqrt(i), a=i*ga;
+        const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
+        const t=i/N, col=`hsl(${38+t*12}, ${70-t*20}%, ${55+t*8}%)`;
+        html+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.6+t*1.4).toFixed(1)}" fill="${col}" opacity="0.92"/>`;
+      }
+      seedsG.innerHTML=html; angval.textContent=angleDeg.toFixed(1).replace('.',',')+'°';
+    }
+    slider.addEventListener('input',e=>render(parseFloat(e.target.value)));
+    goldBtn.addEventListener('click',()=>{ slider.value=137.5; render(137.5); });
+    render(137.5);
+  })();
+
+  // =================== VIZ γ : escalier vs rampe, double flèche ===================
+  (function(){
+    const root=document.getElementById('viz-gamma'); if(!root) return;
+    const NS='http://www.w3.org/2000/svg';
+    const stairs=root.querySelector('.stairs'), logc=root.querySelector('.logcurve'),
+          gapG=root.querySelector('.gap'), fracsG=root.querySelector('.fracs'), gval=root.querySelector('.gval'),
+          loglab=root.querySelector('.loglab'), stairlab=root.querySelector('.stairlab'), playBtn=root.querySelector('.play');
+    const x0=55,y0=300,xMax=650,yTop=45, Nmax=10, sx=(xMax-x0)/Nmax;
+    let H=0; for(let k=1;k<=Nmax;k++)H+=1/k; const vMax=H*1.08, sy=(y0-yTop)/vMax;
+    function logPath(){ let d=''; for(let i=0;i<=120;i++){ const xx=1+Nmax*i/120, yy=Math.log(xx); d+=(i?'L':'M')+(x0+(xx-1)*sx).toFixed(1)+' '+(y0-yy*sy).toFixed(1)+' '; } return d; }
+    logc.setAttribute('d',logPath());
+    loglab.setAttribute('x',x0+sx*6.4); loglab.setAttribute('y',y0-Math.log(7.4)*sy+24);
+    stairlab.setAttribute('x',x0+10); stairlab.setAttribute('y',yTop+14);
+    let n=0;
+    function drawStairs(){
+      let d='M '+x0+' '+y0+' ', h=0;
+      for(let k=1;k<=n;k++){ h+=1/k; const xA=x0+(k-1)*sx, xB=x0+k*sx, y=y0-h*sy;
+        d+='L '+xA.toFixed(1)+' '+y.toFixed(1)+' L '+xB.toFixed(1)+' '+y.toFixed(1)+' '; }
+      stairs.setAttribute('d',d);
+    }
+    function drawFracs(){
+      fracsG.innerHTML=''; let h=0;
+      for(let k=1;k<=n;k++){ h+=1/k; const xc=x0+(k-0.5)*sx, y=y0-h*sy;
+        const t=document.createElementNS(NS,'text');
+        t.setAttribute('x',xc); t.setAttribute('y',y-7); t.setAttribute('text-anchor','middle');
+        t.setAttribute('font-family','monospace'); t.setAttribute('font-size','10'); t.setAttribute('fill','#e0a96d'); t.setAttribute('opacity','0.85');
+        t.textContent = k===1?'1':('+1/'+k); fracsG.appendChild(t);
+      }
+    }
+    function showGap(){
+      gapG.innerHTML=''; if(n<1) return;
+      let Hc=0; for(let k=1;k<=n;k++)Hc+=1/k;
+      // position x = milieu de la dernière marche
+      const xx=x0+(n-0.5)*sx;
+      // valeur du log À CETTE position x exacte (x correspond à n-0.5 en abscisse réelle, soit n-0.5+1... )
+      // l'abscisse réelle au pixel xx : xReal = 1 + (xx-x0)/sx
+      const xReal=1+(xx-x0)/sx;        // = n - 0.5 + ... en fait = 1+(n-0.5)
+      const logAtX=Math.log(xReal);
+      const yH=y0-Hc*sy;               // sommet de l'escalier (plat) à cette marche
+      const yL=y0-logAtX*sy;           // rampe à la même abscisse
+      // ligne pointillée strictement entre les deux, sans marqueur
+      const ln=document.createElementNS(NS,'line');
+      ln.setAttribute('x1',xx);ln.setAttribute('x2',xx);
+      ln.setAttribute('y1',yH);ln.setAttribute('y2',yL);
+      ln.setAttribute('stroke','var(--svg-ink)');ln.setAttribute('stroke-width','1.4');
+      ln.setAttribute('stroke-dasharray','3 3');
+      gapG.appendChild(ln);
+      // étiquette "écart" à côté
+      const lab=document.createElementNS(NS,'text');
+      lab.setAttribute('x',xx+8);lab.setAttribute('y',(yH+yL)/2+4);
+      lab.setAttribute('font-family','monospace');lab.setAttribute('font-size','10');lab.setAttribute('fill','var(--svg-ink)');
+      lab.textContent='gap'; gapG.appendChild(lab);
+      // la valeur affichée reste l'écart "officiel" H_n - ln(n)
+      gval.textContent=(Hc-Math.log(n)).toFixed(4).replace('.',',');
+    }
+    function step(){ if(n<Nmax){ n++; drawStairs(); drawFracs(); showGap(); if(n>=Nmax) playBtn.textContent='→ vers γ'; } }
+    function reset(){ n=0; stairs.setAttribute('d',''); fracsG.innerHTML=''; gapG.innerHTML=''; gval.textContent='—'; playBtn.textContent="Monter d'un cran"; }
+    playBtn.addEventListener('click',step);
+    root.querySelector('.reset').addEventListener('click',reset);
+  })();
+
+  // =================== VIZ c : photon Soleil → Terre ===================
+  (function(){
+    const root=document.getElementById('viz-c'); if(!root) return;
+    const photon=root.querySelector('.photon'), trail=root.querySelector('.trail'),
+          clock=root.querySelector('.clock'), arr=root.querySelector('.arr'), playBtn=root.querySelector('.play');
+    const x0=121, x1=589, totalSec=500; let raf=null;
+    function setPos(p){
+      const x=x0+(x1-x0)*p;
+      photon.setAttribute('cx',x); photon.setAttribute('opacity',1); trail.setAttribute('x2',x);
+      const sec=p*totalSec, m=Math.floor(sec/60), s=Math.floor(sec%60);
+      clock.textContent = m+' min '+(s<10?'0':'')+s+' s';
+    }
+    function play(){
+      playBtn.disabled=true; arr.textContent='—';
+      const dur=5000, t0=performance.now();
+      function fr(now){ let p=(now-t0)/dur; if(p>1)p=1; setPos(p);
+        if(p<1) raf=requestAnimationFrame(fr);
+        else { arr.textContent='8 min 20 s plus tard'; playBtn.disabled=false; } }
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(fr);
+    }
+    function reset(){ cancelAnimationFrame(raf); photon.setAttribute('opacity',0); trail.setAttribute('x2',x0); clock.textContent='0 min 00 s'; arr.textContent='—'; playBtn.disabled=false; }
+    playBtn.addEventListener('click',play);
+    root.querySelector('.reset').addEventListener('click',reset);
+    reset();
+  })();
+
+  // =================== VIZ c : échelle du regard dans le passé ===================
+  (function(){
+    const root=document.getElementById('viz-clook'); if(!root) return;
+    const rows=root.querySelector('.rows');
+    const data=[
+      {o:'The Moon', d:'1.3 seconds', t:'you see it 1.3 s in the past'},
+      {o:'The Sun', d:'8 minutes', t:'it could have gone out, you wouldn’t know for 8 min'},
+      {o:'Jupiter', d:'about 40 minutes', t:'its image is almost an hour old'},
+      {o:'Proxima Centauri', d:'4.2 years', t:'the nearest star, seen 4 years ago'},
+      {o:'Andromeda Galaxy', d:'2.5 million years', t:'its light left before humanity existed'},
+    ];
+    let html=''; const x0=30, w=620, y0=34, rh=56;
+    data.forEach((d,i)=>{
+      const y=y0+i*rh;
+      html+=`<text x="${x0}" y="${y}" font-family="monospace" font-size="16" fill="var(--svg-ink)">${d.o}</text>`;
+      html+=`<text x="${x0+w}" y="${y}" font-family="monospace" font-size="16" fill="var(--accent)" text-anchor="end">⟵ ${d.d}</text>`;
+      html+=`<text x="${x0}" y="${y+21}" font-family="Georgia,serif" font-size="14" fill="var(--muted)" font-style="italic">${d.t}</text>`;
+      if(i<data.length-1) html+=`<line x1="${x0}" y1="${y+34}" x2="${x0+w}" y2="${y+34}" stroke="var(--line)" stroke-width="1"/>`;
+    });
+    rows.innerHTML=html;
+  })();
+
+  // =================== VIZ G : trois destins selon la valeur de G ===================
+  (function(){
+    const root=document.getElementById('viz-g'); if(!root) return;
+    const moon=root.querySelector('.moon'), traj=root.querySelector('.traj'),
+          verdict=root.querySelector('.verdict'), btns=[...root.querySelectorAll('.sc')];
+    const cx=340, cy=210, R=120, Rearth=24;
+    const GM0=40, vCirc=Math.sqrt(GM0/R);
+    let raf=null;
+    function compute(factor){
+      const GM=GM0*factor;
+      let x=cx+R, y=cy, vx=0, vy=-vCirc;
+      const dt=0.5; let pts=[[x,y]], outcome='orbit';
+      for(let i=0;i<3000;i++){
+        const dx=x-cx, dy=y-cy, r=Math.hypot(dx,dy);
+        if(r<Rearth+3){ outcome='crash'; break; }
+        if(r>R*3.6){ outcome='escape'; break; }
+        const a=-GM/(r*r), ax=a*dx/r, ay=a*dy/r;
+        vx+=ax*dt; vy+=ay*dt; x+=vx*dt; y+=vy*dt;
+        pts.push([x,y]);
+        if(factor===1 && i>20 && Math.hypot(x-(cx+R),y-cy)<5){ outcome='orbit'; break; }
+      }
+      return {pts,outcome};
+    }
+    function run(factor){
+      cancelAnimationFrame(raf);
+      const {pts,outcome}=compute(factor);
+      traj.setAttribute('d',''); verdict.textContent=''; moon.setAttribute('opacity','1');
+      const total=pts.length; let i=0;
+      function step(){
+        i+=Math.max(1,Math.floor(total/160)); if(i>=total) i=total-1;
+        let d='M '+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+        for(let k=1;k<=i;k++) d+=' L '+pts[k][0].toFixed(1)+' '+pts[k][1].toFixed(1);
+        traj.setAttribute('d',d);
+        moon.setAttribute('cx',pts[i][0]); moon.setAttribute('cy',pts[i][1]);
+        if(i<total-1) raf=requestAnimationFrame(step);
+        else {
+          if(outcome==='crash'){ verdict.textContent='✦ the Moon crashes — gravity crushes everything'; moon.setAttribute('opacity','0.25'); }
+          else if(outcome==='escape'){ verdict.textContent='→ the Moon escapes — nothing holds it back'; }
+          else { verdict.textContent='∞ stable orbit — a world is possible'; loop(pts); }
+        }
+      }
+      step();
+    }
+    function loop(pts){
+      let i=0; const total=pts.length;
+      function spin(){ i=(i+2)%total; moon.setAttribute('cx',pts[i][0]); moon.setAttribute('cy',pts[i][1]); raf=requestAnimationFrame(spin); }
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(spin);
+    }
+    btns.forEach(b=>b.addEventListener('click',()=>{
+      btns.forEach(x=>x.classList.remove('active')); b.classList.add('active');
+      run(parseFloat(b.dataset.g));
+    }));
+    run(1);
+  })();
+
+  // =================== VIZ ℏ : le robinet, filet révélé fait de gouttes ===================
+  (function(){
+    const root=document.getElementById('viz-planck'); if(!root) return;
+    const water=root.querySelector('.water'), slider=root.querySelector('.zoom'), zoomlab=root.querySelector('.zoomlab');
+    const cx=341, top=72, bottom=338;
+    function render(z){
+      const H=bottom-top; let html='';
+      if(z<0.12){
+        const w=6 - z*10;
+        html+=`<rect x="${cx-w/2}" y="${top}" width="${w}" height="${H}" fill="#6fb3d8" opacity="0.9"/>`;
+        zoomlab.textContent="real water: a perfectly continuous stream";
+      } else {
+        const dropR=3+z*9, gap=dropR*2+z*22, wob=z*4;
+        let y=top+dropR, idx=0;
+        while(y<bottom){
+          const dx=Math.sin(idx*1.7)*wob;
+          html+=`<ellipse cx="${(cx+dx).toFixed(1)}" cy="${y.toFixed(1)}" rx="${(dropR*0.8).toFixed(1)}" ry="${dropR.toFixed(1)}" fill="#6fb3d8" opacity="0.92"/>`;
+          y+=gap; idx++;
+        }
+        if(z<0.4) zoomlab.textContent="if it behaved like energy, the stream couldn't stay smooth…";
+        else if(z<0.75) zoomlab.textContent="…it would break into drops, separated by emptiness…";
+        else zoomlab.textContent="…and water would only fall in packets, never continuously";
+      }
+      water.innerHTML=html;
+    }
+    slider.addEventListener('input',e=>render(e.target.value/100));
+    render(0);
+  })();
+
+  // =================== VIZ k_B : les deux mondes reliés par k_B ===================
+  (function(){
+    const root=document.getElementById('viz-kb'); if(!root) return;
+    const partG=root.querySelector('.particles'), joules=root.querySelector('.joules'),
+          merc=root.querySelector('.merc'), tempT=root.querySelector('.temp'), kelvinT=root.querySelector('.kelvin'),
+          slider=root.querySelector('.temp-slider');
+    const kB=1.380649e-23;
+    const bx=40, by=44, bw=190, bh=190, pad=14, N=14;
+    let parts=[];
+    for(let i=0;i<N;i++){
+      parts.push({ x:bx+pad+Math.random()*(bw-2*pad), y:by+pad+Math.random()*(bh-2*pad), a:Math.random()*Math.PI*2 });
+    }
+    let speed=1.0, raf=null, running=false;
+    // vitesse ∝ √T (physiquement juste) ; calibré pour aller du quasi-figé au quasi-insaisissable sur 1..3000 K
+    function tempToSpeed(T){ return 0.12 + Math.sqrt(T/3000)*6.5; }
+    function frame(){
+      const r=3.2;
+      parts.forEach(p=>{
+        p.x+=Math.cos(p.a)*speed; p.y+=Math.sin(p.a)*speed;
+        if(p.x<bx+pad){p.x=bx+pad; p.a=Math.PI-p.a;}
+        if(p.x>bx+bw-pad){p.x=bx+bw-pad; p.a=Math.PI-p.a;}
+        if(p.y<by+pad){p.y=by+pad; p.a=-p.a;}
+        if(p.y>by+bh-pad){p.y=by+bh-pad; p.a=-p.a;}
+      });
+      let html=''; parts.forEach(p=>{ html+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="#9db4d0"/>`; });
+      partG.innerHTML=html;
+      raf=requestAnimationFrame(frame);
+    }
+    function setT(T){
+      speed=tempToSpeed(T);
+      const E=1.5*kB*T;
+      // affichage joules : on adapte la mantisse (10^-21 ou 10^-20)
+      const e21=E/1e-21;
+      joules.textContent = e21>=10 ? (e21/10).toFixed(1).replace('.',',')+' × 10⁻²⁰ J'
+                                   : e21.toFixed(1).replace('.',',')+' × 10⁻²¹ J';
+      const C=Math.round(T-273.15);
+      tempT.textContent=(C>=0?'+':'')+C+' °C';
+      kelvinT.textContent=Math.round(T)+' K';
+      // mercure : échelle racine pour rester lisible sur 1..3000 K
+      const top=50, maxH=160, frac=Math.max(0.04,Math.min(1,Math.sqrt(T/3000)*1.05)), h=maxH*frac;
+      merc.setAttribute('y',(top+maxH-h).toFixed(1)); merc.setAttribute('height',h.toFixed(1));
+    }
+    slider.addEventListener('input',e=>setT(parseFloat(e.target.value)));
+    setT(293);
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
+      if(e.isIntersecting && !running){ running=true; frame(); }
+    }); }, {threshold:0.1});
+    io.observe(root);
+  })();
+
+  // =================== VIZ zéro absolu : refroidissement vers l'immobilité ===================
+  (function(){
+    const root=document.getElementById('viz-zero'); if(!root) return;
+    const partG=root.querySelector('.particles'), merc=root.querySelector('.merc'),
+          kelvinT=root.querySelector('.kelvin'), celsiusT=root.querySelector('.celsius'),
+          stateT=root.querySelector('.state'), slider=root.querySelector('.cool');
+    const bx=60, by=44, bw=200, bh=200, pad=16, N=16;
+    let parts=[];
+    for(let i=0;i<N;i++){
+      parts.push({ x:bx+pad+Math.random()*(bw-2*pad), y:by+pad+Math.random()*(bh-2*pad), a:Math.random()*Math.PI*2 });
+    }
+    let speed=4, raf=null, frozen=false, running=false;
+    function tempToSpeed(T){ return Math.sqrt(T/293)*4.2; }
+    function frame(){
+      const r=3.4;
+      if(!frozen){
+        parts.forEach(p=>{
+          p.x+=Math.cos(p.a)*speed; p.y+=Math.sin(p.a)*speed;
+          if(p.x<bx+pad){p.x=bx+pad; p.a=Math.PI-p.a;}
+          if(p.x>bx+bw-pad){p.x=bx+bw-pad; p.a=Math.PI-p.a;}
+          if(p.y<by+pad){p.y=by+pad; p.a=-p.a;}
+          if(p.y>by+bh-pad){p.y=by+bh-pad; p.a=-p.a;}
+        });
+      }
+      let html=''; parts.forEach(p=>{ html+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="#9db4d0"/>`; });
+      partG.innerHTML=html;
+      raf=requestAnimationFrame(frame);
+    }
+    function setT(T){
+      speed=tempToSpeed(T);
+      frozen=(T<=0.5);
+      kelvinT.textContent=Math.round(T)+' K';
+      const C=(T-273.15);
+      celsiusT.textContent=(C>=0?'+':'')+C.toFixed(T<=0.5?2:0)+' °C';
+      const top=50, maxH=200, frac=Math.max(0,Math.min(1,T/293)), h=Math.max(0,maxH*frac);
+      merc.setAttribute('y',(top+maxH-h).toFixed(1)); merc.setAttribute('height',h.toFixed(1));
+      if(T<=0.5) stateT.textContent='⏸ total stillness — absolute zero';
+      else if(T<40) stateT.textContent='atoms barely stir';
+      else if(T<200) stateT.textContent='motion is slowing';
+      else stateT.textContent='atoms are in motion';
+    }
+    slider.addEventListener('input',e=>setT(parseFloat(e.target.value)));
+    setT(293);
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
+      if(e.isIntersecting && !running){ running=true; frame(); }
+    }); }, {threshold:0.1});
+    io.observe(root);
+  })();
+
+
+
+
+
+
+
+
+
+
+  // (le camembert de composition de l'univers est désormais statique : aucun script requis)
+
+  // =================== VIZ H0 : l'expansion de l'espace (loi de Hubble) ===================
+  (function(){
+    const root=document.getElementById('viz-hubble'); if(!root) return;
+    const NS='http://www.w3.org/2000/svg';
+    const gridG=root.querySelector('.grid'), vecG=root.querySelector('.vectors'), galG=root.querySelector('.galaxies');
+    const aval=root.querySelector('.aval'), scaleReadout=root.querySelector('.scaleReadout');
+    const playBtn=root.querySelector('.play'), resetBtn=root.querySelector('.reset');
+    const gridBtn=root.querySelector('.toggle-grid'), obsBtn=root.querySelector('.toggle-obs');
+
+    // --- géométrie du cadre ---
+    const FW=680, FH=398, cx=FW/2, cy=FH/2;
+    // pas de la grille comobile, en pixels à a=1
+    const STEP=58;
+    // facteur d'échelle : a=1 au départ, croît avec le « temps »
+    const A_MIN=1, A_MAX=2.25;
+    let a=A_MIN;
+    let running=false, raf=null, gridOn=false;
+
+    // --- galaxies en COORDONNÉES COMOBILES (fixes dans le temps) ---
+    // exprimées en multiples du pas STEP, autour d'une origine arbitraire.
+    // Elles ne « bougent » jamais en comobile : seul a change.
+    // (positions semi-régulières + petit décalage pour un rendu naturel)
+    const seeds=[
+      [-3.0,-2.1],[-1.6,-2.4],[0.2,-2.0],[1.9,-2.3],[3.1,-1.5],
+      [-3.2,-0.5],[-1.7,-0.8],[0.0,0.0],[1.6,-0.4],[3.0,0.3],
+      [-2.8,1.1],[-1.3,1.4],[0.4,1.2],[1.9,1.0],[3.2,1.6],
+      [-2.2,2.4],[-0.6,2.2],[1.1,2.5],[2.6,2.3]
+    ];
+    // chaque galaxie : coordonnée comobile (qx,qy), une « graine » d'aspect, et un angle de spirale
+    const galaxies=seeds.map((s,i)=>({
+      qx:s[0], qy:s[1],
+      r: 4.6 + ((i*53)%5)*0.5,           // rayon écran fixe (taille constante)
+      tilt: (i*47)%180,                   // inclinaison du disque
+      hue: i                              // pour varier légèrement
+    }));
+
+    // index de la galaxie servant d'OBSERVATEUR (origine de la vue).
+    // On la place au centre du cadre ; toutes les autres sont relatives à elle.
+    // Changer d'observateur = choisir une autre galaxie => même structure (pas de centre).
+    let obsIndex=7; // la galaxie (0,0) au départ
+
+    // position écran d'une galaxie i, compte tenu de l'observateur et du facteur a
+    function screenPos(i){
+      const o=galaxies[obsIndex];
+      const dqx=galaxies[i].qx-o.qx;
+      const dqy=galaxies[i].qy-o.qy;
+      return { x: cx + a*dqx*STEP, y: cy + a*dqy*STEP, dq:Math.hypot(dqx,dqy) };
+    }
+
+    // --- dessin d'une galaxie (disque + halo + petit bras), taille fixe ---
+    function galaxyMarkup(i, p){
+      const g=galaxies[i];
+      const isObs=(i===obsIndex);
+      const R=g.r;
+      // décalage vers le rouge : subtil, proportionnel à la distance comobile (redshift ∝ distance au proche)
+      // on n'altère QUE la teinte de halo, pas la taille — purement illustratif et fidèle au texte
+      const z=Math.min(1, p.dq/6);
+      const core = isObs ? '#8fb89b' : '#cfe0ee';
+      // halo légèrement rougi pour les lointaines (sauf l'observateur)
+      const haloR = isObs ? 200 : Math.round(207 + z*40);
+      const haloG = isObs ? 224 : Math.round(224 - z*70);
+      const haloB = isObs ? 200 : Math.round(238 - z*90);
+      let m='';
+      // halo
+      m+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*2.6).toFixed(1)}" fill="rgb(${haloR},${haloG},${haloB})" opacity="${isObs?0.28:0.20}"/>`;
+      // disque incliné (ellipse) pour évoquer une galaxie spirale
+      m+=`<ellipse cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" rx="${R.toFixed(1)}" ry="${(R*0.55).toFixed(1)}" fill="${core}" opacity="${isObs?1:0.92}" transform="rotate(${g.tilt} ${p.x.toFixed(1)} ${p.y.toFixed(1)})"/>`;
+      // noyau
+      m+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*0.42).toFixed(1)}" fill="${isObs?'#bfe0c8':'#ffffff'}" opacity="0.95"/>`;
+      // anneau « ici » autour de l'observateur
+      if(isObs){
+        m+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*2.0).toFixed(1)}" fill="none" stroke="#8fb89b" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.8"/>`;
+      }
+      return m;
+    }
+
+    // --- grille comobile, dilatée par a ---
+    function drawGrid(){
+      if(!gridOn){ gridG.innerHTML=''; return; }
+      const o=galaxies[obsIndex];
+      // on aligne la grille sur la galaxie observatrice (origine comobile = sa position)
+      const spacing=a*STEP;
+      // décalage pour que la grille passe par le centre (l'observateur)
+      // lignes verticales
+      let m='';
+      // combien de lignes pour couvrir le cadre largement
+      const nx=Math.ceil(FW/spacing)+2, ny=Math.ceil(FH/spacing)+2;
+      for(let k=-nx;k<=nx;k++){
+        const x=cx+k*spacing;
+        if(x<-spacing||x>FW+spacing) continue;
+        m+=`<line x1="${x.toFixed(1)}" y1="0" x2="${x.toFixed(1)}" y2="${FH}"/>`;
+      }
+      for(let k=-ny;k<=ny;k++){
+        const y=cy+k*spacing;
+        if(y<-spacing||y>FH+spacing) continue;
+        m+=`<line x1="0" y1="${y.toFixed(1)}" x2="${FW}" y2="${y.toFixed(1)}"/>`;
+      }
+      gridG.innerHTML=m;
+    }
+
+    // --- vecteurs de fuite : longueur ∝ distance actuelle (v = H0 d) ---
+    function drawVectors(){
+      // visibles seulement quand on a commencé à s'étendre
+      if(a<=A_MIN+0.001){ vecG.innerHTML=''; vecG.setAttribute('opacity','0'); return; }
+      vecG.setAttribute('opacity','0.9');
+      const o=screenPos(obsIndex);
+      let m='';
+      galaxies.forEach((g,i)=>{
+        if(i===obsIndex) return;
+        const p=screenPos(i);
+        const dx=p.x-o.x, dy=p.y-o.y, dist=Math.hypot(dx,dy);
+        if(dist<6) return;
+        // la flèche pointe RADIALEMENT vers l'extérieur, longueur ∝ distance
+        // facteur (a-1) : à a=1 aucune fuite ; croît avec l'expansion
+        const k=(a-A_MIN)*0.55;
+        const ux=dx/dist, uy=dy/dist;
+        const len=Math.min(dist*0.9, dist*k+4);
+        const sx=p.x, sy=p.y;            // depuis la galaxie
+        const ex=p.x+ux*len, ey=p.y+uy*len; // vers l'extérieur
+        m+=`<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" marker-end="url(#hub-arrow)" opacity="0.85"/>`;
+      });
+      vecG.innerHTML=m;
+    }
+
+    function render(){
+      // galaxies
+      let gm='';
+      // on cache celles franchement hors cadre pour la perf, mais on garde le halo proche du bord
+      galaxies.forEach((g,i)=>{
+        const p=screenPos(i);
+        if(p.x<-40||p.x>FW+40||p.y<-40||p.y>FH+40) return;
+        gm+=galaxyMarkup(i,p);
+      });
+      galG.innerHTML=gm;
+      drawGrid();
+      drawVectors();
+      aval.textContent='×'+a.toFixed(2).replace('.',',');
+      // « lecture » pédagogique : a relie distances et temps
+      const pct=Math.round((a-1)*100);
+      scaleReadout.textContent = a<=A_MIN+0.001
+        ? "today: a = 1"
+        : `distances have grown by +${pct}% — every galaxy recedes at v = H₀ × distance`;
+    }
+
+    // --- animation temporelle : a croît de façon monotone (expansion) ---
+    function tick(){
+      if(!running) return;
+      a+=0.0045;
+      if(a>=A_MAX){ a=A_MAX; running=false; playBtn.textContent='Restart'; render(); return; }
+      render();
+      raf=requestAnimationFrame(tick);
+    }
+    function play(){
+      if(a>=A_MAX-0.001){ // si déjà au bout, on relance
+        a=A_MIN; }
+      running=true; playBtn.textContent='Pause';
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(tick);
+    }
+    function pause(){ running=false; playBtn.textContent='Resume'; cancelAnimationFrame(raf); }
+    function reset(){ running=false; cancelAnimationFrame(raf); a=A_MIN; playBtn.textContent='Start expansion'; render(); }
+
+    playBtn.addEventListener('click',()=>{ running?pause():play(); });
+    resetBtn.addEventListener('click',reset);
+    gridBtn.addEventListener('click',()=>{
+      gridOn=!gridOn;
+      gridG.setAttribute('opacity',gridOn?'0.38':'0');
+      gridBtn.textContent=gridOn?'Hide grid':'Show grid';
+      render();
+    });
+    obsBtn.addEventListener('click',()=>{
+      // choisir une autre galaxie comme observateur : la structure reste identique => pas de centre
+      let next;
+      do { next=Math.floor(Math.random()*galaxies.length); } while(next===obsIndex);
+      obsIndex=next;
+      render();
+    });
+
+    reset();
+    // démarrage auto au scroll, une seule fois
+    let started=false;
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
+      if(e.isIntersecting && !started){ started=true; play(); }
+    }); }, {threshold:0.3});
+    io.observe(root);
+  })();
+
+  // =================== Partage du site ===================
+  (function(){
+    const shareBtn=document.getElementById('share-btn');
+    const copyBtn=document.getElementById('copy-btn');
+    const note=document.getElementById('copied-note');
+    if(!shareBtn||!copyBtn) return;
+
+    let noteTimer=null;
+    function flash(msg){
+      note.textContent=msg; note.style.opacity='1';
+      clearTimeout(noteTimer);
+      noteTimer=setTimeout(()=>{ note.style.opacity='0'; }, 2600);
+    }
+    function shareData(){
+      return {
+        title: document.title || "The constants of the universe",
+        text: "Fourteen numbers that hold the universe — a journey through the constants.",
+        url: location.href
+      };
+    }
+    async function copyLink(){
+      const url=location.href;
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          await navigator.clipboard.writeText(url);
+        } else {
+          // repli pour les contextes sans Clipboard API
+          const ta=document.createElement('textarea');
+          ta.value=url; ta.setAttribute('readonly',''); ta.style.position='absolute'; ta.style.left='-9999px';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta);
+        }
+        flash('✓ Link copied to clipboard');
+      }catch(e){
+        flash('Copy failed — here is the link: '+url);
+      }
+    }
+
+    shareBtn.addEventListener('click', async ()=>{
+      // API de partage native (surtout mobile) ; repli vers la copie sinon
+      if(navigator.share){
+        try{ await navigator.share(shareData()); }
+        catch(e){ /* l'utilisateur a annulé : on ne fait rien */ }
+      } else {
+        await copyLink();
+        flash('✓ Link copied — paste it anywhere to share');
+      }
+    });
+    copyBtn.addEventListener('click', copyLink);
+  })();
+
+</script>
+</body>
+</html>

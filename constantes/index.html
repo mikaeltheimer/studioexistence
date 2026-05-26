@@ -91,6 +91,18 @@
   }
   #theme-toggle:hover { border-color: var(--accent); color: var(--ink); }
 
+  /* lang switch */
+  #lang-switch {
+    position: fixed; top: 16px; right: 64px; z-index: 210;
+    height: 38px; padding: 0 12px; border-radius: 999px;
+    background: var(--bg-soft); border: 1px solid var(--line);
+    color: var(--ink-dim); font-size: 0.78rem; font-family: inherit;
+    cursor: pointer; letter-spacing: 0.04em; text-decoration: none;
+    display: grid; place-items: center;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+  }
+  #lang-switch:hover { border-color: var(--accent); color: var(--ink); }
+
   main { position: relative; z-index: 1; }
 
   /* apparition au scroll */
@@ -301,11 +313,67 @@
 
   footer.end { text-align: center; padding: 6rem 1.5rem 8rem; color: var(--muted);
     font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.15em; border-top: 1px solid var(--line); }
+
+  /* ---------- encart d'aparté (callout) ---------- */
+  .callout {
+    background: color-mix(in srgb, var(--accent) 7%, var(--bg-soft));
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 1.3rem 1.4rem; margin: 2rem 0;
+  }
+  .callout .callout-kicker {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 0.6rem; font-weight: 600;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .callout p { margin: 0 0 0.8rem; color: var(--ink-dim); font-size: 0.96rem; line-height: 1.7; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout p strong, .callout p b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- section de conclusion ---------- */
+  section.conclusion {
+    max-width: 720px; margin: 0 auto; padding: 7rem 1.5rem 4rem;
+    border-top: 1px solid var(--line);
+  }
+  section.conclusion .kicker {
+    font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 2.2rem; text-align: center;
+  }
+  section.conclusion h2 {
+    font-family: var(--serif); font-weight: 400; font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+    line-height: 1.3; color: var(--ink); text-align: center; margin: 0 0 2.4rem; letter-spacing: -0.01em;
+  }
+  section.conclusion p {
+    color: var(--ink-dim); font-size: 1.08rem; line-height: 1.8; margin: 0 0 1.4rem; max-width: 56ch;
+    margin-left: auto; margin-right: auto;
+  }
+  section.conclusion p strong { color: var(--ink); font-weight: 600; }
+  section.conclusion .closing {
+    font-family: var(--serif); font-style: italic; font-size: 1.25rem; line-height: 1.6;
+    color: var(--ink); text-align: center; margin: 2.6rem auto 0; max-width: 44ch;
+  }
+
+  /* ---------- bloc de partage ---------- */
+  .share {
+    max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 2rem; text-align: center;
+  }
+  .share p { color: var(--ink-dim); font-size: 1.05rem; line-height: 1.7; margin: 0 auto 1.6rem; max-width: 46ch; }
+  .share .share-actions { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+  .share button {
+    background: transparent; color: var(--accent); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 0.6rem 1.4rem; font: inherit; font-size: 0.9rem;
+    cursor: pointer; transition: background 0.2s, color 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .share button:hover { background: var(--accent); color: var(--bg); }
+  .share button svg { width: 16px; height: 16px; }
+  .share button.primary { background: var(--accent); color: var(--bg); }
+  .share button.primary:hover { background: color-mix(in srgb, var(--accent) 80%, #000); border-color: color-mix(in srgb, var(--accent) 80%, #000); }
+  .share .copied-note { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin-top: 1rem; min-height: 1.1em; transition: opacity 0.3s; }
 </style>
 </head>
 <body>
 
 <div id="rail"></div>
+<a id="lang-switch" href="https://www.studioexistence.com/constantes/index-en.html" title="English version">EN</a>
 <button id="theme-toggle" type="button" aria-label="Basculer le thème clair/sombre" title="Thème clair / sombre" aria-pressed="false">☾</button>
 <canvas id="stars"></canvas>
 <div id="grain"></div>
@@ -1186,41 +1254,48 @@
     <p class="reveal">On s'attendait à ce que l'expansion de l'univers ralentisse peu à peu : après tout, la gravité de toute la matière devrait freiner le mouvement, comme la Terre freine une pierre lancée vers le ciel. En 1998, en mesurant des supernovae très lointaines, les astronomes découvrirent exactement le contraire — et ce fut un choc retentissant. L'expansion n'est pas en train de ralentir : elle <em>accélère</em>. Quelque chose agit comme un anti-gravité à l'échelle cosmique, écartant l'espace de plus en plus vite. On a donné à ce quelque chose un nom qui avoue notre ignorance : l'<strong>énergie noire</strong>. Et Λ, la constante cosmologique, est le nombre qui en mesure l'intensité.</p>
     <p class="reveal">L'idée vertigineuse est que l'énergie noire serait une propriété du vide lui-même. Le vide, en physique, n'est pas le néant : même l'espace parfaitement vide possède une énergie intrinsèque, infime à chaque mètre cube, qui pousse l'espace à s'étendre. Comme cette poussée est attachée au vide, plus l'univers grandit, plus il y a de vide, donc plus la poussée totale augmente — d'où l'accélération qui s'emballe. Le plus stupéfiant ? Cette énergie noire représente environ 68 % de tout le contenu de l'univers. La matière ordinaire — les étoiles, les planètes, toi, tout ce qu'on a jamais vu ou touché — n'en compte que pour 5 %. Nous vivons dans un cosmos dont l'essentiel nous est totalement inconnu.</p>
 
-    <!-- VIZ : composition de l'univers (énergie noire ≈ 68 %) -->
+    <!-- VIZ : composition de l'univers — camembert statique -->
     <figure class="viz reveal" id="viz-darkenergy" style="margin:2rem 0;">
-      <svg viewBox="0 0 680 250" xmlns="http://www.w3.org/2000/svg">
-        <!-- barre segmentée : 5 % matière ordinaire · 27 % matière noire · 68 % énergie noire -->
-        <!-- géométrie : x0=40, largeur totale=600, donc 1 % = 6 px -->
-        <rect class="seg-ord"  x="40" y="74" width="0" height="58" rx="2" fill="#9ec6da"/>
-        <rect class="seg-dark" x="40" y="74" width="0" height="58" rx="2" fill="#5a6175"/>
-        <rect class="seg-de"   x="40" y="74" width="0" height="58" rx="2" fill="#9b8fd0"/>
+      <svg viewBox="0 0 680 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Composition de l'univers : 68 % d'énergie noire, 27 % de matière noire, 5 % de matière ordinaire">
+        <!-- camembert (départ à midi, sens horaire) -->
+        <g>
+          <path d="M 175 125 L 175.00 30.00 A 95 95 0 0 1 204.36 34.65 Z" fill="#9ec6da" stroke="var(--bg-soft)" stroke-width="2"/>
+          <path d="M 175 125 L 204.36 34.65 A 95 95 0 0 1 260.96 165.45 Z" fill="#5a6175" stroke="var(--bg-soft)" stroke-width="2"/>
+          <path d="M 175 125 L 260.96 165.45 A 95 95 0 1 1 175.00 30.00 Z" fill="#9b8fd0" stroke="var(--bg-soft)" stroke-width="2"/>
+        </g>
+        <!-- pourcentages internes (parts assez grandes) -->
+        <text x="227" y="98"  font-family="Georgia,serif" font-size="14" fill="#e9ebef" text-anchor="middle" font-weight="bold">27 %</text>
+        <text x="130" y="158" font-family="Georgia,serif" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="bold">68 %</text>
+        <!-- ligne de rappel + label pour la part 5 % (trop fine) -->
+        <line x1="189" y1="55" x2="225" y2="22" stroke="var(--muted)" stroke-width="1"/>
+        <text x="228" y="19" font-family="Georgia,serif" font-size="12" fill="var(--ink-dim)" text-anchor="start">5 %</text>
 
-        <!-- pourcentages au-dessus de chaque segment -->
-        <text class="lab-ord-pct"  x="0" y="62" font-family="monospace" font-size="12" fill="#9ec6da" text-anchor="start"  opacity="0">5 %</text>
-        <text class="lab-dark-pct" x="0" y="62" font-family="monospace" font-size="13" fill="#9aa3b8" text-anchor="middle" opacity="0">27 %</text>
-        <text class="lab-de-pct"   x="0" y="60" font-family="monospace" font-size="16" fill="#b3a6e8" text-anchor="middle" opacity="0" font-weight="bold">68 %</text>
+        <!-- légende détaillée à droite -->
+        <g font-family="Georgia,serif">
+          <rect x="360" y="56"  width="14" height="14" rx="2" fill="#9b8fd0"/>
+          <text x="384" y="64"  font-size="14" fill="var(--ink)">énergie noire</text>
+          <text x="384" y="82"  font-size="11" fill="var(--muted)">68 % — ce que mesure Λ</text>
 
-        <!-- étiquettes sous la barre (matière ordinaire déportée à gauche : segment trop étroit) -->
-        <text class="lab-ord"  x="0" y="170" font-family="Georgia,serif" font-size="11" fill="var(--muted)"   text-anchor="start"  opacity="0">matière ordinaire</text>
-        <text class="lab-dark" x="0" y="156" font-family="Georgia,serif" font-size="12" fill="var(--muted)"   text-anchor="middle" opacity="0">matière noire</text>
-        <text class="lab-de"   x="0" y="158" font-family="Georgia,serif" font-size="13" fill="var(--ink-dim)" text-anchor="middle" opacity="0" font-style="italic">énergie noire</text>
-        <!-- petit trait de rappel reliant l'étiquette ordinaire à son fin segment -->
-        <line class="lab-ord-tick" x1="0" y1="0" x2="0" y2="0" stroke="var(--muted)" stroke-width="0.8" opacity="0"/>
+          <rect x="360" y="108" width="14" height="14" rx="2" fill="#5a6175"/>
+          <text x="384" y="116" font-size="14" fill="var(--ink)">matière noire</text>
+          <text x="384" y="134" font-size="11" fill="var(--muted)">27 % — invisible, révélée par sa gravité</text>
 
-        <!-- phrase de synthèse -->
-        <text class="lab-summary" x="340" y="210" font-family="Georgia,serif" font-size="13" fill="var(--ink-dim)" text-anchor="middle" font-style="italic" opacity="0">95 % de l'univers nous est inconnu.</text>
+          <rect x="360" y="160" width="14" height="14" rx="2" fill="#9ec6da"/>
+          <text x="384" y="168" font-size="14" fill="var(--ink)">matière ordinaire</text>
+          <text x="384" y="186" font-size="11" fill="var(--muted)">5 % — tout ce qu'on a jamais observé</text>
+        </g>
+        <!-- synthèse -->
+        <text x="340" y="240" font-family="Georgia,serif" font-size="13" fill="var(--ink-dim)" text-anchor="middle" font-style="italic">95 % de l'univers nous est, à ce jour, inconnu.</text>
       </svg>
-      <div class="controls">
-        <button class="play">Révéler la composition</button>
-        <button class="reset">Recommencer</button>
-      </div>
-      <div class="legend">
-        <span><span class="dot" style="background:#9ec6da"></span> matière ordinaire · 5 %</span>
-        <span><span class="dot" style="background:#5a6175"></span> matière noire · 27 %</span>
-        <span><span class="dot" style="background:#9b8fd0"></span> énergie noire · 68 %</span>
-      </div>
-      <figcaption>De tout le contenu de l'univers, l'énergie noire (Λ) compte pour environ 68 %. Le reste se partage entre la matière noire — invisible, trahie par sa seule gravité — pour 27 %, et la matière ordinaire, dont est fait tout ce qu'on a jamais observé, pour à peine 5 %.</figcaption>
+      <figcaption>De tout le contenu de l'univers, l'énergie noire (Λ) compte pour environ 68 %, la matière noire pour 27 %, et la matière ordinaire — dont est fait tout ce qu'on a jamais observé — pour à peine 5 %.</figcaption>
     </figure>
+
+    <div class="callout reveal">
+      <p class="callout-kicker">⟡ &nbsp;Ne pas confondre · matière noire ≠ énergie noire</p>
+      <p>Le mot « noire » revient deux fois, pour deux choses opposées. La <strong>matière noire</strong> est une matière : invisible — elle n'émet aucune lumière —, mais bien dotée d'une masse, et donc d'une gravité qui <em>attire</em>. On la devine parce que les galaxies tournent trop vite pour la seule matière visible : quelque chose d'invisible les retient de se disloquer. Elle représente 27 % de l'univers.</p>
+      <p>L'<strong>énergie noire</strong>, elle, n'est pas de la matière du tout, et fait exactement l'inverse : au lieu d'attirer, elle <em>repousse</em> — c'est elle qui écarte l'espace et accélère l'expansion. C'est elle, et elle seule, que mesure Λ.</p>
+      <p>En somme : l'une freine, l'autre emballe. La matière noire colle l'univers ensemble ; l'énergie noire l'écartèle. Et entre les deux, la matière ordinaire — les étoiles, les planètes, nous — ne pèse presque rien.</p>
+    </div>
 
     <p class="reveal">Quelle est la valeur de Λ, et comment la connaît-on ? Son unité officielle est déroutante — un « mètre puissance moins deux » —, car dans les équations d'Einstein, Λ exprime une sorte de courbure de l'espace, l'inverse d'une surface. Ce chiffre brut (à peu près 0,000…1 avec cent-cinquante zéros, en mètres⁻²) ne parle à personne ; c'est pourquoi les cosmologistes préfèrent l'exprimer autrement, comme cette fameuse fraction de 68 % du contenu de l'univers. Quant à sa mesure, elle repose sur les supernovae lointaines : en 1998, deux équipes constatèrent que ces explosions, servant de chandelles standard, paraissaient <em>plus faibles</em>, donc plus éloignées, que ne le prévoyait une expansion qui ralentit. La seule explication tenait debout : l'expansion accélère. On a depuis confirmé et précisé Λ en croisant cette mesure avec la lueur fossile du Big Bang et la répartition des galaxies dans le ciel.</p>
 
@@ -1231,174 +1306,38 @@
     <h3 class="rubric reveal">Sur le fil du rasoir · le destin de tout</h3>
     <p class="reveal">Λ n'est pas seulement la plus grande énigme théorique de la cosmologie : c'est le nombre qui décide de la fin du monde — au sens littéral, la fin de l'univers. Car c'est le bras de fer entre la gravité (qui veut tout rassembler) et l'énergie noire (qui veut tout disperser) qui scelle le destin du cosmos, et la valeur de Λ dit lequel l'emporte.</p>
     <p class="reveal">Avec la valeur que nous observons, l'énergie noire gagne. L'expansion continuera de s'accélérer, et dans un futur lointain — des dizaines de milliards d'années — les galaxies s'éloigneront si vite les unes des autres que leur lumière cessera de nous parvenir. Le ciel se videra lentement. Des êtres qui vivraient alors ne verraient plus qu'un cosmos noir et solitaire, sans soupçon des milliards de galaxies qui auront disparu au-delà de l'horizon. À très long terme, ce destin porte un nom glacial : le « grand gel », un univers qui s'étire vers le froid et le vide, à jamais. Et si Λ avait été un peu plus grande, l'expansion aurait été si violente, si tôt, qu'aucune galaxie, aucune étoile, aucune planète n'aurait jamais eu le temps de se former — l'univers se serait déchiré avant même de contenir quoi que ce soit. Que Λ soit si extraordinairement petite, juste assez pour laisser le temps à l'univers de fabriquer des étoiles, des planètes et nous, avant de l'emporter : c'est le dernier, et peut-être le plus profond, des réglages fins qui rendent notre existence possible.</p>
-
   </section>
 
-    <!-- ======================= CONCLUSION ======================= -->
-  <section class="feature" id="conclusion" style="--accent:#b8a7d9;">
-    <div class="euler-card reveal" style="background:radial-gradient(120% 140% at 50% 0%, #1d1a2b 0%, #10141c 55%, #0b0e14 100%); border-color:#342c4a;">
 
-      <div class="kicker" style="color:#b8a7d9;">Une architecture cachée</div>
+  <!-- ======================= conclusion ======================= -->
+  <section class="conclusion" id="conclusion">
+    <p class="kicker reveal">épilogue</p>
+    <h2 class="reveal">Quatorze nombres, et tout l'univers tient dedans.</h2>
 
-      <p style="color:#cdd2da;">Les constantes fondamentales sont étranges.</p>
+    <p class="reveal">Nous sommes partis d'un cercle. Du rapport le plus simple qui soit — un tour divisé par une largeur — et nous voilà, quelques nombres plus tard, devant le vide qui écarte les galaxies et décide de la fin des temps. Entre les deux, il y a eu la croissance qui se nourrit d'elle-même, le nombre impossible qui s'est révélé indispensable, la proportion qui hante les coquillages et les tournesols, la vitesse que rien ne dépasse, le grain ultime du réel, et le froid absolu où même le mouvement s'arrête.</p>
 
-      <p style="color:#cdd2da;">Elles ne sont ni des inventions humaines, ni des objets que l'on peut toucher. Elles semblent simplement être là.</p>
+    <p class="reveal">En chemin, une frontière s'est dessinée. Certains de ces nombres sont des <strong>vérités nécessaires</strong> : π, e, i, φ seraient les mêmes dans n'importe quel univers, parce qu'ils ne décrivent rien — ils <em>sont</em>, simplement, gravés dans la logique avant même qu'existe la moindre étoile. Les autres sont des <strong>mesures</strong> : c, G, ℏ, α, H₀, Λ ne se démontrent pas, ils s'observent, et rien ne nous dit pourquoi ils valent ce qu'ils valent plutôt qu'autre chose. Les premiers, on les découvre avec un crayon. Les seconds, il faut aller les arracher au ciel.</p>
 
-      <p style="color:#cdd2da;">π apparaît partout où existe un cercle. <em>e</em> surgit dans la croissance, le hasard et les transformations naturelles. α gouverne la manière dont la lumière et la matière se répondent. Λ, elle, semble déjà écrire le destin du cosmos.</p>
+    <p class="reveal">Et c'est là que se cache le vertige. Ces valeurs mesurées, rien ne les obligeait. Une gravité à peine plus forte, une énergie noire un peu moins discrète, une constante de structure fine légèrement décalée — et il n'y aurait eu ni étoiles, ni atomes lourds, ni chimie, ni le temps nécessaire pour que quoi que ce soit s'assemble et finisse par se demander pourquoi. Que ces quatorze nombres aient, tous, précisément les valeurs qu'il faut pour qu'un univers puisse se contempler lui-même : voilà le mystère que ni le crayon ni le télescope n'ont encore percé.</p>
 
-      <p style="color:#cdd2da;">Ces nombres ne changent pas selon les cultures, les langues ou les époques. Ils étaient présents avant les premiers humains, et continueront d'exister longtemps après nous.</p>
+    <p class="closing reveal">Tu es fait des mêmes constantes que les étoiles. Les connaître un peu, c'est te connaître un peu.</p>
+  </section>
 
-      <p style="color:#cdd2da;">Plus on avance en mathématiques et en physique, plus une impression troublante émerge : l'univers ne semble pas seulement composé de matière et d'énergie — il paraît structuré par des relations abstraites, comme si ces constantes formaient l'ossature invisible du réel.</p>
-
-      <p style="color:#cdd2da;">Certaines règlent la taille des étoiles. D'autres la stabilité des atomes. Quelques décimales différentes, et il n'y aurait peut-être ni chimie, ni lumière, ni galaxies, ni vie.</p>
-
-      <p style="color:#cdd2da;">Pourquoi ces valeurs précisément ? Pourquoi cet équilibre si délicat ? Personne ne le sait réellement.</p>
-
-      <p style="color:#cdd2da;">Et c'est peut-être ce qui les rend si fascinantes.</p>
-
-      <p style="color:#cdd2da;">Les constantes sont des points de rencontre entre les mathématiques, la physique et le mystère. Derrière chaque phénomène quotidien — une pomme qui tombe, une étoile qui brille, une pensée dans un cerveau humain — se cache un petit groupe de nombres silencieux qui semblent tenir l'univers tout entier.</p>
-
-      <p style="text-align:center; font-style:italic; color:#8a93a3; margin-top:2rem; line-height:1.8;">
-        Peut-être que comprendre l'univers,<br>
-        ce n'est pas seulement découvrir des choses nouvelles —<br>
-        mais apprendre peu à peu à lire le langage dans lequel il est écrit.
-      </p>
-
+  <!-- ======================= partage ======================= -->
+  <section class="share reveal" id="partage">
+    <p>Tu as aimé le voyage ? Partage-le avec quelqu'un qui s'intéresse aux mystères de l'univers.</p>
+    <div class="share-actions">
+      <button type="button" id="share-btn" class="primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Partager
+      </button>
+      <button type="button" id="copy-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copier le lien
+      </button>
     </div>
+    <p class="copied-note" id="copied-note" role="status" aria-live="polite"></p>
   </section>
-
-    <!-- ======================= PARTAGE ======================= -->
-  <section class="share reveal">
-    <div class="share-inner">
-      <p class="share-title">Si ce voyage t'a plu…</p>
-
-      <p class="share-text">
-        Offre le à quelqu'un qui aime les mystères de l'univers.
-      </p>
-
-      <div class="share-actions">
-        <button class="share-btn" onclick="sharePage()">
-          partager
-        </button>
-
-        <button class="share-btn secondary" onclick="copyLink(this)">
-          copier le lien
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <script>
-    async function sharePage() {
-      const shareData = {
-        title: document.title,
-        text: "Quatorze constantes qui tiennent l'univers.",
-        url: window.location.href
-      };
-
-      if (navigator.share) {
-        try {
-          await navigator.share(shareData);
-        } catch (err) {}
-      } else {
-        copyCurrentUrl();
-      }
-    }
-
-    async function copyLink(button) {
-      const success = await copyCurrentUrl();
-
-      if (success) {
-        const old = button.textContent;
-
-        button.textContent = "lien copié ✓";
-
-        setTimeout(() => {
-          button.textContent = old;
-        }, 1800);
-      }
-    }
-
-    async function copyCurrentUrl() {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        return true;
-      } catch (err) {
-        alert(window.location.href);
-        return false;
-      }
-    }
-  </script>
-
-  <style>
-    .share{
-      padding:4rem 1.5rem 5rem;
-      text-align:center;
-    }
-
-    .share-inner{
-      max-width:640px;
-      margin:0 auto;
-      border-top:1px solid var(--line);
-      padding-top:3rem;
-    }
-
-    .share-title{
-      font-family:var(--serif);
-      font-size:1.5rem;
-      color:var(--ink);
-      margin-bottom:0.8rem;
-      letter-spacing:0.01em;
-    }
-
-    .share-text{
-      color:var(--muted);
-      line-height:1.7;
-      max-width:42ch;
-      margin:0 auto 2rem;
-      font-size:0.98rem;
-    }
-
-    .share-actions{
-      display:flex;
-      justify-content:center;
-      gap:0.9rem;
-      flex-wrap:wrap;
-    }
-
-    .share-btn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,0.14);
-      background:rgba(255,255,255,0.03);
-      color:var(--ink);
-      padding:0.9rem 1.4rem;
-      border-radius:999px;
-      cursor:pointer;
-      font-family:var(--mono);
-      font-size:0.78rem;
-      letter-spacing:0.08em;
-      text-transform:uppercase;
-      transition:
-        background 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.25s ease;
-    }
-
-    .share-btn:hover{
-      background:rgba(255,255,255,0.06);
-      border-color:rgba(255,255,255,0.22);
-      transform:translateY(-1px);
-    }
-
-    .share-btn.secondary{
-      background:transparent;
-      color:var(--muted);
-    }
-
-    .share-btn.secondary:hover{
-      color:var(--ink);
-    }
-  </style>
 
   <footer class="end">fin du voyage · quatorze nombres qui tiennent l’univers</footer>
 
@@ -2020,73 +1959,7 @@
 
 
 
-  // =================== VIZ énergie noire : composition de l'univers ===================
-  (function(){
-    const root=document.getElementById('viz-darkenergy'); if(!root) return;
-    const segOrd=root.querySelector('.seg-ord'), segDark=root.querySelector('.seg-dark'), segDe=root.querySelector('.seg-de');
-    const pOrd=root.querySelector('.lab-ord-pct'), pDark=root.querySelector('.lab-dark-pct'), pDe=root.querySelector('.lab-de-pct');
-    const lOrd=root.querySelector('.lab-ord'), lDark=root.querySelector('.lab-dark'), lDe=root.querySelector('.lab-de');
-    const ordTick=root.querySelector('.lab-ord-tick');
-    const summary=root.querySelector('.lab-summary');
-    const playBtn=root.querySelector('.play'), resetBtn=root.querySelector('.reset');
-    const x0=40, W=600, u=W/100;
-    const ord=5, dark=27, de=68;
-    const wOrd=ord*u, wDark=dark*u, wDe=de*u;
-    const xOrd=x0, xDark=x0+wOrd, xDe=x0+wOrd+wDark;
-    let raf=null;
-    function place(){
-      segOrd.setAttribute('x',xOrd);   segDark.setAttribute('x',xDark); segDe.setAttribute('x',xDe);
-      // « 5 % » et « matière ordinaire » ancrés au bord gauche (segment trop étroit pour centrer dessous)
-      pOrd.setAttribute('x',xOrd);          lOrd.setAttribute('x',xOrd);
-      pDark.setAttribute('x',xDark+wDark/2);lDark.setAttribute('x',xDark+wDark/2);
-      pDe.setAttribute('x',xDe+wDe/2);      lDe.setAttribute('x',xDe+wDe/2);
-      // trait de rappel : du centre du fin segment (haut de l'étiquette) vers la barre
-      const cxOrd=xOrd+wOrd/2;
-      ordTick.setAttribute('x1',cxOrd); ordTick.setAttribute('y1',132); // bas de la barre (y=74+58)
-      ordTick.setAttribute('x2',cxOrd); ordTick.setAttribute('y2',162); // juste au-dessus de l'étiquette
-    }
-    function clear(){
-      cancelAnimationFrame(raf);
-      [segOrd,segDark,segDe].forEach(s=>s.setAttribute('width','0'));
-      [pOrd,pDark,pDe,lOrd,lDark,lDe,summary,ordTick].forEach(t=>t.setAttribute('opacity','0'));
-      playBtn.disabled=false;
-    }
-    function reveal(){
-      playBtn.disabled=true; place();
-      const dur=1500, t0=performance.now();
-      const ease=t=>1-Math.pow(1-t,3);
-      function fr(now){
-        let p=(now-t0)/dur; if(p>1)p=1; const revealed=ease(p)*W;
-        segOrd.setAttribute('width',Math.max(0,Math.min(wOrd,revealed)));
-        segDark.setAttribute('width',Math.max(0,Math.min(wDark,revealed-wOrd)));
-        segDe.setAttribute('width',Math.max(0,Math.min(wDe,revealed-wOrd-wDark)));
-        if(p<1){ raf=requestAnimationFrame(fr); }
-        else {
-          const o0=performance.now();
-          function fade(t){
-            let q=(t-o0)/600; if(q>1)q=1;
-            pDe.setAttribute('opacity',q); lDe.setAttribute('opacity',q);
-            pDark.setAttribute('opacity',q*0.95); lDark.setAttribute('opacity',q*0.95);
-            pOrd.setAttribute('opacity',q); lOrd.setAttribute('opacity',q*0.85);
-            ordTick.setAttribute('opacity',q*0.5);
-            summary.setAttribute('opacity',q);
-            if(q<1) raf=requestAnimationFrame(fade);
-          }
-          raf=requestAnimationFrame(fade);
-        }
-      }
-      cancelAnimationFrame(raf); raf=requestAnimationFrame(fr);
-    }
-    place(); [segOrd,segDark,segDe].forEach(s=>s.setAttribute('width','0'));
-    playBtn.addEventListener('click',reveal);
-    resetBtn.addEventListener('click',clear);
-    let played=false;
-    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
-      if(e.isIntersecting && !played){ played=true; reveal(); }
-    }); }, {threshold:0.35});
-    io.observe(root);
-  })();
-
+  // (le camembert de composition de l'univers est désormais statique : aucun script requis)
 
   // =================== VIZ H0 : l'expansion de l'espace (loi de Hubble) ===================
   (function(){
@@ -2272,6 +2145,57 @@
       if(e.isIntersecting && !started){ started=true; play(); }
     }); }, {threshold:0.3});
     io.observe(root);
+  })();
+
+  // =================== Partage du site ===================
+  (function(){
+    const shareBtn=document.getElementById('share-btn');
+    const copyBtn=document.getElementById('copy-btn');
+    const note=document.getElementById('copied-note');
+    if(!shareBtn||!copyBtn) return;
+
+    let noteTimer=null;
+    function flash(msg){
+      note.textContent=msg; note.style.opacity='1';
+      clearTimeout(noteTimer);
+      noteTimer=setTimeout(()=>{ note.style.opacity='0'; }, 2600);
+    }
+    function shareData(){
+      return {
+        title: document.title || "Les constantes de l'univers",
+        text: "Quatorze nombres qui tiennent l'univers — un voyage à travers les constantes.",
+        url: location.href
+      };
+    }
+    async function copyLink(){
+      const url=location.href;
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          await navigator.clipboard.writeText(url);
+        } else {
+          // repli pour les contextes sans Clipboard API
+          const ta=document.createElement('textarea');
+          ta.value=url; ta.setAttribute('readonly',''); ta.style.position='absolute'; ta.style.left='-9999px';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta);
+        }
+        flash('✓ Lien copié dans le presse-papier');
+      }catch(e){
+        flash('Copie impossible — voici le lien : '+url);
+      }
+    }
+
+    shareBtn.addEventListener('click', async ()=>{
+      // API de partage native (surtout mobile) ; repli vers la copie sinon
+      if(navigator.share){
+        try{ await navigator.share(shareData()); }
+        catch(e){ /* l'utilisateur a annulé : on ne fait rien */ }
+      } else {
+        await copyLink();
+        flash('✓ Lien copié — colle-le où tu veux pour partager');
+      }
+    });
+    copyBtn.addEventListener('click', copyLink);
   })();
 
 </script>
