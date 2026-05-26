@@ -1232,9 +1232,173 @@
     <p class="reveal">Λ n'est pas seulement la plus grande énigme théorique de la cosmologie : c'est le nombre qui décide de la fin du monde — au sens littéral, la fin de l'univers. Car c'est le bras de fer entre la gravité (qui veut tout rassembler) et l'énergie noire (qui veut tout disperser) qui scelle le destin du cosmos, et la valeur de Λ dit lequel l'emporte.</p>
     <p class="reveal">Avec la valeur que nous observons, l'énergie noire gagne. L'expansion continuera de s'accélérer, et dans un futur lointain — des dizaines de milliards d'années — les galaxies s'éloigneront si vite les unes des autres que leur lumière cessera de nous parvenir. Le ciel se videra lentement. Des êtres qui vivraient alors ne verraient plus qu'un cosmos noir et solitaire, sans soupçon des milliards de galaxies qui auront disparu au-delà de l'horizon. À très long terme, ce destin porte un nom glacial : le « grand gel », un univers qui s'étire vers le froid et le vide, à jamais. Et si Λ avait été un peu plus grande, l'expansion aurait été si violente, si tôt, qu'aucune galaxie, aucune étoile, aucune planète n'aurait jamais eu le temps de se former — l'univers se serait déchiré avant même de contenir quoi que ce soit. Que Λ soit si extraordinairement petite, juste assez pour laisser le temps à l'univers de fabriquer des étoiles, des planètes et nous, avant de l'emporter : c'est le dernier, et peut-être le plus profond, des réglages fins qui rendent notre existence possible.</p>
 
-    <p class="reveal" style="margin-top:2.5rem; font-style:italic; color:var(--ink-dim); text-align:center; max-width:54ch; margin-left:auto; margin-right:auto;">Du cercle parfait de π au vide qui dilate l'univers, voici quatorze nombres. Certains, démontrés pour l'éternité ; d'autres, mesurés dans le seul monde qui se trouve être le nôtre. Ensemble, ils tiennent l'univers — et le simple fait qu'ils aient, tous, précisément les valeurs qu'il faut, reste le plus beau des mystères.</p>
   </section>
 
+    <!-- ======================= CONCLUSION ======================= -->
+  <section class="feature" id="conclusion" style="--accent:#b8a7d9;">
+    <div class="euler-card reveal" style="background:radial-gradient(120% 140% at 50% 0%, #1d1a2b 0%, #10141c 55%, #0b0e14 100%); border-color:#342c4a;">
+
+      <div class="kicker" style="color:#b8a7d9;">Une architecture cachée</div>
+
+      <p style="color:#cdd2da;">Les constantes fondamentales sont étranges.</p>
+
+      <p style="color:#cdd2da;">Elles ne sont ni des inventions humaines, ni des objets que l'on peut toucher. Elles semblent simplement être là.</p>
+
+      <p style="color:#cdd2da;">π apparaît partout où existe un cercle. <em>e</em> surgit dans la croissance, le hasard et les transformations naturelles. α gouverne la manière dont la lumière et la matière se répondent. Λ, elle, semble déjà écrire le destin du cosmos.</p>
+
+      <p style="color:#cdd2da;">Ces nombres ne changent pas selon les cultures, les langues ou les époques. Ils étaient présents avant les premiers humains, et continueront d'exister longtemps après nous.</p>
+
+      <p style="color:#cdd2da;">Plus on avance en mathématiques et en physique, plus une impression troublante émerge : l'univers ne semble pas seulement composé de matière et d'énergie — il paraît structuré par des relations abstraites, comme si ces constantes formaient l'ossature invisible du réel.</p>
+
+      <p style="color:#cdd2da;">Certaines règlent la taille des étoiles. D'autres la stabilité des atomes. Quelques décimales différentes, et il n'y aurait peut-être ni chimie, ni lumière, ni galaxies, ni vie.</p>
+
+      <p style="color:#cdd2da;">Pourquoi ces valeurs précisément ? Pourquoi cet équilibre si délicat ? Personne ne le sait réellement.</p>
+
+      <p style="color:#cdd2da;">Et c'est peut-être ce qui les rend si fascinantes.</p>
+
+      <p style="color:#cdd2da;">Les constantes sont des points de rencontre entre les mathématiques, la physique et le mystère. Derrière chaque phénomène quotidien — une pomme qui tombe, une étoile qui brille, une pensée dans un cerveau humain — se cache un petit groupe de nombres silencieux qui semblent tenir l'univers tout entier.</p>
+
+      <p style="text-align:center; font-style:italic; color:#8a93a3; margin-top:2rem; line-height:1.8;">
+        Peut-être que comprendre l'univers,<br>
+        ce n'est pas seulement découvrir des choses nouvelles —<br>
+        mais apprendre peu à peu à lire le langage dans lequel il est écrit.
+      </p>
+
+    </div>
+  </section>
+
+    <!-- ======================= PARTAGE ======================= -->
+  <section class="share reveal">
+    <div class="share-inner">
+      <p class="share-title">Si ce voyage t'a plu…</p>
+
+      <p class="share-text">
+        Offre le à quelqu'un qui aime les mystères de l'univers.
+      </p>
+
+      <div class="share-actions">
+        <button class="share-btn" onclick="sharePage()">
+          partager
+        </button>
+
+        <button class="share-btn secondary" onclick="copyLink(this)">
+          copier le lien
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    async function sharePage() {
+      const shareData = {
+        title: document.title,
+        text: "Quatorze constantes qui tiennent l'univers.",
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {}
+      } else {
+        copyCurrentUrl();
+      }
+    }
+
+    async function copyLink(button) {
+      const success = await copyCurrentUrl();
+
+      if (success) {
+        const old = button.textContent;
+
+        button.textContent = "lien copié ✓";
+
+        setTimeout(() => {
+          button.textContent = old;
+        }, 1800);
+      }
+    }
+
+    async function copyCurrentUrl() {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        return true;
+      } catch (err) {
+        alert(window.location.href);
+        return false;
+      }
+    }
+  </script>
+
+  <style>
+    .share{
+      padding:4rem 1.5rem 5rem;
+      text-align:center;
+    }
+
+    .share-inner{
+      max-width:640px;
+      margin:0 auto;
+      border-top:1px solid var(--line);
+      padding-top:3rem;
+    }
+
+    .share-title{
+      font-family:var(--serif);
+      font-size:1.5rem;
+      color:var(--ink);
+      margin-bottom:0.8rem;
+      letter-spacing:0.01em;
+    }
+
+    .share-text{
+      color:var(--muted);
+      line-height:1.7;
+      max-width:42ch;
+      margin:0 auto 2rem;
+      font-size:0.98rem;
+    }
+
+    .share-actions{
+      display:flex;
+      justify-content:center;
+      gap:0.9rem;
+      flex-wrap:wrap;
+    }
+
+    .share-btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(255,255,255,0.03);
+      color:var(--ink);
+      padding:0.9rem 1.4rem;
+      border-radius:999px;
+      cursor:pointer;
+      font-family:var(--mono);
+      font-size:0.78rem;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+    }
+
+    .share-btn:hover{
+      background:rgba(255,255,255,0.06);
+      border-color:rgba(255,255,255,0.22);
+      transform:translateY(-1px);
+    }
+
+    .share-btn.secondary{
+      background:transparent;
+      color:var(--muted);
+    }
+
+    .share-btn.secondary:hover{
+      color:var(--ink);
+    }
+  </style>
 
   <footer class="end">fin du voyage · quatorze nombres qui tiennent l’univers</footer>
 
