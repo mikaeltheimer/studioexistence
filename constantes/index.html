@@ -230,6 +230,8 @@
     text-shadow: 0 0 40px color-mix(in srgb, var(--accent) 25%, transparent);
     flex-shrink: 0;
   }
+  /* le α grec en serif italique ressemble à un 'a' latin : on le rend droit, où le glyphe grec est sans ambiguïté */
+  .const-symbol.greek { font-style: normal; }
   .const-headtext { display: flex; flex-direction: column; gap: 0.5rem; padding-top: 0.4rem; }
   .const-index {
     font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.2em;
@@ -321,6 +323,9 @@
   <a href="#G" data-accent="#9db4d0">G</a>
   <a href="#planck" data-accent="#c89bd8">ℏ</a>
   <a href="#planck-time" data-accent="#c89bd8">∗</a>
+  <a href="#kb" data-accent="#e08a6d">k<sub style="font-size:0.6em;">B</sub></a>
+  <a href="#zero" data-accent="#7fb0d8">0K</a>
+  <a href="#alpha" data-accent="#cf8fa0">α</a>
 </nav>
 
 <main>
@@ -328,7 +333,7 @@
   <!-- ======================= HERO ======================= -->
   <header class="hero">
     <div class="ghost" aria-hidden="true">π</div>
-    <div class="kicker">Un voyage en quinze nombres</div>
+    <div class="kicker">Un voyage en quatorze nombres</div>
     <h1>Les constantes qui tiennent <em>l'univers</em></h1>
     <p>Certains nombres ne sont pas des inventions, mais des découvertes. Ils se cachent dans les cercles, la croissance du vivant, la lumière, la matière. En voici quelques-uns — à rencontrer un à un, sans se presser.</p>
     <div class="scroll-cue">↓ commencer le voyage</div>
@@ -339,7 +344,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">π</span>
       <span class="const-headtext">
-        <span class="const-index">01 / 15</span>
+        <span class="const-index">01 / 14</span>
         <span class="const-title">Pi · le nombre du cercle</span>
       </span>
     </div>
@@ -398,7 +403,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">e</span>
       <span class="const-headtext">
-        <span class="const-index">02 / 15</span>
+        <span class="const-index">02 / 14</span>
         <span class="const-title">e · le nombre d'Euler</span>
       </span>
     </div>
@@ -449,7 +454,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">i</span>
       <span class="const-headtext">
-        <span class="const-index">03 / 15</span>
+        <span class="const-index">03 / 14</span>
         <span class="const-title">i · l'unité imaginaire</span>
       </span>
     </div>
@@ -517,7 +522,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">√2</span>
       <span class="const-headtext">
-        <span class="const-index">04 / 15</span>
+        <span class="const-index">04 / 14</span>
         <span class="const-title">Racine de deux · le premier irrationnel</span>
       </span>
     </div>
@@ -573,7 +578,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">φ</span>
       <span class="const-headtext">
-        <span class="const-index">05 / 15</span>
+        <span class="const-index">05 / 14</span>
         <span class="const-title">Phi · le nombre d'or</span>
       </span>
     </div>
@@ -657,7 +662,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">γ</span>
       <span class="const-headtext">
-        <span class="const-index">06 / 15</span>
+        <span class="const-index">06 / 14</span>
         <span class="const-title">Gamma · la constante d'Euler-Mascheroni</span>
       </span>
     </div>
@@ -717,7 +722,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">c</span>
       <span class="const-headtext">
-        <span class="const-index">07 / 15</span>
+        <span class="const-index">07 / 14</span>
         <span class="const-title">c · la vitesse de la lumière</span>
       </span>
     </div>
@@ -786,7 +791,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">G</span>
       <span class="const-headtext">
-        <span class="const-index">08 / 15</span>
+        <span class="const-index">08 / 14</span>
         <span class="const-title">G · la constante de la gravitation</span>
       </span>
     </div>
@@ -839,7 +844,7 @@
     <div class="const-head reveal">
       <span class="const-symbol">ℏ</span>
       <span class="const-headtext">
-        <span class="const-index">09 / 15</span>
+        <span class="const-index">09 / 14</span>
         <span class="const-title">ℏ · la constante de Planck</span>
       </span>
     </div>
@@ -901,7 +906,190 @@
   </section>
 
 
-  <footer class="end">… le voyage continue · k · N · α · 0 K · Λ · H₀ …</footer>
+  <!-- ======================= k_B ======================= -->
+  <section class="constant" id="kb" style="--accent:#e08a6d;">
+    <div class="const-head reveal">
+      <span class="const-symbol">k<sub style="font-size:0.5em;">B</sub></span>
+      <span class="const-headtext">
+        <span class="const-index">10 / 14</span>
+        <span class="const-title">k<sub>B</sub> · la constante de Boltzmann</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">Le traducteur entre le grouillement des atomes et la chaleur sur ta peau.</p>
+    <div class="const-value reveal">k = 1,380 649 × 10⁻²³ &nbsp;J·K⁻¹ &nbsp;&nbsp;(exacte)</div>
+
+    <p class="pull reveal">La température n'est pas une substance qu'on posséderait en plus ou moins grande quantité. C'est un mouvement : l'agitation de milliards d'atomes. Le chaud, c'est vite ; le froid, c'est lentement. Et k<sub>B</sub> est le nombre qui traduit l'un dans l'autre.</p>
+
+    <h3 class="rubric reveal">Ce qu'elle représente</h3>
+    <p class="reveal">Quand tu poses la main sur une tasse brûlante, tu ne sens pas un « fluide de chaleur » qui passerait dans ta peau. Tu sens des milliards de molécules qui s'agitent frénétiquement et bombardent ta main. La température, au fond, n'est rien d'autre que la <em>vitesse moyenne d'agitation</em> des atomes : plus ils gigotent, plus c'est chaud ; quand ils se figent presque, c'est glacial. La chaleur est du mouvement déguisé.</p>
+    <p class="reveal">Mais il y a un fossé entre ces deux descriptions. Le monde des atomes parle en <em>énergie</em> — des joules, l'énergie de leur agitation, des nombres infimes. Notre monde à nous parle en <em>température</em> — des degrés, ce que lit le thermomètre. Comment passer de l'un à l'autre ? C'est précisément le rôle de k<sub>B</sub> : elle est le taux de change exact entre l'énergie d'agitation microscopique et la température macroscopique. Donne-lui l'énergie d'agitation des atomes, elle te rend des degrés. C'est la passerelle, le dictionnaire qui relie l'invisible au sensible.</p>
+
+    <!-- VIZ k_B : les deux mondes reliés par k_B -->
+    <figure class="viz reveal" id="viz-kb">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <text x="135" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">LE MONDE DES ATOMES</text>
+        <rect x="40" y="44" width="190" height="190" rx="6" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <g class="particles"></g>
+        <text x="135" y="262" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="middle">énergie d'agitation moyenne</text>
+        <text class="joules" x="135" y="284" font-family="monospace" font-size="15" fill="var(--accent)" text-anchor="middle">6,1 × 10⁻²¹ J</text>
+        <text x="340" y="120" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="middle">÷ k<tspan baseline-shift="sub" font-size="8">B</tspan></text>
+        <line x1="245" y1="140" x2="430" y2="140" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#kbArr)"/>
+        <defs><marker id="kbArr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="var(--accent)"/></marker></defs>
+        <text x="340" y="162" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="middle">k<tspan baseline-shift="sub" font-size="9">B</tspan> traduit</text>
+        <text x="340" y="178" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="middle">l'agitation en degrés</text>
+        <text x="545" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">CE QUE TU RESSENS</text>
+        <rect x="535" y="50" width="20" height="160" rx="10" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="545" cy="222" r="20" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <rect class="merc" x="539" y="120" width="12" height="98" rx="6" fill="var(--accent)"/>
+        <circle cx="545" cy="222" r="14" fill="var(--accent)"/>
+        <text class="temp" x="500" y="60" font-family="monospace" font-size="17" fill="var(--accent)" text-anchor="end">+20 °C</text>
+        <text class="kelvin" x="500" y="80" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="end">293 K</text>
+      </svg>
+      <div class="controls">
+        <label style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);display:flex;align-items:center;gap:0.7rem;flex:1;min-width:260px;">
+          ❄ froid
+          <input class="temp-slider" type="range" min="1" max="3000" value="293" style="flex:1;accent-color:var(--accent);">
+          chaud 🔥
+        </label>
+        <span class="readout" style="font-family:var(--mono);color:var(--muted);font-size:0.8rem;">glisse pour chauffer ou refroidir</span>
+      </div>
+      <figcaption>À gauche, l'agitation des atomes — une énergie en joules, invisible et minuscule. À droite, la température que tu ressens. C'est k<sub>B</sub> qui fait le pont entre les deux : elle traduit le grouillement microscopique en degrés. Glisse le curseur : du quasi-immobile au déchaînement, c'est toujours k<sub>B</sub> qui convertit l'agitation en température.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Son histoire et comment on la mesure</h3>
+    <p class="reveal">Ludwig Boltzmann, dans les années 1870, fut l'un des premiers à prendre les atomes vraiment au sérieux — à une époque où beaucoup de savants doutaient encore de leur existence. Il comprit que toutes les lois de la chaleur, jusque-là mystérieuses, pouvaient s'expliquer par le mouvement statistique d'innombrables particules. Sa constante est née de ce pont entre le microscopique et le macroscopique. Tragiquement, ses idées furent si combattues de son vivant qu'elles contribuèrent à son désespoir ; il mit fin à ses jours en 1906, quelques années seulement avant que l'existence des atomes ne soit définitivement prouvée et que son œuvre ne triomphe.</p>
+    <p class="reveal">Comme plusieurs de ses sœurs, k<sub>B</sub> a cessé d'être mesurée pour être <em>fixée</em> en 2019 : sa valeur définit désormais le kelvin, l'unité de température. Le degré n'est plus calé sur les caprices de l'eau qui gèle ou bout, mais directement sur l'énergie des atomes, via k<sub>B</sub>. Là encore, un nombre fondamental a remplacé un repère matériel.</p>
+
+    <h3 class="rubric reveal">Où tu la rencontres sans le savoir</h3>
+    <p class="reveal">À chaque instant, l'air autour de toi est un orage invisible : les molécules qui t'entourent filent à près de 1 800 km/h et te percutent des milliards de fois par seconde. Tu ne le sens pas comme des chocs, mais comme une douce température ambiante — c'est k<sub>B</sub> qui opère cette traduction silencieuse. La pression de tes pneus, le gonflement d'un ballon au soleil, le sifflement d'une cocotte-minute : tous obéissent à la relation entre agitation et température que k<sub>B</sub> encode.</p>
+    <p class="reveal">Elle gouverne aussi le bruit de fond de toute l'électronique. Dans n'importe quel circuit, l'agitation thermique des électrons crée un grésillement aléatoire — le « bruit thermique » — dont l'intensité est fixée par k<sub>B</sub>. C'est une limite incontournable pour les capteurs les plus sensibles, des télescopes aux appareils photo : pour « entendre » des signaux très faibles, il faut souvent refroidir l'instrument, c'est-à-dire calmer cette agitation que k<sub>B</sub> met en équation.</p>
+
+    <h3 class="rubric reveal">La flèche du temps · pourquoi le passé n'est pas le futur</h3>
+    <p class="reveal">k<sub>B</sub> cache la plus vertigineuse des idées : elle est la clé de l'<strong>entropie</strong>, la grandeur qui mesure le désordre, et qui explique pourquoi le temps ne coule que dans un sens. Un verre tombe et se brise, jamais l'inverse ; une goutte d'encre se disperse dans l'eau, jamais ne se rassemble ; un café chaud refroidit, jamais ne se réchauffe tout seul. Pourquoi ? Parce qu'il existe d'innombrables façons d'être « en désordre » et très peu d'être « en ordre » — alors le hasard des milliards de particules mène presque toujours vers plus de désordre. C'est le deuxième principe de la thermodynamique.</p>
+    <p class="reveal">Boltzmann a su mettre cette intuition en équation, et la formule est si belle qu'elle est gravée sur sa tombe : <em>S = k · log W</em> (où k désigne justement k<sub>B</sub>). Elle dit que l'entropie (S) d'un état est liée, via la constante k<sub>B</sub>, au nombre de façons (W) dont les atomes peuvent se réarranger sans qu'on voie de différence. Plus il y a de façons, plus l'entropie est grande. Et comme l'univers glisse inexorablement vers les états les plus probables — les plus nombreux, les plus désordonnés — il acquiert une direction : un avant et un après. C'est là le fait le plus stupéfiant : la <em>flèche du temps</em>, cette évidence qu'on ne peut pas revenir en arrière, n'est pas inscrite dans les lois fondamentales (qui, elles, fonctionnent aussi bien à l'endroit qu'à l'envers). Elle émerge du pur jeu des probabilités sur d'innombrables particules — et k<sub>B</sub> en est la mesure. Le temps lui-même, dans sa course à sens unique, porte la signature de cette petite constante.</p>
+  </section>
+
+
+  <!-- ======================= ZÉRO ABSOLU ======================= -->
+  <section class="constant" id="zero" style="--accent:#7fb0d8;">
+    <div class="const-head reveal">
+      <span class="const-symbol">0 K</span>
+      <span class="const-headtext">
+        <span class="const-index">11 / 14</span>
+        <span class="const-title">Le zéro absolu</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">La température la plus basse qui puisse exister — et qu'on ne pourra jamais atteindre.</p>
+    <div class="const-value reveal">0 K &nbsp;=&nbsp; −273,15 °C</div>
+
+    <p class="pull reveal">Il n'y a pas de limite au chaud : on peut toujours agiter les atomes davantage. Mais il existe un plancher au froid, un point en deçà duquel rien ne peut descendre — parce qu'on ne peut pas ralentir des atomes déjà parfaitement immobiles.</p>
+
+    <h3 class="rubric reveal">Ce qu'il représente</h3>
+    <p class="reveal">On vient de le voir avec k<sub>B</sub> : la température n'est que l'agitation des atomes. Le chaud, c'est vite ; le froid, c'est lentement. Pose-toi alors la question qui s'impose : jusqu'où peut-on refroidir ? La réponse est limpide. Refroidir, c'est ralentir les atomes ; on atteint donc le froid ultime quand les atomes ne bougent plus du tout. À ce point précis, il n'y a plus rien à retirer — on ne peut pas être « plus immobile que l'immobilité ». C'est le zéro absolu : la température où toute agitation thermique cesse.</p>
+    <p class="reveal">Sa valeur tombe à un endroit qui ne doit rien au hasard de nos thermomètres : −273,15 °C. Si notre échelle Celsius le place à ce nombre étrange, c'est parce qu'elle a été bâtie autour de l'eau (0 pour la glace, 100 pour l'ébullition), sans savoir où se trouvait le vrai plancher. C'est pourquoi les physiciens préfèrent l'échelle Kelvin, qui démarre justement <em>au</em> zéro absolu : 0 K, tout simplement. Sur cette échelle, la température mesure directement l'agitation, et le zéro veut dire ce qu'il dit — rien.</p>
+
+    <!-- VIZ zéro absolu : refroidissement vers l'immobilité -->
+    <figure class="viz reveal" id="viz-zero">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <text x="160" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">L'AGITATION DES ATOMES</text>
+        <rect x="60" y="44" width="200" height="200" rx="6" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <g class="particles"></g>
+        <text class="state" x="160" y="272" font-family="monospace" font-size="12" fill="var(--accent)" text-anchor="middle">les atomes s'agitent</text>
+        <text x="500" y="28" font-family="monospace" font-size="12" fill="var(--svg-ink)" text-anchor="middle">TEMPÉRATURE</text>
+        <rect x="490" y="50" width="20" height="200" rx="10" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="500" cy="262" r="20" fill="#0d1018" stroke="var(--line)" stroke-width="1.5"/>
+        <rect class="merc" x="494" y="120" width="12" height="138" rx="6" fill="var(--accent)"/>
+        <circle cx="500" cy="262" r="14" fill="var(--accent)"/>
+        <line x1="512" y1="250" x2="524" y2="250" stroke="var(--muted)" stroke-width="1"/>
+        <text x="530" y="254" font-family="monospace" font-size="10" fill="var(--muted)">0 K</text>
+        <text class="kelvin" x="575" y="120" font-family="monospace" font-size="18" fill="var(--accent)">293 K</text>
+        <text class="celsius" x="575" y="142" font-family="monospace" font-size="12" fill="var(--muted)">+20 °C</text>
+      </svg>
+      <div class="controls">
+        <label style="font-family:var(--mono);font-size:0.8rem;color:var(--muted);display:flex;align-items:center;gap:0.7rem;flex:1;min-width:260px;">
+          refroidir →
+          <input class="cool" type="range" min="0" max="293" value="293" style="flex:1;accent-color:var(--accent);">
+        </label>
+        <span style="font-family:var(--mono);color:var(--muted);font-size:0.8rem;">glisse vers la gauche</span>
+      </div>
+      <figcaption>Refroidir, c'est ralentir les atomes. À mesure que la température descend, leur agitation faiblit. Au zéro absolu — 0 kelvin, soit −273,15 °C — le mouvement cesse complètement : c'est, par définition, le froid le plus total qui puisse exister.</figcaption>
+    </figure>
+
+    <h3 class="rubric reveal">Son histoire et jusqu'où l'on s'en approche</h3>
+    <p class="reveal">L'idée remonte au XVII<sup>e</sup> siècle, quand on remarqua qu'un gaz refroidi se contracte régulièrement : en prolongeant la tendance, on tombe inévitablement sur une température où son volume deviendrait nul — un mur infranchissable. Au XIX<sup>e</sup> siècle, Lord Kelvin formalisa cette borne et lui donna son échelle. L'univers lui-même n'atteint jamais ce zéro : l'espace intergalactique, baigné par la lueur fossile du Big Bang, stagne autour de 2,7 K, et l'endroit naturellement le plus froid jamais repéré, la nébuleuse du Boomerang, descend à environ 1 K — sans toucher le fond.</p>
+    <p class="reveal">Les laboratoires font infiniment mieux que la nature. À l'aide de lasers et de champs magnétiques qui freinent les atomes un à un, les physiciens sont descendus à des températures hallucinantes : le record actuel, atteint par une équipe allemande, est de 38 <em>picokelvins</em> — soit 0,000 000 000 038 degré au-dessus du zéro absolu. Une façon imagée de l'écrire : −273,149 999 999 999 96 °C. On ajoute des décimales, on colle au mur de plus en plus près… mais on ne le touche jamais.</p>
+
+    <h3 class="rubric reveal">Où il se cache dans ta vie</h3>
+    <p class="reveal">Le zéro absolu n'est pas qu'une curiosité de laboratoire : c'est le repère qui rend la température <em>absolue</em>, c'est-à-dire vraie. Quand on dit qu'un objet est « deux fois plus chaud » qu'un autre, cela n'a de sens qu'en kelvins, comptés depuis le zéro absolu — jamais en Celsius. C'est aussi en s'approchant de ce plancher qu'apparaissent les états les plus étranges de la matière : la supraconductivité (de l'électricité qui circule sans aucune résistance) ou la superfluidité (un liquide qui s'écoule sans aucun frottement, capable de remonter les parois de son récipient). Ton appareil d'IRM à l'hôpital fonctionne grâce à des aimants supraconducteurs refroidis tout près du zéro absolu.</p>
+
+    <h3 class="rubric reveal">L'inatteignable · pourquoi le mur recule toujours</h3>
+    <p class="reveal">Voici le plus beau paradoxe du zéro absolu : il est défini avec une précision parfaite, et pourtant aucun être, aucune machine, nulle part dans l'univers, ne pourra jamais l'atteindre. Ce n'est pas une question de moyens techniques — c'est une impossibilité de principe, inscrite dans les lois de la physique.</p>
+    <p class="reveal">La raison tient à la manière même dont on refroidit. Pour retirer de la chaleur à un objet, il faut la transférer vers quelque chose de plus froid — et chaque opération de ce type ne peut emporter qu'une <em>partie</em> de l'agitation restante, jamais la totalité d'un coup. On progresse donc par paliers : on enlève la moitié de la chaleur, puis la moitié de ce qui reste, puis encore la moitié… On se rapproche du zéro par sauts de plus en plus petits, mais comme il restera toujours une moitié de quelque chose, on ne l'atteint jamais. Il faudrait une infinité d'étapes.</p>
+
+    <!-- VIZ : l'asymptote du refroidissement -->
+    <figure class="viz reveal" id="viz-asymp">
+      <svg viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- axes -->
+        <line x1="70" y1="50" x2="70" y2="290" stroke="var(--line)" stroke-width="1"/>
+        <line x1="70" y1="290" x2="610" y2="290" stroke="var(--line)" stroke-width="1"/>
+        <text x="58" y="64" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="end">chaud</text>
+        <text x="600" y="328" font-family="monospace" font-size="11" fill="var(--muted)" text-anchor="end">temps, effort →</text>
+        <!-- ligne du zéro absolu, jamais touchée -->
+        <line x1="70" y1="290" x2="610" y2="290" stroke="#e07a7a" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="610" y="310" font-family="monospace" font-size="12" fill="#e07a7a" text-anchor="end">0 K — jamais atteint</text>
+        <!-- la courbe asymptotique -->
+        <path d="M 70.0 60.0 L 74.4 70.3 L 78.8 80.1 L 83.3 89.5 L 87.7 98.5 L 92.1 107.1 L 96.5 115.3 L 100.9 123.1 L 105.3 130.6 L 109.8 137.7 L 114.2 144.6 L 118.6 151.1 L 123.0 157.3 L 127.4 163.2 L 131.8 168.9 L 136.3 174.3 L 140.7 179.5 L 145.1 184.5 L 149.5 189.2 L 153.9 193.7 L 158.3 198.0 L 162.8 202.2 L 167.2 206.1 L 171.6 209.8 L 176.0 213.4 L 180.4 216.9 L 184.8 220.1 L 189.3 223.3 L 193.7 226.3 L 198.1 229.1 L 202.5 231.8 L 206.9 234.5 L 211.3 236.9 L 215.8 239.3 L 220.2 241.6 L 224.6 243.8 L 229.0 245.8 L 233.4 247.8 L 237.8 249.7 L 242.3 251.5 L 246.7 253.2 L 251.1 254.9 L 255.5 256.4 L 259.9 258.0 L 264.3 259.4 L 268.8 260.8 L 273.2 262.1 L 277.6 263.3 L 282.0 264.5 L 286.4 265.7 L 290.8 266.7 L 295.3 267.8 L 299.7 268.8 L 304.1 269.7 L 308.5 270.6 L 312.9 271.5 L 317.3 272.3 L 321.8 273.1 L 326.2 273.9 L 330.6 274.6 L 335.0 275.3 L 339.4 276.0 L 343.8 276.6 L 348.3 277.2 L 352.7 277.8 L 357.1 278.3 L 361.5 278.8 L 365.9 279.3 L 370.3 279.8 L 374.8 280.3 L 379.2 280.7 L 383.6 281.1 L 388.0 281.5 L 392.4 281.9 L 396.8 282.3 L 401.3 282.6 L 405.7 282.9 L 410.1 283.3 L 414.5 283.6 L 418.9 283.8 L 423.3 284.1 L 427.8 284.4 L 432.2 284.6 L 436.6 284.9 L 441.0 285.1 L 445.4 285.3 L 449.8 285.5 L 454.3 285.7 L 458.7 285.9 L 463.1 286.1 L 467.5 286.3 L 471.9 286.4 L 476.3 286.6 L 480.8 286.8 L 485.2 286.9 L 489.6 287.0 L 494.0 287.2 L 498.4 287.3 L 502.8 287.4 L 507.3 287.5 L 511.7 287.6 L 516.1 287.8 L 520.5 287.9 L 524.9 288.0 L 529.3 288.0 L 533.8 288.1 L 538.2 288.2 L 542.6 288.3 L 547.0 288.4 L 551.4 288.4 L 555.8 288.5 L 560.3 288.6 L 564.7 288.6 L 569.1 288.7 L 573.5 288.8 L 577.9 288.8 L 582.3 288.9 L 586.8 288.9 L 591.2 289.0 L 595.6 289.0 L 600.0 289.1" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+        <!-- flèche soulignant que la courbe frôle sans toucher -->
+        <text x="600" y="92" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="end">la courbe s'aplatit et frôle le zéro…</text>
+        <text x="600" y="110" font-family="Georgia,serif" font-style="italic" font-size="12" fill="var(--svg-ink)" text-anchor="end">sans jamais le toucher</text>
+      </svg>
+      <figcaption>La température chute vite au début, puis de plus en plus lentement : la courbe se couche au ras du zéro absolu et le longe à l'infini sans jamais l'atteindre. C'est une asymptote — une limite qu'on approche sans fin, mais qui reste à jamais hors de portée.</figcaption>
+    </figure>
+
+    <p class="reveal" style="border-left:3px solid var(--accent); padding-left:1.2rem; color:var(--ink-dim);">Une autre manière de <em>sentir</em> l'impossibilité, par pure logique : refroidir, c'est transférer la chaleur vers quelque chose de plus froid. Mais pour vider un objet de sa toute dernière trace de chaleur et le porter à 0 K, il faudrait alors disposer d'un réservoir… <em>plus froid que le zéro absolu</em> — ce qui n'existe pas, puisque rien ne peut être plus immobile que l'immobilité totale. Le froid ultime ne peut s'évacuer nulle part. (Les physiciens ne refroidissent pas que par contact : ils usent de ruses comme la détente des gaz ou le freinage des atomes par laser. Mais ces méthodes butent toutes sur la même limite, exactement là où cette logique le prédit.)</p>
+    <p class="reveal">Et il y a une raison plus profonde encore, tapie sous la première. Même si l'on parvenait, par miracle, au bout de cette infinité d'étapes, un atome « parfaitement immobile » resterait impossible. Souviens-toi de ℏ et du principe d'incertitude : une particule totalement figée aurait à la fois une position et une vitesse parfaitement définies — exactement ce que la nature interdit. Il subsiste donc toujours un ultime frémissement irréductible, le « mouvement de point zéro », que rien ne pourra jamais éteindre. Le zéro absolu est ainsi une frontière idéale : on peut la viser, s'en approcher à des milliardièmes de degré, la définir avec une rigueur parfaite — mais elle reste, à jamais, de l'autre côté du possible.</p>
+  </section>
+
+
+  <!-- ======================= α ======================= -->
+  <section class="constant" id="alpha" style="--accent:#cf8fa0;">
+    <div class="const-head reveal">
+      <span class="const-symbol greek">α</span>
+      <span class="const-headtext">
+        <span class="const-index">12 / 14</span>
+        <span class="const-title">Alpha · la constante de structure fine</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">Un nombre pur, sans unité, que toute civilisation de l'univers mesurerait identique — et que personne ne sait expliquer.</p>
+    <div class="const-value reveal">α ≈ 1 ⁄ 137,036 ≈ 0,007 297</div>
+
+    <p class="pull reveal">La plupart des constantes dépendent de nos unités : la vitesse de la lumière change de chiffre selon qu'on la compte en mètres ou en miles. Pas α. C'est un nombre nu, le même partout, pour tout le monde. Et sa valeur, 1/137, demeure l'une des plus grandes énigmes de la physique.</p>
+
+    <h3 class="rubric reveal">Ce qu'elle représente</h3>
+    <p class="reveal">L'univers tient ensemble grâce à quelques forces fondamentales. L'une d'elles, l'électromagnétisme, est celle qui gouverne la lumière, l'électricité, et surtout l'attraction entre les charges électriques — c'est elle qui lie les électrons au noyau dans chaque atome, et donc qui rend possibles les atomes, les molécules, la matière solide, la chimie, toi. α est le nombre qui dit <em>avec quelle force</em> cette interaction agit. C'est, en quelque sorte, l'intensité de la colle électromagnétique de l'univers : la vigueur avec laquelle la lumière et la matière chargée se parlent.</p>
+    <p class="reveal">Plus précisément, chaque fois qu'une particule chargée — un électron, disons — émet ou absorbe un grain de lumière, α mesure la probabilité que cet échange ait lieu. Une valeur d'environ 1/137 signifie que l'électromagnétisme est une force <em>modérée</em> : assez puissante pour retenir solidement les électrons autour des noyaux et bâtir des atomes stables, mais pas au point de tout figer dans un étau. Toute la délicatesse de la matière tient dans cette valeur intermédiaire.</p>
+
+    <h3 class="rubric reveal">Un nombre qui n'appartient à personne</h3>
+    <p class="reveal">Voici ce qui rend α unique parmi nos constantes. La vitesse de la lumière vaut 299 792 458… <em>mètres par seconde</em> — change d'unité, et le chiffre change. La constante de Boltzmann se compte en joules par kelvin. Toutes traînent derrière elles des unités, héritées de choix humains : le mètre, la seconde, le degré. α, elle, n'en a aucune. C'est un rapport pur, un nombre nu : on l'obtient en combinant d'autres constantes (la charge de l'électron, la vitesse de la lumière, la constante de Planck) de telle sorte que toutes les unités s'annulent. Il ne reste qu'un nombre : 0,007 297…, soit environ 1/137.</p>
+    <p class="reveal">La conséquence est vertigineuse. Si nous rencontrions un jour une civilisation née près d'une autre étoile, nous ne partagerions avec elle ni les mètres, ni les secondes, ni les kilogrammes — ces unités sont des conventions terrestres. Mais nous serions <em>forcément</em> d'accord sur α. Elle mesurerait 1/137 chez eux comme chez nous, car c'est une propriété de l'univers lui-même, pas de notre façon de le découper. α est l'un des très rares nombres que l'on pourrait échanger avec un extraterrestre en étant sûr d'être compris. C'est un mot du vocabulaire fondamental du cosmos.</p>
+
+    <h3 class="rubric reveal">Un nombre qui surgit partout</h3>
+    <p class="reveal">Ce qui nourrit l'aura de mystère d'α, c'est qu'elle ne reste pas sagement dans son coin spectral : elle resurgit, encore et encore, dans des recoins de la physique qui n'ont apparemment aucun rapport entre eux. Comme si un même nombre était tatoué un peu partout sous la peau de la matière.</p>
+    <p class="reveal">Quelques exemples, parmi des dizaines. Dans l'atome d'hydrogène le plus simple, l'électron tourne autour du noyau à une vitesse bien précise : exactement α fois la vitesse de la lumière, soit 0,73 % de c — environ 2 200 kilomètres par seconde. Pourquoi cette fraction ? Parce que α gouverne l'intensité du lien électrique qui le retient. Autre apparition : compare la force avec laquelle deux électrons se repoussent à l'énergie d'un grain de lumière dont la longueur d'onde serait leur distance — le rapport, encore, est α. Ou encore : α dicte de combien la lumière émise par les atomes se trouve très légèrement décalée, dédoublée, structurée. À chaque fois, des situations sans lien évident, et pourtant le même 1/137 qui réapparaît, comme une signature glissée dans les marges. C'est cette ubiquité qui a convaincu les physiciens qu'α n'est pas un accident, mais une clé profonde de l'univers — une clé dont on n'a toujours pas trouvé la serrure.</p>
+
+    <h3 class="rubric reveal">Son histoire et le mystère du 137</h3>
+    <p class="reveal">α est apparue en 1916 sous la plume d'Arnold Sommerfeld, qui cherchait à expliquer un détail troublant : en observant de très près la lumière émise par les atomes, on s'aperçoit que certaines raies lumineuses, qu'on croyait simples, sont en réalité dédoublées en paires très serrées. Cette délicate dentelle dans le spectre, on l'a appelée la « structure fine » — et α est le nombre qui en gouverne l'écartement. D'où son nom.</p>
+    <p class="reveal">Mais très vite, α est devenue une obsession dépassant de loin ce détail spectral. Pourquoi 1/137 ? Richard Feynman, qui a consacré sa vie à l'électromagnétisme quantique, en parlait comme de « l'un des plus grands mystères de la physique : un nombre magique qui nous est donné sans que l'homme le comprenne », et confiait que tous les bons physiciens devraient l'afficher au mur pour se rappeler tout ce qu'ils ignorent.</p>
+    <p class="reveal">Nul ne fut plus hanté par ce nombre que Wolfgang Pauli, prix Nobel et l'un des fondateurs de la physique quantique. Il passa une partie de sa vie à tenter, en vain, de percer le secret du 137, au point d'en plaisanter : « Quand je mourrai, ma première question au diable sera : quel est le sens de la constante de structure fine ? » Le destin lui réserva une coïncidence que les amateurs de symboles n'ont jamais oubliée : admis à l'hôpital pour un cancer, on lui attribua la chambre numéro… 137. Il y mourut. « Vous avez vu le numéro de la chambre ? » demanda-t-il à un visiteur. Un siècle plus tard, le mystère reste entier : aucune théorie ne <em>prédit</em> la valeur de α. On la mesure avec une précision prodigieuse — jusqu'à la dixième décimale — sans savoir pourquoi la nature a choisi celle-là.</p>
+    <p class="reveal">Cette énigme a même débordé du champ de la science. Pour certains, qu'un nombre aussi précis, aussi parfaitement ajusté pour rendre la matière et la vie possibles, surgisse « sans raison », ressemble à une intention — une signature laissée dans les fondations de l'univers, que d'aucuns ont voulu lire comme celle de Dieu. D'autres y voient au contraire la preuve qu'il nous manque encore une théorie plus profonde, qui finira par expliquer ce 1/137 aussi naturellement qu'on explique aujourd'hui l'arc-en-ciel. La physique, prudente, ne tranche pas : elle constate seulement qu'un nombre sans dimension, niché au cœur de toute chose, garde jalousement son secret. Et c'est peut-être cela, le plus beau — qu'au centre d'une science si puissante demeure une question d'enfant à laquelle nul ne sait répondre : pourquoi celui-là ?</p>
+
+    <h3 class="rubric reveal">Sur le fil du rasoir · et si α était différente ?</h3>
+    <p class="reveal">α est peut-être la mieux réglée de toutes nos constantes — celle dont la moindre variation aurait les conséquences les plus dévastatrices. Puisqu'elle fixe la force du lien entre la lumière et la matière, elle gouverne toute la chimie, donc toute possibilité de complexité, donc de vie.</p>
+    <p class="reveal">Si α était sensiblement plus grande, l'attraction électromagnétique deviendrait si forte que les réactions au cœur des étoiles s'en trouveraient bouleversées, et surtout, un processus d'une délicatesse extrême serait ruiné : la fabrication du carbone. Les étoiles forgent le carbone — l'élément clé de la vie — grâce à un alignement énergétique d'une finesse stupéfiante, qui dépend directement de α. Un écart de quelques pour cent, dans un sens ou dans l'autre, et les étoiles ne produiraient presque plus de carbone, ni d'oxygène : l'univers resterait stérile, sans la chimie riche dont nous sommes faits. Si α était au contraire beaucoup plus faible, les liaisons chimiques deviendraient trop molles pour tenir des molécules complexes ensemble. Entre ces deux échecs s'ouvre une fenêtre étroite — et α s'y loge, presque exactement au centre. Nous existons parce qu'un nombre que personne ne sait expliquer se trouve avoir, précisément, la valeur qu'il faut.</p>
+  </section>
+
+
+  <footer class="end">… le voyage touche à sa fin · Λ · H₀ …</footer>
 
 </main>
 
@@ -1412,6 +1600,109 @@
     slider.addEventListener('input',e=>render(e.target.value/100));
     render(0);
   })();
+
+  // =================== VIZ k_B : les deux mondes reliés par k_B ===================
+  (function(){
+    const root=document.getElementById('viz-kb'); if(!root) return;
+    const partG=root.querySelector('.particles'), joules=root.querySelector('.joules'),
+          merc=root.querySelector('.merc'), tempT=root.querySelector('.temp'), kelvinT=root.querySelector('.kelvin'),
+          slider=root.querySelector('.temp-slider');
+    const kB=1.380649e-23;
+    const bx=40, by=44, bw=190, bh=190, pad=14, N=14;
+    let parts=[];
+    for(let i=0;i<N;i++){
+      parts.push({ x:bx+pad+Math.random()*(bw-2*pad), y:by+pad+Math.random()*(bh-2*pad), a:Math.random()*Math.PI*2 });
+    }
+    let speed=1.0, raf=null, running=false;
+    // vitesse ∝ √T (physiquement juste) ; calibré pour aller du quasi-figé au quasi-insaisissable sur 1..3000 K
+    function tempToSpeed(T){ return 0.12 + Math.sqrt(T/3000)*6.5; }
+    function frame(){
+      const r=3.2;
+      parts.forEach(p=>{
+        p.x+=Math.cos(p.a)*speed; p.y+=Math.sin(p.a)*speed;
+        if(p.x<bx+pad){p.x=bx+pad; p.a=Math.PI-p.a;}
+        if(p.x>bx+bw-pad){p.x=bx+bw-pad; p.a=Math.PI-p.a;}
+        if(p.y<by+pad){p.y=by+pad; p.a=-p.a;}
+        if(p.y>by+bh-pad){p.y=by+bh-pad; p.a=-p.a;}
+      });
+      let html=''; parts.forEach(p=>{ html+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="#9db4d0"/>`; });
+      partG.innerHTML=html;
+      raf=requestAnimationFrame(frame);
+    }
+    function setT(T){
+      speed=tempToSpeed(T);
+      const E=1.5*kB*T;
+      // affichage joules : on adapte la mantisse (10^-21 ou 10^-20)
+      const e21=E/1e-21;
+      joules.textContent = e21>=10 ? (e21/10).toFixed(1).replace('.',',')+' × 10⁻²⁰ J'
+                                   : e21.toFixed(1).replace('.',',')+' × 10⁻²¹ J';
+      const C=Math.round(T-273.15);
+      tempT.textContent=(C>=0?'+':'')+C+' °C';
+      kelvinT.textContent=Math.round(T)+' K';
+      // mercure : échelle racine pour rester lisible sur 1..3000 K
+      const top=50, maxH=160, frac=Math.max(0.04,Math.min(1,Math.sqrt(T/3000)*1.05)), h=maxH*frac;
+      merc.setAttribute('y',(top+maxH-h).toFixed(1)); merc.setAttribute('height',h.toFixed(1));
+    }
+    slider.addEventListener('input',e=>setT(parseFloat(e.target.value)));
+    setT(293);
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
+      if(e.isIntersecting && !running){ running=true; frame(); }
+    }); }, {threshold:0.1});
+    io.observe(root);
+  })();
+
+  // =================== VIZ zéro absolu : refroidissement vers l'immobilité ===================
+  (function(){
+    const root=document.getElementById('viz-zero'); if(!root) return;
+    const partG=root.querySelector('.particles'), merc=root.querySelector('.merc'),
+          kelvinT=root.querySelector('.kelvin'), celsiusT=root.querySelector('.celsius'),
+          stateT=root.querySelector('.state'), slider=root.querySelector('.cool');
+    const bx=60, by=44, bw=200, bh=200, pad=16, N=16;
+    let parts=[];
+    for(let i=0;i<N;i++){
+      parts.push({ x:bx+pad+Math.random()*(bw-2*pad), y:by+pad+Math.random()*(bh-2*pad), a:Math.random()*Math.PI*2 });
+    }
+    let speed=4, raf=null, frozen=false, running=false;
+    function tempToSpeed(T){ return Math.sqrt(T/293)*4.2; }
+    function frame(){
+      const r=3.4;
+      if(!frozen){
+        parts.forEach(p=>{
+          p.x+=Math.cos(p.a)*speed; p.y+=Math.sin(p.a)*speed;
+          if(p.x<bx+pad){p.x=bx+pad; p.a=Math.PI-p.a;}
+          if(p.x>bx+bw-pad){p.x=bx+bw-pad; p.a=Math.PI-p.a;}
+          if(p.y<by+pad){p.y=by+pad; p.a=-p.a;}
+          if(p.y>by+bh-pad){p.y=by+bh-pad; p.a=-p.a;}
+        });
+      }
+      let html=''; parts.forEach(p=>{ html+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="#9db4d0"/>`; });
+      partG.innerHTML=html;
+      raf=requestAnimationFrame(frame);
+    }
+    function setT(T){
+      speed=tempToSpeed(T);
+      frozen=(T<=0.5);
+      kelvinT.textContent=Math.round(T)+' K';
+      const C=(T-273.15);
+      celsiusT.textContent=(C>=0?'+':'')+C.toFixed(T<=0.5?2:0)+' °C';
+      const top=50, maxH=200, frac=Math.max(0,Math.min(1,T/293)), h=Math.max(0,maxH*frac);
+      merc.setAttribute('y',(top+maxH-h).toFixed(1)); merc.setAttribute('height',h.toFixed(1));
+      if(T<=0.5) stateT.textContent='\u23f8 immobilité totale — zéro absolu';
+      else if(T<40) stateT.textContent='les atomes frémissent à peine';
+      else if(T<200) stateT.textContent='l\u2019agitation ralentit';
+      else stateT.textContent='les atomes s\u2019agitent';
+    }
+    slider.addEventListener('input',e=>setT(parseFloat(e.target.value)));
+    setT(293);
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
+      if(e.isIntersecting && !running){ running=true; frame(); }
+    }); }, {threshold:0.1});
+    io.observe(root);
+  })();
+
+
+
+
 
 
 
