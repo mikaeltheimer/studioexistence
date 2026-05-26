@@ -326,6 +326,8 @@
   <a href="#kb" data-accent="#e08a6d">k<sub style="font-size:0.6em;">B</sub></a>
   <a href="#zero" data-accent="#7fb0d8">0K</a>
   <a href="#alpha" data-accent="#cf8fa0">α</a>
+  <a href="#hubble" data-accent="#8fb89b">H₀</a>
+  <a href="#lambda" data-accent="#9b8fd0">Λ</a>
 </nav>
 
 <main>
@@ -1089,7 +1091,152 @@
   </section>
 
 
-  <footer class="end">… le voyage touche à sa fin · Λ · H₀ …</footer>
+  <!-- ======================= H₀ ======================= -->
+  <section class="constant" id="hubble" style="--accent:#8fb89b;">
+    <div class="const-head reveal">
+      <span class="const-symbol">H₀</span>
+      <span class="const-headtext">
+        <span class="const-index">13 / 14</span>
+        <span class="const-title">H-zéro · la constante de Hubble</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">La vitesse à laquelle l'univers grandit — et la mesure même de son âge.</p>
+    <div class="const-value reveal">H₀ ≈ 70 &nbsp;(km ⁄ s) par mégaparsec</div>
+
+    <p class="pull reveal">L'univers n'est pas une scène figée sur laquelle se jouent les choses. Il gonfle. Chaque galaxie s'éloigne de toutes les autres, l'espace lui-même s'étire — et H₀ est le nombre qui dit à quelle vitesse.</p>
+
+    <h3 class="rubric reveal">Ce qu'elle représente</h3>
+    <p class="reveal">Voici l'une des plus grandes découvertes de l'histoire humaine : l'univers est en expansion. Les galaxies lointaines s'éloignent toutes de nous, et plus une galaxie est lointaine, plus elle s'éloigne vite. H₀ — la constante de Hubble — est le taux exact de cette fuite : elle relie la distance d'une galaxie à la vitesse à laquelle elle s'écarte, par une règle d'une simplicité magnifique, vitesse = H₀ × distance. Une galaxie deux fois plus loin recule donc deux fois plus vite ; trois fois plus loin, trois fois plus vite. Ce n'est pas que les galaxies lointaines auraient un moteur plus puissant : c'est qu'il y a, entre elles et nous, davantage d'espace qui se dilate, et donc davantage de fuite accumulée.</p>
+    <p class="reveal">Un mot sur ce nom de « constante », car il peut prêter à confusion. H₀ est constante <em>dans l'espace</em> : à un instant donné, elle a la même valeur partout dans l'univers — c'est le taux d'expansion d'aujourd'hui, le même pour tous les observateurs. En revanche, elle n'est pas figée <em>dans le temps</em> : sa valeur évolue très lentement au fil des milliards d'années. C'est tout le sens du petit indice « zéro » : H₀ désigne le taux <em>actuel</em>, sa valeur à notre époque.</p>
+    <p class="reveal">Le point crucial, et le plus contre-intuitif, est celui-ci : les galaxies ne se déplacent pas <em>à travers</em> l'espace comme des éclats de shrapnel après une explosion. C'est l'espace lui-même, entre elles, qui s'étire et se dilate. Imagine des raisins dans une pâte à pain qui lève : aucun raisin ne « bouge » dans la pâte, et pourtant tous s'éloignent les uns des autres à mesure que la pâte gonfle. Vu depuis n'importe quel raisin, tous les autres fuient — et les plus lointains fuient le plus vite, car il y a plus de pâte qui gonfle entre eux et lui. Il n'y a pas de centre à cette expansion : chaque point voit la même chose. Nous ne sommes pas au milieu d'une explosion ; nous sommes partout à la fois dans une dilatation.</p>
+
+    <!-- VIZ : l'expansion de l'espace (loi de Hubble) -->
+    <figure class="viz reveal" id="viz-hubble" style="margin:2rem 0;">
+      <svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg">
+        <!-- clip : tout ce qui dépasse le cadre est masqué -->
+        <defs>
+          <clipPath id="hubble-frame"><rect x="2" y="2" width="676" height="396" rx="10"/></clipPath>
+          <radialGradient id="galGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#cfe0ee" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#cfe0ee" stop-opacity="0"/>
+          </radialGradient>
+          <marker id="hub-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#8fb89b"/>
+          </marker>
+        </defs>
+        <rect x="2" y="2" width="676" height="396" rx="10" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <g clip-path="url(#hubble-frame)">
+          <!-- la grille comobile (espace-temps) : dilatée par le même facteur que les galaxies -->
+          <g class="grid" stroke="var(--accent)" stroke-width="1" opacity="0"></g>
+          <!-- vecteurs de fuite : longueur proportionnelle à la distance (v = H0 d) -->
+          <g class="vectors" stroke="#8fb89b" stroke-width="1.6" opacity="0"></g>
+          <!-- galaxies (taille fixe : les objets liés ne se dilatent pas) -->
+          <g class="galaxies"></g>
+        </g>
+        <!-- readout dans le cadre -->
+        <text class="scaleReadout" x="18" y="384" font-family="monospace" font-size="12" fill="var(--muted)"></text>
+      </svg>
+      <div class="controls">
+        <button class="play">Lancer l'expansion</button>
+        <button class="reset">Recommencer</button>
+        <button class="toggle-grid">Afficher la grille</button>
+        <button class="toggle-obs">Changer d'observateur</button>
+        <span class="readout">facteur d'échelle <b class="aval">×1,00</b></span>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#cfe0ee;width:9px;height:9px;border-radius:50%"></i> galaxie observée</span>
+        <span><i class="dot" style="background:#8fb89b;width:9px;height:9px;border-radius:50%"></i> notre point d'observation</span>
+        <span><i class="dot" style="background:#8fb89b"></i> vitesse de fuite (∝ distance)</span>
+      </div>
+      <figcaption>Ce ne sont pas les galaxies qui filent à travers l'espace : c'est l'espace lui-même — la grille — qui se dilate, et les emporte. Chaque galaxie reste fixe sur la grille ; seules les distances grandissent. Une galaxie deux fois plus loin s'éloigne deux fois plus vite : c'est la loi de Hubble. Et le constat est le même depuis n'importe quel point — il n'y a pas de centre.</figcaption>
+    </figure>
+
+
+    <h3 class="rubric reveal">Son histoire et comment on la mesure</h3>
+    <p class="reveal">Au début du XX<sup>e</sup> siècle, on croyait encore que l'univers se résumait à notre galaxie, immuable et éternelle. Puis, dans les années 1920, Edwin Hubble — s'appuyant notamment sur les travaux décisifs de l'astronome Henrietta Leavitt, qui avait trouvé comment mesurer les distances cosmiques — observa que les galaxies lointaines fuyaient, et d'autant plus vite qu'elles étaient éloignées. C'était la preuve que l'univers grandissait. La conséquence était stupéfiante : si tout s'éloigne aujourd'hui, alors tout était plus proche hier, et plus proche encore avant-hier. En remontant le film, on aboutit à un instant où tout était concentré en un même point. C'est ainsi qu'est né le concept du Big Bang.</p>
+    <p class="reveal">Et voici un cadeau caché dans H₀ : sa valeur donne l'âge de l'univers. Puisqu'elle décrit la vitesse d'expansion, en « rembobinant » à cette vitesse, on calcule le temps écoulé depuis le commencement — environ 13,8 milliards d'années. Le même nombre qui mesure le gonflement de l'espace mesure aussi l'âge du temps.</p>
+    <p class="reveal">Comment mesure-t-on H₀ concrètement ? Il faut, pour une même galaxie, deux informations : à quelle distance elle est, et à quelle vitesse elle fuit. La <em>vitesse</em> est la partie facile : on la lit dans la couleur de sa lumière. Une source qui s'éloigne voit sa lumière étirée vers le rouge — plus elle fuit vite, plus le décalage est marqué. La <em>distance</em>, elle, est le vrai casse-tête, et la clé tient dans l'idée de « chandelle standard ». Imagine que toutes les ampoules de l'univers fassent exactement 100 watts : en voyant l'une d'elles briller faiblement au loin, tu pourrais déduire sa distance rien qu'à son éclat apparent. La nature fournit de telles ampoules-étalons — certaines étoiles pulsantes (les Céphéides), dont Henrietta Leavitt découvrit qu'elles trahissent leur luminosité réelle par leur rythme de pulsation, et certaines explosions de supernovae, qui brillent toutes avec presque la même puissance. En comparant leur éclat réel, connu, à leur éclat apparent, on remonte à leur distance.</p>
+    <p class="reveal">Une fois qu'on a, pour des centaines de galaxies, le couple distance–vitesse, on les place sur un graphique : la vitesse de fuite en fonction de la distance. Les points s'alignent sur une droite, et la pente de cette droite <em>est</em> H₀. C'est exactement ce qu'Edwin Hubble traça pour la première fois à la fin des années 1920 — le graphique qui révéla que l'univers grandit.</p>
+
+    <h3 class="rubric reveal">Où elle se cache dans ta vie</h3>
+    <p class="reveal">H₀ semble lointaine, et pourtant elle te touche par la lumière. Le « décalage vers le rouge » qui sert à la mesurer est le même phénomène qui fait qu'une sirène d'ambulance semble plus grave quand elle s'éloigne : la lumière des galaxies fuyantes est étirée vers le rouge, exactement comme le son est étiré vers les graves. C'est ce glissement de couleur, observable dans n'importe quel télescope, qui trahit l'expansion.</p>
+    <p class="reveal">Plus profondément, H₀ encadre tout ce que tu peux savoir de l'univers. Parce que l'espace s'étend et que la lumière met du temps à nous parvenir, il existe un horizon au-delà duquel les galaxies s'éloignent de nous plus vite que leur lumière ne peut nous rejoindre : leur image ne nous parviendra jamais. H₀ fixe la taille de cette « bulle » observable, le volume de cosmos qui nous sera à jamais accessible. Tout le reste — l'immense majorité de l'univers, peut-être infini — restera pour toujours hors de notre vue.</p>
+
+    <h3 class="rubric reveal">Sur le fil du rasoir · la tension de Hubble</h3>
+    <p class="reveal">Voici l'un des plus grands mystères de la physique <em>actuelle</em> — non pas une énigme résolue depuis longtemps, mais une crise qui se joue en ce moment même. Rappelons d'abord ce qu'on attend : H₀ a une seule vraie valeur aujourd'hui, la même partout. Quelle que soit la méthode employée pour la mesurer, on devrait donc retomber sur le même nombre. Or il existe deux grandes méthodes, et elles refusent obstinément de concorder.</p>
+    <p class="reveal">La première observe l'univers <em>récent</em> : on mesure directement les chandelles standard des galaxies proches, et l'on en déduit une expansion d'environ 73. La seconde part de l'univers <em>tel qu'il était à ses débuts</em> : on analyse la lueur fossile émise 380 000 ans après le Big Bang — le « fond diffus cosmologique », la plus vieille lumière du cosmos — et, en déroulant les équations de l'expansion jusqu'à aujourd'hui, on prédit une valeur actuelle d'environ 67. Attention : ces deux approches ne comparent pas des galaxies « proches » à des galaxies « lointaines ». Elles confrontent deux <em>époques</em> et deux <em>chemins de calcul</em> — l'un ancré dans le présent, l'autre dans l'aube des temps — qui devraient pourtant aboutir au même H₀ d'aujourd'hui.</p>
+    <p class="reveal">Ils n'y aboutissent pas. L'écart entre 73 et 67 est devenu trop net, trop persistant pour être balayé comme une simple erreur de mesure : c'est la <strong>tension de Hubble</strong>. Que signifie-t-elle ? Peut-être nous manque-t-il quelque chose de fondamental sur l'univers primitif, ou sur l'énergie noire, voire une physique entièrement nouvelle. Deux regards sur le même cosmos nous renvoient deux réponses inconciliables, et personne ne sait encore pourquoi. C'est peut-être la fissure par laquelle s'engouffrera la prochaine révolution de la physique.</p>
+  </section>
+
+  <!-- ======================= Λ ======================= -->
+  <section class="constant" id="lambda" style="--accent:#9b8fd0;">
+    <div class="const-head reveal">
+      <span class="const-symbol">Λ</span>
+      <span class="const-headtext">
+        <span class="const-index">14 / 14</span>
+        <span class="const-title">Lambda · la constante cosmologique</span>
+      </span>
+    </div>
+    <p class="const-tagline reveal">L'énergie invisible qui remplit le vide, accélère l'univers, et scellera son destin.</p>
+    <div class="const-value reveal">Λ ≈ 1,1 × 10⁻⁵² m⁻²</div>
+
+    <p class="pull reveal">On vient de voir que l'univers s'étend. Mais voici le coup de théâtre final : non seulement il s'étend, mais son expansion <em>accélère</em>. Quelque chose pousse le cosmos à se dilater de plus en plus vite — et nous ne savons pas ce que c'est.</p>
+
+    <h3 class="rubric reveal">Ce qu'elle représente</h3>
+    <p class="reveal">On s'attendait à ce que l'expansion de l'univers ralentisse peu à peu : après tout, la gravité de toute la matière devrait freiner le mouvement, comme la Terre freine une pierre lancée vers le ciel. En 1998, en mesurant des supernovae très lointaines, les astronomes découvrirent exactement le contraire — et ce fut un choc retentissant. L'expansion n'est pas en train de ralentir : elle <em>accélère</em>. Quelque chose agit comme un anti-gravité à l'échelle cosmique, écartant l'espace de plus en plus vite. On a donné à ce quelque chose un nom qui avoue notre ignorance : l'<strong>énergie noire</strong>. Et Λ, la constante cosmologique, est le nombre qui en mesure l'intensité.</p>
+    <p class="reveal">L'idée vertigineuse est que l'énergie noire serait une propriété du vide lui-même. Le vide, en physique, n'est pas le néant : même l'espace parfaitement vide possède une énergie intrinsèque, infime à chaque mètre cube, qui pousse l'espace à s'étendre. Comme cette poussée est attachée au vide, plus l'univers grandit, plus il y a de vide, donc plus la poussée totale augmente — d'où l'accélération qui s'emballe. Le plus stupéfiant ? Cette énergie noire représente environ 68 % de tout le contenu de l'univers. La matière ordinaire — les étoiles, les planètes, toi, tout ce qu'on a jamais vu ou touché — n'en compte que pour 5 %. Nous vivons dans un cosmos dont l'essentiel nous est totalement inconnu.</p>
+
+    <!-- VIZ : composition de l'univers (énergie noire ≈ 68 %) -->
+    <figure class="viz reveal" id="viz-darkenergy" style="margin:2rem 0;">
+      <svg viewBox="0 0 680 250" xmlns="http://www.w3.org/2000/svg">
+        <!-- barre segmentée : 5 % matière ordinaire · 27 % matière noire · 68 % énergie noire -->
+        <!-- géométrie : x0=40, largeur totale=600, donc 1 % = 6 px -->
+        <rect class="seg-ord"  x="40" y="74" width="0" height="58" rx="2" fill="#9ec6da"/>
+        <rect class="seg-dark" x="40" y="74" width="0" height="58" rx="2" fill="#5a6175"/>
+        <rect class="seg-de"   x="40" y="74" width="0" height="58" rx="2" fill="#9b8fd0"/>
+
+        <!-- pourcentages au-dessus de chaque segment -->
+        <text class="lab-ord-pct"  x="0" y="62" font-family="monospace" font-size="12" fill="#9ec6da" text-anchor="start"  opacity="0">5 %</text>
+        <text class="lab-dark-pct" x="0" y="62" font-family="monospace" font-size="13" fill="#9aa3b8" text-anchor="middle" opacity="0">27 %</text>
+        <text class="lab-de-pct"   x="0" y="60" font-family="monospace" font-size="16" fill="#b3a6e8" text-anchor="middle" opacity="0" font-weight="bold">68 %</text>
+
+        <!-- étiquettes sous la barre (matière ordinaire déportée à gauche : segment trop étroit) -->
+        <text class="lab-ord"  x="0" y="170" font-family="Georgia,serif" font-size="11" fill="var(--muted)"   text-anchor="start"  opacity="0">matière ordinaire</text>
+        <text class="lab-dark" x="0" y="156" font-family="Georgia,serif" font-size="12" fill="var(--muted)"   text-anchor="middle" opacity="0">matière noire</text>
+        <text class="lab-de"   x="0" y="158" font-family="Georgia,serif" font-size="13" fill="var(--ink-dim)" text-anchor="middle" opacity="0" font-style="italic">énergie noire</text>
+        <!-- petit trait de rappel reliant l'étiquette ordinaire à son fin segment -->
+        <line class="lab-ord-tick" x1="0" y1="0" x2="0" y2="0" stroke="var(--muted)" stroke-width="0.8" opacity="0"/>
+
+        <!-- phrase de synthèse -->
+        <text class="lab-summary" x="340" y="210" font-family="Georgia,serif" font-size="13" fill="var(--ink-dim)" text-anchor="middle" font-style="italic" opacity="0">95 % de l'univers nous est inconnu.</text>
+      </svg>
+      <div class="controls">
+        <button class="play">Révéler la composition</button>
+        <button class="reset">Recommencer</button>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:#9ec6da"></span> matière ordinaire · 5 %</span>
+        <span><span class="dot" style="background:#5a6175"></span> matière noire · 27 %</span>
+        <span><span class="dot" style="background:#9b8fd0"></span> énergie noire · 68 %</span>
+      </div>
+      <figcaption>De tout le contenu de l'univers, l'énergie noire (Λ) compte pour environ 68 %. Le reste se partage entre la matière noire — invisible, trahie par sa seule gravité — pour 27 %, et la matière ordinaire, dont est fait tout ce qu'on a jamais observé, pour à peine 5 %.</figcaption>
+    </figure>
+
+    <p class="reveal">Quelle est la valeur de Λ, et comment la connaît-on ? Son unité officielle est déroutante — un « mètre puissance moins deux » —, car dans les équations d'Einstein, Λ exprime une sorte de courbure de l'espace, l'inverse d'une surface. Ce chiffre brut (à peu près 0,000…1 avec cent-cinquante zéros, en mètres⁻²) ne parle à personne ; c'est pourquoi les cosmologistes préfèrent l'exprimer autrement, comme cette fameuse fraction de 68 % du contenu de l'univers. Quant à sa mesure, elle repose sur les supernovae lointaines : en 1998, deux équipes constatèrent que ces explosions, servant de chandelles standard, paraissaient <em>plus faibles</em>, donc plus éloignées, que ne le prévoyait une expansion qui ralentit. La seule explication tenait debout : l'expansion accélère. On a depuis confirmé et précisé Λ en croisant cette mesure avec la lueur fossile du Big Bang et la répartition des galaxies dans le ciel.</p>
+
+    <h3 class="rubric reveal">Son histoire et la pire prédiction de la physique</h3>
+    <p class="reveal">Λ a une histoire en montagnes russes. Einstein l'introduisit le premier, en 1917, pour une raison aujourd'hui ironique : il voulait <em>empêcher</em> son univers de bouger. Ses équations prédisaient un cosmos qui devait s'effondrer ou s'étendre, alors qu'il le croyait éternel et statique ; il ajouta donc Λ comme un contrepoids pour le stabiliser. Quand Hubble démontra que l'univers s'étendait bel et bien, Einstein retira Λ, la qualifiant — dit la légende — de « plus grande erreur de sa vie ». Quatre-vingts ans plus tard, la découverte de l'accélération la ressuscitait triomphalement : Einstein s'était trompé de raison, mais le terme qu'il avait inventé était bien réel.</p>
+    <p class="reveal">Reste un problème, et il est colossal. Quand les physiciens tentent de <em>calculer</em> l'énergie du vide à partir de la théorie quantique, ils obtiennent un nombre démesurément plus grand que la valeur observée — non pas dix fois, ni mille fois, mais environ 10<sup>120</sup> fois trop grand. Un 1 suivi de cent-vingt zéros. C'est, de loin, le pire désaccord entre théorie et observation de toute l'histoire de la science — on l'appelle sobrement « la catastrophe du vide ». Soit notre compréhension du vide quantique est profondément incomplète, soit un mécanisme inconnu annule cette énergie avec une précision presque parfaite, mais pas tout à fait. Λ est minuscule, mais pas nulle — et personne ne sait pourquoi elle a précisément cette valeur, ni trop grande, ni exactement zéro.</p>
+
+    <h3 class="rubric reveal">Sur le fil du rasoir · le destin de tout</h3>
+    <p class="reveal">Λ n'est pas seulement la plus grande énigme théorique de la cosmologie : c'est le nombre qui décide de la fin du monde — au sens littéral, la fin de l'univers. Car c'est le bras de fer entre la gravité (qui veut tout rassembler) et l'énergie noire (qui veut tout disperser) qui scelle le destin du cosmos, et la valeur de Λ dit lequel l'emporte.</p>
+    <p class="reveal">Avec la valeur que nous observons, l'énergie noire gagne. L'expansion continuera de s'accélérer, et dans un futur lointain — des dizaines de milliards d'années — les galaxies s'éloigneront si vite les unes des autres que leur lumière cessera de nous parvenir. Le ciel se videra lentement. Des êtres qui vivraient alors ne verraient plus qu'un cosmos noir et solitaire, sans soupçon des milliards de galaxies qui auront disparu au-delà de l'horizon. À très long terme, ce destin porte un nom glacial : le « grand gel », un univers qui s'étire vers le froid et le vide, à jamais. Et si Λ avait été un peu plus grande, l'expansion aurait été si violente, si tôt, qu'aucune galaxie, aucune étoile, aucune planète n'aurait jamais eu le temps de se former — l'univers se serait déchiré avant même de contenir quoi que ce soit. Que Λ soit si extraordinairement petite, juste assez pour laisser le temps à l'univers de fabriquer des étoiles, des planètes et nous, avant de l'emporter : c'est le dernier, et peut-être le plus profond, des réglages fins qui rendent notre existence possible.</p>
+
+    <p class="reveal" style="margin-top:2.5rem; font-style:italic; color:var(--ink-dim); text-align:center; max-width:54ch; margin-left:auto; margin-right:auto;">Du cercle parfait de π au vide qui dilate l'univers, voici quatorze nombres. Certains, démontrés pour l'éternité ; d'autres, mesurés dans le seul monde qui se trouve être le nôtre. Ensemble, ils tiennent l'univers — et le simple fait qu'ils aient, tous, précisément les valeurs qu'il faut, reste le plus beau des mystères.</p>
+  </section>
+
+
+  <footer class="end">fin du voyage · quatorze nombres qui tiennent l’univers</footer>
 
 </main>
 
@@ -1706,6 +1853,262 @@
 
 
 
+
+
+
+  // =================== VIZ énergie noire : composition de l'univers ===================
+  (function(){
+    const root=document.getElementById('viz-darkenergy'); if(!root) return;
+    const segOrd=root.querySelector('.seg-ord'), segDark=root.querySelector('.seg-dark'), segDe=root.querySelector('.seg-de');
+    const pOrd=root.querySelector('.lab-ord-pct'), pDark=root.querySelector('.lab-dark-pct'), pDe=root.querySelector('.lab-de-pct');
+    const lOrd=root.querySelector('.lab-ord'), lDark=root.querySelector('.lab-dark'), lDe=root.querySelector('.lab-de');
+    const ordTick=root.querySelector('.lab-ord-tick');
+    const summary=root.querySelector('.lab-summary');
+    const playBtn=root.querySelector('.play'), resetBtn=root.querySelector('.reset');
+    const x0=40, W=600, u=W/100;
+    const ord=5, dark=27, de=68;
+    const wOrd=ord*u, wDark=dark*u, wDe=de*u;
+    const xOrd=x0, xDark=x0+wOrd, xDe=x0+wOrd+wDark;
+    let raf=null;
+    function place(){
+      segOrd.setAttribute('x',xOrd);   segDark.setAttribute('x',xDark); segDe.setAttribute('x',xDe);
+      // « 5 % » et « matière ordinaire » ancrés au bord gauche (segment trop étroit pour centrer dessous)
+      pOrd.setAttribute('x',xOrd);          lOrd.setAttribute('x',xOrd);
+      pDark.setAttribute('x',xDark+wDark/2);lDark.setAttribute('x',xDark+wDark/2);
+      pDe.setAttribute('x',xDe+wDe/2);      lDe.setAttribute('x',xDe+wDe/2);
+      // trait de rappel : du centre du fin segment (haut de l'étiquette) vers la barre
+      const cxOrd=xOrd+wOrd/2;
+      ordTick.setAttribute('x1',cxOrd); ordTick.setAttribute('y1',132); // bas de la barre (y=74+58)
+      ordTick.setAttribute('x2',cxOrd); ordTick.setAttribute('y2',162); // juste au-dessus de l'étiquette
+    }
+    function clear(){
+      cancelAnimationFrame(raf);
+      [segOrd,segDark,segDe].forEach(s=>s.setAttribute('width','0'));
+      [pOrd,pDark,pDe,lOrd,lDark,lDe,summary,ordTick].forEach(t=>t.setAttribute('opacity','0'));
+      playBtn.disabled=false;
+    }
+    function reveal(){
+      playBtn.disabled=true; place();
+      const dur=1500, t0=performance.now();
+      const ease=t=>1-Math.pow(1-t,3);
+      function fr(now){
+        let p=(now-t0)/dur; if(p>1)p=1; const revealed=ease(p)*W;
+        segOrd.setAttribute('width',Math.max(0,Math.min(wOrd,revealed)));
+        segDark.setAttribute('width',Math.max(0,Math.min(wDark,revealed-wOrd)));
+        segDe.setAttribute('width',Math.max(0,Math.min(wDe,revealed-wOrd-wDark)));
+        if(p<1){ raf=requestAnimationFrame(fr); }
+        else {
+          const o0=performance.now();
+          function fade(t){
+            let q=(t-o0)/600; if(q>1)q=1;
+            pDe.setAttribute('opacity',q); lDe.setAttribute('opacity',q);
+            pDark.setAttribute('opacity',q*0.95); lDark.setAttribute('opacity',q*0.95);
+            pOrd.setAttribute('opacity',q); lOrd.setAttribute('opacity',q*0.85);
+            ordTick.setAttribute('opacity',q*0.5);
+            summary.setAttribute('opacity',q);
+            if(q<1) raf=requestAnimationFrame(fade);
+          }
+          raf=requestAnimationFrame(fade);
+        }
+      }
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(fr);
+    }
+    place(); [segOrd,segDark,segDe].forEach(s=>s.setAttribute('width','0'));
+    playBtn.addEventListener('click',reveal);
+    resetBtn.addEventListener('click',clear);
+    let played=false;
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
+      if(e.isIntersecting && !played){ played=true; reveal(); }
+    }); }, {threshold:0.35});
+    io.observe(root);
+  })();
+
+
+  // =================== VIZ H0 : l'expansion de l'espace (loi de Hubble) ===================
+  (function(){
+    const root=document.getElementById('viz-hubble'); if(!root) return;
+    const NS='http://www.w3.org/2000/svg';
+    const gridG=root.querySelector('.grid'), vecG=root.querySelector('.vectors'), galG=root.querySelector('.galaxies');
+    const aval=root.querySelector('.aval'), scaleReadout=root.querySelector('.scaleReadout');
+    const playBtn=root.querySelector('.play'), resetBtn=root.querySelector('.reset');
+    const gridBtn=root.querySelector('.toggle-grid'), obsBtn=root.querySelector('.toggle-obs');
+
+    // --- géométrie du cadre ---
+    const FW=680, FH=398, cx=FW/2, cy=FH/2;
+    // pas de la grille comobile, en pixels à a=1
+    const STEP=58;
+    // facteur d'échelle : a=1 au départ, croît avec le « temps »
+    const A_MIN=1, A_MAX=2.25;
+    let a=A_MIN;
+    let running=false, raf=null, gridOn=false;
+
+    // --- galaxies en COORDONNÉES COMOBILES (fixes dans le temps) ---
+    // exprimées en multiples du pas STEP, autour d'une origine arbitraire.
+    // Elles ne « bougent » jamais en comobile : seul a change.
+    // (positions semi-régulières + petit décalage pour un rendu naturel)
+    const seeds=[
+      [-3.0,-2.1],[-1.6,-2.4],[0.2,-2.0],[1.9,-2.3],[3.1,-1.5],
+      [-3.2,-0.5],[-1.7,-0.8],[0.0,0.0],[1.6,-0.4],[3.0,0.3],
+      [-2.8,1.1],[-1.3,1.4],[0.4,1.2],[1.9,1.0],[3.2,1.6],
+      [-2.2,2.4],[-0.6,2.2],[1.1,2.5],[2.6,2.3]
+    ];
+    // chaque galaxie : coordonnée comobile (qx,qy), une « graine » d'aspect, et un angle de spirale
+    const galaxies=seeds.map((s,i)=>({
+      qx:s[0], qy:s[1],
+      r: 4.6 + ((i*53)%5)*0.5,           // rayon écran fixe (taille constante)
+      tilt: (i*47)%180,                   // inclinaison du disque
+      hue: i                              // pour varier légèrement
+    }));
+
+    // index de la galaxie servant d'OBSERVATEUR (origine de la vue).
+    // On la place au centre du cadre ; toutes les autres sont relatives à elle.
+    // Changer d'observateur = choisir une autre galaxie => même structure (pas de centre).
+    let obsIndex=7; // la galaxie (0,0) au départ
+
+    // position écran d'une galaxie i, compte tenu de l'observateur et du facteur a
+    function screenPos(i){
+      const o=galaxies[obsIndex];
+      const dqx=galaxies[i].qx-o.qx;
+      const dqy=galaxies[i].qy-o.qy;
+      return { x: cx + a*dqx*STEP, y: cy + a*dqy*STEP, dq:Math.hypot(dqx,dqy) };
+    }
+
+    // --- dessin d'une galaxie (disque + halo + petit bras), taille fixe ---
+    function galaxyMarkup(i, p){
+      const g=galaxies[i];
+      const isObs=(i===obsIndex);
+      const R=g.r;
+      // décalage vers le rouge : subtil, proportionnel à la distance comobile (redshift ∝ distance au proche)
+      // on n'altère QUE la teinte de halo, pas la taille — purement illustratif et fidèle au texte
+      const z=Math.min(1, p.dq/6);
+      const core = isObs ? '#8fb89b' : '#cfe0ee';
+      // halo légèrement rougi pour les lointaines (sauf l'observateur)
+      const haloR = isObs ? 200 : Math.round(207 + z*40);
+      const haloG = isObs ? 224 : Math.round(224 - z*70);
+      const haloB = isObs ? 200 : Math.round(238 - z*90);
+      let m='';
+      // halo
+      m+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*2.6).toFixed(1)}" fill="rgb(${haloR},${haloG},${haloB})" opacity="${isObs?0.28:0.20}"/>`;
+      // disque incliné (ellipse) pour évoquer une galaxie spirale
+      m+=`<ellipse cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" rx="${R.toFixed(1)}" ry="${(R*0.55).toFixed(1)}" fill="${core}" opacity="${isObs?1:0.92}" transform="rotate(${g.tilt} ${p.x.toFixed(1)} ${p.y.toFixed(1)})"/>`;
+      // noyau
+      m+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*0.42).toFixed(1)}" fill="${isObs?'#bfe0c8':'#ffffff'}" opacity="0.95"/>`;
+      // anneau « ici » autour de l'observateur
+      if(isObs){
+        m+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${(R*2.0).toFixed(1)}" fill="none" stroke="#8fb89b" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.8"/>`;
+      }
+      return m;
+    }
+
+    // --- grille comobile, dilatée par a ---
+    function drawGrid(){
+      if(!gridOn){ gridG.innerHTML=''; return; }
+      const o=galaxies[obsIndex];
+      // on aligne la grille sur la galaxie observatrice (origine comobile = sa position)
+      const spacing=a*STEP;
+      // décalage pour que la grille passe par le centre (l'observateur)
+      // lignes verticales
+      let m='';
+      // combien de lignes pour couvrir le cadre largement
+      const nx=Math.ceil(FW/spacing)+2, ny=Math.ceil(FH/spacing)+2;
+      for(let k=-nx;k<=nx;k++){
+        const x=cx+k*spacing;
+        if(x<-spacing||x>FW+spacing) continue;
+        m+=`<line x1="${x.toFixed(1)}" y1="0" x2="${x.toFixed(1)}" y2="${FH}"/>`;
+      }
+      for(let k=-ny;k<=ny;k++){
+        const y=cy+k*spacing;
+        if(y<-spacing||y>FH+spacing) continue;
+        m+=`<line x1="0" y1="${y.toFixed(1)}" x2="${FW}" y2="${y.toFixed(1)}"/>`;
+      }
+      gridG.innerHTML=m;
+    }
+
+    // --- vecteurs de fuite : longueur ∝ distance actuelle (v = H0 d) ---
+    function drawVectors(){
+      // visibles seulement quand on a commencé à s'étendre
+      if(a<=A_MIN+0.001){ vecG.innerHTML=''; vecG.setAttribute('opacity','0'); return; }
+      vecG.setAttribute('opacity','0.9');
+      const o=screenPos(obsIndex);
+      let m='';
+      galaxies.forEach((g,i)=>{
+        if(i===obsIndex) return;
+        const p=screenPos(i);
+        const dx=p.x-o.x, dy=p.y-o.y, dist=Math.hypot(dx,dy);
+        if(dist<6) return;
+        // la flèche pointe RADIALEMENT vers l'extérieur, longueur ∝ distance
+        // facteur (a-1) : à a=1 aucune fuite ; croît avec l'expansion
+        const k=(a-A_MIN)*0.55;
+        const ux=dx/dist, uy=dy/dist;
+        const len=Math.min(dist*0.9, dist*k+4);
+        const sx=p.x, sy=p.y;            // depuis la galaxie
+        const ex=p.x+ux*len, ey=p.y+uy*len; // vers l'extérieur
+        m+=`<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" marker-end="url(#hub-arrow)" opacity="0.85"/>`;
+      });
+      vecG.innerHTML=m;
+    }
+
+    function render(){
+      // galaxies
+      let gm='';
+      // on cache celles franchement hors cadre pour la perf, mais on garde le halo proche du bord
+      galaxies.forEach((g,i)=>{
+        const p=screenPos(i);
+        if(p.x<-40||p.x>FW+40||p.y<-40||p.y>FH+40) return;
+        gm+=galaxyMarkup(i,p);
+      });
+      galG.innerHTML=gm;
+      drawGrid();
+      drawVectors();
+      aval.textContent='×'+a.toFixed(2).replace('.',',');
+      // « lecture » pédagogique : a relie distances et temps
+      const pct=Math.round((a-1)*100);
+      scaleReadout.textContent = a<=A_MIN+0.001
+        ? "aujourd'hui : a = 1"
+        : `les distances ont grandi de +${pct} % — chaque galaxie fuit à v = H₀ × distance`;
+    }
+
+    // --- animation temporelle : a croît de façon monotone (expansion) ---
+    function tick(){
+      if(!running) return;
+      a+=0.0045;
+      if(a>=A_MAX){ a=A_MAX; running=false; playBtn.textContent='Recommencer'; render(); return; }
+      render();
+      raf=requestAnimationFrame(tick);
+    }
+    function play(){
+      if(a>=A_MAX-0.001){ // si déjà au bout, on relance
+        a=A_MIN; }
+      running=true; playBtn.textContent='Pause';
+      cancelAnimationFrame(raf); raf=requestAnimationFrame(tick);
+    }
+    function pause(){ running=false; playBtn.textContent='Reprendre'; cancelAnimationFrame(raf); }
+    function reset(){ running=false; cancelAnimationFrame(raf); a=A_MIN; playBtn.textContent='Lancer l\u2019expansion'; render(); }
+
+    playBtn.addEventListener('click',()=>{ running?pause():play(); });
+    resetBtn.addEventListener('click',reset);
+    gridBtn.addEventListener('click',()=>{
+      gridOn=!gridOn;
+      gridG.setAttribute('opacity',gridOn?'0.38':'0');
+      gridBtn.textContent=gridOn?'Masquer la grille':'Afficher la grille';
+      render();
+    });
+    obsBtn.addEventListener('click',()=>{
+      // choisir une autre galaxie comme observateur : la structure reste identique => pas de centre
+      let next;
+      do { next=Math.floor(Math.random()*galaxies.length); } while(next===obsIndex);
+      obsIndex=next;
+      render();
+    });
+
+    reset();
+    // démarrage auto au scroll, une seule fois
+    let started=false;
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{
+      if(e.isIntersecting && !started){ started=true; play(); }
+    }); }, {threshold:0.3});
+    io.observe(root);
+  })();
 
 </script>
 </body>
