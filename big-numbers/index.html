@@ -573,12 +573,25 @@ const REGIME2 = [
   },
   {
     regime:2,
+    name:"Le plus grand nombre premier connu · M<sub style='font-size:.55em'>136&nbsp;279&nbsp;841</sub>",
+    value:"2<sup>136&nbsp;279&nbsp;841</sup> − 1",
+    valueSmall:"un nombre premier de 41&nbsp;024&nbsp;320 chiffres — découvert en 2024 par le projet GIMPS",
+    sci:["≈ 4,17","41 024 319"],
+    build:"Les nombres de Mersenne ont la forme 2<sup><em>p</em></sup> − 1, où <em>p</em> est lui-même premier. Celui-ci a été découvert en octobre&nbsp;2024 par Luke Durant, un ingénieur qui avait loué un réseau de milliers de GPU répartis dans 17 pays, dans le cadre du projet collaboratif GIMPS (Great Internet Mersenne Prime Search). Pour le certifier, l'ordinateur a dû vérifier que pas un seul entier entre 2 et sa racine carrée ne le divise — une vérification qui a duré des semaines de calcul.",
+    use:"C'est le plus grand nombre premier <em>prouvé</em> connu à ce jour. Il a 41&nbsp;024&nbsp;320 chiffres — le premier record de ce type depuis 2018. Et contrairement au googol (inventé pour l'exemple) ou au nombre de Shannon (une estimation), celui-ci est <strong>exact</strong>&nbsp;: chaque chiffre est certifié, aucun n'est approché. Pourquoi s'être donné la peine de le chercher&nbsp;? En partie pour la beauté pure — les nombres premiers sont au cœur de l'arithmétique depuis les Grecs, et chaque record est une forme d'exploit collectif. Mais il y a aussi une raison inattendue&nbsp;: un calcul aussi long, répété et vérifié sur des milliers de machines, est l'un des stress-tests les plus exigeants qui existent pour détecter des défauts dans les processeurs et la mémoire. GIMPS a ainsi permis de découvrir des bugs matériels que les fabricants eux-mêmes n'avaient pas détectés.",
+    distLab:"Le prix de l'écrire en entier",
+    dist:"41&nbsp;024&nbsp;320 chiffres. En les écrivant à la main, serrés à <span class='unit'>3&nbsp;mm chacun</span>, la ligne ferait <span class='unit'>123&nbsp;kilomètres</span> — la distance Montréal–Québec. En impression normale (police 10pt), il faudrait <span class='unit'>environ 1&nbsp;440 pages A4</span>. C'est un livre de quatre volumes.",
+    analogLab:"En chiffres par seconde",
+    analog:"Si tu récitais un chiffre par seconde sans jamais t'arrêter, il te faudrait <span class='unit'>plus de 475 jours</span> — plus d'un an et trois mois — pour énoncer ce seul nombre du premier au dernier chiffre."
+  },
+  {
+    regime:2,
     name:"Le googolplex",
     value:"10<sup>(googol)</sup>",
     valueSmall:"10 à la puissance googol — un 1 suivi d'un googol de zéros",
     sci:null,
-    build:"C'est 10 à la puissance googol&nbsp;: un 1 suivi non pas de cent zéros, mais de <em>googol</em> zéros (10<sup>100</sup> zéros&nbsp;!). C'est tellement de zéros qu'il est <em>impossible</em> de l'écrire en entier&nbsp;: il n'y a pas assez de place dans l'univers.",
-    use:"C'est le premier nombre du voyage qu'on ne peut écrire <em>nulle part</em>. Même en écrivant un zéro sur chaque atome de l'univers, on manquerait d'atomes — il en faudrait encore cent milliards de milliards de fois plus. Le nombre existe, mais on ne pourra jamais le voir écrit.",
+    build:"C'est 10 à la puissance googol&nbsp;: un 1 suivi non pas de cent zéros, mais de <em>googol</em> zéros (10<sup>100</sup> zéros&nbsp;!). Le nom a été proposé par le même Milton Sirotta — le neveu de neuf ans qui avait inventé «&nbsp;googol&nbsp;» — avec une définition d'abord fantaisiste&nbsp;: <em>«&nbsp;un 1, suivi de zéros jusqu'à ce qu'on soit fatigué&nbsp;»</em>. Son oncle Edward Kasner a jugé nécessaire d'adopter une définition plus formelle, parce que «&nbsp;des gens différents se fatiguent à des moments différents, et il ne serait pas acceptable que Carnera soit un meilleur mathématicien qu'Einstein, simplement parce qu'il avait plus d'endurance.&nbsp;»",
+    use:"À quoi sert-il&nbsp;? À rien — et c'est là toute sa grandeur. Le googolplex n'a aucune application connue, aucune utilité en physique ou en cryptographie, aucun rôle dans un calcul réel. Il a été inventé pour le pur plaisir de nommer quelque chose d'inimaginable. C'est un geste poétique déguisé en mathématique, une façon de dire&nbsp;: <em>on peut aller là aussi</em>. Même en écrivant un zéro sur chaque atome de l'univers, on manquerait d'atomes — il en faudrait cent milliards de milliards de fois plus. Le nombre existe, mais on ne pourra jamais le voir écrit.",
     distLab:"L'image du « un chiffre par seconde »",
     dist:"Imagine que tu écris un chiffre chaque seconde, sans jamais t'arrêter, depuis la naissance de l'univers (14 milliards d'années). Tu aurais écrit environ 10<sup>18</sup> chiffres. Mais le googolplex en a 10<sup>100</sup>. <span class='unit'>Tu n'aurais même pas commencé le tout début du début.</span> Retiens bien sa forme&nbsp;: une « tour » de trois dix, 10<sup>10<sup>100</sup></sup>, dont le sommet n'est que 100. Le nombre suivant garde exactement cette forme — mais remplace ce petit 100 par un monstre.",
     analogLab:"En univers de grains de sable",
@@ -993,7 +1006,19 @@ const content = document.getElementById("content");
 let html = warmupBlock();
 NUMBERS.forEach(n=> html += numSection(n));
 html += divider(DIVIDERS.toR2, 2);
-REGIME2.forEach(n=> html += numSection(n));
+REGIME2.forEach((n,i)=>{
+  html += numSection(n);
+  if(i===2){
+    html += "<section class=\"num reveal\" data-regime=\"2\" style=\"min-height:auto;padding:8vh 7vw;border-top:1px solid var(--line)\">";
+    html += "  <div style=\"max-width:62ch\">";
+    html += "    <div class=\"idx\">Fronti\u00e8re \u00b7 le dernier nombre qu\u2019on peut voir</div>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">Le nombre de Mersenne est encore de ce monde. Monstrueux, mais r\u00e9el&nbsp;: ses 41&nbsp;millions de chiffres pourraient s\u2019imprimer, se toucher, s\u2019empiler. Il existe quelque part un fichier texte qui le contient en entier.</p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">Ce qui vient apr\u00e8s est d\u2019une autre nature. Le googolplex n\u2019est pas &laquo;&nbsp;beaucoup plus grand&nbsp;&raquo; &mdash; il est d\u2019une esp\u00e8ce diff\u00e9rente. Son exposant seul, le nombre de z\u00e9ros qu\u2019il faudrait \u00e9crire, d\u00e9passe d\u00e9j\u00e0 tout ce que l\u2019univers peut contenir. On ne franchit pas un palier&nbsp;: on quitte le territoire du visible.</p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper-dim);font-style:italic\">\u00c0 partir d\u2019ici, les nombres n\u2019existent plus que dans les d\u00e9finitions.</p>";
+    html += "  </div>";
+    html += "</section>";
+  }
+});
 html += divider(DIVIDERS.toR3, 3);
 REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
 
@@ -1016,6 +1041,7 @@ html += `
     </div>
   </div>
   <div class="credit">Un voyage présenté par <a href="https://studioexistence.com" target="_blank" rel="noopener"><b>Studio Existence</b></a></div>
+  <div class="credit" style="margin-top:.8em">Prêt pour un autre voyage mental? Explore aussi <a href="https://www.studioexistence.com/constantes" target="_blank" rel="noopener"><b>Les constantes universelles</b></a> &mdash; les nombres qui gouvernent la réalité.</div>
 </section>`;
 
 content.innerHTML = html;

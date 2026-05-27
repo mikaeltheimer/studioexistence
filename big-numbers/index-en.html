@@ -573,12 +573,25 @@ const REGIME2 = [
   },
   {
     regime:2,
+    name:"The largest known prime · M<sub style='font-size:.55em'>136&nbsp;279&nbsp;841</sub>",
+    value:"2<sup>136&nbsp;279&nbsp;841</sup> − 1",
+    valueSmall:"a prime number with 41,024,320 digits — discovered in 2024 by the GIMPS project",
+    sci:["≈ 4.17","41 024 319"],
+    build:"Mersenne numbers take the form 2<sup><em>p</em></sup> − 1, where <em>p</em> is itself prime. This one was discovered in October&nbsp;2024 by Luke Durant, an engineer who had rented a network of thousands of GPUs spread across 17 countries, as part of the collaborative GIMPS project (Great Internet Mersenne Prime Search). To certify it, the computer had to verify that not a single integer between 2 and its square root divides it evenly — a verification that took weeks of computation.",
+    use:"It's the largest <em>proven</em> prime known today. It has 41,024,320 digits — the first record of this kind since 2018. And unlike the googol (invented as an example) or Shannon's number (an estimate), this one is <strong>exact</strong>&nbsp;: every digit is certified, none is approximated. Why go to the trouble of finding it&nbsp;? Partly for pure beauty — prime numbers have been at the heart of arithmetic since the Greeks, and each record is a kind of collective achievement. But there's also an unexpected reason&nbsp;: a calculation this long, repeated and verified across thousands of machines, is one of the most demanding stress-tests that exist for detecting flaws in processors and memory chips. GIMPS has uncovered hardware bugs that the manufacturers themselves hadn't detected.",
+    distLab:"The cost of writing it out",
+    dist:"41,024,320 digits. Writing them by hand, packed at <span class='unit'>3&nbsp;mm each</span>, the line would stretch <span class='unit'>123&nbsp;kilometres</span> — roughly the distance from Montréal to Québec City. Printed at normal size (10pt font), it would fill <span class='unit'>around 1,440 A4 pages</span>&nbsp;: a four-volume book.",
+    analogLab:"In digits per second",
+    analog:"If you recited one digit per second without ever stopping, it would take you <span class='unit'>over 475 days</span> — more than a year and three months — to speak this single number from first digit to last."
+  },
+  {
+    regime:2,
     name:"The googolplex",
     value:"10<sup>(googol)</sup>",
     valueSmall:"10 to the power of a googol — a 1 followed by a googol of zeros",
     sci:null,
-    build:"It's 10 to the power of a googol&nbsp;: a 1 followed not by a hundred zeros, but by <em>a googol</em> of zeros (10<sup>100</sup> zeros&nbsp;!). That's so many zeros that it's <em>impossible</em> to write it out in full&nbsp;: there isn't enough room in the universe.",
-    use:"It's the first number on the journey that can't be written <em>anywhere</em>. Even if you wrote one zero on every atom in the universe, you'd run out of atoms — you'd need a hundred billion billion times more. The number exists, but we'll never see it written.",
+    build:"It's 10 to the power of a googol&nbsp;: a 1 followed not by a hundred zeros, but by <em>a googol</em> of zeros (10<sup>100</sup> zeros&nbsp;!). The name was proposed by the same Milton Sirotta — the nine-year-old nephew who had invented 'googol' — with an initially whimsical definition&nbsp;: <em>'a one, followed by zeroes until you get tired.'</em> His uncle Edward Kasner felt a more formal definition was necessary, because 'different people get tired at different times, and it would never do to have Carnera be a better mathematician than Einstein, simply because he had more endurance.'",
+    use:"What is it good for&nbsp;? Nothing — and that's precisely its greatness. The googolplex has no known application, no role in physics or cryptography, no place in any real calculation. It was invented for the pure pleasure of naming something unimaginable. It's a poetic gesture dressed up as mathematics, a way of saying&nbsp;: <em>we can go there too</em>. Even if you wrote one zero on every atom in the universe, you'd run out of atoms — you'd need a hundred billion billion times more. The number exists, but we'll never see it written.",
     distLab:"The « one digit per second » image",
     dist:"Imagine you write one digit every second, never stopping, since the birth of the universe (14 billion years). You'd have written about 10<sup>18</sup> digits. But the googolplex has 10<sup>100</sup> of them. <span class='unit'>You wouldn't even have started the very beginning of the beginning.</span> Hold on to its shape&nbsp;: a « tower » of three tens, 10<sup>10<sup>100</sup></sup>, whose top is just 100. The next number keeps exactly this shape — but swaps that little 100 for a monster.",
     analogLab:"In universes of sand grains",
@@ -993,7 +1006,18 @@ const content = document.getElementById("content");
 let html = warmupBlock();
 NUMBERS.forEach(n=> html += numSection(n));
 html += divider(DIVIDERS.toR2, 2);
-REGIME2.forEach(n=> html += numSection(n));
+REGIME2.forEach((n,i)=>{
+  html += numSection(n);
+  if(i===2) html += `
+<section class="num reveal" data-regime="2" style="min-height:auto;padding:8vh 7vw;border-top:1px solid var(--line)">
+  <div style="max-width:62ch">
+    <div class="idx">Threshold · the last number you can see</div>
+    <p style="font-size:1.06rem;color:var(--paper);margin-bottom:.9em">Mersenne's number still belongs to this world. Monstrous, but real&nbsp;: its 41 million digits could be printed, touched, stacked. Somewhere, a text file exists that contains it in full.</p>
+    <p style="font-size:1.06rem;color:var(--paper);margin-bottom:.9em">What comes next is of a different nature. The googolplex isn't simply "much larger" — it belongs to a different species. Its exponent alone, the number of zeros you would need to write, already exceeds everything the universe can hold. This isn't crossing a threshold&nbsp;: it's leaving the territory of the visible.</p>
+    <p style="font-size:1.06rem;color:var(--paper-dim);font-style:italic">From here on, numbers exist only in their definitions.</p>
+  </div>
+</section>`;
+});
 html += divider(DIVIDERS.toR3, 3);
 REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
 
@@ -1016,6 +1040,7 @@ html += `
     </div>
   </div>
   <div class="credit">A journey presented by <a href="https://studioexistence.com" target="_blank" rel="noopener"><b>Studio Existence</b></a></div>
+  <div class="credit" style="margin-top:.8em">Ready for another journey? Also explore <a href="https://www.studioexistence.com/constantes/index-en.html" target="_blank" rel="noopener"><b>Universal Constants</b></a> &mdash; the numbers that govern reality.</div>
 </section>`;
 
 content.innerHTML = html;
