@@ -788,18 +788,33 @@ const REGIME4 = [
   },
   {
     regime:4,
+    name:"De ω à Γ₀ · l’horizon qui recule",
+    value:"ω → ε₀ → Γ₀",
+    valueSmall:"la tour sans fin des ordinaux — et sa frontière",
+    sci:null,
+    blocks:[
+      {type:"build", c:"ω était le premier pas après la file infinie. Mais dès qu’on pose ce premier pas, le même vertige recommence&nbsp;: après ω vient ω+1, puis ω·2, puis ω², puis ω³&hellip; et après toutes les puissances de ω, on peut construire ω^ω — ω élevé à lui-même. Puis ω^(ω^ω). Puis une tour de ω de hauteur infinie. À chaque étape, ce qu’on croyait être un plafond devient le plancher de quelque chose de plus grand."},
+      {type:"text", c:"Le point-limite de toute cette tour porte un nom&nbsp;: <strong>ε₀</strong> — le premier ordinal tel qu’empiler ω dessus ne le change plus (ω^ε₀ = ε₀), un infini si grand qu’il absorbe ses propres puissances. Puis vient ε₁ — le même point-limite, mais construit à partir de ε₀ lui-même. Et ε₂, εω… À chaque fois, un nouveau plafond qui devient un nouveau plancher."},
+      {type:"tower", c:`<span class="tlab">Toujours plus loin</span>Puisqu’on peut toujours aller plus loin, les mathématiciens l’ont fait&nbsp;:<br><br><ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5em"><li><b>ε₀</b> — premier point-limite de la tour des ω</li><li><b>ε₁, ε₂, εω…</b> — la hiérarchie des epsilon</li><li><b>Fonctions de Veblen</b> — un nouvel outil pour nommer ce qu’epsilon ne peut plus atteindre</li><li><b>Γ₀</b> — ordinal de Feferman-Schütte, première limite des fonctions de Veblen</li><li><b>ψ(Ω²)</b> — ordinal de Bachmann</li><li><b>ψ(ε<sub>Ω+1</sub>)</b> — ordinal de Bachmann-Howard</li><li><b>ω₁<sup>CK</sup></b> — ordinal de Church-Kleene</li><li><em>… et la liste pourrait continuer aussi longtemps que l’esprit humain pourrait réfléchir.</em></li></ul>`},
+      {type:"use", c:"Pourquoi se donner cette peine&nbsp;? Ces ordinaux ont deux utilités concrètes et profondes. En <strong>théorie de la preuve</strong>, ils servent d’étalons de puissance pour les systèmes mathématiques. Gentzen a démontré en 1936 que la cohérence de l’arithmétique ordinaire ne peut pas être prouvée depuis l’intérieur de ce système — mais elle peut l’être si on accepte de raisonner jusqu’à ε₀. Autrement dit, ε₀ mesure exactement <em>ce que l’arithmétique peut démontrer</em>. Γ₀ mesure un système plus puissant encore. Ces ordinaux sont des règles graduées pour mesurer la force des mathématiques elles-mêmes.<br><br>En <strong>informatique théorique</strong>, ils servent à prouver qu’un programme se terminera. Pour certains algorithmes complexes, il est très difficile de garantir qu’ils ne tourneront pas en boucle indéfiniment. Une technique consiste à associer un ordinal décroissant à chaque étape du calcul&nbsp;: si l’ordinal diminue à chaque pas, le programme s’arrête forcément. Plus le programme est complexe, plus l’ordinal requis est grand."}
+    ],
+    distLab:"L’infini des noms",
+    dist:"Toute cette exploration — de ω à Γ₀ — est une exploration de <span class='unit'>façons d’ordonner</span> une infinité de choses. On a inventé des tours, des limites, des fonctions, des frontières du nommable. Et pourtant, on n’a pas encore répondu à la question la plus simple&nbsp;: <em>combien</em> y a-t-il de choses, au juste ?"
+  },
+  {
+    regime:4,
     name:"L'infini qui ne grandit pas · ℵ₀",
     value:"ℵ₀",
     valueSmall:"aleph-zéro — combien il y a de nombres entiers",
     sci:null,
     blocks:[
-      {type:"build", c:"On vient de voir l'infini comme une <em>position</em> (le point ω, après toute la file). Regardons-le maintenant autrement&nbsp;: comme une <strong>quantité</strong>. Combien y a-t-il de nombres entiers, au juste&nbsp;? Une infinité, bien sûr. Mais cette quantité-là cache une bizarrerie que rien dans le monde fini ne laisse deviner."},
+      {type:"build", c:"La question est posée&nbsp;: <em>combien</em> y a-t-il de nombres entiers ? Une infinité, bien sûr. Mais cette quantité-là cache une bizarrerie que rien dans le monde fini ne laisse deviner."},
       {type:"tower", c:`<span class="tlab">L'hôtel de Hilbert</span>Imagine un hôtel avec une infinité de chambres, numérotées 1, 2, 3… <b>toutes occupées</b>. Complet.<br><br>Un voyageur arrive. Pas de chambre libre&nbsp;? Si&nbsp;: on demande à chaque client de se décaler d'une chambre — le client 1 passe en 2, le 2 en 3, le 3 en 4… Chacun a toujours une chambre où aller (il y en a une suivante), et la <b>chambre 1 se libère</b>. Le nouveau venu s'installe. L'hôtel était plein&nbsp;; il a pourtant fait de la place.`},
       {type:"text", c:"Mieux encore&nbsp;: un car arrive avec une <em>infinité</em> de voyageurs. On demande cette fois à chaque client de passer à la chambre <strong>du double</strong> de son numéro (1→2, 2→4, 3→6…). Toutes les chambres <strong>impaires</strong> se libèrent d'un coup — une infinité de chambres&nbsp;! — et le car entier s'installe. Un hôtel plein vient d'absorber une infinité de clients de plus."},
       {type:"use", c:"C'est la signature de ce premier infini&nbsp;: <strong>on a beau lui ajouter, il ne grandit pas.</strong> L'infini des entiers + 1 = le même infini. + une infinité = encore le même. Il y a « autant » de nombres pairs que de nombres entiers, « autant » de multiples de mille que d'entiers&nbsp;: à chaque fois, on peut les apparier un à un, sans reste. C'est l'infini où <strong>la partie est aussi grande que le tout</strong>.<br><br>Cet infini-là, celui qu'on peut numéroter chambre par chambre, les mathématiciens lui ont donné un nom&nbsp;: <b>ℵ₀</b> (aleph-zéro). On dit aussi qu'il est <em>dénombrable</em> — un mot qui veut simplement dire « qu'on peut mettre en liste ». Retiens bien ce mot. Tout l'enjeu de la suite tient dans une question&nbsp;: <strong>existe-t-il un infini qu'on ne peut PAS mettre en liste&nbsp;?</strong>"}
     ],
     distLab:"Tous énumérables… vraiment ?",
-    dist:"Jusqu'ici, tous nos infinis — le point ω, l'hôtel ℵ₀ — partagent une même vertu&nbsp;: on peut les <span class='unit'>énumérer</span>, leur attribuer un numéro de chambre, les parcourir dans l'ordre. On pourrait croire que c'est le propre de l'infini. C'est faux. Et la preuve qui suit est l'une des plus belles jamais écrites.",
+    dist:"Tous les ordinaux que nous avons rencontrés — de ω à Γ₀ — partagent cette même vertu&nbsp;: on peut les <span class='unit'>énumérer</span>, leur attribuer un numéro de chambre. On pourrait croire que c'est le propre de l'infini. C'est faux. Et la preuve qui suit est l'une des plus belles jamais écrites.",
     video:"https://www.youtube.com/watch?v=uezOrcmHzrQ", videoLab:"Numberphile · A Problem with Infinite Hotel Keys"
   },
   {
@@ -1010,7 +1025,7 @@ REGIME2.forEach((n,i)=>{
   html += numSection(n);
   if(i===2){
     html += "<section class=\"num reveal\" data-regime=\"2\" style=\"min-height:auto;padding:8vh 7vw;border-top:1px solid var(--line)\">";
-    html += "  <div style=\"max-width:62ch\">";
+    html += "  <div style=\"max-width:62ch;margin:0 auto;text-align:center\">";
     html += "    <div class=\"idx\">Fronti\u00e8re \u00b7 le dernier nombre qu\u2019on peut voir</div>";
     html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">Le nombre de Mersenne est encore de ce monde. Monstrueux, mais r\u00e9el&nbsp;: ses 41&nbsp;millions de chiffres pourraient s\u2019imprimer, se toucher, s\u2019empiler. Il existe quelque part un fichier texte qui le contient en entier.</p>";
     html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">Ce qui vient apr\u00e8s est d\u2019une autre nature. Le googolplex n\u2019est pas &laquo;&nbsp;beaucoup plus grand&nbsp;&raquo; &mdash; il est d\u2019une esp\u00e8ce diff\u00e9rente. Son exposant seul, le nombre de z\u00e9ros qu\u2019il faudrait \u00e9crire, d\u00e9passe d\u00e9j\u00e0 tout ce que l\u2019univers peut contenir. On ne franchit pas un palier&nbsp;: on quitte le territoire du visible.</p>";
@@ -1023,7 +1038,21 @@ html += divider(DIVIDERS.toR3, 3);
 REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
 
 html += divider(DIVIDERS.toR4, 4);
-REGIME4.forEach(n=> html += numSection(n));
+REGIME4.forEach((n,i)=>{
+  html += numSection(n);
+  if(i===1){
+    html += "<section class=\"num reveal\" data-regime=\"4\" style=\"min-height:auto;padding:8vh 7vw;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center\">";
+    html += "  <div style=\"max-width:62ch;margin:0 auto\">";
+    html += "    <div class=\"idx\">Une autre direction</div>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">On vient de voyager loin — très loin — dans la direction de l’ordre. À chaque étape, un nouvel ordinal, un nouveau rang, une nouvelle façon de succéder à ce qui précède.</p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">Mais il existe une autre question, qu’on n’a pas encore posée.</p>";
+    html += "    <p style=\"font-size:1.15rem;color:var(--gold);font-style:italic;margin-bottom:.9em\">Non pas&nbsp;: <em>dans quel ordre ?</em> Mais&nbsp;: <em>combien ?</em></p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">Ces deux questions mesurent l’infini différemment. Et dans le monde infini, elles divergent radicalement. Tous les ordinaux du voyage — ω, ε₀, Γ₀ et ses successeurs — restent <em>dénombrables</em>&nbsp;: on peut numéroter leurs éléments, leur attribuer un rang entier, les mettre en liste. En termes de quantité, ils représentent tous la même taille d’infini. Tout ce chemin, et on n’a pas bougé d’un pouce.</p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper-dim);font-style:italic\">Ce qui suit est la question de la taille.</p>";
+    html += "  </div>";
+    html += "</section>";
+  }
+});
 
 /* final */
 html += `

@@ -788,18 +788,33 @@ const REGIME4 = [
   },
   {
     regime:4,
+    name:"From ω to Γ₀ · the receding horizon",
+    value:"ω → ε₀ → Γ₀",
+    valueSmall:"the endless tower of ordinals — and its frontier",
+    sci:null,
+    blocks:[
+      {type:"build", c:"ω was the first step past the infinite queue. But the moment you take that step, the same vertigo begins again: after ω comes ω+1, then ω·2, then ω², then ω³&hellip; and after all the powers of ω, you can build ω^ω — ω raised to itself. Then ω^(ω^ω). Then a tower of ωs of infinite height. At each step, what seemed like a ceiling becomes the floor of something larger."},
+      {type:"text", c:"The limit point of this entire tower has a name&nbsp;: <strong>ε₀</strong> — the first ordinal such that stacking ω on top of it changes nothing (ω^ε₀ = ε₀), an infinity so vast it absorbs its own powers. Then comes ε₁ — the same kind of limit point, but built from ε₀ itself. And ε₂, εω… Every time, a new ceiling that becomes a new floor."},
+      {type:"tower", c:`<span class="tlab">Always further</span>Since you can always go further, mathematicians did&nbsp;:<br><br><ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5em"><li><b>ε₀</b> — first limit point of the tower of ωs</li><li><b>ε₁, ε₂, εω…</b> — the epsilon hierarchy</li><li><b>Veblen functions</b> — a new tool to name what epsilon can no longer reach</li><li><b>Γ₀</b> — the Feferman–Schütte ordinal, first limit of the Veblen functions</li><li><b>ψ(Ω²)</b> — the Bachmann ordinal</li><li><b>ψ(ε<sub>Ω+1</sub>)</b> — the Bachmann–Howard ordinal</li><li><b>ω₁<sup>CK</sup></b> — the Church–Kleene ordinal</li><li><em>… and the list could go on for as long as the human mind could keep thinking.</em></li></ul>`},
+      {type:"use", c:"Why go to all this trouble&nbsp;? These ordinals have two concrete and deep uses. In <strong>proof theory</strong>, they serve as measures of strength for mathematical systems. Gentzen proved in 1936 that the consistency of ordinary arithmetic cannot be proven from within that system — but it can be, if you are willing to reason up to ε₀. In other words, ε₀ measures exactly <em>what arithmetic can prove</em>. Γ₀ measures a more powerful system still. These ordinals are graduated rulers for measuring the strength of mathematics itself.<br><br>In <strong>theoretical computer science</strong>, they are used to prove that a program will terminate. For some complex algorithms, it is very difficult to guarantee they won’t loop forever. One technique is to associate a decreasing ordinal with each step of the computation&nbsp;: if the ordinal goes down at every step, the program must eventually stop. The more complex the program, the larger the ordinal required."}
+    ],
+    distLab:"The infinity of names",
+    dist:"This entire exploration — from ω to Γ₀ — is an exploration of <span class='unit'>ways of ordering</span> an infinity of things. We have invented towers, limits, functions, frontiers of the nameable. And yet we still haven’t answered the simplest question&nbsp;: <em>how many</em> things are there, exactly?"
+  },
+  {
+    regime:4,
     name:"The infinity that doesn't grow · ℵ₀",
     value:"ℵ₀",
     valueSmall:"aleph-zero — how many whole numbers there are",
     sci:null,
     blocks:[
-      {type:"build", c:"We've just seen infinity as a <em>position</em> (the point ω, after the whole queue). Now let's look at it differently&nbsp;: as a <strong>quantity</strong>. How many whole numbers are there, exactly&nbsp;? Infinitely many, of course. But that quantity hides an oddity nothing in the finite world could let you guess."},
+      {type:"build", c:"The question is now on the table&nbsp;: <em>how many</em> whole numbers are there, exactly&nbsp;? Infinitely many, of course. But that quantity hides an oddity nothing in the finite world could let you guess."},
       {type:"tower", c:`<span class="tlab">Hilbert's Hotel</span>Imagine a hotel with infinitely many rooms, numbered 1, 2, 3… <b>all occupied</b>. Full.<br><br>A traveler arrives. No free room&nbsp;? There is&nbsp;: ask each guest to shift over by one — guest 1 moves to 2, 2 to 3, 3 to 4… Everyone always has a room to go to (there's always a next one), and <b>room 1 frees up</b>. The newcomer checks in. The hotel was full&nbsp;; it made room anyway.`},
       {type:"text", c:"Better still&nbsp;: a coach arrives with an <em>infinity</em> of travelers. This time, ask each guest to move to the room with <strong>double</strong> their number (1→2, 2→4, 3→6…). Every <strong>odd-numbered</strong> room frees up at once — infinitely many rooms&nbsp;! — and the whole coach checks in. A full hotel just absorbed an infinity more guests."},
       {type:"use", c:"That's the signature of this first infinity&nbsp;: <strong>no matter how much you add, it doesn't grow.</strong> The infinity of whole numbers + 1 = the same infinity. + an infinity = still the same. There are « as many » even numbers as whole numbers, « as many » multiples of a thousand as whole numbers&nbsp;: each time, you can pair them up one to one, with nothing left over. It's the infinity where <strong>the part is as large as the whole</strong>.<br><br>This infinity, the one you can number room by room, mathematicians gave a name&nbsp;: <b>ℵ₀</b> (aleph-zero). They also call it <em>countable</em> — a word that simply means « you can put it in a list. » Remember that word. The whole point of what follows hangs on one question&nbsp;: <strong>is there an infinity you CANNOT put in a list&nbsp;?</strong>"}
     ],
     distLab:"All enumerable… really ?",
-    dist:"So far, all our infinities — the point ω, the hotel ℵ₀ — share one virtue&nbsp;: you can <span class='unit'>enumerate</span> them, assign them a room number, walk through them in order. You might think that's just what infinity is. It isn't. And the proof that follows is one of the most beautiful ever written.",
+    dist:"Every ordinal we have met — from ω to Γ₀ — shares one virtue&nbsp;: you can <span class='unit'>enumerate</span> them, assign them a room number, put them in a list. You might think that’s just what infinity is. It isn’t. And the proof that follows is one of the most beautiful ever written.",
     video:"https://www.youtube.com/watch?v=uezOrcmHzrQ", videoLab:"Numberphile · A Problem with Infinite Hotel Keys"
   },
   {
@@ -1022,7 +1037,21 @@ html += divider(DIVIDERS.toR3, 3);
 REGIME3.forEach((n,i)=> html += numSection(n, i===REGIME3.length-1 ? "abyme" : ""));
 
 html += divider(DIVIDERS.toR4, 4);
-REGIME4.forEach(n=> html += numSection(n));
+REGIME4.forEach((n,i)=>{
+  html += numSection(n);
+  if(i===1){
+    html += "<section class=\"num reveal\" data-regime=\"4\" style=\"min-height:auto;padding:8vh 7vw;border-top:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center\">";
+    html += "  <div style=\"max-width:62ch;margin:0 auto\">";
+    html += "    <div class=\"idx\">Another direction</div>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">We have just travelled far — very far — in the direction of order. At every step, a new ordinal, a new rank, a new way of following what came before.</p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">But there is another question, one we haven’t asked yet.</p>";
+    html += "    <p style=\"font-size:1.15rem;color:var(--gold);font-style:italic;margin-bottom:.9em\">Not: <em>in what order?</em> But: <em>how many?</em></p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper);margin-bottom:.9em\">These two questions measure infinity differently. And in the infinite world, they diverge radically. Every ordinal in the journey — ω, ε₀, Γ₀ and its successors — remains <em>countable</em>&nbsp;: you can number their elements, assign each one a whole-number rank, put them in a list. In terms of quantity, they all represent the same size of infinity. All that distance, and we haven’t moved an inch.</p>";
+    html += "    <p style=\"font-size:1.06rem;color:var(--paper-dim);font-style:italic\">What follows is the question of size.</p>";
+    html += "  </div>";
+    html += "</section>";
+  }
+});
 
 /* final */
 html += `
