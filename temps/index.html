@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'échelle du temps — Studio Existence</title>
+
+<meta name="description" content="Un voyage en trois actes : de l'instant le plus bref que la physique autorise jusqu'à la dernière chose qui pourra jamais arriver." />
+<meta name="author" content="Mikaël Theimer" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.studioexistence.com/temps/" />
+<meta property="og:title" content="L'échelle du temps" />
+<meta property="og:description" content="De l'instant le plus bref que la physique autorise jusqu'à la dernière chose qui pourra jamais arriver. Un voyage en trois actes." />
+<meta property="og:locale" content="fr_CA" />
+<meta property="og:site_name" content="Studio Existence" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="L'échelle du temps — Studio Existence" />
+<meta name="twitter:description" content="De l'instant le plus bref que la physique autorise jusqu'à la dernière chose qui pourra jamais arriver." />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════
+   VARIABLES & THÈME
+═══════════════════════════════════════════════════ */
+:root {
+  /* ── Mode clair par défaut ── */
+  --bg:        #f5f0e8;
+  --bg-soft:   #ede7db;
+  --ink:       #1e1a14;
+  --ink-dim:   #5a5042;
+  --muted:     #9a8e7e;
+  --line:      #d5ccbe;
+  --svg-ink:   #1e1a14;
+  --svg-strong:#0a0804;
+  --star:      120,108,88;
+  --mono: "SF Mono","JetBrains Mono","Cascadia Code",Menlo,monospace;
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --accent: #6b8f71;
+
+  /* accents par acte / famille */
+  --accent-human:   #6b8f71;   /* vert mousse */
+  --accent-instant: #c47a3a;   /* ambre brûlé */
+  --accent-geo:     #9b7340;   /* ocre terre */
+  --accent-cosmic:  #4a7fa5;   /* ardoise bleue */
+  --accent-future:  #7a8fa0;   /* bleu-gris */
+  --accent-far:     #a06040;   /* rouille */
+  --accent-end:     #7a5070;   /* prune */
+}
+
+/* ── Mode sombre ── */
+body.dark {
+  --bg:        #12100d;
+  --bg-soft:   #1c1914;
+  --ink:       #ede7db;
+  --ink-dim:   #b5a898;
+  --muted:     #7a6e60;
+  --line:      #2e2820;
+  --svg-ink:   #ede7db;
+  --svg-strong:#f5f0e8;
+  --star:      220,210,190;
+}
+body.dark #grain { display: block; }
+
+/* en mode clair, le grain reste discret mais visible */
+#grain { opacity: 0.025; }
+body.dark #grain { opacity: 0.04; }
+
+/* étoiles : visibles en mode sombre seulement */
+#stars { opacity: 0; transition: opacity 0.4s; }
+body.dark #stars { opacity: 0.45; }
+
+/* hero : fenêtre sombre dans tous les modes */
+header.hero {
+  background: radial-gradient(ellipse at 50% 42%, #1e1508 0%, #120f08 60%, #0c0a06 100%);
+}
+body.dark header.hero {
+  background: radial-gradient(ellipse at 50% 42%, #1a150e 0%, #110e09 60%, #0c0a06 100%);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ═══ FOND ═══ */
+#stars { position: fixed; inset: 0; z-index: -2; opacity: 0.5; }
+#grain {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ═══ BARRE DE PROGRESSION ═══ */
+#rail {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, #6b8f71, #c47a3a, #9b7340, #4a7fa5, #7a8fa0, #7a5070);
+  z-index: 200; transition: width 0.15s ease-out;
+}
+
+/* ═══ CONTRÔLES FIXES ═══ */
+#theme-toggle {
+  position: fixed; top: 16px; right: 18px; z-index: 210;
+  width: 38px; height: 38px; border-radius: 999px;
+  background: var(--bg-soft); border: 1px solid var(--line);
+  color: var(--ink-dim); font-size: 1rem; cursor: pointer;
+  display: grid; place-items: center;
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+}
+#theme-toggle:hover { border-color: var(--accent); color: var(--ink); }
+
+/* ═══ NAV LATÉRALE — 3 actes ═══ */
+nav.timeaxis {
+  position: fixed;
+  top: 50%; left: 0;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column;
+  align-items: flex-start;
+  padding: 0 0 0 0;
+  z-index: 10;
+  gap: 0;
+}
+.act-nav-btn {
+  display: flex; align-items: center; gap: 0;
+  cursor: pointer; padding: 0.55rem 0;
+  background: none; border: none;
+  text-align: left; font: inherit;
+  transition: opacity 0.2s;
+  opacity: 0.35;
+}
+.act-nav-btn:hover { opacity: 0.75; }
+.act-nav-btn.active { opacity: 1; }
+.act-nav-pill {
+  width: 3px; height: 28px; border-radius: 2px;
+  margin-right: 0; flex-shrink: 0;
+  transition: background 0.3s, width 0.2s;
+}
+.act-nav-btn.active .act-nav-pill { width: 4px; }
+.act-nav-label {
+  font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-dim); white-space: nowrap;
+  max-width: 0; overflow: hidden;
+  transition: max-width 0.25s ease, opacity 0.25s, padding 0.25s;
+  opacity: 0;
+  padding-left: 0;
+}
+.act-nav-btn:hover .act-nav-label,
+.act-nav-btn.active .act-nav-label {
+  max-width: 120px; opacity: 1; padding-left: 8px;
+}
+
+@media (max-width: 820px) {
+  nav.timeaxis { display: none; }
+}
+
+/* ═══ BANNIÈRE ACTE COURANT ═══ */
+#act-tag {
+  position: fixed; top: 16px; left: 18px; z-index: 200;
+  font-family: var(--mono); font-size: 0.72rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(8px);
+  opacity: 0; transition: opacity 0.4s, color 0.3s, border-color 0.3s;
+  pointer-events: none;
+}
+#act-tag.show { opacity: 1; }
+
+main { position: relative; z-index: 1; }
+
+/* ═══ REVEAL ═══ */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.85s cubic-bezier(.2,.7,.2,1), transform 0.85s cubic-bezier(.2,.7,.2,1);
+}
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+::selection { background: color-mix(in srgb, var(--accent) 38%, #12100d); color: #fff; }
+
+/* ═══ HERO ═══ */
+header.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+}
+header.hero .ghost {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -54%);
+  font-family: var(--serif); font-style: italic;
+  font-size: min(72vh, 58vw);
+  line-height: 1;
+  color: transparent;
+  background: radial-gradient(circle at 50% 40%, #1e2d4a 0%, #111928 45%, transparent 72%);
+  -webkit-background-clip: text; background-clip: text;
+  pointer-events: none; z-index: 0; opacity: 0;
+  animation: ghostIn 2.4s ease 0.3s forwards, ghostBreath 9s ease-in-out 2.7s infinite;
+}
+@keyframes ghostIn { from{opacity:0;transform:translate(-50%,-50%) scale(0.94);} to{opacity:1;transform:translate(-50%,-54%) scale(1);} }
+@keyframes ghostBreath { 0%,100%{filter:blur(0px);opacity:1;} 50%{filter:blur(1px);opacity:0.82;} }
+header.hero > * { position: relative; z-index: 1; }
+
+header.hero .kicker {
+  font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.4em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 2rem;
+  opacity: 0; animation: riseIn 0.9s ease 0.2s forwards;
+}
+header.hero .kicker::before, header.hero .kicker::after { content: "—"; color: var(--line); margin: 0 0.7em; }
+header.hero h1 {
+  font-weight: 400; font-style: italic;
+  font-size: clamp(2.8rem, 9vw, 6.5rem);
+  line-height: 1.02; margin: 0 0 1.6rem; max-width: 14ch;
+  letter-spacing: -0.02em;
+  background: linear-gradient(175deg, #ffffff 0%, #c5cede 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  opacity: 0; animation: riseIn 1s ease 0.4s forwards;
+}
+header.hero .intro {
+  color: var(--ink-dim); max-width: 50ch; margin: 0 auto 1.6rem;
+  font-size: 1.08rem; line-height: 1.78;
+  opacity: 0; animation: riseIn 1s ease 0.7s forwards;
+}
+header.hero .acts {
+  display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap;
+  margin: 0.4rem 0 0; font-family: var(--mono); font-size: 0.72rem;
+  letter-spacing: 0.12em; color: var(--muted);
+  opacity: 0; animation: riseIn 1s ease 0.95s forwards;
+}
+header.hero .acts span { display: flex; align-items: center; gap: 0.5em; }
+header.hero .acts i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+header.hero .scroll-cue {
+  margin-top: 3.5rem; color: var(--muted); font-family: var(--mono);
+  font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase;
+  opacity: 0; animation: riseIn 1s ease 1.2s forwards, bob 2.4s ease-in-out 2.2s infinite;
+}
+@keyframes riseIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+@keyframes bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(7px);} }
+
+/* ═══ ACTE HEADER ═══ */
+.act-header {
+  max-width: 720px; margin: 0 auto;
+  padding: 5rem 1.5rem 1rem;
+  text-align: center;
+}
+.act-number {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.35em;
+  text-transform: uppercase; color: var(--accent); opacity: 0.7; margin-bottom: 0.8rem;
+}
+.act-title {
+  font-weight: 400; font-style: italic;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--ink); margin: 0 0 0.8rem;
+  letter-spacing: -0.01em; line-height: 1.1;
+}
+.act-subtitle {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.15em;
+  color: var(--muted); text-transform: uppercase;
+}
+
+/* ═══ SECTION DURÉE ═══ */
+section.duree {
+  position: relative;
+  max-width: 720px; margin: 0 auto;
+  padding: 6rem 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.dur-head {
+  display: flex; align-items: flex-start; gap: 1.4rem;
+  margin-bottom: 1rem;
+}
+.dur-symbol {
+  font-family: var(--mono);
+  font-size: clamp(3rem, 10vw, 5.5rem); line-height: 1;
+  background: linear-gradient(165deg,
+    color-mix(in srgb, var(--accent) 95%, #fff) 0%,
+    var(--accent) 55%,
+    color-mix(in srgb, var(--accent) 60%, #000) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  flex-shrink: 0; padding-top: 0.05em;
+  letter-spacing: -0.02em;
+}
+.dur-headtext { display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.5rem; }
+.dur-index {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em;
+  color: var(--accent); opacity: 0.65;
+}
+.dur-title {
+  font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-dim);
+}
+.dur-tagline {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(1.25rem, 3vw, 1.6rem); line-height: 1.4;
+  color: var(--ink); margin: 0.5rem 0 1.6rem; max-width: 32ch;
+}
+.dur-value {
+  font-family: var(--mono); font-size: 0.95rem;
+  background: var(--bg-soft); border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  padding: 0.65rem 1rem; border-radius: 8px;
+  margin-bottom: 2.2rem;
+  color: var(--ink);
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+  line-height: 1.65;
+}
+.pull {
+  font-family: var(--serif); font-style: italic;
+  font-size: 1.22rem; line-height: 1.6;
+  color: var(--ink); border-left: 3px solid var(--accent);
+  padding-left: 1.2rem; margin: 0 0 2.2rem; max-width: 42ch;
+}
+h3.rubric {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--accent); margin: 2.4rem 0 0.7rem; font-weight: 600;
+}
+section.duree p { margin: 0 0 1.2rem; color: var(--ink-dim); }
+section.duree p strong, section.duree p b { color: var(--ink); font-weight: 600; }
+section.duree p em { color: var(--ink); }
+
+/* ═══ VIZ / FIGURE ═══ */
+.viz {
+  background: var(--bg-soft); border: 1px solid var(--line);
+  border-radius: 14px; padding: 1.3rem 1.2rem 1rem; margin: 2rem 0;
+}
+.viz svg { width: 100%; height: auto; display: block; }
+.viz .controls {
+  display: flex; gap: 0.6rem; align-items: center;
+  margin-top: 1rem; flex-wrap: wrap;
+}
+.viz button {
+  background: transparent; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 999px;
+  padding: 0.42rem 1rem; font: inherit; font-size: 0.8rem;
+  cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.viz button:hover { background: var(--accent); color: var(--bg); }
+.viz .readout {
+  margin-left: auto; font-family: var(--mono);
+  color: var(--muted); font-size: 0.78rem;
+}
+.viz .readout b { color: var(--accent); font-weight: 400; }
+figcaption {
+  font-size: 0.8rem; color: var(--muted); font-style: italic;
+  margin-top: 0.6rem; text-align: center;
+}
+
+/* ═══ CALLOUT ═══ */
+.callout {
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-soft));
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  border-radius: 10px; padding: 1.2rem 1.4rem; margin: 2rem 0;
+}
+.callout-kicker {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 0.5rem; font-weight: 600;
+}
+.callout p { margin: 0 0 0.7rem; color: var(--ink-dim); font-size: 0.94rem; line-height: 1.7; }
+.callout p:last-child { margin-bottom: 0; }
+.callout p b, .callout p strong { color: var(--ink); }
+
+/* ═══ INTERLUDE ═══ */
+section.interlude {
+  max-width: 720px; margin: 0 auto; padding: 5rem 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.interlude-card {
+  background: radial-gradient(120% 140% at 50% 0%, #1c1610 0%, #15110c 55%, #0e0b07 100%);
+  border: 1px solid rgba(255,255,255,0.07); border-radius: 18px;
+  padding: 2.8rem 2.2rem; text-align: center;
+  box-shadow: 0 0 60px rgba(180,140,80,0.04) inset;
+}
+.interlude-card .kicker {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 1.4rem; opacity: 0.8;
+}
+.interlude-card h2 {
+  font-weight: 400; font-style: italic;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  color: #ede7db; margin: 0 0 1.4rem; line-height: 1.2;
+}
+.interlude-card p {
+  color: #b5a898; max-width: 50ch; margin: 0 auto 1rem;
+  font-size: 1.04rem; line-height: 1.78;
+}
+.interlude-card p:last-child { margin-bottom: 0; }
+.interlude-card p b, .interlude-card p strong { color: #ede7db; }
+.interlude-card .kicker { color: var(--accent); }
+
+/* ═══ SÉPARATEUR DE RÉGIME ═══ */
+.regime-sep {
+  max-width: 720px; margin: 0 auto;
+  padding: 2.5rem 1.5rem 0;
+  display: flex; align-items: center; gap: 1rem;
+}
+.regime-label {
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--accent); white-space: nowrap; opacity: 0.75;
+}
+.regime-line { flex: 1; height: 1px; background: var(--line); }
+
+/* ═══ CONCLUSION ═══ */
+section.conclusion {
+  max-width: 720px; margin: 0 auto; padding: 7rem 1.5rem 4rem;
+  border-top: 1px solid var(--line);
+}
+.conclusion .kicker {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; text-align: center;
+}
+.conclusion h2 {
+  font-weight: 400; font-style: italic;
+  font-size: clamp(1.7rem, 4.5vw, 2.5rem);
+  line-height: 1.25; color: var(--ink);
+  text-align: center; margin: 0 0 2.2rem; letter-spacing: -0.01em;
+}
+.conclusion p {
+  color: var(--ink-dim); font-size: 1.06rem; line-height: 1.8;
+  margin: 0 0 1.4rem; max-width: 56ch; margin-left: auto; margin-right: auto;
+}
+.conclusion p b, .conclusion p strong { color: var(--ink); }
+.conclusion .closing {
+  font-family: var(--serif); font-style: italic; font-size: 1.22rem;
+  line-height: 1.6; color: var(--ink); text-align: center;
+  margin: 2.8rem auto 0; max-width: 44ch;
+}
+
+/* ═══ SHARE & FOOTER ═══ */
+.share {
+  max-width: 720px; margin: 0 auto;
+  padding: 3rem 1.5rem 2rem; text-align: center;
+}
+.share p { color: var(--ink-dim); font-size: 1rem; margin: 0 auto 1.4rem; max-width: 44ch; }
+.share-actions { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+.share button {
+  background: transparent; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 999px;
+  padding: 0.55rem 1.3rem; font: inherit; font-size: 0.84rem;
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: background 0.2s, color 0.2s;
+}
+.share button:hover { background: var(--accent); color: var(--bg); }
+#copied-note {
+  font-family: var(--mono); font-size: 0.74rem;
+  color: var(--accent); margin-top: 0.6rem; opacity: 0;
+  transition: opacity 0.3s;
+}
+
+footer.end {
+  text-align: center; padding: 5rem 1.5rem 7rem;
+  color: var(--muted); font-family: var(--mono);
+  font-size: 0.75rem; letter-spacing: 0.14em;
+  border-top: 1px solid var(--line);
+}
+footer.end a { color: var(--muted); text-decoration: none; }
+footer.end a:hover { color: var(--ink); }
+
+/* ═══ KATEX ═══ */
+.katex-block { margin: 1.6rem 0; text-align: center; color: var(--ink); overflow-x: auto; }
+
+/* ═══ MOBILE ═══ */
+@media (max-width: 640px) {
+  body { font-size: 17px; }
+  section.duree { padding: 4rem 1.2rem; }
+  .dur-symbol { font-size: clamp(2.4rem, 14vw, 4rem); }
+  .interlude-card { padding: 2rem 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="rail"></div>
+<button id="theme-toggle" type="button" aria-label="Thème clair / sombre" title="Thème clair / sombre">☾</button>
+<canvas id="stars"></canvas>
+<div id="grain"></div>
+
+<div id="act-tag"></div>
+
+<!-- ═══════════════════════════════════
+     NAV LATÉRALE — 3 actes
+═══════════════════════════════════ -->
+<nav class="timeaxis" id="timeaxis" aria-label="Navigation par acte">
+  <button class="act-nav-btn" id="nav-acte1" data-target="acte1">
+    <span class="act-nav-pill" style="background: var(--accent-instant);"></span>
+    <span class="act-nav-label">Acte I · L'instant</span>
+  </button>
+  <button class="act-nav-btn" id="nav-acte2" data-target="acte2">
+    <span class="act-nav-pill" style="background: var(--accent-geo);"></span>
+    <span class="act-nav-label">Acte II · Le passé</span>
+  </button>
+  <button class="act-nav-btn" id="nav-acte3" data-target="acte3">
+    <span class="act-nav-pill" style="background: var(--accent-future);"></span>
+    <span class="act-nav-label">Acte III · Le futur</span>
+  </button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<header class="hero">
+  <div class="ghost" aria-hidden="true">t</div>
+  <div class="kicker">Studio Existence · Un voyage en trois actes</div>
+  <h1>L'échelle du temps</h1>
+  <p class="intro">Tu vis environ 80 ans. C'est ton point de départ — la seule durée que tu pourras jamais vraiment <em>sentir</em>. Ce voyage part de là, dans deux directions : d'abord vers l'instant le plus bref que la physique autorise, la limite en deçà de laquelle le mot « avant » perd son sens. Puis vers le passé, aussi loin qu'il est possible de remonter. Et enfin vers le futur — jusqu'à la dernière chose qui pourra jamais arriver.</p>
+  <div class="acts">
+    <span><i style="background:#c47a3a"></i>Acte I · L'instant</span>
+    <span><i style="background:#9b7340"></i>Acte II · Le passé</span>
+    <span><i style="background:#7a8fa0"></i>Acte III · Le futur</span>
+  </div>
+  <div class="scroll-cue">↓ commencer par l'instant</div>
+</header>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     ACTE I — L'INSTANT
+═══════════════════════════════════════════════════════════ -->
+<div class="act-header reveal" id="acte1" style="--accent: var(--accent-instant);">
+  <div class="act-number">Acte I</div>
+  <h2 class="act-title">L'instant</h2>
+  <p class="act-subtitle">De la vie humaine jusqu'à la limite du temps</p>
+</div>
+
+
+<!-- ─── 1 / La durée d'une vie ─── -->
+<section class="duree" id="vie" style="--accent: var(--accent-human);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">◎</span>
+    <span class="dur-headtext">
+      <span class="dur-index">01 · point de départ</span>
+      <span class="dur-title">La durée d'une vie</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">80 ans. 2,5 milliards de secondes. Le voyage commence ici.</p>
+  <div class="dur-value reveal">~80 ans<br>~2 500 000 000 secondes<br>~10¹⁰ s</div>
+
+  <p class="pull reveal">Deux milliards et demi de secondes. Dit comme ça, ça sonne énorme. Et pourtant, chaque jour qui passe en consomme 86 400 — et personne ne les sent filer.</p>
+
+  <p class="reveal">Une vie humaine tient dans un nombre à dix chiffres de secondes. C'est à la fois immense et modeste : immense parce qu'aucun autre animal ne vit aussi longtemps parmi les mammifères de taille comparable ; modeste parce que ce nombre, mis en regard de ce qui suit dans ce voyage, deviendra invisible.</p>
+  <p class="reveal">Mais pour l'instant, c'est tout ce qu'on a. C'est l'unité de mesure la plus naturelle qui soit — pas le mètre, pas le kilogramme, mais <em>une vie</em>. Toute la suite de ce voyage sera mesurée à cette aune.</p>
+
+  <!-- VIZ : calculateur de secondes vécues -->
+  <figure class="viz reveal" id="viz-vie">
+    <div style="padding: 0.5rem 0.2rem;">
+      <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:1.2rem;">
+        <label style="font-family:var(--mono); font-size:0.8rem; color:var(--muted); white-space:nowrap;">Date de naissance</label>
+        <input type="date" id="dob-input"
+          style="background:var(--bg); border:1px solid var(--line); border-radius:6px;
+          color:var(--ink); font-family:var(--mono); font-size:0.88rem; padding:0.4rem 0.7rem;
+          outline:none; cursor:pointer;"
+          max="2025-12-31" />
+      </div>
+      <div id="dob-result" style="display:none;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap:0.8rem;">
+          <div class="dob-card">
+            <div class="dob-val" id="dob-ans">—</div>
+            <div class="dob-lbl">années</div>
+          </div>
+          <div class="dob-card">
+            <div class="dob-val" id="dob-mois">—</div>
+            <div class="dob-lbl">mois</div>
+          </div>
+          <div class="dob-card">
+            <div class="dob-val" id="dob-sem">—</div>
+            <div class="dob-lbl">semaines</div>
+          </div>
+          <div class="dob-card">
+            <div class="dob-val" id="dob-j">—</div>
+            <div class="dob-lbl">jours</div>
+          </div>
+          <div class="dob-card">
+            <div class="dob-val" id="dob-h">—</div>
+            <div class="dob-lbl">heures</div>
+          </div>
+          <div class="dob-card">
+            <div class="dob-val" id="dob-min">—</div>
+            <div class="dob-lbl">minutes</div>
+          </div>
+          <div class="dob-card" style="grid-column: 1 / -1;">
+            <div class="dob-val" id="dob-sec" style="font-size:clamp(1.4rem,4vw,2rem); color:var(--accent-human);">—</div>
+            <div class="dob-lbl">secondes</div>
+          </div>
+        </div>
+        <p id="dob-note" style="font-family:var(--mono); font-size:0.74rem; color:var(--muted); margin:1rem 0 0; text-align:center;"></p>
+      </div>
+    </div>
+    <figcaption>Entrez votre date de naissance. Le compteur ne s'arrête pas.</figcaption>
+  </figure>
+
+  <style>
+  .dob-card {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.8rem 1rem; text-align: center;
+  }
+  .dob-val {
+    font-family: var(--mono); font-size: clamp(1.1rem, 3vw, 1.5rem);
+    color: var(--ink); font-weight: 400; letter-spacing: -0.02em;
+  }
+  .dob-lbl {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted); margin-top: 0.2rem;
+  }
+  </style>
+
+  <h3 class="rubric reveal">Toutes les vies bout à bout</h3>
+  <p class="reveal">On estime qu'environ 100 milliards d'êtres humains ont vécu sur Terre depuis l'apparition de notre espèce. En leur attribuant une vie moyenne d'une trentaine d'années — en tenant compte des mortalités infantiles, des guerres, des épidémies —, ça donne environ 3 000 milliards d'années-personnes de vie humaine cumulée.</p>
+  <p class="reveal">L'univers, lui, a 13,8 milliards d'années. Autrement dit, si l'on mettait toutes les vies humaines jamais vécues bout à bout, en une seule chaîne ininterrompue, <strong>elle ferait environ 220 fois l'âge de l'univers</strong>. Toute l'expérience humaine — chaque amour, chaque douleur, chaque nuit — représente 220 univers vécus en parallèle, accumulés en silence.</p>
+</section>
+
+
+<!-- ─── 2 / Le battement de cœur ─── -->
+<section class="duree" id="coeur" style="--accent: var(--accent-human);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">♡</span>
+    <span class="dur-headtext">
+      <span class="dur-index">02 · ~0,8 seconde</span>
+      <span class="dur-title">Le battement de cœur</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">La mesure du temps la plus ancienne de l'humanité.</p>
+  <div class="dur-value reveal">~0,833 s &nbsp;(72 bpm)<br>~3 milliards de battements dans une vie</div>
+
+  <p class="pull reveal">Avant les horloges, avant les calendriers, le cœur était notre chronomètre. Les musiciens battent encore la mesure sur lui. Les médecins grecs mesuraient le pouls des malades.</p>
+
+  <p class="reveal">Un cœur humain bat environ 72 fois par minute — une pulsation toutes les 0,83 secondes, toute la vie, sans jamais s'arrêter volontairement. En 80 ans, ça fait environ <strong>3 milliards de battements</strong>. Un nombre qu'on a du mal à sentir, jusqu'à ce qu'on réalise que chacun de ces battements était une seconde bien réelle, vécue, irrécupérable.</p>
+  <p class="reveal">Ce qui est frappant, c'est que les mammifères semblent tous recevoir le même quota. Une souris bat 600 fois par minute et vit 2 ans. Une baleine bleue bat 2 fois par minute et vit 80 ans. Le nombre total de battements converge, pour presque tous les mammifères, autour d'un milliard. L'humain, avec ses 3 milliards, est une exception remarquable — un animal qui a, d'une certaine façon, appris à vivre plus longtemps que son cœur n'était prévu pour battre.</p>
+
+  <!-- VIZ : cœur pulsant + comparateur -->
+  <figure class="viz reveal" id="viz-coeur">
+    <svg viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg" id="heartsvg">
+      <!-- ligne ECG simplifiée -->
+      <polyline id="ecg-line" fill="none" stroke="var(--accent-human)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round"
+        points="0,80 80,80 100,80 110,30 120,120 130,80 200,80 280,80 300,80 310,30 320,120 330,80 400,80 480,80 500,80 510,30 520,120 530,80 600,80 680,80"/>
+      <!-- indicateur BPM -->
+      <circle id="heartdot" cx="340" cy="80" r="0" fill="var(--accent-human)" opacity="0.9"/>
+    </svg>
+    <div class="controls">
+      <select id="animal-select"
+        style="background:var(--bg); border:1px solid var(--line); border-radius:6px;
+        color:var(--ink); font-family:var(--mono); font-size:0.8rem; padding:0.38rem 0.7rem; cursor:pointer;">
+        <option value="72,80,3e9">Humain — 72 bpm</option>
+        <option value="600,2,1.2e9">Souris — 600 bpm</option>
+        <option value="140,15,1.1e9">Chat — 140 bpm</option>
+        <option value="40,40,840e6">Cheval — 40 bpm</option>
+        <option value="2,80,84e6">Baleine bleue — 2 bpm</option>
+        <option value="1000,0.33,1e9">Musaraigne — 1000 bpm</option>
+      </select>
+      <span class="readout">Total estimé dans une vie : <b id="heart-total">~3 milliards</b></span>
+    </div>
+    <figcaption>La plupart des mammifères reçoivent environ un milliard de battements. L'humain en reçoit trois.</figcaption>
+  </figure>
+</section>
+
+
+<!-- ─── 3 / Le clignement d'un œil ─── -->
+<section class="duree" id="oeil" style="--accent: var(--accent-human);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">—</span>
+    <span class="dur-headtext">
+      <span class="dur-index">03 · ~200 millisecondes</span>
+      <span class="dur-title">Le clignement d'un œil</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">L'unité minimale de ta présence au monde.</p>
+  <div class="dur-value reveal">150–400 ms<br>10 000 à 20 000 clignements par jour</div>
+
+  <p class="pull reveal">Pendant que tu clignes de l'œil, 10 000 milliards de réactions chimiques ont lieu dans ton corps. Tu n'as rien vu.</p>
+
+  <p class="reveal">Le clignement dure entre 150 et 400 millisecondes. En une journée, tu clignes entre 10 000 et 20 000 fois — ce qui représente environ 30 minutes d'obscurité totale, découpées en tranches imperceptibles. Le cerveau les efface : il "remplit" l'image manquante en extrapolant ce qu'il avait vu juste avant. C'est pour ça que tu ne remarques jamais cette obscurité.</p>
+  <p class="reveal">Ce mécanisme — la suppression saccadique — révèle quelque chose d'essentiel sur notre rapport au temps : ce qu'on perçoit n'est pas le réel brut, mais une reconstruction continue. L'expérience du moment présent est déjà, en partie, du passé.</p>
+</section>
+
+
+<!-- ─── 4 / Transition électronique ─── -->
+<section class="duree" id="electron" style="--accent: color-mix(in srgb, var(--accent-human) 25%, var(--accent-instant));">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">e⁻</span>
+    <span class="dur-headtext">
+      <span class="dur-index">04 · de quelques femtosecondes à quelques nanosecondes</span>
+      <span class="dur-title">La transition électronique</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Le saut qui allume les lampes, les écrans, les étoiles.</p>
+  <div class="dur-value reveal">quelques fs à quelques ns<br>nanoseconde = 10⁻⁹ s = un milliardième de seconde</div>
+
+  <p class="pull reveal">Toute lumière non thermique naît d'un électron qui saute d'un niveau d'énergie à un autre. La flamme d'une bougie, le néon d'une enseigne, la lumière d'une étoile — même mécanisme, même durée.</p>
+
+  <p class="reveal">Dans un atome, les électrons occupent des niveaux d'énergie distincts — des « étages » bien définis. Quand un électron absorbe de l'énergie, il monte d'un étage. Instable, il redescend aussitôt en émettant un photon — une particule de lumière dont la couleur dépend exactement de la différence d'énergie entre les deux étages. C'est ce qui donne leur couleur caractéristique aux lampes au sodium (jaune orangé) ou au néon (rouge-orangé) : chaque atome a ses propres étages, donc ses propres couleurs.</p>
+  <p class="reveal">La durée de ce saut varie selon les atomes et les transitions : de quelques femtosecondes (10⁻¹⁵ s) pour les transitions très énergétiques, jusqu'à quelques nanosecondes (10⁻⁹ s) pour les transitions plus lentes qui donnent la lumière visible ordinaire. C'est cette dernière échelle — la nanoseconde — qui gouverne la lumière que tu vois autour de toi.</p>
+  <p class="reveal">En 2023, le prix Nobel de physique a récompensé la maîtrise des lasers attoseconde — des impulsions dix mille fois plus brèves encore qu'une femtoseconde. Ils permettent de filmer le mouvement des électrons pendant qu'ils sautent, en temps réel, pour la première fois.</p>
+</section>
+
+
+<!-- ─── 5 / Onde lumineuse & réaction chimique ─── -->
+<section class="duree" id="lumiere" style="--accent: color-mix(in srgb, var(--accent-instant) 70%, var(--accent-human));">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">λ</span>
+    <span class="dur-headtext">
+      <span class="dur-index">05 · ~2 femtosecondes</span>
+      <span class="dur-title">La période d'une onde lumineuse</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">La lumière oscille. La couleur est son rythme.</p>
+  <div class="dur-value reveal">~2 femtosecondes (lumière verte, 550 nm)<br>1 femtoseconde = 10⁻¹⁵ s</div>
+
+  <p class="pull reveal">La lumière est une onde électromagnétique : un champ électrique et un champ magnétique qui oscillent en se propageant. La couleur n'est pas une propriété de la surface que tu regardes — c'est la fréquence de cette oscillation.</p>
+
+  <p class="reveal">La lumière rouge oscille environ 430 000 milliards de fois par seconde — une période de ~2,3 femtosecondes. La lumière violette oscille environ 750 000 milliards de fois — une période de ~1,3 femtoseconde. C'est entre ces deux fréquences — du rouge d'une cerise au violet d'une lavande — que se situe toute la lumière visible par l'œil humain. Une fenêtre étroite.</p>
+  <p class="reveal">En dessous du rouge : l'infrarouge. Tu ne le vois pas, mais tu le ressens comme de la chaleur — c'est ce que rayonne un radiateur, ou la braise d'un feu. Au-dessus du violet : l'ultraviolet. Invisible lui aussi, il est suffisamment énergétique pour endommager l'ADN — d'où les coups de soleil.</p>
+
+  <h3 class="rubric reveal">La même durée, et la vision</h3>
+  <p class="reveal">C'est précisément à cette échelle — quelques femtosecondes — que commence la vision. Quand un photon frappe un pigment de ta rétine, une molécule appelée rétinal change de forme en environ 200 femtosecondes. Ce changement déclenche un signal nerveux qui remonte vers le cerveau, lequel produit une image. La lumière oscille, heurte une molécule, et la molécule bascule — en moins de temps qu'il n'en faut à la lumière pour traverser quelques longueurs d'onde.</p>
+  <p class="reveal">Observer des réactions aussi rapides a longtemps semblé impossible. Ahmed Zewail l'a résolu dans les années 1980 en utilisant deux impulsions laser ultrabrèves : la première pour déclencher la réaction, la seconde, légèrement décalée, pour la photographier à différents stades. Il a reçu le prix Nobel de chimie en 1999 pour avoir fondé la femtochimie.</p>
+  <p class="reveal">Pendant le clignement de ton œil — 200 millisecondes — la lumière verte aura oscillé <strong>100 millions de milliards de fois</strong>. Une femtoseconde est à un clignement d'œil ce qu'un clignement d'œil est à 1,3 million d'années.</p>
+</section>
+
+
+<!-- ─── 7 / Traversée d'un noyau ─── -->
+<section class="duree" id="noyau" style="--accent: color-mix(in srgb, var(--accent-instant) 85%, var(--accent-human));">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">τ</span>
+    <span class="dur-headtext">
+      <span class="dur-index">06 · ~10 zeptosecondes</span>
+      <span class="dur-title">La traversée d'un noyau atomique</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Le temps qu'il faut à la lumière pour traverser le cœur de la matière.</p>
+  <div class="dur-value reveal">~10⁻²³ s = ~10 zeptosecondes<br>zeptoseconde = 10⁻²¹ s = un milliardième de milliardième de milliseconde</div>
+
+  <p class="pull reveal">10 zeptosecondes. Ce n'est pas une durée qu'on peut comparer à quoi que ce soit de familier — à moins de comparer les comparaisons elles-mêmes.</p>
+
+  <!-- VIZ : double rapport symétrique -->
+  <figure class="viz reveal" id="viz-noyau">
+    <svg viewBox="0 0 680 190" xmlns="http://www.w3.org/2000/svg" id="noyau-svg">
+      <!-- Titre -->
+      <text x="340" y="20" font-family="monospace" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.8">Deux rapports symétriques</text>
+
+      <!-- Colonne gauche : 10 zs → 1 s -->
+      <text x="170" y="44" font-family="monospace" font-size="9.5" fill="#c47a3a" text-anchor="middle">10 zeptosecondes → 1 seconde</text>
+      <rect x="20" y="52" width="300" height="22" rx="3" fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1"/>
+      <rect x="20" y="52" width="1.5" height="22" rx="1" fill="#c47a3a"/>
+      <text x="28" y="67" font-family="monospace" font-size="9" fill="#c47a3a">10 zs</text>
+      <text x="322" y="67" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="end">1 s</text>
+      <text x="170" y="92" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle">rapport : × 10²²</text>
+
+      <!-- Égal central -->
+      <text x="340" y="72" font-family="monospace" font-size="18" fill="var(--ink)" text-anchor="middle" opacity="0.5">=</text>
+
+      <!-- Colonne droite : 1 s → 317 milliards d'années -->
+      <text x="510" y="44" font-family="monospace" font-size="9.5" fill="#4a7fa5" text-anchor="middle">1 seconde → 317 milliards d'années</text>
+      <rect x="360" y="52" width="300" height="22" rx="3" fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1"/>
+      <rect x="360" y="52" width="1.5" height="22" rx="1" fill="#4a7fa5"/>
+      <text x="368" y="67" font-family="monospace" font-size="9" fill="#4a7fa5">1 s</text>
+      <text x="662" y="67" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="end">317 Ga</text>
+      <text x="510" y="92" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle">rapport : × 10²²</text>
+
+      <!-- Ligne de séparation -->
+      <line x1="40" y1="108" x2="640" y2="108" stroke="var(--line)" stroke-width="1" opacity="0.4"/>
+
+      <!-- Conclusion -->
+      <text x="340" y="130" font-family="monospace" font-size="10.5" fill="var(--ink)" text-anchor="middle">10 zs est à 1 s ce que 1 s est à 317 milliards d'années.</text>
+      <text x="340" y="150" font-family="monospace" font-size="9.5" fill="var(--muted)" text-anchor="middle">L'âge de l'univers est 13,8 milliards d'années — soit environ 23 fois moins.</text>
+      <text x="340" y="170" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle" opacity="0.65">10 zs = 10⁻²² s · inverse = 10²² s = 10²² / 3,15×10⁷ ans ≈ 3,17×10¹⁴ ans = 317 milliards d'années</text>
+    </svg>
+    <figcaption>Les deux rapports sont exactement égaux : × 10²². Chacune des barres ci-dessus représente la même distance relative.</figcaption>
+  </figure>
+
+  <p class="reveal">Un noyau atomique mesure environ un femtomètre — un millionième de milliardième de mètre. La lumière, qui parcourt 300 000 kilomètres en une seconde, met 10 zeptosecondes pour le traverser. C'est l'échelle à laquelle opère la <strong>force forte</strong> — la force qui colle les quarks en protons, et les protons et neutrons en noyaux.</p>
+  <p class="reveal">Si la force forte n'agissait pas à cette vitesse et à cette échelle, les noyaux atomiques ne seraient pas stables. Les protons et les neutrons se disséminaient. Pas d'atomes, pas de chimie, pas de matière complexe. Tout ce qui existe — chaque étoile, chaque planète, chaque molécule dans ton corps — tient parce que quelque chose se passe en 10 zeptosecondes, sans jamais s'arrêter, depuis le début de l'univers.</p>
+</section>
+
+
+<!-- ─── 8 / Durée de vie d'un quark top ─── -->
+<section class="duree" id="quarktop" style="--accent: var(--accent-instant);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">t</span>
+    <span class="dur-headtext">
+      <span class="dur-index">07 · ~0,5 yoctoseconde</span>
+      <span class="dur-title">La durée de vie d'un quark top</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">La particule qui n'a pas le temps de ressentir la force forte.</p>
+  <div class="dur-value reveal">~5 × 10⁻²⁵ s = ~0,5 yoctoseconde<br>yoctoseconde = 10⁻²⁴ s</div>
+
+  <p class="pull reveal">Le quark top vit moins longtemps qu'il n'en faut à la lumière pour traverser un proton. Et pourtant, il pèse autant qu'un atome de tungstène entier.</p>
+
+  <h3 class="rubric reveal">Ce qu'est un quark</h3>
+  <p class="reveal">Les protons et les neutrons — les briques du noyau atomique — ne sont pas eux-mêmes fondamentaux. Ils sont faits de quarks, liés ensemble par la force forte. Il existe six types de quarks, que les physiciens ont nommés : up, down, charm, strange, bottom, et top. Les deux premiers — up et down — constituent toute la matière ordinaire : un proton est fait de deux quarks up et d'un quark down, un neutron de deux down et d'un up.</p>
+  <p class="reveal">Les quatre autres quarks — dont le top — n'existent pas dans la matière stable. Ils sont si lourds et si instables qu'ils ne se forment que dans des conditions extrêmes : à l'intérieur des accélérateurs de particules, ou dans les tout premiers instants de l'univers, quand l'énergie était suffisamment concentrée. Le quark top est le plus lourd des six — il pèse autant qu'un atome de tungstène entier, ce qui est extraordinaire pour une particule fondamentale.</p>
+
+  <h3 class="rubric reveal">Pourquoi il meurt si vite</h3>
+  <p class="reveal">Sa durée de vie — environ 0,5 yoctoseconde — est si brève qu'il se désintègre avant même que la force forte ait le temps de le lier à d'autres quarks pour former un hadron. Tous les autres quarks, plus légers, vivent assez longtemps pour être capturés et forment des particules composites. Le quark top est seul : il naît, laisse quelques traces dans un détecteur, et disparaît.</p>
+  <p class="reveal">Cette solitude le rend précieux pour les physiciens. Un quark lié à d'autres est difficile à étudier — la force forte brouille les mesures. Le quark top, lui, se désintègre avant d'être lié : on peut le mesurer quasiment nu, comme une particule fondamentale pure. C'est une fenêtre rare sur les lois les plus profondes de la matière.</p>
+  <p class="reveal">Si le quark top vivait aussi longtemps qu'une mouche — un mois — alors, à l'échelle proportionnelle, un être humain vivrait <strong>10⁴¹ ans</strong>. Un nombre qui dépasse de 31 ordres de grandeur l'âge actuel de l'univers.</p>
+</section>
+
+
+<!-- ─── 9 / Le temps de Planck ─── -->
+<section class="duree" id="planck" style="--accent: var(--accent-instant);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">tₚ</span>
+    <span class="dur-headtext">
+      <span class="dur-index">08 · 5,39 × 10⁻⁴⁴ seconde</span>
+      <span class="dur-title">Le temps de Planck</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">La plus petite durée que la physique autorise à concevoir.</p>
+  <div class="dur-value reveal">tₚ = √(ℏG/c⁵) ≈ 5,39 × 10⁻⁴⁴ s<br>soit environ 5 × 10⁻²⁰ yoctosecondes — 20 ordres de grandeur sous le plus petit préfixe SI</div>
+
+  <p class="pull reveal">En dessous de cette durée, le mot « avant » n'a plus de sens. Le temps de Planck n'est pas la plus petite durée qu'on ait jamais mesurée — c'est la plus petite qu'on puisse même concevoir.</p>
+
+  <h3 class="rubric reveal">Ce qu'il représente</h3>
+  <p class="reveal">Imagine que le temps soit une image numérique. Chaque pixel représente la plus petite unité de détail que l'image peut contenir. En dessous d'un pixel, il n'y a pas de « demi-pixel flou » — il n'y a tout simplement rien. Le temps de Planck est peut-être ce pixel : non pas une durée très courte, mais la granularité ultime du temps lui-même.</p>
+  <p class="reveal">Ce nombre émerge naturellement quand on tente de combiner les deux grandes théories de la physique moderne — la relativité générale et la mécanique quantique. À cette échelle, les deux entrent en contradiction irréductible. La gravité quantique, la théorie qui les réconcilierait, n'existe pas encore. Le temps de Planck est la limite où notre compréhension s'arrête.</p>
+
+  <h3 class="rubric reveal">La distance jusqu'à toi</h3>
+
+  <!-- VIZ : ligne pointillée tₚ → 1 s, avec description de la distance vers l'âge de l'univers -->
+  <figure class="viz reveal" id="viz-planck">
+    <svg viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Les deux points : tₚ et 1 s -->
+      <circle cx="80" cy="72" r="5" fill="#c47a3a"/>
+      <circle cx="240" cy="72" r="5" fill="#9a8e7e"/>
+
+      <!-- Ligne pleine entre les deux : 10 cm -->
+      <line x1="85" y1="72" x2="235" y2="72" stroke="#c47a3a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>
+
+      <!-- Accolade / mesure -->
+      <line x1="80" y1="88" x2="240" y2="88" stroke="var(--muted)" stroke-width="1" opacity="0.4"/>
+      <line x1="80" y1="84" x2="80" y2="92" stroke="var(--muted)" stroke-width="1" opacity="0.4"/>
+      <line x1="240" y1="84" x2="240" y2="92" stroke="var(--muted)" stroke-width="1" opacity="0.4"/>
+      <text x="160" y="104" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle" opacity="0.7">10 cm</text>
+
+      <!-- Labels des deux points -->
+      <text x="80" y="56" font-family="monospace" font-size="10" fill="#c47a3a" text-anchor="middle">tₚ</text>
+      <text x="240" y="56" font-family="monospace" font-size="10" fill="var(--ink-dim)" text-anchor="middle">1 seconde</text>
+
+      <!-- Ligne pointillée vers la droite qui s'efface -->
+      <line x1="245" y1="72" x2="620" y2="72" stroke="var(--accent-cosmic)" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.5"/>
+      <defs>
+        <linearGradient id="fade-planck" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stop-color="var(--bg)" stop-opacity="0"/>
+          <stop offset="100%" stop-color="var(--bg)" stop-opacity="1"/>
+        </linearGradient>
+      </defs>
+      <rect x="420" y="58" width="220" height="30" fill="url(#fade-planck)"/>
+      <polygon points="622,68 632,72 622,76" fill="var(--accent-cosmic)" opacity="0.35"/>
+
+      <!-- Label âge univers -->
+      <text x="636" y="62" font-family="monospace" font-size="9" fill="var(--accent-cosmic)" text-anchor="start" opacity="0.6">âge de</text>
+      <text x="636" y="74" font-family="monospace" font-size="9" fill="var(--accent-cosmic)" text-anchor="start" opacity="0.6">l'univers</text>
+
+      <!-- Description de la distance -->
+      <text x="340" y="130" font-family="monospace" font-size="10" fill="var(--ink)" text-anchor="middle">Si tₚ → 1 s = 10 cm, alors le point « âge de l'univers »</text>
+      <text x="340" y="148" font-family="monospace" font-size="10" fill="var(--accent-cosmic)" text-anchor="middle">se trouverait à ~9×10³⁰ fois le diamètre de l'univers observable.</text>
+    </svg>
+    <figcaption>9 milliards de milliards de milliards de diamètres de l'univers — pour une ligne qui commence à 10 centimètres.</figcaption>
+  </figure>
+
+  <p class="reveal">Entre le temps de Planck et une vie humaine, il y a 54 ordres de grandeur. Si tu agrandissais le temps de Planck jusqu'à la taille d'une seconde, cette seconde élargie serait <strong>10⁴⁴ fois plus longue que l'âge actuel de l'univers</strong>. Tout ce que ce voyage vient de traverser — battements de cœur, clignements, réactions chimiques, sauts électroniques, oscillations de lumière, traversée d'un noyau, quark top — tient dans cet espace.</p>
+  <p class="reveal">On n'était que dans l'instant. On n'a pas encore bougé.</p>
+</section>
+
+
+<!-- ═══ INTERLUDE I ═══ -->
+<section class="interlude" id="interlude1" style="--accent: var(--accent-instant);">
+  <div class="interlude-card reveal">
+    <div class="kicker">Fin de l'Acte I</div>
+    <h2>Ce que Planck dit de toi</h2>
+    <p>Tu viens de descendre 44 ordres de grandeur en dessous d'une vie humaine. À chaque étape, la durée précédente devenait colossale. Et maintenant, il n'y a plus rien en dessous.</p>
+    <p>Toute ta vie — chaque battement, chaque clignement, chaque réaction dans chaque cellule de ton corps — se déroule dans cet espace immense qui sépare Planck de ta mort. Tu n'habites pas l'instant. Tu habites une <em>étendue</em> incommensurable d'instants.</p>
+    <p>On repart maintenant dans l'autre sens. Non plus vers le plus petit, mais vers le plus ancien — le plus loin qu'il soit possible de regarder dans le passé.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     ACTE II — LE PASSÉ
+═══════════════════════════════════════════════════════════ -->
+<div class="act-header reveal" id="acte2" style="--accent: var(--accent-geo);">
+  <div class="act-number">Acte II</div>
+  <h2 class="act-title">Le passé</h2>
+  <p class="act-subtitle">Un voyage vers les origines — de l'histoire humaine jusqu'au Big Bang</p>
+</div>
+
+
+<!-- ─── 10 / L'histoire humaine ─── -->
+<section class="duree" id="histoire" style="--accent: var(--accent-human);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">✦</span>
+    <span class="dur-headtext">
+      <span class="dur-index">10 · Il y a 300 000 ans à aujourd'hui</span>
+      <span class="dur-title">L'histoire humaine</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">300 000 ans d'humanité. Dont à peine 5 000 ans d'écriture.</p>
+  <div class="dur-value reveal">Homo sapiens : ~300 000 ans<br>écriture : ~5 200 ans<br>soit 1,7 % de notre histoire</div>
+
+  <p class="pull reveal">Toute la mémoire écrite de l'humanité — Homère, César, Shakespeare, Einstein — tient dans les 1,7 derniers pourcents de notre existence. Le reste n'a laissé aucune histoire consignée. Tout s'est transmis oralement, ou s'est perdu.</p>
+
+  <h3 class="rubric reveal">Il y a ~1 550 ans</h3>
+  <p class="reveal">En 476, Rome s'effondre en Occident. La ville qui avait dicté les lois du monde méditerranéen depuis mille ans cède sous les coups des Wisigoths d'Odoacre. Ce n'est pas une explosion — c'est une lente désagrégation, au bout de deux siècles de pression. Sumer, la première grande civilisation dont on ait des traces, avait duré environ 3 000 ans avant de disparaître à son tour. La plupart des civilisations n'atteignent pas ce seuil : la durée moyenne avant un effondrement ou une transformation majeure tourne autour de 300 à 400 ans.</p>
+
+  <h3 class="rubric reveal">Il y a ~2 600 ans</h3>
+  <p class="reveal">L'alphabet grec, ancêtre direct du nôtre, se répand dans le bassin méditerranéen. C'est une rupture : pour la première fois, n'importe qui peut apprendre à lire et écrire en quelques semaines. Les alphabets antérieurs — cunéiforme, hiéroglyphes — demandaient des années d'apprentissage et réservaient l'écriture aux scribes.</p>
+
+  <h3 class="rubric reveal">Il y a ~4 600 ans</h3>
+  <p class="reveal">On érige la Grande Pyramide de Gizeh. Cléopâtre naîtra 2 491 ans plus tard, en 69 av. J.-C. — et l'iPhone sortira 2 076 ans après Cléopâtre. La pyramide est donc <em>plus lointaine pour Cléopâtre</em> qu'elle ne l'est pour nous. Ce renversement de perspective donne la mesure de la profondeur du temps historique : même ce que nous appelons « l'Antiquité » est un continuum de plusieurs millénaires, pas un bloc homogène.</p>
+  <p class="reveal">C'est aussi à cette époque qu'une population relique de mammouths laineux s'éteint sur l'île Wrangel, dans l'Arctique russe. Les mammouths du continent avaient disparu bien plus tôt, vers 10 000 ans avant aujourd'hui. Mais ce groupe insulaire a survécu jusqu'à environ 2 000 av. J.-C. — pendant que les Égyptiens construisaient les pyramides. Ces deux réalités coexistaient sur la même Terre, à des milliers de kilomètres l'une de l'autre, sans que ni l'une ni l'autre ne le sache.</p>
+
+  <h3 class="rubric reveal">Il y a ~5 200 ans</h3>
+  <p class="reveal">À Sumer, en Mésopotamie, des scribes gravent les premiers signes cunéiformes sur des tablettes d'argile. Ce sont des reçus de grain, des listes d'inventaire — la comptabilité avant la littérature. L'écriture ne naît pas de la poésie : elle naît du commerce.</p>
+
+  <h3 class="rubric reveal">Il y a ~10 000 ans</h3>
+  <p class="reveal">Dans le croissant fertile, quelques communautés cessent de suivre les troupeaux et commencent à planter. L'agriculture ne s'invente pas en un jour ni en un lieu : elle émerge indépendamment en plusieurs endroits du monde, sur quelques millénaires. Mais c'est ici que la transition est la mieux documentée. En quelques générations, des groupes nomades deviennent sédentaires. Les premiers villages permanents apparaissent. Le temps humain change de nature : on commence à penser en saisons, en récoltes, en années.</p>
+
+  <h3 class="rubric reveal">Il y a ~12 000 ans</h3>
+  <p class="reveal">La dernière glaciation touche à sa fin. Les glaciers reculent. Les paysages que nous connaissons — côtes, forêts, rivières — se mettent en place. Le niveau des mers monte de plusieurs dizaines de mètres, noyant des terres habitées. C'est dans ce contexte que naissent les premiers villages permanents du Levant, précurseurs de l'agriculture.</p>
+
+  <h3 class="rubric reveal">Il y a ~17 000 ans</h3>
+  <p class="reveal">Dans ce qui est aujourd'hui la Dordogne, en France, des humains descendent dans des galeries souterraines et peignent des chevaux, des aurochs, des cerfs à la lueur de lampes à graisse. Les grottes de Lascaux. Ce n'est pas un geste primitif — c'est une force expressive qui témoigne d'un esprit pleinement développé : capable d'abstraction, de représentation, peut-être de récit. Ces gens pensaient, rêvaient, racontaient des histoires. Ils étaient nous.</p>
+
+  <h3 class="rubric reveal">Il y a ~40 000 ans</h3>
+  <p class="reveal">Les Néandertaliens disparaissent d'Europe. Ils y vivaient depuis 400 000 ans. <em>Homo sapiens</em>, arrivé depuis quelques millénaires, prend leur place — non pas en les exterminant brutalement, mais en les absorbant en partie, en les poussant progressivement vers des zones marginales. Les études génétiques modernes l'ont confirmé : une partie de leur ADN vit encore dans chacun d'entre nous.</p>
+
+  <h3 class="rubric reveal">Il y a ~300 000 ans</h3>
+  <p class="reveal"><em>Homo sapiens</em> apparaît en Afrique du Nord et de l'Est. Non pas comme une espèce entièrement nouvelle surgie du néant, mais comme une transformation graduelle à partir d'ancêtres proches. Ces premiers humains modernes ressemblaient physiologiquement à nous — crâne arrondi, visage plat, menton saillant. Ce qui les distinguait des espèces précédentes s'est mis en place progressivement : la capacité au langage articulé complexe, qui permet de transmettre des récits, de coordonner des groupes, de raisonner sur l'absent et le futur ; les comportements symboliques — l'art, les rituels, les parures. Ces capacités ne sont pas apparues d'un coup. Elles semblent s'être consolidées sur des dizaines de millénaires, portées par un cerveau dont la structure profonde n'a pas changé depuis.</p>
+
+
+
+</section>
+
+
+<!-- ─── 11 / L'ère des dinosaures ─── -->
+<section class="duree" id="dinos" style="--accent: var(--accent-geo);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">∿</span>
+    <span class="dur-headtext">
+      <span class="dur-index">11 · Il y a 252 à 66 millions d'années</span>
+      <span class="dur-title">L'ère des dinosaures</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">186 millions d'années de règne. Dont 0,16 % d'humanité.</p>
+  <div class="dur-value reveal">Trias : 252–201 Ma<br>Jurassique : 201–145 Ma<br>Crétacé : 145–66 Ma</div>
+
+  <p class="pull reveal">Si le règne des dinosaures durait 24 heures, toute l'histoire humaine — de l'<em>Homo sapiens</em> le plus ancien à aujourd'hui — occuperait les 83 dernières secondes. Et le Tyrannosaure rex n'apparaîtrait que dans les 17 dernières minutes.</p>
+
+  <h3 class="rubric reveal">Il y a 252 millions d'années · L'aube</h3>
+  <p class="reveal">La pire extinction de l'histoire de la vie vient de s'achever. L'extinction du Permien — probablement déclenchée par un épisode volcanique cataclysmique en Sibérie, qui a saturé l'atmosphère de CO₂ et acidifié les océans pendant des centaines de milliers d'années — a anéanti environ 96 % des espèces marines et 70 % des espèces terrestres. Un monde presque entièrement effacé. Les dinosaures n'en sont pas la cause : ils en sont les héritiers. Les premiers d'entre eux apparaissent dans un monde convalescent, où la plupart des niches écologiques sont vides. Ils ne dominent pas encore — ils coexistent avec d'autres reptiles, ils tâtonnent.</p>
+
+  <h3 class="rubric reveal">Il y a 201 à 145 millions d'années · L'apogée</h3>
+  <p class="reveal">Une nouvelle extinction — plus modeste, probablement liée à un autre épisode volcanique intense au passage Trias-Jurassique — élimine les reptiles rivaux. Les dinosaures héritent du monde. C'est leur âge d'or : les continents se fracturent lentement, le climat est chaud et humide, les forêts denses. Les géants apparaissent — Brachiosaurus, Diplodocus, Allosaurus. Des animaux de 30, 40, 50 tonnes.</p>
+  <p class="reveal">Pourquoi une telle taille, qu'aucun animal terrestre n'a jamais retrouvée depuis ? Pas seulement parce que la nourriture était abondante — les éléphants actuels, dans des environnements tout aussi riches, plafonnent à 6 tonnes. La différence tient à la biologie profonde des dinosaures : des os creux comme les oiseaux (donc légers pour leur volume), un système respiratoire à flux continu très efficace, et une croissance rapide qui leur permettait d'atteindre ces dimensions sans passer des décennies en état de vulnérabilité. La baleine bleue dépasse aujourd'hui ces masses, mais seulement parce que l'eau porte son poids — sur terre, les contraintes mécaniques rendent une telle taille impossible pour un vertébré.</p>
+
+  <h3 class="rubric reveal">Il y a 145 à 66 millions d'années · Le règne mature</h3>
+  <p class="reveal">Le Crétacé est la plus longue des trois périodes, et la plus complexe. Les angiospermes — les plantes à fleurs — apparaissent et transforment les paysages. Les abeilles co-évoluent avec elles. Les oiseaux, descendants directs de certains dinosaures à plumes, se diversifient. Et dans les tout derniers 2 millions d'années de cette période, presque à la fin, arrive le Tyrannosaure rex — l'espèce la plus célèbre du règne, et pourtant l'une des plus récentes. Il vit chronologiquement plus près de nous que du Stégosaure, qui lui est antérieur de 80 millions d'années.</p>
+  <p class="reveal">Il y a 66 millions d'années, un astéroïde de 10 kilomètres de diamètre percute la péninsule du Yucatán. L'impact libère une énergie équivalente à des milliards de bombes nucléaires, déclenche des tsunamis, des incendies mondiaux, et projette tant de débris dans la stratosphère que le Soleil disparaît pour des années. En quelques décennies, les trois quarts des espèces s'éteignent — dont tous les dinosaures non-aviens. Ce qui survit, dans les refuges souterrains et aquatiques : des reptiles, des oiseaux, et de petits mammifères. Leurs descendants, 66 millions d'années plus tard, lisent ces lignes.</p>
+</section>
+
+
+<!-- ─── 12 / La naissance de la vie ─── -->
+<section class="duree" id="vie-terre" style="--accent: var(--accent-geo);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">◎</span>
+    <span class="dur-headtext">
+      <span class="dur-index">12 · Il y a 3,8 milliards à 225 millions d'années</span>
+      <span class="dur-title">La naissance de la vie</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">De la première molécule auto-réplicante au premier mammifère : 3,6 milliards d'années d'invention.</p>
+  <div class="dur-value reveal">Première vie : ~3,8 Ga<br>Première cellule complexe : ~1,5 Ga<br>Premier mammifère : ~225 Ma</div>
+
+  <p class="pull reveal">La vie a mis 2 milliards d'années à inventer la cellule dotée d'un noyau. C'est le saut le plus lent de toute l'évolution — et peut-être le plus décisif.</p>
+
+  <h3 class="rubric reveal">Il y a ~225 millions d'années · Le premier mammifère</h3>
+  <p class="reveal">Au Trias supérieur, pendant que les dinosaures s'installent, un petit groupe de reptiles synapsides donne naissance aux premiers mammifères. Ils sont minuscules — la taille d'une souris. Ils vivent probablement la nuit, quand les dinosaures sont moins actifs. Leur cerveau est proportionnellement plus gros, leur métabolisme plus rapide, leur relation aux petits différente. Ils ne domineront le monde que 160 millions d'années plus tard, une fois les dinosaures disparus — mais ils sont déjà là, discrets et persistants, pendant tout le règne de leurs immenses contemporains.</p>
+
+  <h3 class="rubric reveal">Il y a ~350 millions d'années · Les premiers vertébrés terrestres</h3>
+  <p class="reveal">Des poissons à nageoires charnues — capables de se hisser hors de l'eau pour de brèves incursions — donnent naissance aux premiers tétrapodes. Ces animaux à quatre membres porteurs constituent l'ancêtre commun de tous les amphibiens, reptiles, oiseaux et mammifères actuels. La colonisation de la terre ferme par les vertébrés commence ici. Ce qui les a poussés à sortir de l'eau reste débattu : fuite des prédateurs, accès à de nouvelles ressources, ou simplement le hasard d'une anatomie qui s'y prêtait.</p>
+
+  <h3 class="rubric reveal">Il y a ~540 millions d'années · L'explosion cambrienne</h3>
+  <p class="reveal">En l'espace de quelques dizaines de millions d'années — un « éclair » à l'échelle géologique — presque tous les grands groupes d'animaux complexes apparaissent simultanément dans les archives fossiles. Des yeux, des bouches, des membres articulés, des coquilles, des systèmes nerveux. Avant le Cambrien, la vie était essentiellement microbienne ou gélatineuse. Après : un monde peuplé de créatures reconnaissables. Pourquoi cette explosion soudaine ? L'oxygène atmosphérique avait enfin atteint un seuil suffisant pour soutenir un métabolisme actif. L'évolution des yeux aurait également joué un rôle — une fois qu'un animal peut voir ses proies, tous ses voisins doivent s'adapter ou disparaître.</p>
+
+  <h3 class="rubric reveal">Il y a ~700 millions d'années · Les premiers organismes pluricellulaires</h3>
+  <p class="reveal">Des organismes pluricellulaires simples — éponges, méduses ancestrales de type édiacarien — apparaissent dans les océans. Ce sont techniquement des animaux au sens phylogénétique, mais rien à voir encore avec la faune complexe du Cambrien : pas d'yeux, pas de membres, pas de système nerveux. C'est la première fois dans l'histoire de la vie qu'un organisme est fait de plusieurs cellules différenciées travaillant ensemble. La transition du unicellulaire au pluricellulaire est fondamentale : elle ouvre la voie à toute la complexité qui suivra. Elle s'est produite indépendamment plusieurs fois dans l'évolution — ce qui suggère qu'elle n'était pas improbable, simplement lente.</p>
+
+  <h3 class="rubric reveal">Il y a ~1,5 milliard d'années · La cellule à noyau</h3>
+  <p class="reveal">Une bactérie absorbe une autre bactérie sans la digérer. Les deux survivent, et leurs descendants forment un nouveau type de cellule — la cellule eucaryote, dotée d'un noyau et de mitochondries. Toutes les cellules de ton corps sont de ce type. Ce n'est pas une mutation graduelle : c'est une fusion entre deux organismes distincts. La mitochondrie est encore aujourd'hui, génétiquement, une bactérie vivant à l'intérieur de tes cellules. Cette symbiose a mis 2 milliards d'années à se produire après l'apparition de la vie. Elle a rendu possible toute vie complexe — animaux, plantes, champignons.</p>
+
+  <h3 class="rubric reveal">Il y a ~2,4 milliards d'années · La Grande Oxydation</h3>
+  <p class="reveal">Les cyanobactéries — de minuscules organismes photosynthétiques — rejettent de l'oxygène comme déchet depuis des centaines de millions d'années. L'oxygène s'accumule d'abord dans les océans, oxydant le fer dissous. Puis il déborde dans l'atmosphère. Pour la quasi-totalité des organismes vivants de l'époque, c'est un poison : l'oxygène est chimiquement agressif, il détruit les molécules organiques fragiles. La Grande Oxydation est peut-être la plus grande extinction de l'histoire de la vie — dont on ne parle presque jamais, parce qu'il n'y avait pas encore d'animaux complexes pour la souffrir. Et paradoxalement, c'est cette catastrophe qui a rendu possible tout ce qui a suivi.</p>
+
+  <h3 class="rubric reveal">Il y a ~3,5 milliards d'années · Les premiers fossiles</h3>
+  <p class="reveal">En Australie occidentale, dans des roches vieilles de 3,5 milliards d'années, on trouve les traces de stromatolites — des structures en couches formées par des tapis de bactéries photosynthétiques. Ce sont les plus anciens fossiles confirmés. Ces bactéries existaient déjà en communautés organisées, captant la lumière du Soleil, produisant de la matière organique. La vie, à cette époque, était déjà fonctionnelle, déjà métaboliquement sophistiquée. Elle n'en était pas à ses balbutiements — elle était établie.</p>
+
+  <h3 class="rubric reveal">Il y a ~3,8 milliards d'années · L'origine</h3>
+  <p class="reveal">Les traces chimiques les plus anciennes de vie remontent à environ 3,8 milliards d'années — des rapports isotopiques du carbone dans des roches métamorphiques du Groenland qui suggèrent une activité biologique. La Terre avait alors 700 millions d'années. Personne ne sait exactement comment la première molécule auto-réplicante est apparue — dans une flaque d'eau chaude, dans une fissure volcanique sous-marine, sur un grain de poussière cosmique. Plusieurs hypothèses coexistent. Ce qui est certain : quelque chose a commencé là, qui ne s'est plus jamais arrêté.</p>
+</section>
+
+
+<!-- ─── 13 / La Terre avant la vie ─── -->
+<section class="duree" id="terre" style="--accent: var(--accent-geo);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">◁</span>
+    <span class="dur-headtext">
+      <span class="dur-index">13 · Il y a 4,54 à 3,8 milliards d'années</span>
+      <span class="dur-title">La Terre avant la vie</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">700 millions d'années de violence, de fusion, de bombardement — avant le premier souffle.</p>
+  <div class="dur-value reveal">Formation de la Terre : ~4,54 Ga (milliards d'années)<br>Impact Théia / Lune : ~4,5 Ga<br>Fin du Grand Bombardement : ~3,8 Ga</div>
+
+  <p class="pull reveal">La Terre n'a pas toujours été une planète. Elle a d'abord été un nuage de poussière et de gaz, puis un agrégat de rochers en collision, puis une boule de roche en fusion. Il a fallu 700 millions d'années pour que les conditions d'une vie possible soient réunies.</p>
+
+  <h3 class="rubric reveal">Il y a ~4,54 milliards d'années · La formation</h3>
+  <p class="reveal">Autour du jeune Soleil, un disque de gaz et de poussière tourne. Les grains de poussière s'agrègent lentement en rochers, les rochers en astéroïdes, les astéroïdes en planètes. La Terre se forme par accrétion sur quelques dizaines de millions d'années — un processus violent, marqué par des collisions constantes. La chaleur dégagée par ces impacts fond la roche : la jeune Terre est en grande partie liquide, un océan de magma sous un ciel de vapeur.</p>
+
+  <h3 class="rubric reveal">Il y a ~4,5 milliards d'années · La naissance de la Lune</h3>
+  <p class="reveal">Un corps de la taille de Mars — qu'on appelle Théia — percute la proto-Terre dans une collision oblique. L'impact projette des milliards de tonnes de matière dans l'espace. Cette matière se met en orbite autour de la Terre et s'agglomère en quelques décennies pour former la Lune. Sans cet impact, pas de Lune — et peut-être pas de vie : la Lune stabilise l'axe d'inclinaison de la Terre, régulant les saisons et le climat sur des millions d'années. Elle ralentit aussi la rotation terrestre, allongeant progressivement la durée des jours.</p>
+
+  <h3 class="rubric reveal">Il y a ~4,4 milliards d'années · La première croûte</h3>
+  <p class="reveal">La surface refroidit. Les premiers grains de zircon — des minéraux extrêmement résistants — se forment dans la croûte terrestre naissante. On en a retrouvé en Australie : ce sont les plus vieux matériaux terrestres connus, datés à 4,4 milliards d'années. Ils prouvent que la croûte solide existait déjà, et que de l'eau liquide était peut-être présente à la surface. Les conditions d'une chimie prébiotique commençaient à être réunies — même si la violence du Grand Bombardement qui suivra ne facilitera pas les choses.</p>
+
+  <h3 class="rubric reveal">Il y a ~4,1 à 3,8 milliards d'années · Le Grand Bombardement</h3>
+  <p class="reveal">Une période d'intense bombardement météoritique frappe la Terre, la Lune et les autres planètes intérieures. Les cratères visibles sur la Lune aujourd'hui datent en grande partie de cette époque. Les impacts géants peuvent avoir vaporisé les océans et stérilisé la surface plusieurs fois. Et pourtant — peut-être à cause de ces mêmes impacts qui apportaient de l'eau et des molécules organiques depuis les astéroïdes et les comètes — la vie semble avoir commencé juste après, ou peut-être même pendant cette période. La frontière entre destruction et origine est floue.</p>
+</section>
+
+
+<!-- ─── 14 / Le système solaire ─── -->
+<section class="duree" id="soleil" style="--accent: var(--accent-cosmic);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">☉</span>
+    <span class="dur-headtext">
+      <span class="dur-index">14 · Il y a ~4,6 milliards d'années</span>
+      <span class="dur-title">La naissance du système solaire</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Notre étoile est à mi-vie. Elle brûle depuis 4,6 milliards d'années, et il lui en reste autant.</p>
+  <div class="dur-value reveal">Formation du Soleil : ~4,6 Ga<br>Durée de vie totale : ~10 Ga<br>Demi-vie ²³⁸U ≈ âge de la Terre : 4,47 Ga</div>
+
+  <p class="pull reveal">Notre étoile est à mi-vie — elle brûle depuis 4,6 milliards d'années (Ga), et il lui en reste à peu près autant. Ga est l'abréviation de gigaannum, soit un milliard d'années — l'unité standard en cosmologie et géologie.</p>
+
+  <h3 class="rubric reveal">La naissance du Soleil</h3>
+  <p class="reveal">Il y a 4,6 milliards d'années, un nuage moléculaire de gaz et de poussière — peut-être perturbé par l'onde de choc d'une supernova voisine — commence à s'effondrer sous sa propre gravité. La matière s'accumule au centre : la pression et la chaleur augmentent jusqu'à déclencher les premières réactions de fusion nucléaire. Le Soleil s'allume. Il brûle environ 600 millions de tonnes d'hydrogène par seconde depuis lors.</p>
+
+  <h3 class="rubric reveal">La formation des planètes</h3>
+  <p class="reveal">Le reste du nuage, aplati par la rotation, forme un disque de gaz et de poussière autour du jeune Soleil. Dans ce disque, les grains de poussière s'agrègent lentement : d'abord des grains millimétriques, puis des cailloux, puis des corps de quelques kilomètres qu'on appelle planétésimaux, puis des protoplanètes. Les collisions sont violentes et fréquentes. Jupiter se forme rapidement — elle est suffisamment massive pour capturer le gaz environnant avant qu'il ne se disperse dans l'espace, ce qui explique sa composition gazeuse. Puis Saturne. Les planètes telluriques — dont la Terre — se forment plus lentement, par accumulation et fusion progressive de planétésimaux rocheux, un processus qui s'étale sur plusieurs dizaines de millions d'années.</p>
+
+</section>
+
+
+<!-- ─── 15 / Naissance des galaxies ─── -->
+<section class="duree" id="galaxies" style="--accent: var(--accent-cosmic);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">✺</span>
+    <span class="dur-headtext">
+      <span class="dur-index">15 · Il y a 13,6 à 13,787 milliards d'années</span>
+      <span class="dur-title">La naissance des galaxies et des étoiles</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Les premières étoiles n'avaient ni planètes ni vie possible. Elles ont juste allumé l'univers.</p>
+  <div class="dur-value reveal">Âges Sombres : 380 000 ans → ~180 millions d'années après le Big Bang<br>Première étoile : ~180 Ma après le Big Bang<br>Premières galaxies : ~400–600 Ma après le Big Bang<br>Pic de formation stellaire : il y a ~10 Ga</div>
+
+  <p class="pull reveal">Pendant les 180 premiers millions d'années de l'univers, il n'y avait aucune étoile. Un gaz d'hydrogène et d'hélium refroidissait lentement dans une obscurité totale. On appelle cette époque les Âges Sombres cosmologiques.</p>
+
+  <h3 class="rubric reveal">Il y a ~13,6 milliards d'années · Les premières étoiles</h3>
+  <p class="reveal">Les premières étoiles — qu'on appelle étoiles de Population III — n'ont rien à voir avec notre Soleil. Elles sont faites presque exclusivement d'hydrogène et d'hélium, les seuls éléments qui existaient alors : le Big Bang n'a produit que ces deux gaz légers. Elles sont probablement très massives — des dizaines à des centaines de fois la masse du Soleil. Une étoile aussi massive brûle son carburant à une vitesse prodigieuse : là où notre Soleil vivra 10 milliards d'années, ces géantes ont vécu quelques millions d'années, puis explosé en supernovæ.</p>
+  <p class="reveal">Ces explosions ont eu une conséquence décisive : elles ont dispersé dans l'univers les premiers atomes lourds — carbone, oxygène, azote, fer, silicium — que la fusion nucléaire avait forgés dans leurs cœurs. Sans ces étoiles mortes il y a 13 milliards d'années, il n'y aurait pas de planètes rocheuses, pas d'eau, pas de chimie organique. Tout ce qui t'entoure — et toi-même — est fait de leurs cendres.</p>
+
+  <h3 class="rubric reveal">Il y a ~13 milliards d'années · Les premières galaxies</h3>
+  <p class="reveal">Les étoiles ne naissent pas seules : la gravité les regroupe en structures de plus en plus grandes. Les premières galaxies se forment quelques centaines de millions d'années après le Big Bang — des amas encore petits et irréguliers, bien loin des spirales élégantes que nous connaissons. Elles fusionnent entre elles sur des milliards d'années pour former des structures de plus en plus grandes. La Voie lactée elle-même est le produit de nombreuses fusions et absorptions de petites galaxies, un processus qui se poursuit encore aujourd'hui.</p>
+  <p class="reveal">Le télescope spatial James Webb, opérationnel depuis 2022, a détecté des galaxies remontant à seulement 300 millions d'années après le Big Bang — bien plus tôt que ce que les modèles prévoyaient. Ces observations ont surpris les cosmologistes : l'univers s'est structuré plus vite qu'on ne le pensait. Les modèles sont en cours de révision.</p>
+
+  <h3 class="rubric reveal">Il y a ~10 milliards d'années · Le pic</h3>
+  <p class="reveal">Le taux de formation d'étoiles dans l'univers atteint son maximum il y a environ 10 milliards d'années. Les galaxies sont alors à leur plus grande activité : denses, brillantes, riches en gaz. Depuis, ce taux décline régulièrement — le gaz disponible pour former de nouvelles étoiles s'épuise progressivement, consommé ou éjecté par les supernovæ. Notre Soleil s'est formé 4,6 milliards d'années après ce pic, dans une Voie lactée déjà sur le déclin. Nous vivons dans la phase descendante d'un feu d'artifice cosmique qui a atteint son apogée bien avant notre naissance.</p>
+</section>
+
+
+<!-- ─── 16 / Le Big Bang ─── -->
+<section class="duree" id="bigbang" style="--accent: var(--accent-cosmic);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">∞</span>
+    <span class="dur-headtext">
+      <span class="dur-index">16 · Il y a 13,787 milliards d'années</span>
+      <span class="dur-title">Le Big Bang</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Le début de tout. Ou du moins : le début de ce qu'on peut voir.</p>
+  <div class="dur-value reveal">Âge de l'univers : 13,787 ± 0,020 Ga<br>Fond diffus cosmologique : 380 000 ans après le Big Bang</div>
+
+  <p class="pull reveal">Les 380 000 premières années de l'univers sont opaques à toute observation. La lumière ne pouvait pas voyager librement dans un univers trop dense et trop chaud. Tout ce qu'on peut directement observer commence là — au moment où l'univers est devenu transparent.</p>
+
+  <h3 class="rubric reveal">Ce que le Big Bang n'était pas</h3>
+  <p class="reveal">Le Big Bang n'était pas une explosion dans l'espace — c'était une expansion de l'espace lui-même. Pas de centre depuis lequel tout aurait jailli, pas de bord au-delà duquel il y aurait le vide. En chaque point de l'univers, la densité et la température étaient infiniment élevées, et elles ont diminué partout en même temps à mesure que l'espace s'étendait. C'est contre-intuitif, mais c'est ce que les équations de la relativité générale décrivent — et ce que les observations confirment.</p>
+
+  <h3 class="rubric reveal">Les premières minutes</h3>
+  <p class="reveal">Dans les premières fractions de seconde, l'énergie se condense en particules fondamentales : quarks, électrons, neutrinos. En quelques minutes, les quarks s'assemblent en protons et neutrons. C'est à ce moment que se fixe le rapport entre hydrogène et hélium dans l'univers — environ 75 % d'hydrogène pour 25 % d'hélium, une proportion qui correspond exactement à ce qu'on mesure aujourd'hui dans les étoiles les plus anciennes. C'est l'une des prédictions les plus précises et les mieux vérifiées de la cosmologie moderne.</p>
+
+  <h3 class="rubric reveal">380 000 ans après · Le mur de lumière</h3>
+  <p class="reveal">Pendant les 380 000 premières années, l'univers est un plasma si dense que les photons ne peuvent pas se propager : ils sont immédiatement réabsorbés. L'univers est opaque. Puis, en refroidissant, les protons capturent des électrons pour former les premiers atomes neutres. Ce changement rend l'univers transparent en quelques dizaines de milliers d'années. La lumière se propage librement pour la première fois. Ce rayonnement — refroidi depuis par 13,8 milliards d'années d'expansion cosmique — est détectable aujourd'hui partout dans le ciel sous forme de micro-ondes : c'est le fond diffus cosmologique. C'est la plus ancienne lumière qu'on puisse observer — une photographie de naissance de l'univers visible.</p>
+
+  <!-- VIZ : horloge cosmique 24h -->
+  <figure class="viz reveal" id="viz-horloge">
+    <svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg" id="horloge-svg" style="width:100%;">
+      <!-- injecté par JS -->
+    </svg>
+    <div id="horloge-info" style="font-family:var(--mono); font-size:0.8rem; color:var(--muted); text-align:center; margin-top:0.6rem; min-height:2.2em; transition:color 0.3s;"></div>
+    <figcaption>Si les 13,787 milliards d'années de l'univers tenaient en une journée de 24h. Survole les points pour voir ce qui s'est passé.</figcaption>
+  </figure>
+</section>
+
+<!-- ═══ INTERLUDE II ═══ -->
+<section class="interlude" id="interlude2" style="--accent: var(--accent-cosmic);">
+  <div class="interlude-card reveal">
+    <div class="kicker">Fin de l'Acte II</div>
+    <h2>La flèche du passé s'arrête ici</h2>
+    <p>On vient de remonter 13,8 milliards d'années. Mais on ne peut pas aller plus loin. Le fond diffus cosmologique est un mur : avant lui, l'univers était opaque, et la lumière ne voyageait pas. Ce qu'on sait des 380 000 premières années vient de l'inférence — de modèles, d'équations, de raisonnements. Pas d'observations directes.</p>
+    <p>Ce qu'il y avait « avant » le Big Bang est une question à laquelle la physique actuelle ne peut pas répondre. Peut-être que le temps lui-même a commencé là. Peut-être pas.</p>
+    <p>On repart maintenant dans la troisième direction : vers le futur. Vers ce qui n'est pas encore arrivé — mais qui arrivera, si les lois de la physique tiennent.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     ACTE III — LE FUTUR
+═══════════════════════════════════════════════════════════ -->
+<div class="act-header reveal" id="acte3" style="--accent: var(--accent-future);">
+  <div class="act-number">Acte III</div>
+  <h2 class="act-title">Le futur</h2>
+  <p class="act-subtitle">Du proche jusqu'à la dernière chose qui pourra jamais arriver</p>
+</div>
+
+
+<!-- ─── 17 / Le futur proche ─── -->
+<section class="duree" id="futur1" style="--accent: var(--accent-future);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">◌</span>
+    <span class="dur-headtext">
+      <span class="dur-index">17 · Dans 10 000 à 1 million d'années</span>
+      <span class="dur-title">Le futur proche</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Le ciel change. La géographie change. Les traces humaines s'effacent.</p>
+  <div class="dur-value reveal">Dans 10 000 ans<br>Dans 100 000 ans<br>Dans 1 million d'années</div>
+
+  <p class="pull reveal">Dans 100 000 ans, si une civilisation survit et lève les yeux, elle ne reconnaîtra aucune des constellations actuelles. Les étoiles se seront déplacées. Orion aura disparu. La Grande Ourse ressemblera à autre chose.</p>
+
+  <h3 class="rubric reveal">Dans 10 000 ans</h3>
+  <p class="reveal">L'axe de la Terre tourne lentement sur lui-même en un cycle de ~26 000 ans — la précession des équinoxes. Dans 13 000 ans, c'est Véga qui sera l'étoile polaire. Dans 10 000 ans, le pôle nord céleste se trouvera dans une zone sans étoile brillante : les navigateurs du futur devront s'orienter autrement. Dans 50 000 ans, les chutes du Niagara auront érodé jusqu'aux Grands Lacs et cesseront d'exister.</p>
+
+  <h3 class="rubric reveal">Dans 100 000 ans</h3>
+  <p class="reveal">La quasi-totalité des traces physiques de l'humanité aura disparu. Le béton se désagrège en quelques milliers d'années. L'acier rouille entièrement. Les villes les plus durables auront été recouvertes par les sédiments, la végétation ou les glaciers. Ce qui subsistera avec le plus de certitude : une fine couche de radionucléides dans la roche — le marqueur chimique de l'ère nucléaire — et les sites d'enfouissement de déchets que nous construisons aujourd'hui en espérant qu'ils tiennent. Et peut-être des signaux radio qui continuent de s'éloigner dans l'espace à la vitesse de la lumière.</p>
+
+  <h3 class="rubric reveal">Dans 1 million d'années</h3>
+  <p class="reveal">L'érosion et la tectonique livrent une guerre lente : les reliefs s'usent, mais les plaques les repoussent vers le haut presque aussi vite. Ce qui est certain : la carte du monde ne ressemblera plus à rien de connu. En 1 million d'années, les plaques tectoniques se déplacent de 20 à 30 kilomètres — assez pour remodeler des côtes entières.</p>
+</section>
+
+
+<!-- ─── 18 / Continents et Soleil ─── -->
+<section class="duree" id="futur2" style="--accent: var(--accent-future);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">⟳</span>
+    <span class="dur-headtext">
+      <span class="dur-index">18 · Dans 50 à 250 millions d'années</span>
+      <span class="dur-title">Les continents en mouvement</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Les continents ne s'arrêtent pas. Ils n'ont jamais arrêté.</p>
+  <div class="dur-value reveal">Fermeture de la Méditerranée : ~50 Ma<br>Pangée Proxima : ~250 Ma</div>
+
+  <p class="pull reveal">Dans 250 millions d'années, tous les continents se rejoindront à nouveau. Ce sera la sixième fois dans l'histoire de la Terre. Ça s'appelle Pangée Proxima.</p>
+
+  <h3 class="rubric reveal">Dans 50 millions d'années · La Méditerranée disparaît</h3>
+  <p class="reveal">La plaque africaine continue de remonter vers l'Europe au rythme de 2 à 3 centimètres par an — la vitesse à laquelle tes ongles poussent. Dans environ 50 millions d'années, la Méditerranée aura disparu, remplacée par une chaîne de montagnes plus haute que les Alpes actuelles. La collision entre l'Afrique et l'Europe est déjà en cours : les Alpes elles-mêmes en sont le produit, formées il y a moins de 50 millions d'années.</p>
+
+  <h3 class="rubric reveal">Dans 250 millions d'années · Pangée Proxima</h3>
+  <p class="reveal">Selon les modèles actuels, tous les continents se rejoindront pour former un seul supercontinent — un océan géant de l'autre côté. Comme la Pangée d'il y a 300 millions d'années, mais différente : les continents ne reviennent jamais exactement au même endroit.</p>
+</section>
+
+
+<!-- ─── 19 / La mort du Soleil ─── -->
+<section class="duree" id="futur3" style="--accent: var(--accent-far);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">☉</span>
+    <span class="dur-headtext">
+      <span class="dur-index">19 · Dans 600 millions à 5 milliards d'années</span>
+      <span class="dur-title">La mort du Soleil</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Le Soleil ne mourra pas en explosion. Il grandira, lentement, jusqu'à nous engloutir.</p>
+  <div class="dur-value reveal">Fin des éclipses totales : ~600 Ma<br>Océans invivables : ~1 Ga<br>Collision Voie lactée–Andromède : ~4,5 Ga<br>Soleil géante rouge : ~5 Ga</div>
+
+  <p class="pull reveal">Dans 4,5 milliards d'années, Andromède entrera en collision avec la Voie lactée. Pas d'explosion : les étoiles sont si espacées que les deux galaxies se traverseront comme deux nuages de fumée — en silence, sur des centaines de millions d'années.</p>
+
+  <h3 class="rubric reveal">Dans 600 millions d'années · La dernière éclipse totale</h3>
+  <p class="reveal">La Lune s'éloigne de la Terre d'environ 3,8 centimètres par an. Dans environ 600 millions d'années, elle sera trop loin pour couvrir exactement le disque du Soleil. Une coïncidence remarquable — que la Lune soit aujourd'hui précisément à la bonne distance pour couvrir exactement le Soleil — sera révolue pour toujours.</p>
+
+  <h3 class="rubric reveal">Dans 1 milliard d'années · Les océans s'évaporent</h3>
+  <p class="reveal">La luminosité du Soleil augmente d'environ 1 % tous les 100 millions d'années. Dans 1 milliard d'années, il sera environ 10 % plus lumineux qu'aujourd'hui — suffisant pour déclencher un effet de serre incontrôlable : les océans s'évaporeront progressivement. La vie complexe telle que nous la connaissons sera difficile, puis impossible.</p>
+
+  <h3 class="rubric reveal">Dans 4,5 milliards d'années · Collision avec Andromède</h3>
+  <p class="reveal">La galaxie d'Andromède se rapproche de la Voie lactée à environ 110 kilomètres par seconde. Les deux galaxies entreront en collision dans environ 4,5 milliards d'années et fusionneront sur plusieurs centaines de millions d'années. Notre système solaire sera projeté dans une orbite différente — peut-être vers les bords de la galaxie résultante. Mais les étoiles elles-mêmes ne se heurteront presque jamais : l'espace entre elles est trop vaste.</p>
+
+  <h3 class="rubric reveal">Dans 5 milliards d'années · Le Soleil devient géante rouge</h3>
+  <p class="reveal">Le Soleil aura épuisé son hydrogène central. Sans la pression de la fusion nucléaire pour contrebalancer la gravité, le cœur se contracte et chauffe — ce qui déclenche la fusion dans les couches extérieures. L'enveloppe de l'étoile gonfle considérablement : le Soleil deviendra une géante rouge, engloutissant probablement Mercure et Vénus, et menaçant la Terre. Ce qui restera ensuite — le cœur de l'étoile — se refroidira lentement pendant des milliards de milliards d'années en naine blanche.</p>
+</section>
+
+
+<!-- ─── 20 / La fin des étoiles ─── -->
+<section class="duree" id="etoiles" style="--accent: var(--accent-end);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">☆</span>
+    <span class="dur-headtext">
+      <span class="dur-index">20 · Dans ~10¹⁴ années</span>
+      <span class="dur-title">La mort des dernières étoiles</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Dans 100 000 milliards d'années, la dernière étoile s'éteindra. La nuit deviendra définitive.</p>
+  <div class="dur-value reveal">~10¹⁴ ans<br>environ 7 000 fois l'âge actuel de l'univers</div>
+
+  <p class="pull reveal">Les naines rouges — les étoiles les plus petites et les plus économes — brûleront pendant des milliers de milliards d'années. Quand la dernière s'éteindra, l'univers sera des milliers de fois plus vieux qu'aujourd'hui.</p>
+
+  <p class="reveal">L'univers cesse de former de nouvelles étoiles lorsqu'il n'y a plus assez de gaz froid pour s'effondrer sur lui-même. Ce processus est déjà engagé — le taux de formation stellaire a atteint son pic il y a 10 milliards d'années et décline depuis. Les étoiles existantes s'épuiseront une à une. Dans 10¹⁴ ans, il n'en restera plus.</p>
+  <p class="reveal">Ce qui subsiste alors : des naines blanches qui refroidissent lentement sur des milliards de milliards d'années, des étoiles à neutrons, des trous noirs, et des planètes froides dérivant dans une obscurité totale. L'univers ne sera pas mort — mais il sera muet. La collision Voie lactée–Andromède sera achevée depuis longtemps : la galaxie fusionnée aura elle-même perdu presque toutes ses étoiles actives.</p>
+</section>
+
+
+<!-- ─── 21 / La désintégration des protons ─── -->
+<section class="duree" id="protons" style="--accent: var(--accent-end);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">p⁺</span>
+    <span class="dur-headtext">
+      <span class="dur-index">21 · ~10³⁴ à 10³⁶ années (hypothèse)</span>
+      <span class="dur-title">La désintégration des protons</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Si les protons sont mortels — et on ne sait pas encore s'ils le sont — alors toute la matière ordinaire finit par disparaître.</p>
+  <div class="dur-value reveal">Durée de vie minimale mesurée : >10³⁴ ans<br>Prévisions des théories de grande unification : 10³⁴ à 10³⁶ ans<br>Non confirmé expérimentalement</div>
+
+  <p class="pull reveal">Un proton est stable depuis le Big Bang. Aucun n'a jamais été observé se désintégrant spontanément. Mais certaines théories prédisent qu'ils le feront — dans des milliards de milliards de milliards d'années.</p>
+
+  <p class="reveal">Le Modèle Standard de la physique des particules ne prédit pas la désintégration du proton. Mais les théories de grande unification — qui tentent d'unifier les trois forces fondamentales non gravitationnelles — la prévoient, avec des durées de vie de 10³⁴ à 10³⁶ ans selon les modèles. Des expériences souterraines comme Super-Kamiokande au Japon surveillent des cuves d'eau ultra-pure depuis des décennies, attendant de voir un proton se désintégrer. Rien pour l'instant — ce qui permet seulement de fixer une limite inférieure sur leur durée de vie.</p>
+  <p class="reveal">Si les protons se désintègrent, toute matière ordinaire — naines blanches, planètes, astéroïdes — se réduira lentement en particules légères et en énergie. Il ne restera que les trous noirs.</p>
+</section>
+
+
+<!-- ─── 22 / L'évaporation des trous noirs ─── -->
+<section class="duree" id="hawking" style="--accent: var(--accent-end);">
+  <div class="dur-head reveal">
+    <span class="dur-symbol">◉</span>
+    <span class="dur-headtext">
+      <span class="dur-index">22 · 10⁶⁷ à 10⁹⁴ années</span>
+      <span class="dur-title">L'évaporation des trous noirs</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">Hawking a montré en 1974 que les trous noirs ne sont pas éternels. Ils rayonnent. Imperceptiblement.</p>
+  <div class="dur-value reveal">Trou noir de masse solaire : ~2 × 10⁶⁷ ans<br>Trou noir supermassif (10⁹ masses solaires) : ~10⁹⁴ ans</div>
+
+  <p class="pull reveal">La durée d'évaporation d'un trou noir est proportionnelle au cube de sa masse. Un trou noir de masse solaire met ~2 × 10⁶⁷ ans. Un trou noir mille fois plus massif mettra mille fois mille fois mille fois plus longtemps — soit 10⁹ fois plus long.</p>
+
+  <h3 class="rubric reveal">Le mécanisme</h3>
+  <p class="reveal">Le vide quantique n'est jamais vraiment vide : il bouillonne en permanence de paires de particules virtuelles qui apparaissent et disparaissent en s'annulant mutuellement. Leur énergie totale est nulle. À proximité d'un horizon d'événements, l'une de ces particules peut tomber dans le trou noir, l'autre s'échapper. Mais pour que le bilan d'énergie reste nul, la particule qui tombe doit porter une énergie négative au sens de la relativité générale — ce qui revient à retirer de la masse-énergie au trou noir. C'est lui qui paie : la particule qui s'échappe emporte de l'énergie prélevée sur sa masse. C'est le rayonnement de Hawking. Pour un trou noir de masse solaire, ce flux est actuellement indétectable et largement dominé par l'absorption du fond diffus cosmologique. Ce n'est qu'une fois que l'univers sera beaucoup plus froid que ce rayonnement deviendra le processus dominant.</p>
+
+  <h3 class="rubric reveal">Les durées</h3>
+  <p class="reveal">Un trou noir de masse solaire s'évapore en ~2 × 10⁶⁷ ans. Les trous noirs supermassifs au centre des galaxies pèsent des millions à des milliards de masses solaires. Un trou noir de 10⁹ masses solaires met environ 10⁹⁴ ans à s'évaporer. Ces trous noirs sont les dernières structures organisées de l'univers — et leur évaporation complète marque, selon les modèles, la fin de toute complexité.</p>
+</section>
+
+
+<!-- ─── 23 / La mort thermique ─── -->
+<section class="duree" id="terminus" style="--accent: var(--accent-end); padding-bottom: 8rem;">
+  <div class="dur-head reveal">
+    <span class="dur-symbol" style="font-size: clamp(3.5rem, 12vw, 7rem);">Ω</span>
+    <span class="dur-headtext">
+      <span class="dur-index">23 · ~10¹⁰⁰ années</span>
+      <span class="dur-title">La mort thermique</span>
+    </span>
+  </div>
+  <p class="dur-tagline reveal">La dernière chose qui pourra jamais arriver.</p>
+  <div class="dur-value reveal">~10¹⁰⁰ ans<br>le dernier trou noir supermassif s'est évaporé</div>
+
+  <p class="pull reveal">La mort thermique n'est pas une explosion. C'est un silence. Un état où tout est si uniforme, si froid, si vide, que rien ne peut plus arriver — car le temps n'a de sens que s'il peut y avoir un « avant » différent d'un « après ».</p>
+
+  <h3 class="rubric reveal">Ce que 10¹⁰⁰ signifie</h3>
+  <p class="reveal">10¹⁰⁰ est un <strong>googol</strong> — le nombre qui a donné son nom à Google. Le nombre d'atomes dans l'univers observable est estimé à environ 10⁸⁰. Un googol est donc 10²⁰ fois plus grand que ce nombre. Pour saisir cet écart : 10²⁰ est lui-même cent milliards de milliards. Le googol dépasse toute quantité physique qu'il est possible de nommer dans l'univers observable.</p>
+  <p class="reveal">Voici quelques ordres de grandeur pour se situer : le nombre de grains de sable sur toutes les plages de la Terre est d'environ 10¹⁹. Le nombre de secondes depuis le Big Bang est d'environ 4 × 10¹⁷. Ces deux nombres multipliés ensemble donnent ~10³⁶ — et 10³⁶ reste 64 ordres de grandeur en dessous du googol. Tu peux continuer à multiplier des quantités astronomiques entre elles très longtemps avant d'approcher 10¹⁰⁰.</p>
+
+  <h3 class="rubric reveal">La ligne impossible</h3>
+
+  <!-- VIZ : ligne du temps impossible -->
+  <figure class="viz reveal" id="viz-terminus">
+    <svg viewBox="0 0 680 140" xmlns="http://www.w3.org/2000/svg" id="terminus-svg">
+      <line x1="40" y1="70" x2="200" y2="70" stroke="var(--accent-cosmic)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="40" cy="70" r="5" fill="var(--accent-cosmic)"/>
+      <text x="40" y="92" font-family="monospace" font-size="10" fill="var(--accent-cosmic)" text-anchor="middle">Big Bang</text>
+      <text x="40" y="104" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle">13,8 Ga</text>
+      <circle cx="200" cy="70" r="6" fill="var(--accent-human)"/>
+      <text x="200" y="92" font-family="monospace" font-size="10" fill="var(--accent-human)" text-anchor="middle">Aujourd'hui</text>
+      <line x1="200" y1="70" x2="640" y2="70" stroke="var(--accent-end)" stroke-width="1.5" stroke-dasharray="6 5" stroke-linecap="round" opacity="0.7"/>
+      <defs>
+        <linearGradient id="fade-end" x1="0.65" x2="1" y1="0" y2="0">
+          <stop offset="0%" stop-color="var(--bg-soft)" stop-opacity="0"/>
+          <stop offset="100%" stop-color="var(--bg-soft)" stop-opacity="1"/>
+        </linearGradient>
+      </defs>
+      <rect x="380" y="55" width="300" height="30" fill="url(#fade-end)"/>
+      <polygon points="644,66 654,70 644,74" fill="var(--accent-end)" opacity="0.5"/>
+      <text x="656" y="67" font-family="monospace" font-size="9" fill="var(--accent-end)" text-anchor="start" opacity="0.7">10¹⁰⁰ ans</text>
+      <text x="340" y="34" font-family="monospace" font-size="10" fill="var(--muted)" text-anchor="middle">Si Big Bang → Aujourd'hui = 200 pixels,</text>
+      <text x="340" y="50" font-family="monospace" font-size="10" fill="var(--accent-end)" text-anchor="middle">alors ce point est à ~4 × 10⁶² fois le diamètre de l'univers observable.</text>
+      <line x1="40" y1="118" x2="200" y2="118" stroke="var(--muted)" stroke-width="1" opacity="0.4"/>
+      <text x="120" y="132" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle" opacity="0.5">200 px</text>
+    </svg>
+    <figcaption>La ligne pointillée ne mène nulle part représentable. Le point final est à une distance qui dépasse toute échelle physique imaginable.</figcaption>
+  </figure>
+
+  <p class="reveal">Le calcul : 10¹⁰⁰ ans ÷ 1,38 × 10¹⁰ ans (âge de l'univers) ≈ 7,2 × 10⁸⁹. Si Big Bang → Aujourd'hui = 200 pixels, le point 10¹⁰⁰ ans se trouve à 200 × 7,2 × 10⁸⁹ ≈ 1,4 × 10⁹² pixels. Le diamètre de l'univers observable converti en pixels à 96 dpi est d'environ 3,3 × 10²⁹ pixels. Le rapport : 1,4 × 10⁹² ÷ 3,3 × 10²⁹ ≈ <strong>4 × 10⁶²</strong> fois le diamètre de l'univers observable. Ce point ne peut pas être représenté. Il peut seulement être nommé.</p>
+
+  <h3 class="rubric reveal">Le silence final</h3>
+  <p class="reveal">Quand le dernier trou noir s'est évaporé, il ne reste plus rien d'organisé. Quelques photons de très basse énergie, des neutrinos, des électrons et positrons si espacés que la probabilité qu'ils se rencontrent jamais tend vers zéro. Une température infiniment proche du zéro absolu, uniforme dans toutes les directions.</p>
+  <p class="reveal">C'est l'entropie maximale — l'état prédit par le deuxième principe de la thermodynamique : l'univers tend inexorablement vers l'uniformité totale, jusqu'à ce qu'il n'existe plus aucun gradient d'énergie exploitable, plus aucun processus possible. Sans processus, sans changement, le temps perd son sens opérationnel.</p>
+  <p class="reveal" style="font-style:italic; color: var(--ink); border-left: 3px solid var(--accent-end); padding-left: 1.2rem;">Ce n'est pas une explosion. Ce n'est pas un effondrement. C'est quelque chose de plus étrange et de plus définitif : un état où rien, plus jamais, ne pourra arriver.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CONCLUSION
+═══════════════════════════════════════════════════════════ -->
+<section class="conclusion" id="conclusion">
+  <div class="kicker reveal">Fin du voyage</div>
+  <h2 class="reveal">Toi, quelque part au milieu</h2>
+
+  <p class="reveal">Tu existes dans une fenêtre extraordinairement étroite. Pas dans les premiers instants, trop violents et trop simples. Pas dans les dernières ères, trop froides et trop vides. Juste ici, dans ce que les cosmologistes appellent l'<strong>ère stellaire</strong> — la période où des étoiles brûlent, où des planètes se forment autour d'elles, où la chimie est possible, où la vie peut apparaître.</p>
+  <p class="reveal">Cette fenêtre a commencé il y a environ 200 millions d'années après le Big Bang. Elle durera encore des dizaines de milliards d'années. À l'échelle du voyage qu'on vient de faire, tu es au milieu de la seule parenthèse de l'univers où les choses arrivent.</p>
+  <p class="reveal">Toutes les vies humaines jamais vécues représentent 220 univers bout à bout. Et pourtant, chacune de ces vies — y compris la tienne — occupe un espace si mince sur l'axe du temps que les instruments les plus précis peineraient à le mesurer.</p>
+
+  <p class="closing reveal">Le temps de Planck nous échappe.<br>La mort thermique nous dépasse.<br>Entre les deux, il y a exactement assez de temps<br>pour lire ces lignes.</p>
+</section>
+
+
+<!-- SHARE -->
+<div class="share">
+  <p class="reveal">Si ce voyage vous a donné le vertige, partagez-le.</p>
+  <div class="share-actions reveal">
+    <button id="share-btn">↗ Partager</button>
+    <button id="copy-btn">Copier le lien</button>
+  </div>
+  <div id="copied-note"></div>
+</div>
+
+
+<footer class="end">
+  <p>
+    <a href="https://studioexistence.com">Studio Existence</a><br><a href="https://studioexistence.com/constantes/">Les constantes de l'univers</a><br><a href="https://studioexistence.com/big-numbers/">Les grands nombres</a>
+  </p>
+  <p style="margin-top:1rem; opacity:0.5;">
+    Sources : NIST, NASA, Particle Data Group, Encyclopædia Britannica, Nature, arXiv.<br>
+    Toutes les valeurs numériques sont arrondies pour la lisibilité.
+  </p>
+</footer>
+
+</main>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   ÉTOILES (canvas de fond)
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const c = document.getElementById('stars');
+  const ctx = c.getContext('2d');
+  let stars = [];
+  function resize(){
+    c.width = innerWidth; c.height = innerHeight;
+    stars = Array.from({length: 200}, () => ({
+      x: Math.random()*c.width, y: Math.random()*c.height,
+      r: Math.random()*1.3+0.2, o: Math.random()*0.7+0.15
+    }));
+    draw();
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    const rgb = getComputedStyle(document.documentElement).getPropertyValue('--star').trim() || '220,228,242';
+    stars.forEach(s=>{
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(${rgb},${s.o})`; ctx.fill();
+    });
+  }
+  window.addEventListener('resize', resize);
+  resize();
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   BARRE DE PROGRESSION
+═══════════════════════════════════════════════════════════════ */
+window.addEventListener('scroll', ()=>{
+  const el = document.getElementById('rail');
+  const pct = scrollY / (document.body.scrollHeight - innerHeight) * 100;
+  if(el) el.style.width = Math.min(pct,100)+'%';
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   THÈME CLAIR / SOMBRE
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const btn = document.getElementById('theme-toggle');
+  const saved = localStorage.getItem('se-theme');
+  if(saved === 'dark'){ document.body.classList.add('dark'); btn.textContent='☀'; }
+  btn.addEventListener('click',()=>{
+    const isDark = document.body.classList.toggle('dark');
+    btn.textContent = isDark ? '☀' : '☾';
+    localStorage.setItem('se-theme', isDark ? 'dark' : 'light');
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   REVEAL AU SCROLL
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   NAV LATÉRALE — 3 actes + bannière acte courant
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const tag = document.getElementById('act-tag');
+
+  const ACTS = [
+    {
+      id: 'acte1', navId: 'nav-acte1',
+      label: "Acte I · L'instant",
+      color: 'var(--accent-instant)',
+      sections: ['vie','coeur','oeil','electron','lumiere','noyau','quarktop','planck','interlude1'],
+    },
+    {
+      id: 'acte2', navId: 'nav-acte2',
+      label: "Acte II · Le passé",
+      color: 'var(--accent-geo)',
+      sections: ['histoire','dinos','vie-terre','terre','soleil','galaxies','bigbang','interlude2'],
+    },
+    {
+      id: 'acte3', navId: 'nav-acte3',
+      label: "Acte III · Le futur",
+      color: 'var(--accent-future)',
+      sections: ['futur1','futur2','futur3','etoiles','protons','hawking','terminus','conclusion'],
+    },
+  ];
+
+  // Clics sur les boutons de nav
+  ACTS.forEach(act => {
+    const btn = document.getElementById(act.navId);
+    if(!btn) return;
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(act.id);
+      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Suivi de scroll : détecter l'acte courant
+  let current = null;
+
+  function setAct(actObj){
+    if(actObj === current) return;
+    current = actObj;
+
+    // Bannière
+    if(tag){
+      if(actObj){
+        tag.textContent = actObj.label;
+        tag.style.color = actObj.color;
+        tag.style.borderColor = `color-mix(in srgb, ${actObj.color} 40%, var(--line))`;
+        tag.classList.add('show');
+      } else {
+        tag.classList.remove('show');
+      }
+    }
+
+    // Boutons nav
+    ACTS.forEach(a => {
+      const btn = document.getElementById(a.navId);
+      if(btn) btn.classList.toggle('active', a === actObj);
+    });
+  }
+
+  // Observer toutes les sections de tous les actes
+  const sectionToAct = {};
+  ACTS.forEach(act => {
+    act.sections.forEach(id => { sectionToAct[id] = act; });
+    // aussi l'en-tête d'acte
+    sectionToAct[act.id] = act;
+  });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        const act = sectionToAct[e.target.id];
+        if(act) setAct(act);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  Object.keys(sectionToAct).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) io.observe(el);
+  });
+
+  // Masquer la bannière sur le hero
+  const heroObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        if(tag) tag.classList.remove('show');
+        ACTS.forEach(a => {
+          const btn = document.getElementById(a.navId);
+          if(btn) btn.classList.remove('active');
+        });
+        current = null;
+      }
+    });
+  }, { threshold: 0.3 });
+  const hero = document.querySelector('header.hero');
+  if(hero) heroObs.observe(hero);
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   VIZ 1 — Calculateur de date de naissance
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const input = document.getElementById('dob-input');
+  const result = document.getElementById('dob-result');
+  const note = document.getElementById('dob-note');
+  if(!input) return;
+
+  function fmt(n){ return Math.floor(n).toLocaleString('fr-FR'); }
+
+  function update(){
+    const val = input.value;
+    if(!val){ result.style.display='none'; return; }
+    const born = new Date(val);
+    const now = new Date();
+    if(isNaN(born)||born>now){ result.style.display='none'; return; }
+
+    result.style.display='block';
+    const ms = now - born;
+    const secs = ms / 1000;
+    const mins = secs / 60;
+    const hrs  = mins / 60;
+    const days = hrs / 24;
+    const weeks= days / 7;
+    const months= days / 30.4375;
+    const years = days / 365.25;
+
+    document.getElementById('dob-ans').textContent  = fmt(years);
+    document.getElementById('dob-mois').textContent = fmt(months);
+    document.getElementById('dob-sem').textContent  = fmt(weeks);
+    document.getElementById('dob-j').textContent    = fmt(days);
+    document.getElementById('dob-h').textContent    = fmt(hrs);
+    document.getElementById('dob-min').textContent  = fmt(mins);
+    document.getElementById('dob-sec').textContent  = fmt(secs);
+
+    const remaining = (80 - years);
+    const pct = Math.min((years/80)*100, 100).toFixed(1);
+    if(remaining > 0){
+      note.textContent = `soit ${pct}% d'une vie de 80 ans — il en resterait ~${fmt(remaining*365.25*24*3600)} secondes`;
+    } else {
+      note.textContent = `vous avez dépassé les 80 ans — bienvenue dans les bonus`;
+    }
+  }
+
+  input.addEventListener('change', update);
+
+  // mise à jour chaque seconde
+  setInterval(()=>{ if(input.value) update(); }, 1000);
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   VIZ 2 — Battement de cœur
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const select = document.getElementById('animal-select');
+  const totalEl = document.getElementById('heart-total');
+  const ecg = document.getElementById('ecg-line');
+  if(!select || !ecg) return;
+
+  let rafId = null;
+  let phase = 0;
+
+  function parseAnimal(val){
+    const parts = val.split(',');
+    return { bpm: parseFloat(parts[0]), life: parseFloat(parts[1]), total: parseFloat(parts[2]) };
+  }
+
+  function formatTotal(n){
+    if(n >= 1e9) return `~${(n/1e9).toFixed(1).replace('.',',')} milliard${n/1e9>=2?'s':''}`;
+    if(n >= 1e6) return `~${(n/1e6).toFixed(0)} millions`;
+    return `~${n.toLocaleString('fr-FR')}`;
+  }
+
+  function animate(bpm){
+    const period = 60000 / bpm; // ms
+    cancelAnimationFrame(rafId);
+
+    let last = null;
+    function tick(ts){
+      if(!last) last = ts;
+      const elapsed = ts - last;
+      phase = (phase + elapsed / period) % 1;
+      last = ts;
+
+      // générer une ligne ECG simplifiée basée sur la phase
+      // on anime juste la couleur/opacité pour signaler le rythme
+      const intensity = phase < 0.15 ? 1 : 0.4;
+      ecg.style.opacity = intensity;
+      ecg.style.strokeWidth = phase < 0.15 ? 3 : 2;
+
+      rafId = requestAnimationFrame(tick);
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function update(){
+    const a = parseAnimal(select.value);
+    totalEl.textContent = formatTotal(a.total);
+    animate(a.bpm);
+  }
+
+  select.addEventListener('change', update);
+  update();
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   VIZ 6 — Barre temporelle 24h : Big Bang → Aujourd'hui
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const svg = document.getElementById('horloge-svg');
+  const info = document.getElementById('horloge-info');
+  if(!svg) return;
+
+  const TOTAL_GA = 13.787;
+  const X0 = 20, X1 = 660, YMID = 148;
+  const W = X1 - X0;
+
+  const events = [
+    { ga: 0,      label: 'Big Bang',               t: '00h00' },
+    { ga: 0.18,   label: 'Première étoile',         t: '00h18' },
+    { ga: 1.0,    label: 'Premières galaxies',      t: '01h44' },
+    { ga: 3.8,    label: '1re vie sur Terre',       t: '06h36' },
+    { ga: 4.54,   label: 'Terre',                  t: '07h54' },
+    { ga: 4.6,    label: 'Soleil',                 t: '08h00' },
+    { ga: 10.0,   label: 'Pic stellaire',           t: '17h24' },
+    { ga: 13.247, label: 'Cambrien',               t: '23h03' },
+    { ga: 13.721, label: 'Fin dinosaures',          t: '23h53' },
+    { ga: 13.787, label: 'Aujourd\'hui',            t: '24h00' },
+  ];
+
+  function xpos(ga){ return X0 + (ga / TOTAL_GA) * W; }
+
+  // ── Placement multi-niveaux anti-collision ──
+  // Niveaux : alternance haut/bas, 2 rangées de chaque côté
+  // ly = y du label, ty = y de la pointe du trait (côté axe)
+  const LEVELS = [
+    { ly: YMID - 52, ty: YMID - 14 },   // haut 1
+    { ly: YMID + 58, ty: YMID + 14 },   // bas 1
+    { ly: YMID - 86, ty: YMID - 14 },   // haut 2
+    { ly: YMID + 92, ty: YMID + 14 },   // bas 2
+  ];
+
+  // Approx largeur d'un label (heure + label) en px
+  const CHAR_W = 6.2;
+  const MIN_GAP = 4;
+
+  const pts = events.map(e => ({ ...e, x: xpos(e.ga) }));
+
+  // Assigner les niveaux de gauche à droite
+  const levelRight = LEVELS.map(() => -999);
+  const assigned = pts.map((p, i) => {
+    const labelW = Math.max(p.t.length, p.label.length) * CHAR_W;
+    const leftEdge  = p.x - labelW / 2;
+    const rightEdge = p.x + labelW / 2;
+    let chosen = i % 2; // alterner par défaut haut/bas
+    for(let l = 0; l < LEVELS.length; l++){
+      if(leftEdge - levelRight[l] >= MIN_GAP){ chosen = l; break; }
+    }
+    levelRight[chosen] = rightEdge;
+    return { ...p, level: chosen };
+  });
+
+  let html = '<defs>';
+  html += '<linearGradient id="bar-grad" x1="0" x2="1" y1="0" y2="0">';
+  html += '<stop offset="0%" stop-color="#4a7fa5" stop-opacity="0.3"/>';
+  html += '<stop offset="88%" stop-color="#4a7fa5" stop-opacity="0.75"/>';
+  html += '<stop offset="100%" stop-color="#6b8f71" stop-opacity="1"/>';
+  html += '</linearGradient></defs>';
+
+  // ── Axe ──
+  html += `<line x1="${X0}" y1="${YMID}" x2="${X1}" y2="${YMID}" stroke="url(#bar-grad)" stroke-width="2.5" stroke-linecap="round"/>`;
+
+  // ── Graduations ──
+  for(let h = 0; h <= 24; h++){
+    const x = X0 + (h / 24) * W;
+    const major = h % 6 === 0;
+    const mid   = h % 3 === 0 && !major;
+    if(major || mid){
+      const hh = major ? 10 : 5;
+      html += `<line x1="${x.toFixed(1)}" y1="${(YMID-hh).toFixed(1)}" x2="${x.toFixed(1)}" y2="${(YMID+hh).toFixed(1)}" stroke="var(--muted)" stroke-width="${major?1.2:0.7}" opacity="${major?0.55:0.3}"/>`;
+      if(major){
+        html += `<text x="${x.toFixed(1)}" y="${(YMID+22).toFixed(1)}" font-family="monospace" font-size="8.5" fill="var(--muted)" text-anchor="middle" opacity="0.6">${h===24?'24h':h+'h'}</text>`;
+      }
+    }
+  }
+
+  // ── Points et labels ──
+  assigned.forEach(p => {
+    const lvl = LEVELS[p.level];
+    const isToday = p.ga >= TOTAL_GA - 0.001;
+    const col = isToday ? '#6b8f71' : '#4a7fa5';
+    const dotR = isToday ? 5.5 : 4;
+
+    // trait point → label
+    html += `<line x1="${p.x.toFixed(1)}" y1="${YMID}" x2="${p.x.toFixed(1)}" y2="${lvl.ty}" stroke="${col}" stroke-width="1" opacity="0.4" stroke-dasharray="2 3"/>`;
+    // point sur l'axe
+    html += `<circle cx="${p.x.toFixed(1)}" cy="${YMID}" r="${dotR}" fill="${col}" opacity="0.9"/>`;
+    if(isToday){
+      html += `<circle cx="${p.x.toFixed(1)}" cy="${YMID}" r="8.5" fill="none" stroke="${col}" stroke-width="1.2" opacity="0.3"/>`;
+    }
+    // heure au-dessus du label
+    html += `<text x="${p.x.toFixed(1)}" y="${lvl.ly}" font-family="monospace" font-size="7.5" fill="${col}" text-anchor="middle" opacity="0.7">${p.t}</text>`;
+    // label
+    html += `<text x="${p.x.toFixed(1)}" y="${lvl.ly+11}" font-family="monospace" font-size="8.5" fill="var(--ink-dim)" text-anchor="middle" opacity="0.9">${p.label}</text>`;
+  });
+
+  svg.innerHTML = html;
+
+  if(info) info.textContent = '';
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   PARTAGE
+═══════════════════════════════════════════════════════════════ */
+(function(){
+  const shareBtn = document.getElementById('share-btn');
+  const copyBtn  = document.getElementById('copy-btn');
+  const note     = document.getElementById('copied-note');
+  if(!shareBtn||!copyBtn) return;
+
+  let timer = null;
+  function flash(msg){
+    note.textContent = msg; note.style.opacity = '1';
+    clearTimeout(timer);
+    timer = setTimeout(()=>{ note.style.opacity='0'; }, 2600);
+  }
+  async function copyLink(){
+    try {
+      if(navigator.clipboard) await navigator.clipboard.writeText(location.href);
+      else {
+        const ta = document.createElement('textarea');
+        ta.value = location.href; ta.style.position='absolute'; ta.style.left='-9999px';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      }
+      flash('✓ Lien copié');
+    } catch(e){ flash('Lien : '+location.href); }
+  }
+  shareBtn.addEventListener('click', async ()=>{
+    if(navigator.share){
+      try { await navigator.share({ title: "L'échelle du temps", url: location.href }); }
+      catch(e){}
+    } else { await copyLink(); }
+  });
+  copyBtn.addEventListener('click', copyLink);
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   KATEX
+═══════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  if(typeof renderMathInElement !== 'undefined'){
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false}
+      ]
+    });
+  }
+});
+</script>
+</body>
+</html>
