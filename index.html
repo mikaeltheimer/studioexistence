@@ -44,7 +44,7 @@
       --bg: #f0ece4;
       --ink: #0f0e0c;
       --accent: #5B2D8E;
-      --gap: 10px;
+      --gap: 20px;
     }
 
     html { scroll-behavior: smooth; }
@@ -190,14 +190,69 @@
     /* ══ GRID ══ */
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 5fr 2.5fr 2.5fr;
       gap: var(--gap);
       margin: var(--gap) 4rem 0;
     }
 
-    /* Une carte qui prend toute la largeur de la grille (les deux colonnes) */
-    .card-full {
+    /* ── Placements explicites ── */
+
+    /* Dear Someone : col 1, rows 1–2 (héros gauche, double hauteur) */
+    #dear {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      min-height: 600px;
+    }
+
+    /* Pay to Exist : col 2–3, row 1 */
+    #pay {
+      grid-column: 2 / 4;
+      grid-row: 1;
+      min-height: 280px;
+    }
+
+    /* Hall of Fame : col 2–3, row 2 */
+    #hall {
+      grid-column: 2 / 4;
+      grid-row: 2;
+      min-height: 280px;
+    }
+
+    /* Voyages : pleine largeur, row 3 */
+    #voyages {
       grid-column: 1 / -1;
+      grid-row: 3;
+      min-height: 260px;
+    }
+
+    /* WhaleSong : col 1, row 4 */
+    #whale {
+      grid-column: 1;
+      grid-row: 4;
+    }
+
+    /* Droid.lang : col 2, row 4 */
+    #droid {
+      grid-column: 2;
+      grid-row: 4;
+    }
+
+    /* IKWIS : col 3, row 4 */
+    #ikwis {
+      grid-column: 3;
+      grid-row: 4;
+    }
+
+    /* Bucket List : pleine largeur, row 5 */
+    #bucket {
+      grid-column: 1 / -1;
+      grid-row: 5;
+    }
+
+    /* Photo : pleine largeur, row 6 */
+    #photo {
+      grid-column: 1 / -1;
+      grid-row: 6;
     }
 
     /* ══ CARD ══ */
@@ -209,7 +264,7 @@
       flex-direction: column;
       position: relative;
       overflow: hidden;
-      min-height: 420px;
+      min-height: 300px;
       transition: box-shadow .22s ease, transform .22s ease;
     }
 
@@ -1043,7 +1098,7 @@
 
     /* ══ WHALE SONG CARD ══ */
     #whale {
-      min-height: 220px;
+      min-height: 300px;
     }
     #whale .card-bg {
       background: #020d1a;
@@ -1123,7 +1178,7 @@
     }
 
     /* ══ DROID CARD ══ */
-    #droid { min-height: 220px; }
+    #droid { min-height: 300px; }
     #droid .card-bg { background: #050608; background-image: radial-gradient(ellipse at 70% 40%, rgba(232,160,32,0.1) 0%, transparent 60%); }
     #droid .card-bottom { background: #0a0d12; color: #c8dff0; border-color: rgba(232,160,32,.12); }
     #droid .card-name { color: #c8dff0; }
@@ -1145,7 +1200,7 @@
        Portail des trois expériences cosmiques
     ══════════════════════════════ */
     #voyages {
-      min-height: 280px;
+      min-height: 260px;
       background: #05050a;
       border-color: rgba(201,162,39,0.45);
       overflow: hidden;
@@ -1228,9 +1283,18 @@
     @media (max-width: 700px) {
       header { padding: 2rem 1.5rem 0; flex-direction: column; gap: 1rem; }
       .header-right { text-align: left; }
-      .grid { grid-template-columns: 1fr; margin: 0 1.5rem 0; }
+      .grid {
+        grid-template-columns: 1fr;
+        margin: 0 1.5rem 0;
+      }
       .footer-strip { margin: 0 1.5rem; }
-      .card { min-height: 360px; }
+      /* Reset all explicit placements on mobile */
+      #dear, #pay, #whale, #droid, #voyages,
+      #bucket, #hall, #ikwis, #photo {
+        grid-column: 1;
+        grid-row: auto;
+        min-height: 360px;
+      }
     }
   </style>
 </head>
@@ -1396,7 +1460,7 @@
 
 
   <!-- LES VOYAGES (remplace Grands Nombres + Constantes) -->
-  <a class="card card-full" id="voyages" href="/voyages" target="_blank" rel="noopener">
+  <a class="card" id="voyages" href="/voyages" target="_blank" rel="noopener">
     <div class="card-bg"></div>
     <div class="card-content">
       <div class="card-top" style="padding:0;overflow:hidden;position:relative;min-height:200px;">
