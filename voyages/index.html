@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Existence — Voyages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Fraunces + Spectral + Space Mono (grands nombres) + DM Sans (page) -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,900;1,9..144,400&family=Space+Mono:wght@400;700&family=Spectral:ital,wght@0,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #08090d;
+  --text: #ddd8cc;
+  --text-dim: #5e5a52;
+  --accent: #c9a227;
+  --page-serif: Georgia, serif;
+  --page-sans: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--page-sans);
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Fond cosmique (radial + grain) ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 18% 12%, rgba(90,110,180,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 70% at 82% 85%, rgba(160,120,60,0.05) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.7;
+}
+
+#starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+.wrapper { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+
+/* ── Header ── */
+header {
+  position: relative; z-index: 1;
+  padding: 3rem 0 0;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text-dim); text-decoration: none;
+  transition: color 0.2s;
+}
+.logo:hover { color: var(--accent); }
+
+/* ── Lang switcher ── */
+.lang { display: flex; align-items: center; gap: 0.4rem; }
+.lang button {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Space Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  transition: color 0.2s; padding: 0.15rem 0.35rem;
+}
+.lang button.active { color: var(--text); }
+.lang button:not(.active) { color: var(--text-dim); }
+.lang button:not(.active):hover { color: var(--accent); }
+.lang-sep { color: var(--text-dim); opacity: 0.3; font-size: 0.7rem; }
+
+/* ── Hero ── */
+.hero {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 6rem 0 5rem;
+}
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 2rem;
+  opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+}
+.hero-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 300; line-height: 1.08; letter-spacing: -0.01em;
+  margin-bottom: 1.8rem;
+  opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+}
+.hero-title em { font-style: italic; color: var(--accent); font-weight: 400; }
+.hero-sub {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+  font-style: italic; line-height: 1.8;
+  color: #7a7468; max-width: 50ch; margin: 0 auto;
+  opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+}
+
+/* ── Diviseur ── */
+.divider {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 1.5rem;
+  margin-bottom: 3.5rem; opacity: 0.2;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px;
+}
+.divider::before { background: linear-gradient(to right, transparent, #6a6458); }
+.divider::after  { background: linear-gradient(to left, transparent, #6a6458); }
+.divider-icon { font-size: 0.55rem; letter-spacing: 0.3em; color: #6a6458; }
+
+/* ── Grille portails ── */
+.portails {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding-bottom: 6rem;
+}
+@media (max-width: 900px) {
+  .portails { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+}
+
+/* ── Base portail ── */
+.portail {
+  position: relative;
+  border-radius: 3px;
+  padding: 0;
+  display: flex; flex-direction: column;
+  cursor: pointer; text-decoration: none; color: inherit;
+  opacity: 0;
+  /* overflow: hidden retiré — il coupait le halo externe */
+  transition: transform 0.45s cubic-bezier(.2,.8,.2,1),
+              box-shadow 0.45s ease,
+              border-color 0.45s ease;
+}
+.portail:nth-child(1) { animation: fadeUp 0.8s ease 0.8s forwards; }
+.portail:nth-child(2) { animation: fadeUp 0.8s ease 1.0s forwards; }
+.portail:nth-child(3) { animation: fadeUp 0.8s ease 1.2s forwards; }
+
+/* ghost et canvas restent clippés à l'intérieur */
+.portail-ghost, .portail-canvas { overflow: hidden; border-radius: 3px 3px 0 0; }
+
+/* Corps intérieur (padding ici, pas sur .portail pour ne pas couper le ghost) */
+.portail-body {
+  padding: 2rem 2rem 2rem;
+  display: flex; flex-direction: column; gap: 1.2rem; flex: 1;
+  position: relative; z-index: 1;
+}
+
+/* ══════════════════════════════════════════════
+   PORTAIL 1 — GRANDS NOMBRES
+   Fond : #05050a (void) · Accent : #c9a227 (gold) · #b5471f (rust)
+   Police titre : Fraunces 900 · mono : Space Mono
+══════════════════════════════════════════════ */
+.portail-1 {
+  background: #05050a;
+  border: 1px solid rgba(201,162,39,0.3);
+  border-top: 2px solid rgba(201,162,39,0.9);
+  box-shadow:
+    0 0 0 1px rgba(201,162,39,0.05),
+    0 0 50px rgba(201,162,39,0.12),
+    0 12px 40px rgba(0,0,0,0.7);
+}
+.portail-1:hover {
+  transform: translateY(-10px) scale(1.012);
+  border-color: rgba(201,162,39,0.65);
+  border-top-color: #c9a227;
+  box-shadow:
+    0 0 0 1px rgba(201,162,39,0.18),
+    0 0 0 3px rgba(201,162,39,0.07),
+    0 0 60px rgba(201,162,39,0.28),
+    0 0 120px rgba(201,162,39,0.12),
+    0 35px 70px rgba(0,0,0,0.85),
+    inset 0 1px 0 rgba(201,162,39,0.3);
+}
+.portail-1 .portail-ghost {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -54%);
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 900; font-style: normal;
+  font-size: clamp(100px, 35vw, 180px);
+  line-height: 1;
+  color: transparent;
+  background: radial-gradient(circle at 50% 40%, #1a1506 0%, #0a0804 50%, transparent 75%);
+  -webkit-background-clip: text; background-clip: text;
+  pointer-events: none; z-index: 0;
+  animation: ghostBreath1 8s ease-in-out infinite;
+}
+@keyframes ghostBreath1 { 0%,100%{opacity:0.9;} 50%{opacity:0.5;} }
+
+.portail-1 .portail-tag {
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: #c9a227; border: 1px solid rgba(201,162,39,0.35);
+  padding: 0.18rem 0.6rem; border-radius: 2px;
+  background: rgba(5,5,10,0.6);
+  display: inline-block;
+}
+.portail-1 .portail-num { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; color: rgba(201,162,39,0.5); }
+.portail-1 .portail-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 900; font-size: clamp(1.55rem, 2.4vw, 2rem);
+  line-height: 0.97; letter-spacing: -0.02em;
+  color: #f4f0e6;
+}
+.portail-1 .portail-title em { font-style: italic; color: #c9a227; font-weight: 400; }
+.portail-1 .portail-accroche {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic; font-size: 0.97rem; line-height: 1.7;
+  color: rgba(122,179,212,0.85); flex-grow: 1;
+}
+.portail-1 .portail-cta {
+  font-family: 'Space Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #c9a227;
+  display: flex; align-items: center; gap: 0.5rem;
+  transition: gap 0.3s ease;
+}
+.portail-1:hover .portail-cta { gap: 0.85rem; }
+/* ligne gold verticale à gauche du CTA (style dist du site) */
+.portail-1 .portail-cta::before {
+  content: ''; width: 2px; height: 14px;
+  background: #c9a227; opacity: 0.6; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════
+   PORTAIL 2 — CONSTANTES
+   Fond : #0b0e14 · Accent : #6fb3c9 · violet #b98ce0
+   Police titre : Palatino serif (system) · mono : monospace system
+══════════════════════════════════════════════ */
+.portail-2 {
+  background: #0b0e14;
+  border: 1px solid rgba(111,179,201,0.25);
+  border-top: 2px solid rgba(111,179,201,0.85);
+  box-shadow:
+    0 0 0 1px rgba(111,179,201,0.05),
+    0 0 50px rgba(111,179,201,0.1),
+    0 12px 40px rgba(0,0,0,0.7);
+}
+.portail-2:hover {
+  transform: translateY(-10px) scale(1.012);
+  border-color: rgba(111,179,201,0.6);
+  border-top-color: #6fb3c9;
+  box-shadow:
+    0 0 0 1px rgba(111,179,201,0.18),
+    0 0 0 3px rgba(111,179,201,0.06),
+    0 0 60px rgba(111,179,201,0.25),
+    0 0 120px rgba(111,179,201,0.1),
+    0 35px 70px rgba(0,0,0,0.85),
+    inset 0 1px 0 rgba(111,179,201,0.3);
+}
+.portail-2 .portail-ghost {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -54%);
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(100px, 35vw, 180px);
+  line-height: 1;
+  color: transparent;
+  background: radial-gradient(circle at 50% 40%, #1a2640 0%, #0f1520 50%, transparent 72%);
+  -webkit-background-clip: text; background-clip: text;
+  pointer-events: none; z-index: 0;
+  animation: ghostBreath2 10s ease-in-out infinite;
+}
+@keyframes ghostBreath2 { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
+
+.portail-2 .portail-tag {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, monospace; font-size: 0.6rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: #6fb3c9; border: 1px solid rgba(111,179,201,0.3);
+  padding: 0.18rem 0.6rem; border-radius: 2px;
+  background: rgba(11,14,20,0.7);
+  display: inline-block;
+}
+.portail-2 .portail-num { font-family: "SF Mono", Menlo, monospace; font-size: 0.58rem; letter-spacing: 0.2em; color: rgba(111,179,201,0.45); }
+.portail-2 .portail-title {
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-weight: 500; font-size: clamp(1.45rem, 2.2vw, 1.85rem);
+  line-height: 1.08; letter-spacing: -0.01em;
+  /* gradient blanc → bleu comme le site */
+  background: linear-gradient(180deg, #ffffff 0%, #c5cede 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.portail-2 .portail-title em {
+  font-style: italic;
+  background: linear-gradient(180deg, #9ec6da 0%, #6fb3c9 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.portail-2 .portail-accroche {
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-style: italic; font-size: 0.97rem; line-height: 1.72;
+  color: #aab2bf; flex-grow: 1;
+}
+.portail-2 .portail-cta {
+  font-family: "SF Mono", Menlo, monospace; font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #6fb3c9;
+  display: flex; align-items: center; gap: 0.5rem;
+  transition: gap 0.3s ease;
+}
+.portail-2:hover .portail-cta { gap: 0.85rem; }
+.portail-2 .portail-cta::before {
+  content: ''; width: 2px; height: 14px;
+  background: #6fb3c9; opacity: 0.55; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════
+   PORTAIL 3 — ÉCHELLE DU TEMPS
+   Fond : #12100d (dark) · Accent : #6b8f71 (vert mousse)
+   Titre : italic Palatino · mono : monospace
+══════════════════════════════════════════════ */
+.portail-3 {
+  background: #12100d;
+  border: 1px solid rgba(181,168,152,0.22);
+  border-top: 2px solid rgba(181,168,152,0.75);
+  box-shadow:
+    0 0 0 1px rgba(181,168,152,0.05),
+    0 0 45px rgba(107,143,113,0.1),
+    0 12px 40px rgba(0,0,0,0.7);
+}
+.portail-3:hover {
+  transform: translateY(-10px) scale(1.012);
+  border-color: rgba(181,168,152,0.55);
+  border-top-color: #c8bfb0;
+  box-shadow:
+    0 0 0 1px rgba(181,168,152,0.16),
+    0 0 0 3px rgba(107,143,113,0.06),
+    0 0 55px rgba(181,168,152,0.2),
+    0 0 110px rgba(107,143,113,0.1),
+    0 35px 70px rgba(0,0,0,0.85),
+    inset 0 1px 0 rgba(237,231,219,0.2);
+}
+.portail-3 .portail-ghost {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -54%);
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-style: italic; font-weight: 400;
+  font-size: clamp(100px, 35vw, 180px);
+  line-height: 1;
+  color: #2e2820;
+  pointer-events: none; z-index: 0;
+  animation: ghostBreath3 9s ease-in-out infinite;
+}
+@keyframes ghostBreath3 { 0%,100%{opacity:1;} 50%{opacity:0.45;} }
+
+.portail-3 .portail-tag {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, monospace; font-size: 0.6rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: #6b8f71; border: 1px solid rgba(107,143,113,0.32);
+  padding: 0.18rem 0.6rem; border-radius: 2px;
+  background: rgba(18,16,13,0.7);
+  display: inline-block;
+}
+.portail-3 .portail-num { font-family: "SF Mono", Menlo, monospace; font-size: 0.58rem; letter-spacing: 0.2em; color: rgba(181,168,152,0.4); }
+.portail-3 .portail-title {
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-weight: 400; font-style: italic;
+  font-size: clamp(1.5rem, 2.3vw, 1.95rem);
+  line-height: 1.05; letter-spacing: -0.015em;
+  color: #ede7db;
+}
+.portail-3 .portail-accroche {
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  font-style: italic; font-size: 0.97rem; line-height: 1.72;
+  color: #b5a898; flex-grow: 1;
+}
+.portail-3 .portail-cta {
+  font-family: "SF Mono", Menlo, monospace; font-size: 0.62rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: #ede7db;
+  display: flex; align-items: center; gap: 0.5rem;
+  transition: gap 0.3s ease;
+}
+.portail-3:hover .portail-cta { gap: 0.85rem; }
+.portail-3 .portail-cta::before {
+  content: ''; width: 2px; height: 14px;
+  background: #6b8f71; opacity: 0.7; flex-shrink: 0;
+}
+
+/* ── Éléments communs portails ── */
+.portail-canvas {
+  width: 100%; height: 120px;
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+.portail-canvas canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+/* séparateur sous le canvas */
+.portail-1 .portail-canvas { border-bottom: 1px solid rgba(201,162,39,0.14); }
+.portail-2 .portail-canvas { border-bottom: 1px solid rgba(111,179,201,0.1); }
+.portail-3 .portail-canvas { border-bottom: 1px solid rgba(181,168,152,0.1); }
+
+.portail-meta {
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+.cta-arrow { transition: transform 0.3s ease; }
+.portail:hover .cta-arrow { transform: translateX(4px); }
+
+/* glow intérieur haut — visible au repos, amplifié au hover */
+.portail::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 55%;
+  border-radius: 3px 3px 0 0; pointer-events: none; z-index: 2;
+  opacity: 0.5; transition: opacity 0.45s ease;
+}
+.portail:hover::before { opacity: 1; }
+.portail-1::before { background: radial-gradient(ellipse 80% 65% at 50% 0%, rgba(201,162,39,0.13) 0%, transparent 70%); }
+.portail-2::before { background: radial-gradient(ellipse 80% 65% at 50% 0%, rgba(111,179,201,0.11) 0%, transparent 70%); }
+.portail-3::before { background: radial-gradient(ellipse 80% 65% at 50% 0%, rgba(107,143,113,0.1) 0%, transparent 70%); }
+
+/* reflet au sol — halo diffus sous la carte, visible uniquement au hover */
+.portail::after {
+  content: ''; position: absolute;
+  bottom: -28px; left: 8%; right: 8%; height: 28px;
+  border-radius: 50%; filter: blur(18px);
+  opacity: 0; transition: opacity 0.45s ease;
+  pointer-events: none; z-index: -1;
+}
+.portail:hover::after { opacity: 1; }
+.portail-1::after { background: rgba(201,162,39,0.35); }
+.portail-2::after { background: rgba(111,179,201,0.3); }
+.portail-3::after { background: rgba(181,168,152,0.28); }
+
+/* ── Footer ── */
+footer {
+  position: relative; z-index: 1; text-align: center;
+  padding: 2rem 0 3rem;
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: #3a3830; opacity: 0.7;
+}
+footer a { color: inherit; text-decoration: none; }
+footer a:hover { color: #c9a227; opacity: 1; }
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 4rem 0 3.5rem; }
+  header { padding: 2rem 0 0; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="wrapper">
+
+  <header>
+    <a href="https://studioexistence.com" class="logo">Studio Existence</a>
+    <div class="lang">
+      <button class="active" id="btn-fr" onclick="setLang('fr')">FR</button>
+      <span class="lang-sep">/</span>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="hero-eyebrow" data-fr="Studio Existence présente" data-en="Studio Existence presents">Studio Existence présente</p>
+    <h1 class="hero-title">
+      <span data-fr="Ce que l'univers <em>cache</em><br>à qui ne s'arrête pas." data-en="What the universe <em>hides</em><br>from those who rush.">Ce que l'univers <em>cache</em><br>à qui ne s'arrête pas.</span>
+    </h1>
+    <p class="hero-sub" data-fr="L'immensité des nombres, la permanence des constantes, l'abîme du temps. Trois voyages pour remettre l'humain — et tout le reste — à sa juste place." data-en="The immensity of numbers, the permanence of constants, the abyss of time. Three journeys to put humanity — and everything else — in its rightful place.">
+      L'immensité des nombres, la permanence des constantes, l'abîme du temps.<br>
+      Trois voyages pour remettre l'humain — et tout le reste — à sa juste place.
+    </p>
+  </section>
+
+  <div class="divider"><span class="divider-icon">· · ·</span></div>
+
+  <div class="portails">
+
+    <!-- ══ Portail 1 : Grands nombres ══ -->
+    <a class="portail portail-1" id="portail-1" href="https://www.studioexistence.com/big-numbers" target="_blank">
+      <div class="portail-ghost" aria-hidden="true">∞</div>
+      <div class="portail-canvas"><canvas id="canvas-nombres"></canvas></div>
+      <div class="portail-body">
+        <div class="portail-meta">
+          <span class="portail-num">I</span>
+          <span class="portail-tag" data-fr="Nombres" data-en="Numbers">Nombres</span>
+        </div>
+        <h2 class="portail-title" data-fr="Voyage au bout des <em>grands nombres</em>" data-en="Journey to the Edge of <em>Large Numbers</em>">Voyage au bout des <em>grands nombres</em></h2>
+        <p class="portail-accroche" data-fr="Du chiffre 1 jusqu'aux confins de ce que l'esprit humain a osé nommer — jusqu'au point où plus rien ne suffira, pas même les nombres eux-mêmes." data-en="From the number 1 to the farthest reaches of what the human mind has dared to name — until nothing is enough, not even the numbers themselves.">"Du chiffre 1 jusqu'aux confins de ce que l'esprit humain a osé nommer."</p>
+        <div class="portail-cta">
+          <span data-fr="Visiter" data-en="Visit">Visiter</span>
+          <span class="cta-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ══ Portail 2 : Constantes ══ -->
+    <a class="portail portail-2" id="portail-2" href="https://www.studioexistence.com/constantes" target="_blank">
+      <div class="portail-ghost" aria-hidden="true">π</div>
+      <div class="portail-canvas"><canvas id="canvas-constantes"></canvas></div>
+      <div class="portail-body">
+        <div class="portail-meta">
+          <span class="portail-num">II</span>
+          <span class="portail-tag" data-fr="Constantes" data-en="Constants">Constantes</span>
+        </div>
+        <h2 class="portail-title" data-fr="Les constantes qui tiennent <em>l'univers</em>" data-en="The Constants That Hold <em>the Universe</em>">Les constantes qui tiennent <em>l'univers</em></h2>
+        <p class="portail-accroche" data-fr="Certains nombres ne sont pas des inventions, mais des découvertes. Ils se cachent dans les cercles, la croissance du vivant, la lumière, la matière." data-en="Some numbers aren't inventions — they're discoveries. Hidden in circles, in growth, in light, in matter.">"Certains nombres ne sont pas des inventions, mais des découvertes."</p>
+        <div class="portail-cta">
+          <span data-fr="Visiter" data-en="Visit">Visiter</span>
+          <span class="cta-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ══ Portail 3 : Temps ══ -->
+    <a class="portail portail-3" id="portail-3" href="https://www.studioexistence.com/temps" target="_blank">
+      <div class="portail-ghost" aria-hidden="true">t</div>
+      <div class="portail-canvas"><canvas id="canvas-temps"></canvas></div>
+      <div class="portail-body">
+        <div class="portail-meta">
+          <span class="portail-num">III</span>
+          <span class="portail-tag" data-fr="Temps" data-en="Time">Temps</span>
+        </div>
+        <h2 class="portail-title" data-fr="L'échelle du temps" data-en="The Scale of Time">L'échelle du temps</h2>
+        <p class="portail-accroche" data-fr="De l'instant le plus bref que la physique autorise jusqu'à la dernière chose qui pourra jamais arriver. En trois actes." data-en="From the briefest instant physics allows to the last thing that will ever happen. In three acts.">"De l'instant le plus bref que la physique autorise jusqu'à la dernière chose qui pourra jamais arriver."</p>
+        <div class="portail-cta">
+          <span data-fr="Visiter" data-en="Visit">Visiter</span>
+          <span class="cta-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <footer>
+    <a href="https://studioexistence.com">studioexistence.com</a>
+  </footer>
+
+</div><!-- /wrapper -->
+
+<script>
+/* ── Starfield ─────────────────────────────────────────── */
+(function(){
+  const c = document.getElementById('starfield');
+  const ctx = c.getContext('2d');
+  function resize(){ c.width = window.innerWidth; c.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const stars = Array.from({length:260}, ()=>({
+    x: Math.random(), y: Math.random(),
+    r: Math.random()*1.1+0.2,
+    a: Math.random()*0.5+0.35,
+    tw: Math.random()*0.02+0.004,
+    p: Math.random()*Math.PI*2
+  }));
+  function draw(t){
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{
+      const alpha = s.a + Math.sin(t*s.tw+s.p)*0.2;
+      ctx.globalAlpha = Math.max(0, alpha);
+      ctx.fillStyle = '#f4f0e6';
+      ctx.beginPath(); ctx.arc(s.x*c.width, s.y*c.height, s.r, 0, Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+/* ── Canvas 1 : Grands nombres — chiffres gold, Fraunces ──── */
+(function(){
+  const c = document.getElementById('canvas-nombres');
+  const ctx = c.getContext('2d');
+  let W, H;
+  function resize(){ const r=c.parentElement.getBoundingClientRect(); c.width=W=r.width; c.height=H=r.height; }
+  resize(); window.addEventListener('resize', resize);
+
+  const labels = [
+    {base:'1', exp:null},
+    {base:'10', exp:null},
+    {base:'10', exp:'3'},
+    {base:'10', exp:'6'},
+    {base:'10', exp:'12'},
+    {base:'10', exp:'30'},
+    {base:'10', exp:'100'},
+    {base:'10', exp:'100 000'},
+  ];
+  let idx=0, progress=0;
+
+  function drawNum(item, cx, cy, alpha){
+    if(alpha<=0) return;
+    const bSize = item.exp ? 30 : 38;
+    const eSize = 15;
+    ctx.font = `900 ${bSize}px 'Fraunces', Georgia, serif`;
+    const bw = ctx.measureText(item.base).width;
+    let ew=0;
+    if(item.exp){ ctx.font=`400 ${eSize}px 'Space Mono', monospace`; ew=ctx.measureText(item.exp).width; }
+    const totalW = bw + (item.exp ? ew+2 : 0);
+    const sx = cx - totalW/2;
+    ctx.font = `900 ${bSize}px 'Fraunces', Georgia, serif`;
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillStyle=`rgba(201,162,39,${alpha})`;
+    ctx.fillText(item.base, sx, cy);
+    if(item.exp){
+      ctx.font=`400 ${eSize}px 'Space Mono', monospace`;
+      ctx.fillStyle=`rgba(244,228,160,${alpha*0.85})`;
+      ctx.fillText(item.exp, sx+bw+2, cy - bSize*0.28);
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // fond subtil or
+    const g=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,H);
+    g.addColorStop(0,'rgba(201,162,39,0.06)'); g.addColorStop(1,'transparent');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    const cy = H/2 - 5;
+    const cur=labels[idx], next=labels[(idx+1)%labels.length];
+    // actuel sort vers le haut
+    drawNum(cur, W/2, cy - progress*H*0.5, Math.max(0, 1-progress*2.5));
+    // suivant entre par le bas
+    if(progress>0.38){
+      const t2=(progress-0.38)/0.62;
+      drawNum(next, W/2, cy+(1-t2)*H*0.45, Math.min(1, t2/0.35)*0.92);
+    }
+    // points
+    for(let i=0;i<labels.length;i++){
+      const x=(i/(labels.length-1))*(W-40)+20;
+      ctx.beginPath(); ctx.arc(x, H-14, i<=idx?2:1.2, 0, Math.PI*2);
+      ctx.fillStyle=i<=idx?'rgba(201,162,39,0.75)':'rgba(201,162,39,0.18)';
+      ctx.fill();
+    }
+    progress+=0.007;
+    if(progress>=1){ progress=0; idx=(idx+1)%labels.length; }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── Canvas 2 : Constantes — symboles Palatino + accent bleu ── */
+(function(){
+  const c = document.getElementById('canvas-constantes');
+  const ctx = c.getContext('2d');
+  let W, H;
+  function resize(){ const r=c.parentElement.getBoundingClientRect(); c.width=W=r.width; c.height=H=r.height; }
+  resize(); window.addEventListener('resize', resize);
+
+  const symbols = [
+    {s:'π', x:.14, y:.38, ph:0,    sz:22, col:'111,179,201'},
+    {s:'e', x:.35, y:.65, ph:1.2,  sz:20, col:'111,179,201'},
+    {s:'φ', x:.55, y:.28, ph:2.4,  sz:20, col:'111,179,201'},
+    {s:'c', x:.72, y:.62, ph:0.7,  sz:18, col:'185,140,224'},
+    {s:'G', x:.50, y:.52, ph:3.1,  sz:28, col:'111,179,201'},
+    {s:'ℏ', x:.28, y:.72, ph:1.8,  sz:18, col:'111,179,201'},
+    {s:'α', x:.84, y:.40, ph:2.9,  sz:18, col:'185,140,224'},
+    {s:'Λ', x:.10, y:.58, ph:0.4,  sz:18, col:'111,179,201'},
+    {s:'i', x:.64, y:.76, ph:1.5,  sz:18, col:'185,140,224'},
+  ];
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const t=Date.now()/1000;
+    const g=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,H);
+    g.addColorStop(0,'rgba(111,179,201,0.05)'); g.addColorStop(1,'transparent');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    symbols.forEach(sym=>{
+      const breathe=Math.sin(t*0.65+sym.ph)*0.5+0.5;
+      const alpha=0.22+breathe*0.65;
+      const yOff=Math.sin(t*0.45+sym.ph)*3.5;
+      const fs=Math.round(sym.sz*(0.88+breathe*0.2));
+      ctx.font=`500 ${fs}px "Palatino Linotype", Palatino, Georgia, serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle=`rgba(${sym.col},${alpha})`;
+      ctx.fillText(sym.s, sym.x*W, sym.y*H+yOff);
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── Canvas 3 : Temps — timeline sable/brun ───────────────── */
+(function(){
+  const c = document.getElementById('canvas-temps');
+  const ctx = c.getContext('2d');
+  let W, H;
+  function resize(){ const r=c.parentElement.getBoundingClientRect(); c.width=W=r.width; c.height=H=r.height; }
+  resize(); window.addEventListener('resize', resize);
+
+  const epochs = [
+    {label:'tₚ',      pos:.03,  col:'rgba(122,110,96,0.5)'},
+    {label:'big bang', pos:.13, col:'rgba(181,168,152,0.6)'},
+    {label:'vie',      pos:.48, col:'rgba(237,231,219,0.95)'},
+    {label:'étoiles',  pos:.73, col:'rgba(181,168,152,0.6)'},
+    {label:'10¹⁰⁰',   pos:.97, col:'rgba(122,110,96,0.35)'},
+  ];
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const t=Date.now()/1000;
+    const g=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,H);
+    g.addColorStop(0,'rgba(181,168,152,0.04)'); g.addColorStop(1,'transparent');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    const lY=H/2, x0=16, x1=W-16;
+    const lg=ctx.createLinearGradient(x0,0,x1,0);
+    lg.addColorStop(0,'rgba(122,110,96,0.08)');
+    lg.addColorStop(.44,'rgba(181,168,152,0.65)');
+    lg.addColorStop(.56,'rgba(181,168,152,0.65)');
+    lg.addColorStop(1,'rgba(122,110,96,0.05)');
+    ctx.strokeStyle=lg; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x0,lY); ctx.lineTo(x1,lY); ctx.stroke();
+
+    epochs.forEach(ep=>{
+      const x=x0+ep.pos*(x1-x0);
+      const isNow=ep.label==='vie';
+      ctx.strokeStyle=ep.col; ctx.lineWidth=isNow?1.5:1;
+      ctx.beginPath(); ctx.moveTo(x,lY-(isNow?12:6)); ctx.lineTo(x,lY+(isNow?12:6)); ctx.stroke();
+      if(isNow){
+        const pulse=Math.abs(Math.sin(t*1.1))*0.55;
+        ctx.beginPath(); ctx.arc(x,lY,3+pulse*4.5,0,Math.PI*2);
+        ctx.strokeStyle=`rgba(237,231,219,${0.4-pulse*0.32})`; ctx.lineWidth=1; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x,lY,3,0,Math.PI*2);
+        ctx.fillStyle='rgba(237,231,219,0.95)'; ctx.fill();
+      }
+      const lbY=isNow?lY-23:(ep.pos<.5?lY-17:lY+21);
+      ctx.font=isNow?"400 10px 'SF Mono',Menlo,monospace":"300 8px 'SF Mono',Menlo,monospace";
+      ctx.textAlign=ep.pos<.12?'left':ep.pos>.88?'right':'center';
+      ctx.fillStyle=ep.col; ctx.fillText(ep.label,x,lbY);
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── Lang switcher ─────────────────────────────────────── */
+function setLang(lang){
+  document.getElementById('btn-fr').classList.toggle('active', lang==='fr');
+  document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-fr]').forEach(el=>{
+    const v=el.getAttribute('data-'+lang); if(v) el.innerHTML=v;
+  });
+  const urls={
+    'portail-1':{fr:'https://www.studioexistence.com/big-numbers', en:'https://www.studioexistence.com/big-numbers/index-en.html'},
+    'portail-2':{fr:'https://www.studioexistence.com/constantes',  en:'https://www.studioexistence.com/constantes/index-en.html'},
+    'portail-3':{fr:'https://www.studioexistence.com/temps',       en:'https://www.studioexistence.com/temps/index-en.html'},
+  };
+  Object.entries(urls).forEach(([id,u])=>{ const el=document.getElementById(id); if(el) el.href=u[lang]; });
+}
+</script>
+</body>
+</html>

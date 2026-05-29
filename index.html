@@ -1131,33 +1131,75 @@
     #droid .card-badge { color: #e8a020; border-color: #e8a020; }
 
     /* ══════════════════════════════
-       CARD — GRANDS NOMBRES
-       nuit étoilée + or (raccord avec le projet)
+       CARD — GRANDS NOMBRES  (masquée — remplacée par la card Voyages)
     ══════════════════════════════ */
-    #bignum { min-height: 220px; }
-    #bignum .card-bg { background: #05050a; background-image: radial-gradient(ellipse at 50% 35%, rgba(201,162,39,0.12) 0%, transparent 65%); }
-    #bignum .card-bottom { background: #0a0a12; color: #f4f0e6; border-color: rgba(201,162,39,.14); }
-    #bignum .card-name { color: #f4f0e6; }
-    #bignum .card-desc { color: #f4f0e6; }
-    #bignum .card-badge { color: #c9a227; border-color: #c9a227; }
-    #bignum .card-visit-hint { color: #c9a227; }
+    #bignum { display: none; }
 
     /* ══════════════════════════════
-       CARD — LES CONSTANTES
-       cosmos profond : violet + étoiles
+       CARD — LES CONSTANTES  (masquée — remplacée par la card Voyages)
     ══════════════════════════════ */
-    #constantes { min-height: 220px; }
-    #constantes .card-bg {
-      background: #07050f;
-      background-image:
-        radial-gradient(ellipse at 30% 50%, rgba(155,143,208,0.18) 0%, transparent 55%),
-        radial-gradient(ellipse at 75% 20%, rgba(100,80,180,0.10) 0%, transparent 45%);
+    #constantes { display: none; }
+
+    /* ══════════════════════════════
+       CARD — LES VOYAGES
+       Portail des trois expériences cosmiques
+    ══════════════════════════════ */
+    #voyages {
+      min-height: 280px;
+      background: #05050a;
+      border-color: rgba(201,162,39,0.45);
+      overflow: hidden;
     }
-    #constantes .card-bottom { background: #0d0b1a; color: #e8e4f8; border-color: rgba(155,143,208,.18); }
-    #constantes .card-name   { color: #e8e4f8; }
-    #constantes .card-desc   { color: #c8c4e8; }
-    #constantes .card-badge  { color: #9b8fd0; border-color: #9b8fd0; }
-    #constantes .card-visit-hint { color: #9b8fd0; }
+    #voyages .card-bg {
+      background: #05050a;
+      background-image:
+        radial-gradient(ellipse at 20% 60%, rgba(201,162,39,0.09) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 30%, rgba(111,179,201,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 55% 80%, rgba(181,168,152,0.05) 0%, transparent 45%);
+    }
+    #voyages .card-bottom {
+      background: #0a0a10;
+      color: #f4f0e6;
+      border-color: rgba(201,162,39,0.14);
+    }
+    #voyages .card-name   { color: #f4f0e6; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: 1.25rem; letter-spacing: 0.02em; }
+    #voyages .card-desc   { color: #b0a898; }
+    #voyages .card-badge  { color: #c9a227; border-color: rgba(201,162,39,0.5); }
+    #voyages .card-visit-hint { color: #c9a227; border-color: rgba(201,162,39,0.3); }
+
+    /* canvas plein écran dans le card-top */
+    #voyagesCanvas { display: block; width: 100%; height: 100%; }
+
+    /* trois mini-labels des voyages dans le card-top */
+    .voyages-labels {
+      position: absolute;
+      bottom: 1.2rem; left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .voyages-label {
+      font-family: 'Space Mono', monospace;
+      font-size: .48rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: .4em;
+    }
+    .voyages-label-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .vl-1 { color: #c9a227; }
+    .vl-1 .voyages-label-dot { background: #c9a227; }
+    .vl-2 { color: #6fb3c9; }
+    .vl-2 .voyages-label-dot { background: #6fb3c9; }
+    .vl-3 { color: #b5a898; }
+    .vl-3 .voyages-label-dot { background: #b5a898; }
     /* ══ ENTRANCE ANIMATION ══ */
     .card {
       opacity: 0;
@@ -1353,40 +1395,25 @@
 
 
 
-  <!-- GRANDS NOMBRES -->
-  <a class="card" id="bignum" href="/big-numbers" target="_blank" rel="noopener">
+  <!-- LES VOYAGES (remplace Grands Nombres + Constantes) -->
+  <a class="card card-full" id="voyages" href="/voyages" target="_blank" rel="noopener">
     <div class="card-bg"></div>
     <div class="card-content">
-      <div class="card-top" style="padding:0;overflow:hidden;position:relative;">
-        <canvas id="bignumCanvas" style="width:100%;height:100%;display:block;"></canvas>
+      <div class="card-top" style="padding:0;overflow:hidden;position:relative;min-height:200px;">
+        <canvas id="voyagesCanvas"></canvas>
+        <div class="voyages-labels">
+          <span class="voyages-label vl-1"><span class="voyages-label-dot"></span>Grands nombres</span>
+          <span class="voyages-label vl-2"><span class="voyages-label-dot"></span>Constantes de l'univers</span>
+          <span class="voyages-label vl-3"><span class="voyages-label-dot"></span>Échelle du temps</span>
+        </div>
       </div>
       <div class="card-bottom">
         <div class="card-row">
-          <span class="card-name">Voyage au bout des grands nombres</span>
+          <span class="card-name">Trois voyages au bout de ce que l'univers <em>cache</em></span>
           <span class="card-badge">Live ●</span>
         </div>
-        <p class="card-desc">Un voyage du chiffre 1 jusqu'aux confins de ce que l'esprit humain a osé nommer — un googol, un googolplex, Graham, TREE(3), Rayo. À chaque étape : quelle distance faudrait-il parcourir pour atteindre le nombre suivant ?</p>
-        <span class="card-visit-hint">studioexistence.com/big-numbers ↗</span>
-      </div>
-    </div>
-  </a>
-
-
-
-  <!-- LES CONSTANTES DE L'UNIVERS -->
-  <a class="card" id="constantes" href="https://www.studioexistence.com/constantes" target="_blank" rel="noopener">
-    <div class="card-bg"></div>
-    <div class="card-content">
-      <div class="card-top" style="padding:0;overflow:hidden;position:relative;">
-        <canvas id="constCanvas" style="width:100%;height:100%;display:block;"></canvas>
-      </div>
-      <div class="card-bottom">
-        <div class="card-row">
-          <span class="card-name">Les constantes de l'univers</span>
-          <span class="card-badge">Live ●</span>
-        </div>
-        <p class="card-desc">Quatorze nombres qui tiennent l'univers : π, e, i, φ, c, G, ℏ, α et les autres. Un voyage interactif à travers les constantes mathématiques et physiques — de la beauté nécessaire à l'énigme du vide.</p>
-        <span class="card-visit-hint">studioexistence.com/constantes ↗</span>
+        <p class="card-desc">L'immensité des nombres, la permanence des constantes, l'abîme du temps. Trois expériences interactives pour remettre l'humain — et tout le reste — à sa juste place.</p>
+        <span class="card-visit-hint">studioexistence.com/voyages ↗</span>
       </div>
     </div>
   </a>
@@ -1660,171 +1687,123 @@ if (droidCanvas) {
   requestAnimationFrame(drawDroid);
 }
 
-/* ── Grands nombres: chiffres flottant vers l'infini ── */
-const bignumCanvas = document.getElementById('bignumCanvas');
-if (bignumCanvas) {
-  const bctx = bignumCanvas.getContext('2d');
-  function resizeBN(){ bignumCanvas.width=bignumCanvas.offsetWidth*devicePixelRatio; bignumCanvas.height=bignumCanvas.offsetHeight*devicePixelRatio; }
-  resizeBN(); window.addEventListener('resize', resizeBN);
-  const GOLD='201,162,39';
-  const TOKENS=['1','10','100','1000','10⁶','10⁹','10²³','10⁸⁰','googol','10¹⁰⁰','googolplex','Graham','TREE(3)','BB(n)','Rayo','∞','42','7','9⁹','π','×10','52!'];
-  // étoiles de fond
-  let bnStars=[];
-  function seedStars(){
-    const W=bignumCanvas.width,H=bignumCanvas.height;
-    bnStars=Array.from({length:Math.max(30,Math.floor(W*H/14000))},()=>({
-      x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.2+.2,
-      a:Math.random()*.5+.15, tw:Math.random()*.02+.004, p:Math.random()*Math.PI*2
+/* ── Voyages : canvas panoramique (3 univers côte à côte) ── */
+const voyagesCanvas = document.getElementById('voyagesCanvas');
+if (voyagesCanvas) {
+  const vctx = voyagesCanvas.getContext('2d');
+
+  function resizeVC() {
+    voyagesCanvas.width  = voyagesCanvas.offsetWidth  * devicePixelRatio;
+    voyagesCanvas.height = voyagesCanvas.offsetHeight * devicePixelRatio;
+  }
+  resizeVC();
+  window.addEventListener('resize', resizeVC);
+
+  // Étoiles communes
+  let vstars = [];
+  function seedVStars() {
+    const W = voyagesCanvas.width, H = voyagesCanvas.height;
+    vstars = Array.from({ length: Math.max(60, Math.floor(W * H / 8000)) }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.1 + 0.2,
+      a: Math.random() * 0.45 + 0.3,
+      tw: Math.random() * 0.018 + 0.003,
+      p: Math.random() * Math.PI * 2
     }));
   }
-  seedStars(); window.addEventListener('resize', seedStars);
-  // tokens flottants : montent en grandissant
-  function mkToken(){
-    return {
-      txt:TOKENS[Math.floor(Math.random()*TOKENS.length)],
-      x:0.12+Math.random()*0.76,
-      y:1.12+Math.random()*0.25,
-      speed:0.0011+Math.random()*0.0018,
-      size:0.04+Math.random()*0.05,
-      grow:1.0009+Math.random()*0.0014,
-      drift:(Math.random()-0.5)*0.0006
-    };
-  }
-  let bnTokens=Array.from({length:14},()=>{ const t=mkToken(); t.y=Math.random()*1.2; return t; });
-  function drawBignum(ts){
-    requestAnimationFrame(drawBignum);
-    const W=bignumCanvas.width,H=bignumCanvas.height;
-    bctx.clearRect(0,0,W,H);
-    bctx.fillStyle='#05050a'; bctx.fillRect(0,0,W,H);
-    // halo doré central
-    const halo=bctx.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,W*.55);
-    halo.addColorStop(0,`rgba(${GOLD},0.10)`); halo.addColorStop(1,'rgba(0,0,0,0)');
-    bctx.fillStyle=halo; bctx.fillRect(0,0,W,H);
-    // étoiles scintillantes
-    bnStars.forEach(s=>{
-      const al=Math.max(0,s.a+Math.sin(ts*0.001*s.tw*60+s.p)*0.18);
-      bctx.globalAlpha=al; bctx.fillStyle='#f4f0e6';
-      bctx.beginPath(); bctx.arc(s.x,s.y,s.r,0,Math.PI*2); bctx.fill();
+  seedVStars();
+  window.addEventListener('resize', seedVStars);
+
+  // Symboles pour chaque tiers
+  const S1 = [  // grands nombres — or
+    { txt: '∞', x: 0.08, y: 0.38, ph: 0,   sz: 0.55, col: '201,162,39' },
+    { txt: 'Rayo', x: 0.22, y: 0.62, ph: 1.4, sz: 0.18, col: '201,162,39' },
+    { txt: '10¹⁰⁰', x: 0.15, y: 0.25, ph: 2.1, sz: 0.16, col: '244,228,160' },
+    { txt: 'Graham', x: 0.28, y: 0.75, ph: 0.7, sz: 0.13, col: '201,162,39' },
+  ];
+  const S2 = [  // constantes — bleu
+    { txt: 'π', x: 0.41, y: 0.35, ph: 0.5, sz: 0.48, col: '111,179,201' },
+    { txt: 'e',  x: 0.55, y: 0.65, ph: 2.0, sz: 0.32, col: '111,179,201' },
+    { txt: 'φ', x: 0.48, y: 0.22, ph: 1.1, sz: 0.22, col: '185,140,224' },
+    { txt: 'ℏ',  x: 0.62, y: 0.55, ph: 3.2, sz: 0.20, col: '111,179,201' },
+    { txt: 'α', x: 0.44, y: 0.80, ph: 1.8, sz: 0.17, col: '185,140,224' },
+  ];
+  const S3 = [  // temps — sable
+    { txt: 't',  x: 0.78, y: 0.40, ph: 0.3, sz: 0.50, col: '181,168,152' },
+    { txt: '10¹⁰⁰ ans', x: 0.88, y: 0.70, ph: 2.5, sz: 0.12, col: '181,168,152' },
+    { txt: 'tₚ', x: 0.72, y: 0.68, ph: 1.3, sz: 0.16, col: '237,231,219' },
+    { txt: '13,8 Ga', x: 0.92, y: 0.28, ph: 0.9, sz: 0.12, col: '181,168,152' },
+  ];
+  const allSyms = [...S1, ...S2, ...S3];
+
+  function drawVoyages(ts) {
+    requestAnimationFrame(drawVoyages);
+    const W = voyagesCanvas.width, H = voyagesCanvas.height;
+    const t = ts / 1000;
+
+    vctx.clearRect(0, 0, W, H);
+
+    // fond global
+    vctx.fillStyle = '#05050a';
+    vctx.fillRect(0, 0, W, H);
+
+    // halos colorés par tiers
+    const t1 = W / 3, t2 = W * 2 / 3;
+    const h1 = vctx.createRadialGradient(t1 * 0.5, H * 0.5, 0, t1 * 0.5, H * 0.5, t1 * 0.7);
+    h1.addColorStop(0, 'rgba(201,162,39,0.1)'); h1.addColorStop(1, 'transparent');
+    vctx.fillStyle = h1; vctx.fillRect(0, 0, t1, H);
+
+    const h2 = vctx.createRadialGradient(t1 + t1 * 0.5, H * 0.5, 0, t1 + t1 * 0.5, H * 0.5, t1 * 0.7);
+    h2.addColorStop(0, 'rgba(111,179,201,0.08)'); h2.addColorStop(1, 'transparent');
+    vctx.fillStyle = h2; vctx.fillRect(t1, 0, t1, H);
+
+    const h3 = vctx.createRadialGradient(t2 + t1 * 0.5, H * 0.5, 0, t2 + t1 * 0.5, H * 0.5, t1 * 0.7);
+    h3.addColorStop(0, 'rgba(181,168,152,0.07)'); h3.addColorStop(1, 'transparent');
+    vctx.fillStyle = h3; vctx.fillRect(t2, 0, t1, H);
+
+    // séparateurs verticaux subtils
+    [t1, t2].forEach(x => {
+      const sg = vctx.createLinearGradient(x, 0, x, H);
+      sg.addColorStop(0, 'transparent');
+      sg.addColorStop(0.3, 'rgba(255,255,255,0.05)');
+      sg.addColorStop(0.7, 'rgba(255,255,255,0.05)');
+      sg.addColorStop(1, 'transparent');
+      vctx.strokeStyle = sg;
+      vctx.lineWidth = 1;
+      vctx.beginPath(); vctx.moveTo(x, 0); vctx.lineTo(x, H); vctx.stroke();
     });
-    bctx.globalAlpha=1;
-    // grand ∞ en filigrane
-    bctx.font=`${Math.round(H*0.5)}px Georgia, serif`;
-    bctx.textAlign='center'; bctx.textBaseline='middle';
-    bctx.fillStyle=`rgba(${GOLD},${0.07+Math.sin(ts*0.0012)*0.02})`;
-    bctx.fillText('∞', W*0.5, H*0.42);
-    // tokens flottants
-    bctx.textAlign='center'; bctx.textBaseline='middle';
-    bnTokens.forEach(t=>{
-      t.y-=t.speed; t.x+=t.drift; t.size*=t.grow;
-      if(t.y< -0.15 || t.size>0.22){ Object.assign(t, mkToken()); }
-      const fade = t.y>0.85 ? (1.12-t.y)/0.27 : (t.y<0.12 ? Math.max(0,t.y/0.12) : 1);
-      const px=t.x*W, py=t.y*H, fs=t.size*H;
-      bctx.font=`${Math.round(fs)}px Georgia, serif`;
-      bctx.fillStyle=`rgba(${GOLD},${Math.min(0.85,Math.max(0,fade))*0.9})`;
-      bctx.fillText(t.txt, px, py);
+
+    // étoiles
+    vstars.forEach(s => {
+      const al = Math.max(0, s.a + Math.sin(t * s.tw * 6 + s.p) * 0.2);
+      vctx.globalAlpha = al;
+      vctx.fillStyle = '#f4f0e6';
+      vctx.beginPath(); vctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); vctx.fill();
     });
-    // léger vignettage bas pour fondre vers la barre d'info
-    const vg=bctx.createLinearGradient(0,H*0.7,0,H);
-    vg.addColorStop(0,'rgba(5,5,10,0)'); vg.addColorStop(1,'rgba(5,5,10,0.55)');
-    bctx.fillStyle=vg; bctx.fillRect(0,H*0.7,W,H*0.3);
-  }
-  requestAnimationFrame(drawBignum);
-}
-
-/* ── Les Constantes : symboles qui dérivent dans le cosmos ── */
-const constCanvas = document.getElementById('constCanvas');
-if (constCanvas) {
-  const cctx = constCanvas.getContext('2d');
-  const SYMBOLS = ['π','e','φ','i','c','G','ℏ','α','Λ','k_B','γ','√2','H₀','0 K'];
-  const PURPLE = '155,143,208';
-  const STAR_C = '220,215,245';
-
-  function resizeCC(){
-    constCanvas.width  = constCanvas.offsetWidth  * devicePixelRatio;
-    constCanvas.height = constCanvas.offsetHeight * devicePixelRatio;
-  }
-  resizeCC();
-  window.addEventListener('resize', resizeCC);
-
-  // étoiles de fond
-  const stars = Array.from({length: 80}, () => ({
-    x: Math.random(), y: Math.random(),
-    r: 0.3 + Math.random() * 1.1,
-    a: 0.2 + Math.random() * 0.7,
-    tw: 2 + Math.random() * 4,
-    ph: Math.random() * Math.PI * 2,
-  }));
-
-  // symboles flottants
-  function mkSym() {
-    const side = Math.random() < 0.5 ? 0 : 1;
-    return {
-      txt:   SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
-      x:     0.05 + Math.random() * 0.90,
-      y:     side === 0 ? 1.05 : -0.08,
-      vy:    (side === 0 ? -1 : 1) * (0.00018 + Math.random() * 0.00025),
-      vx:    (Math.random() - 0.5) * 0.00012,
-      size:  0.045 + Math.random() * 0.055,
-      alpha: 0.0,
-      fade:  'in',
-    };
-  }
-  const syms = Array.from({length: 7}, mkSym);
-
-  function drawConst() {
-    const W = constCanvas.width, H = constCanvas.height;
-    cctx.clearRect(0, 0, W, H);
-
-    // fond dégradé
-    const bg = cctx.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, '#07050f');
-    bg.addColorStop(1, '#100d20');
-    cctx.fillStyle = bg;
-    cctx.fillRect(0, 0, W, H);
-
-    // étoiles scintillantes
-    const now = performance.now() / 1000;
-    stars.forEach(s => {
-      const a = s.a * (0.5 + 0.5 * Math.sin(now / s.tw + s.ph));
-      cctx.beginPath();
-      cctx.arc(s.x * W, s.y * H, s.r * devicePixelRatio, 0, Math.PI * 2);
-      cctx.fillStyle = `rgba(${STAR_C},${a})`;
-      cctx.fill();
-    });
+    vctx.globalAlpha = 1;
 
     // symboles
-    syms.forEach((s, idx) => {
-      // mouvement
-      s.x += s.vx;
-      s.y += s.vy;
-
-      // fade in / out
-      const edge = 0.12;
-      const distEdge = Math.min(s.y, 1 - s.y);
-      if (s.y < -0.12 || s.y > 1.12) {
-        Object.assign(syms[idx], mkSym());
-        return;
-      }
-      const fadeAlpha = distEdge < edge ? Math.max(0, distEdge / edge) : 1;
-      const alpha = Math.min(0.72, fadeAlpha) * 0.9;
-
-      const fs = s.size * H;
-      cctx.font = `300 ${Math.round(fs)}px 'Cormorant Garamond', Georgia, serif`;
-      cctx.fillStyle = `rgba(${PURPLE},${alpha})`;
-      cctx.textAlign = 'center';
-      cctx.fillText(s.txt, s.x * W, s.y * H);
+    allSyms.forEach(s => {
+      const breathe = Math.sin(t * 0.6 + s.ph) * 0.5 + 0.5;
+      const alpha = 0.25 + breathe * 0.6;
+      const yOff = Math.sin(t * 0.4 + s.ph) * H * 0.025;
+      const fs = s.sz * H;
+      vctx.font = `300 ${Math.round(fs)}px 'Cormorant Garamond', Georgia, serif`;
+      vctx.textAlign = 'center';
+      vctx.textBaseline = 'middle';
+      vctx.fillStyle = `rgba(${s.col},${alpha})`;
+      vctx.fillText(s.txt, s.x * W, s.y * H + yOff);
     });
 
-    // vignette bas
-    const vg = cctx.createLinearGradient(0, H * 0.65, 0, H);
-    vg.addColorStop(0, 'rgba(7,5,15,0)');
-    vg.addColorStop(1, 'rgba(7,5,15,0.65)');
-    cctx.fillStyle = vg;
-    cctx.fillRect(0, H * 0.65, W, H * 0.35);
-
-    requestAnimationFrame(drawConst);
+    // vignette bords gauche/droite
+    const vgL = vctx.createLinearGradient(0, 0, W * 0.06, 0);
+    vgL.addColorStop(0, 'rgba(5,5,10,0.5)'); vgL.addColorStop(1, 'transparent');
+    vctx.fillStyle = vgL; vctx.fillRect(0, 0, W * 0.06, H);
+    const vgR = vctx.createLinearGradient(W * 0.94, 0, W, 0);
+    vgR.addColorStop(0, 'transparent'); vgR.addColorStop(1, 'rgba(5,5,10,0.5)');
+    vctx.fillStyle = vgR; vctx.fillRect(W * 0.94, 0, W * 0.06, H);
   }
-  requestAnimationFrame(drawConst);
+  requestAnimationFrame(drawVoyages);
 }
 
 /* ── Dear Someone: floating dots ── */
