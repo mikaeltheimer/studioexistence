@@ -502,6 +502,7 @@ footer.end a:hover { color: var(--ink); }
 
 <div id="rail"></div>
 <button id="theme-toggle" type="button" aria-label="Thème clair / sombre" title="Thème clair / sombre">☾</button>
+<a id="lang-toggle" href="https://studioexistence.com/temps/index-en.html" title="English version" style="position:fixed;top:16px;right:66px;z-index:210;width:38px;height:38px;border-radius:999px;background:var(--bg-soft);border:1px solid var(--line);color:var(--ink-dim);font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;cursor:pointer;display:grid;place-items:center;text-decoration:none;transition:border-color 0.25s,color 0.25s,background 0.25s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--ink)'" onmouseout="this.style.borderColor='var(--line)';this.style.color='var(--ink-dim)'">EN</a>
 <canvas id="stars"></canvas>
 <div id="grain"></div>
 
@@ -756,46 +757,11 @@ footer.end a:hover { color: var(--ink); }
   <p class="dur-tagline reveal">Le temps qu'il faut à la lumière pour traverser le cœur de la matière.</p>
   <div class="dur-value reveal">~10⁻²³ s = ~10 zeptosecondes<br>zeptoseconde = 10⁻²¹ s = un milliardième de milliardième de milliseconde</div>
 
-  <p class="pull reveal">10 zeptosecondes. Ce n'est pas une durée qu'on peut comparer à quoi que ce soit de familier — à moins de comparer les comparaisons elles-mêmes.</p>
+  <p class="pull reveal">Si la traversée du noyau durait le temps d'un clignement d'œil, ce clignement durerait plusieurs dizaines de milliards d'années — plus longtemps que l'univers n'existe.</p>
 
-  <!-- VIZ : double rapport symétrique -->
-  <figure class="viz reveal" id="viz-noyau">
-    <svg viewBox="0 0 680 190" xmlns="http://www.w3.org/2000/svg" id="noyau-svg">
-      <!-- Titre -->
-      <text x="340" y="20" font-family="monospace" font-size="10" fill="var(--muted)" text-anchor="middle" opacity="0.8">Deux rapports symétriques</text>
-
-      <!-- Colonne gauche : 10 zs → 1 s -->
-      <text x="170" y="44" font-family="monospace" font-size="9.5" fill="#c47a3a" text-anchor="middle">10 zeptosecondes → 1 seconde</text>
-      <rect x="20" y="52" width="300" height="22" rx="3" fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1"/>
-      <rect x="20" y="52" width="1.5" height="22" rx="1" fill="#c47a3a"/>
-      <text x="28" y="67" font-family="monospace" font-size="9" fill="#c47a3a">10 zs</text>
-      <text x="322" y="67" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="end">1 s</text>
-      <text x="170" y="92" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle">rapport : × 10²²</text>
-
-      <!-- Égal central -->
-      <text x="340" y="72" font-family="monospace" font-size="18" fill="var(--ink)" text-anchor="middle" opacity="0.5">=</text>
-
-      <!-- Colonne droite : 1 s → 317 milliards d'années -->
-      <text x="510" y="44" font-family="monospace" font-size="9.5" fill="#4a7fa5" text-anchor="middle">1 seconde → 317 milliards d'années</text>
-      <rect x="360" y="52" width="300" height="22" rx="3" fill="var(--bg-soft)" stroke="var(--line)" stroke-width="1"/>
-      <rect x="360" y="52" width="1.5" height="22" rx="1" fill="#4a7fa5"/>
-      <text x="368" y="67" font-family="monospace" font-size="9" fill="#4a7fa5">1 s</text>
-      <text x="662" y="67" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="end">317 Ga</text>
-      <text x="510" y="92" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle">rapport : × 10²²</text>
-
-      <!-- Ligne de séparation -->
-      <line x1="40" y1="108" x2="640" y2="108" stroke="var(--line)" stroke-width="1" opacity="0.4"/>
-
-      <!-- Conclusion -->
-      <text x="340" y="130" font-family="monospace" font-size="10.5" fill="var(--ink)" text-anchor="middle">10 zs est à 1 s ce que 1 s est à 317 milliards d'années.</text>
-      <text x="340" y="150" font-family="monospace" font-size="9.5" fill="var(--muted)" text-anchor="middle">L'âge de l'univers est 13,8 milliards d'années — soit environ 23 fois moins.</text>
-      <text x="340" y="170" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle" opacity="0.65">10 zs = 10⁻²² s · inverse = 10²² s = 10²² / 3,15×10⁷ ans ≈ 3,17×10¹⁴ ans = 317 milliards d'années</text>
-    </svg>
-    <figcaption>Les deux rapports sont exactement égaux : × 10²². Chacune des barres ci-dessus représente la même distance relative.</figcaption>
-  </figure>
-
-  <p class="reveal">Un noyau atomique mesure environ un femtomètre — un millionième de milliardième de mètre. La lumière, qui parcourt 300 000 kilomètres en une seconde, met 10 zeptosecondes pour le traverser. C'est l'échelle à laquelle opère la <strong>force forte</strong> — la force qui colle les quarks en protons, et les protons et neutrons en noyaux.</p>
-  <p class="reveal">Si la force forte n'agissait pas à cette vitesse et à cette échelle, les noyaux atomiques ne seraient pas stables. Les protons et les neutrons se disséminaient. Pas d'atomes, pas de chimie, pas de matière complexe. Tout ce qui existe — chaque étoile, chaque planète, chaque molécule dans ton corps — tient parce que quelque chose se passe en 10 zeptosecondes, sans jamais s'arrêter, depuis le début de l'univers.</p>
+  <p class="reveal">Un noyau atomique mesure environ un femtomètre — un millionième de milliardième de mètre. La lumière, qui parcourt 300 000 kilomètres en une seconde, met 10 zeptosecondes pour le traverser.</p>
+  <p class="reveal">C'est à cette même échelle — quelques femtomètres — qu'opère la <strong>force forte</strong>, la force qui lie les quarks en protons, et les protons et neutrons en noyaux. Ce n'est pas un lien de cause à effet : la durée de traversée et la portée de la force forte ne se déterminent pas l'une l'autre. Mais elles habitent le même territoire. La force forte est une force à portée extrêmement courte — elle s'éteint au-delà de quelques femtomètres, comme si elle n'existait pas. 10 zeptosecondes, c'est le temps que met la lumière pour parcourir ce domaine. C'est la taille du royaume.</p>
+  <p class="reveal">Si la force forte n'existait pas, les noyaux atomiques se désagrégeraient instantanément. Les protons se repoussent — ils portent tous une charge positive, et les charges identiques se repoussent. C'est la force forte qui l'emporte sur cette répulsion, à condition que les protons soient suffisamment proches. Résultat : chaque atome de ton corps tient parce que, à l'échelle du femtomètre, une force invisiblement courte maintient sa cohésion — sans jamais s'arrêter, depuis le début de l'univers.</p>
 </section>
 
 
@@ -844,50 +810,7 @@ footer.end a:hover { color: var(--ink); }
 
   <h3 class="rubric reveal">La distance jusqu'à toi</h3>
 
-  <!-- VIZ : ligne pointillée tₚ → 1 s, avec description de la distance vers l'âge de l'univers -->
-  <figure class="viz reveal" id="viz-planck">
-    <svg viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg">
-
-      <!-- Les deux points : tₚ et 1 s -->
-      <circle cx="80" cy="72" r="5" fill="#c47a3a"/>
-      <circle cx="240" cy="72" r="5" fill="#9a8e7e"/>
-
-      <!-- Ligne pleine entre les deux : 10 cm -->
-      <line x1="85" y1="72" x2="235" y2="72" stroke="#c47a3a" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>
-
-      <!-- Accolade / mesure -->
-      <line x1="80" y1="88" x2="240" y2="88" stroke="var(--muted)" stroke-width="1" opacity="0.4"/>
-      <line x1="80" y1="84" x2="80" y2="92" stroke="var(--muted)" stroke-width="1" opacity="0.4"/>
-      <line x1="240" y1="84" x2="240" y2="92" stroke="var(--muted)" stroke-width="1" opacity="0.4"/>
-      <text x="160" y="104" font-family="monospace" font-size="9" fill="var(--muted)" text-anchor="middle" opacity="0.7">10 cm</text>
-
-      <!-- Labels des deux points -->
-      <text x="80" y="56" font-family="monospace" font-size="10" fill="#c47a3a" text-anchor="middle">tₚ</text>
-      <text x="240" y="56" font-family="monospace" font-size="10" fill="var(--ink-dim)" text-anchor="middle">1 seconde</text>
-
-      <!-- Ligne pointillée vers la droite qui s'efface -->
-      <line x1="245" y1="72" x2="620" y2="72" stroke="var(--accent-cosmic)" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.5"/>
-      <defs>
-        <linearGradient id="fade-planck" x1="0" x2="1" y1="0" y2="0">
-          <stop offset="0%" stop-color="var(--bg)" stop-opacity="0"/>
-          <stop offset="100%" stop-color="var(--bg)" stop-opacity="1"/>
-        </linearGradient>
-      </defs>
-      <rect x="420" y="58" width="220" height="30" fill="url(#fade-planck)"/>
-      <polygon points="622,68 632,72 622,76" fill="var(--accent-cosmic)" opacity="0.35"/>
-
-      <!-- Label âge univers -->
-      <text x="636" y="62" font-family="monospace" font-size="9" fill="var(--accent-cosmic)" text-anchor="start" opacity="0.6">âge de</text>
-      <text x="636" y="74" font-family="monospace" font-size="9" fill="var(--accent-cosmic)" text-anchor="start" opacity="0.6">l'univers</text>
-
-      <!-- Description de la distance -->
-      <text x="340" y="130" font-family="monospace" font-size="10" fill="var(--ink)" text-anchor="middle">Si tₚ → 1 s = 10 cm, alors le point « âge de l'univers »</text>
-      <text x="340" y="148" font-family="monospace" font-size="10" fill="var(--accent-cosmic)" text-anchor="middle">se trouverait à ~9×10³⁰ fois le diamètre de l'univers observable.</text>
-    </svg>
-    <figcaption>9 milliards de milliards de milliards de diamètres de l'univers — pour une ligne qui commence à 10 centimètres.</figcaption>
-  </figure>
-
-  <p class="reveal">Entre le temps de Planck et une vie humaine, il y a 54 ordres de grandeur. Si tu agrandissais le temps de Planck jusqu'à la taille d'une seconde, cette seconde élargie serait <strong>10⁴⁴ fois plus longue que l'âge actuel de l'univers</strong>. Tout ce que ce voyage vient de traverser — battements de cœur, clignements, réactions chimiques, sauts électroniques, oscillations de lumière, traversée d'un noyau, quark top — tient dans cet espace.</p>
+  <p class="reveal">Entre le temps de Planck et une vie humaine, il y a 54 ordres de grandeur. Pour en avoir une image : si le temps de Planck durait le temps d'un clignement d'œil, ce clignement durerait <strong>2 × 10³⁴ ans</strong> — soit environ un million de milliards de milliards de fois l'âge de l'univers. Tout ce que ce voyage vient de traverser — battements de cœur, clignements, réactions chimiques, sauts électroniques, oscillations de lumière, traversée d'un noyau, quark top — tient dans cet espace.</p>
   <p class="reveal">On n'était que dans l'instant. On n'a pas encore bougé.</p>
 </section>
 
