@@ -682,102 +682,128 @@ function getCtx() {
   return audioCtx;
 }
 
-// ─── AUDIO : CHANT DE BALEINE — MOTEUR ENRICHI ───────────────────────────────
-//   • Source sinusoïdale + formants mobiles + grincement (AM) + sous-harmonique
-//   • Unités regroupées en phrases répétées → perçues comme un chant
-//   • Étage « océan » : ondulation de l'eau (trémolo + wobble), légère distance,
-//     réverbe diffuse et fond océanique qui s'éteint avec le message
-//   • Entièrement déterministe (même message → même chant)
-//   • L'audio reste décoratif : le décodage se fait sur les glyphes, pas sur le son
+// ─── AUDIO : BALEINE À BOSSE — UN SON PAR MOT ────────────────────────────────
+//   • Chaque mot → une longue vocalise (2.5–5s)
+//   • Glissement très lent, majoritairement descendant (mélancolique)
+//   • Intervalles mineurs / nappes graves
+//   • Silence généreux entre les mots
 
 let stopRequested = false;
 let playingSide = null;
 let playToken = 0;
-let animTimer = null;
+let animTimer = null; // timer de fin d'animation — annulable // incrémenté à chaque play — permet à une instance de savoir si elle est obsolète
 
-// Réglages calibrés (ajustables)
-const SONG  = { bright: 0.90, verbAmt: 0.90 };
-const OCEAN = { dist: 0.05, wob: 0.95, fond: true };
-
-// Hash FNV stable d'un mot → [0,1)
+// Hash stable d'un mot → [0,1)
 function hashWord(word) {
-  word = String(word).toLowerCase();
+  word = word.toLowerCase();
   let h = 2166136261;
   for (let i = 0; i < word.length; i++) { h ^= word.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  // Mélanger la longueur dans le hash — disperse les collisions entre mots courts similaires
   h ^= word.length * 2654435761;
   h = (h * 16777619) >>> 0;
   return (h >>> 0) / 4294967296;
 }
-function hsh(word, salt) { return hashWord(word + '|' + salt); }
 
+// Gamme mineure naturelle
 const MINOR_SCALE = [1, 1.122, 1.189, 1.335, 1.498, 1.587, 1.782];
 
-// Découpe le texte en N segments égaux (déterministe)
+function wordToVocalise(word) {
+  const h  = hashWord(word);
+  const h2 = hashWord(word + '2');
+  const h3 = hashWord(word + '3');
+  const h4 = hashWord(word + '4');
+  const h5 = hashWord(word + '5');
+
+  const rootFreq  = 140 + h * 120;
+  const freqStart = rootFreq * MINOR_SCALE[Math.floor(h2 * MINOR_SCALE.length)];
+  const duration  = 2.5 + Math.min(word.length * 0.25, 2.5) + h * 0.8;
+
+  // Glissement toujours lent et ample — jamais symétrique pour éviter l'effet sirène
+  // Les amplitudes de montée sont délibérément plus modestes que les descentes
+  const glideDown = 0.18 + h2 * 0.22; // descend de 18–40%
+  const glideUp   = 0.08 + h4 * 0.12; // monte de 8–20% seulement (asymétrie clé)
+
+  let freqMid, freqEnd, vibratoDepth, vibratoRate;
+
+  // 4 formes de courbe, distribuées selon h3
+  // Règle : aucune courbe ne monte et redescend au même rythme → pas de sirène
+  if (h3 < 0.28) {
+    // DESCENTE PURE — glisse lentement vers le bas, s'efface
+    freqMid = null;
+    freqEnd = freqStart * (1 - glideDown);
+
+  } else if (h3 < 0.52) {
+    // MONTÉE DOUCE — s'élève modestement et tient
+    // Montée intentionnellement limitée (pas d'aller-retour)
+    freqMid = null;
+    freqEnd = freqStart * (1 + glideUp);
+
+  } else if (h3 < 0.76) {
+    // ARC ASYMÉTRIQUE — monte vite (30% de la durée), descend très lentement
+    // La dissymétrie temporelle empêche toute ressemblance avec une sirène
+    freqMid = freqStart * (1 + glideUp * 0.9);   // pic modeste
+    freqEnd = freqStart * (1 - glideDown * 0.5);  // retombe doucement, pas jusqu'au départ
+
+  } else {
+    // SOUPIR — descend d'abord en douceur, très légère remontée finale (expiration)
+    // Le creux est atteint à 55% de la durée, la remontée est infime
+    freqMid = freqStart * (1 - glideDown * 0.8);
+    freqEnd = freqStart * (1 - glideDown * 0.55); // reste en bas, remonte à peine
+  }
+
+  // Vibrato très discret — juste assez pour que le son soit vivant, pas mécanique
+  vibratoDepth = 0.8 + h5 * 1.4;  // 0.8–2.2 Hz de déviation max
+  vibratoRate  = 0.9 + h4 * 0.7;  // 0.9–1.6 Hz (très lent)
+
+  const h6 = hashWord(word + '6');
+  const h7 = hashWord(word + '7');
+  const h8 = hashWord(word + '8');
+
+  const durationMod = Math.min(6.5, Math.max(3.2, duration * (0.4 + h6 * 1.2)));
+  const volume = 0.25 + h7 * 0.45;
+  const gap    = 0.15 + h8 * 0.85;
+
+  return { freqStart, freqMid, freqEnd,
+           duration: durationMod, volume, gap,
+           vibratoRate, vibratoDepth };
+}
+
+// Convertit le texte en N segments de longueur égale
+// N = nombre de caractères (sans espaces) / 6, minimum 1
+// Chaque segment "nourrit" un son — déterministe et réversible
 function textToSegments(text) {
-  const clean = text.replace(/\s+/g, '');
+  const clean = text.replace(/\s+/g, ''); // retire les espaces pour le comptage
   const n = Math.max(1, Math.round(clean.length / 7));
   const segments = [];
+  // On répartit les caractères du texte original (avec espaces) en n segments égaux
   const step = text.length / n;
   for (let i = 0; i < n; i++) {
     const chunk = text.slice(Math.round(i * step), Math.round((i + 1) * step)).trim();
-    if (chunk) segments.push(chunk);
+    if (chunk) segments.push(chunk || text.slice(0, 1));
   }
-  return segments.length ? segments : [text.slice(0, 1) || 'a'];
+  return segments;
 }
 
-// Mappings de l'étage océan
-function mapDist(d) {
-  return {
-    cutoff:   2800 * Math.pow(0.17, d), // étouffement : 2800 → ~476 Hz
-    dry:      1 - d * 0.60,             // le son sec recule
-    wetMul:   0.55 + d * 1.00,          // la réverbe monte
-    level:    1 - d * 0.25,
-    presence: -7 * d,                   // creux de présence (dB)
-    verbLP:   2500 - d * 1600           // queue de réverbe assombrie
-  };
-}
-function mapWob(w, cutoff) {
-  return { warble: 0.001 + w * 0.013, filtMod: cutoff * 0.25 * w, trem: w * 0.22 };
-}
-
-// Paramètres d'une unité vocalisée (déterministes)
-function wordToVoice(word) {
-  const h=hashWord(word), h2=hsh(word,'b'), h3=hsh(word,'c'), h4=hsh(word,'d'),
-        h5=hsh(word,'e'), h6=hsh(word,'f'), h7=hsh(word,'g'), h8=hsh(word,'h');
-  const root = 120 + h * 110;
-  const start = root * MINOR_SCALE[Math.floor(h2 * MINOR_SCALE.length)];
-  let duration = 2.6 + Math.min(word.length * 0.22, 2.2) + h * 1.0;
-  duration = Math.min(6.8, Math.max(3.0, duration * (0.45 + h6 * 1.1)));
-  let type, mid = null, end, vibRate, vibDepth, amRate = 0, amDepth = 0;
-  const gd = 0.20 + h2 * 0.24, gu = 0.10 + h4 * 0.16;
-  if (h3 < 0.22)      { type='moan';  end = start * (1 - gd); }
-  else if (h3 < 0.44) { type='cry';   mid = start * (1 + 0.9 + h4 * 0.7); end = mid * (1 - 0.14); duration = Math.min(duration, 4.2); }
-  else if (h3 < 0.64) { type='growl'; const low = start * 0.55; mid = low; end = low * (1 - gd * 0.3); amRate = 14 + h5 * 20; amDepth = 0.55 + h7 * 0.35; }
-  else if (h3 < 0.84) { type='arc';   mid = start * (1 + gu * 0.9); end = start * (1 - gd * 0.5); }
-  else                { type='sigh';  mid = start * (1 - gd * 0.8); end = start * (1 - gd * 0.55); }
-  vibRate = 1.0 + h4 * 1.4; vibDepth = (type === 'cry' ? 3 : 1.4) + h5 * 2.2;
-  const volume = 0.22 + h7 * 0.38, gap = 0.12 + h8 * 0.7;
-  const biph = (type === 'sigh') ? (1.5 + h6 * 0.04) : (h6 < 0.25 ? 0.5 : 0);
-  // Cris ascendants désactivés → rabattus sur une plainte descendante
-  if (type === 'cry') { type = 'moan'; mid = null; end = start * (1 - 0.25); }
-  return { type, start, mid, end, duration, volume, gap, vibRate, vibDepth, amRate, amDepth, biph };
-}
-
-// Bruit pour le fond océanique (buffer réutilisé)
-let _noiseBuf = null;
-function getNoise(ctx) {
-  if (_noiseBuf && _noiseBuf.sampleRate === ctx.sampleRate) return _noiseBuf;
-  const len = ctx.sampleRate * 3;
-  _noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
-  const d = _noiseBuf.getChannelData(0);
-  for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-  return _noiseBuf;
+function buildWaveShaper(ctx) {
+  const curve = new Float32Array(512);
+  for (let i = 0; i < 512; i++) {
+    const x = (i * 2) / 512 - 1;
+    curve[i] = (Math.PI + 120) * x / (Math.PI + 120 * Math.abs(x));
+  }
+  const ws = ctx.createWaveShaper();
+  ws.curve = curve;
+  ws.oversample = '4x';
+  return ws;
 }
 
 async function playWhaleAudio(text, side) {
-  if (audioCtx) { try { await audioCtx.close(); } catch(e) {} audioCtx = null; }
+  // Stop instantané : fermer le contexte audio existant
+  if (audioCtx) {
+    try { await audioCtx.close(); } catch(e) {}
+    audioCtx = null;
+  }
   stopRequested = false;
-  const myToken = ++playToken;
+  const myToken = ++playToken; // ce chant "possède" ce token
   setPlayingState(side);
 
   const ctx = getCtx();
@@ -795,167 +821,99 @@ async function playWhaleAudio(text, side) {
   analyser.fftSize = 1024;
   analyser.smoothingTimeConstant = 0.93;
 
-  const FADE = 0.9;
-  const md = mapDist(OCEAN.dist);
-  const mw = mapWob(OCEAN.wob, md.cutoff);
+  const shaper = buildWaveShaper(ctx);
 
-  // Bus de mélange → étage océan → analyser → fade → compresseur → sortie
-  const mix = ctx.createGain(); mix.gain.value = 1;
-  const dryBus = ctx.createGain(); dryBus.gain.value = md.dry; dryBus.connect(mix);
+  const lpf = ctx.createBiquadFilter();
+  lpf.type = 'lowpass';
+  lpf.frequency.value = 650;
+  lpf.Q.value = 0.4;
 
-  // Réverbe diffuse
-  const verbIn = ctx.createGain();
-  const pre = ctx.createDelay(1); pre.delayTime.value = 0.02 + OCEAN.dist * 0.10;
-  const vhp = ctx.createBiquadFilter(); vhp.type = 'highpass'; vhp.frequency.value = 150;
-  const vlp = ctx.createBiquadFilter(); vlp.type = 'lowpass';  vlp.frequency.value = md.verbLP;
-  const wet = ctx.createGain(); wet.gain.value = SONG.verbAmt * md.wetMul;
-  verbIn.connect(pre);
-  [0.137, 0.211, 0.373, 0.531].forEach((dt, i) => {
-    const dl = ctx.createDelay(2); dl.delayTime.value = dt;
-    const fb = ctx.createGain(); fb.gain.value = 0.30 - i * 0.03;
-    pre.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(vhp);
-  });
-  const cho = ctx.createDelay(0.05); cho.delayTime.value = 0.022;
-  const cl = ctx.createOscillator(); const ca = ctx.createGain(); cl.frequency.value = 0.12; ca.gain.value = 0.004;
-  cl.connect(ca); ca.connect(cho.delayTime); pre.connect(cho); cho.connect(vhp); cl.start();
-  vhp.connect(vlp); vlp.connect(wet); wet.connect(mix);
+  const delay1 = ctx.createDelay(6); delay1.delayTime.value = 0.7;
+  const delay2 = ctx.createDelay(6); delay2.delayTime.value = 1.4;
+  const fb1 = ctx.createGain(); fb1.gain.value = 0.36;
+  const fb2 = ctx.createGain(); fb2.gain.value = 0.24;
+  delay1.connect(fb1); fb1.connect(delay1);
+  delay2.connect(fb2); fb2.connect(delay2);
 
-  // Étage océan : trémolo + warble + filtre de distance + creux de présence
-  const trem = ctx.createGain(); trem.gain.value = 1;
-  const tLfo = ctx.createOscillator(); const tAmt = ctx.createGain(); tLfo.frequency.value = 0.16; tAmt.gain.value = mw.trem;
-  tLfo.connect(tAmt); tAmt.connect(trem.gain); tLfo.start();
-  const warble = ctx.createDelay(0.05); warble.delayTime.value = 0.012;
-  const wLfo = ctx.createOscillator(); const wAmt = ctx.createGain(); wLfo.frequency.value = 0.10; wAmt.gain.value = mw.warble;
-  wLfo.connect(wAmt); wAmt.connect(warble.delayTime); wLfo.start();
-  const distLP = ctx.createBiquadFilter(); distLP.type = 'lowpass'; distLP.Q.value = 0.5; distLP.frequency.value = md.cutoff;
-  const fLfo = ctx.createOscillator(); const fAmt = ctx.createGain(); fLfo.frequency.value = 0.07; fAmt.gain.value = mw.filtMod;
-  fLfo.connect(fAmt); fAmt.connect(distLP.frequency); fLfo.start();
-  const tilt = ctx.createBiquadFilter(); tilt.type = 'peaking'; tilt.frequency.value = 1500; tilt.Q.value = 0.7; tilt.gain.value = md.presence;
-  const oGain = ctx.createGain(); oGain.gain.value = md.level;
-  mix.connect(trem); trem.connect(warble); warble.connect(distLP); distLP.connect(tilt); tilt.connect(oGain);
+  const wetGain = ctx.createGain(); wetGain.gain.value = 0.35;
+  const dryGain = ctx.createGain(); dryGain.gain.value = 0.65;
 
-  // Fond océanique (capté par le fade, source arrêtée à la fin du message)
-  let fondNS = null;
-  if (OCEAN.fond) {
-    const ns = ctx.createBufferSource(); ns.buffer = getNoise(ctx); ns.loop = true; fondNS = ns;
-    const flp = ctx.createBiquadFilter(); flp.type = 'lowpass';  flp.frequency.value = 420; flp.Q.value = 0.3;
-    const fhp = ctx.createBiquadFilter(); fhp.type = 'highpass'; fhp.frequency.value = 60;
-    const fg = ctx.createGain(); fg.gain.value = 0;
-    const fl = ctx.createOscillator(); const fla = ctx.createGain(); fl.frequency.value = 0.05; fla.gain.value = 0.010;
-    fl.connect(fla); fla.connect(fg.gain); fl.start();
-    ns.connect(flp); flp.connect(fhp); fhp.connect(fg); fg.connect(mix);
-    fg.gain.setValueAtTime(0, ctx.currentTime);
-    fg.gain.linearRampToValueAtTime(0.020, ctx.currentTime + 1.5);
-    ns.start();
-  }
-
-  const masterFade = ctx.createGain(); masterFade.gain.value = 1;
+  shaper.connect(lpf);
+  lpf.connect(dryGain);
+  lpf.connect(delay1); lpf.connect(delay2);
+  delay1.connect(wetGain); delay2.connect(wetGain);
+  // Compresseur en bout de chaîne — évite le clipping quand les couches s'accumulent
   const compressor = ctx.createDynamicsCompressor();
-  compressor.threshold.value = -16; compressor.knee.value = 10; compressor.ratio.value = 3.5;
-  compressor.attack.value = 0.004; compressor.release.value = 0.28;
+  compressor.threshold.value = -18;  // commence à compresser à -18 dB
+  compressor.knee.value      =  8;   // transition douce
+  compressor.ratio.value     =  4;   // 4:1 — transparent mais efficace
+  compressor.attack.value    =  0.003;
+  compressor.release.value   =  0.25;
 
-  oGain.connect(analyser);
+  const masterFade = ctx.createGain();
+  masterFade.gain.value = 1;
+
+  dryGain.connect(analyser);
+  wetGain.connect(analyser);
   analyser.connect(masterFade);
   masterFade.connect(compressor);
   compressor.connect(ctx.destination);
 
-  // Segments + phrases répétées (structure de chant)
-  let segments = textToSegments(text);
-  if (segments.length >= 3) {
-    const pl = 2 + Math.round(hashWord(text));
-    const phrase = segments.slice(0, Math.min(pl, segments.length));
-    const rest = segments.slice(phrase.length);
-    segments = [...phrase, ...phrase.map(s => s + '~'), ...rest];
-  }
-
+  const segments = textToSegments(text);
   let t = ctx.currentTime + 0.2;
+
   for (const segment of segments) {
     if (myToken !== playToken) break;
-    const v = wordToVoice(segment);
+
+    const v = wordToVocalise(segment);
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(v.freqStart, t);
+    if (v.freqMid) {
+      // Arc : pic atteint à 30% (montée rapide), descente lente sur les 70% restants
+      // Soupir : creux à 55%, micro-remontée finale
+      const midPoint = (v.freqMid > v.freqStart) ? 0.30 : 0.55;
+      osc.frequency.exponentialRampToValueAtTime(v.freqMid, t + v.duration * midPoint);
+      osc.frequency.exponentialRampToValueAtTime(v.freqEnd, t + v.duration * 0.93);
+    } else {
+      osc.frequency.exponentialRampToValueAtTime(v.freqEnd, t + v.duration * 0.93);
+    }
+
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = v.vibratoRate;
+    lfoGain.gain.setValueAtTime(0, t);
+    lfoGain.gain.linearRampToValueAtTime(v.vibratoDepth, t + v.duration * 0.4);
+    lfoGain.gain.linearRampToValueAtTime(0, t + v.duration);
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
 
     const env = ctx.createGain();
     env.gain.setValueAtTime(0, t);
-    env.gain.linearRampToValueAtTime(v.volume, t + v.duration * 0.22);
-    env.gain.setValueAtTime(v.volume, t + v.duration * 0.62);
+    env.gain.linearRampToValueAtTime(v.volume, t + v.duration * 0.25);
+    env.gain.setValueAtTime(v.volume, t + v.duration * 0.6);
     env.gain.exponentialRampToValueAtTime(0.0001, t + v.duration - 0.01);
     env.gain.linearRampToValueAtTime(0, t + v.duration);
 
-    const voiceLP = ctx.createBiquadFilter(); voiceLP.type = 'lowpass';
-    const cutoff = Math.min(3600, Math.max(700, v.start * (3 + SONG.bright * 5)));
-    voiceLP.frequency.setValueAtTime(cutoff, t);
-    voiceLP.frequency.exponentialRampToValueAtTime(Math.max(500, cutoff * 0.55), t + v.duration);
-    voiceLP.Q.value = 0.6;
-
-    // Formants mobiles (couleur de voyelle « ou → ah »)
-    const preFilter = ctx.createGain();
-    const base = v.start;
-    [[base * 2.4, base * 3.6], [base * 5.0, base * 4.2]].forEach(([f0, f1]) => {
-      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 5.5;
-      bp.frequency.setValueAtTime(Math.min(3200, f0), t);
-      bp.frequency.linearRampToValueAtTime(Math.min(3400, f1), t + v.duration);
-      const bg = ctx.createGain(); bg.gain.value = 0.9;
-      preFilter.connect(bp); bp.connect(bg); bg.connect(voiceLP);
-    });
-    const bleed = ctx.createGain(); bleed.gain.value = 0.4; preFilter.connect(bleed); bleed.connect(voiceLP);
-
-    // Grincement (modulation d'amplitude) sur les unités graves
-    if (v.amDepth > 0) {
-      const amGain = ctx.createGain(); amGain.gain.value = 1 - v.amDepth;
-      const amLfo = ctx.createOscillator(); amLfo.type = 'sine'; amLfo.frequency.value = v.amRate;
-      const amAmt = ctx.createGain(); amAmt.gain.value = v.amDepth;
-      amLfo.connect(amAmt); amAmt.connect(amGain.gain);
-      env.connect(amGain); amGain.connect(preFilter);
-      amLfo.start(t); amLfo.stop(t + v.duration + 0.1);
-    } else {
-      env.connect(preFilter);
-    }
-
-    voiceLP.connect(dryBus);
-    voiceLP.connect(verbIn);
-
-    // Source principale
-    const osc = ctx.createOscillator(); osc.type = 'sine';
-    osc.frequency.setValueAtTime(v.start, t);
-    if (v.mid) {
-      const mp = (v.mid > v.start) ? 0.30 : 0.55;
-      osc.frequency.exponentialRampToValueAtTime(Math.max(40, v.mid), t + v.duration * mp);
-      osc.frequency.exponentialRampToValueAtTime(Math.max(40, v.end), t + v.duration * 0.93);
-    } else {
-      osc.frequency.exponentialRampToValueAtTime(Math.max(40, v.end), t + v.duration * 0.93);
-    }
-    const lfo = ctx.createOscillator(); const lg = ctx.createGain(); lfo.type = 'sine'; lfo.frequency.value = v.vibRate;
-    lg.gain.setValueAtTime(0, t);
-    lg.gain.linearRampToValueAtTime(v.vibDepth, t + v.duration * 0.4);
-    lg.gain.linearRampToValueAtTime(0, t + v.duration);
-    lfo.connect(lg); lg.connect(osc.frequency);
-    osc.connect(env);
+    osc.connect(env); env.connect(shaper);
     osc.start(t); osc.stop(t + v.duration + 0.15);
     lfo.start(t); lfo.stop(t + v.duration + 0.15);
-
-    // Sous-harmonique / biphonation (le « deux notes à la fois » feutré)
-    if (v.biph > 0) {
-      const sub = ctx.createOscillator(); sub.type = 'sine';
-      const se = ctx.createGain();
-      sub.frequency.setValueAtTime(v.start * v.biph, t);
-      sub.frequency.exponentialRampToValueAtTime(Math.max(35, v.end * v.biph), t + v.duration * 0.93);
-      se.gain.setValueAtTime(0, t);
-      se.gain.linearRampToValueAtTime(v.volume * 0.32, t + v.duration * 0.3);
-      se.gain.exponentialRampToValueAtTime(0.0001, t + v.duration - 0.02);
-      sub.connect(se); se.connect(preFilter);
-      sub.start(t); sub.stop(t + v.duration + 0.15);
-    }
 
     t += v.duration + v.gap;
   }
 
+  // Si un nouveau play a été lancé entre-temps, on abandonne silencieusement
   if (myToken !== playToken) return;
 
-  // Fade de fin — emporte aussi le fond océanique
-  masterFade.gain.setValueAtTime(1.0, t);
-  masterFade.gain.linearRampToValueAtTime(0.0, t + FADE);
-  if (fondNS) { try { fondNS.stop(t + FADE + 0.4); } catch(e) {} }
+  // Fade-out propre : 0.8s après la fin du dernier son
+  // On fade masterFade à zéro, puis on suspend — aucune coupure brutale possible
+  const fadeDuration = 0.8;
+  const fadeStart = t;
+  masterFade.gain.setValueAtTime(1.0, fadeStart);
+  masterFade.gain.linearRampToValueAtTime(0.0, fadeStart + fadeDuration);
 
-  const totalDuration = (t - ctx.currentTime + FADE + 1.1) * 1000;
+  const totalDuration = (t - ctx.currentTime + 2.0) * 1000;
 
   const freqData = new Uint8Array(analyser.frequencyBinCount);
   let animId;
@@ -994,7 +952,6 @@ async function playWhaleAudio(text, side) {
     }
   }, totalDuration);
 }
-
 
 async function stopWhale() {
   playToken++;

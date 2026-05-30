@@ -355,25 +355,48 @@ footer a { color: var(--amber); text-decoration: none; }
       .cross-link-header { display: none !important; }
       .cross-link-mobile { display: flex !important; }
     }
+
+  /* ── LANG SWITCHER ── */
+  .lang-switcher {
+    position: fixed; top: 16px; left: 16px; z-index: 200;
+    display: flex; gap: 4px;
+  }
+  .lang-btn {
+    background: rgba(10,13,18,0.8);
+    border: 1px solid rgba(232,160,32,0.2);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.12em;
+    padding: 5px 10px; border-radius: 2px;
+    cursor: pointer; opacity: 0.45; transition: all 0.15s;
+    backdrop-filter: blur(8px);
+  }
+  .lang-btn.active { opacity: 1; border-color: rgba(232,160,32,0.55); color: var(--amber); }
+  .lang-btn:hover { opacity: 0.8; }
 </style>
 </head>
 <body>
 
 <div class="bg"><canvas id="bgCanvas"></canvas></div>
 
+<div class="lang-switcher">
+  <button class="lang-btn active" id="lang-fr" onclick="setLang('fr')">FR</button>
+  <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+</div>
+
 <div class="wrap">
   <header>
     <div class="droid-badge">🤖</div>
     <div class="title-block">
       <h1>Droid<span>.lang</span></h1>
-      <p>Générateur de langage droïde</p>
+      <p data-i18n="subtitle">Générateur de langage droïde</p>
     </div>
     <div class="cross-link-header" style="position:absolute;right:0;top:0;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
       <div class="sys-status" style="position:static;">
         <div class="sys-dot"></div>SYS.ONLINE
       </div>
       <div style="display:flex;align-items:center;gap:7px;">
-        <span style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;opacity:0.4;text-transform:uppercase;">Essayez aussi</span>
+        <span data-i18n="tryAlso" style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;opacity:0.4;text-transform:uppercase;">Essayez aussi</span>
         <a href="https://studioexistence.com/whale-song" target="_blank"
            style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(91,200,240,0.08);border:1px solid rgba(91,200,240,0.2);border-radius:2px;color:#5bc8f0;font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-decoration:none;transition:all 0.15s;"
            onmouseover="this.style.background='rgba(91,200,240,0.15)';this.style.borderColor='rgba(91,200,240,0.4)'"
@@ -385,21 +408,21 @@ footer a { color: var(--amber); text-decoration: none; }
   </header>
 
   <div class="tabs">
-    <button class="tab active" id="tab-encode" onclick="switchTab('encode')">⚙ Encoder</button>
-    <button class="tab" id="tab-decode" onclick="switchTab('decode')">📡 Décoder</button>
+    <button class="tab active" id="tab-encode" onclick="switchTab('encode')" data-i18n="tabEncode">⚙ Encoder</button>
+    <button class="tab" id="tab-decode" onclick="switchTab('decode')" data-i18n="tabDecode">📡 Décoder</button>
   </div>
 
   <!-- ENCODE PANEL -->
   <div id="panel-encode" class="panel active">
     <div class="card">
-      <label>Message à encoder</label>
-      <textarea id="input-text" placeholder="Entrez votre message ici…" oninput="onTextInput()"></textarea>
+      <label data-i18n="labelYourMessage">Message à encoder</label>
+      <textarea id="input-text" data-i18n-placeholder="placeholderMessage" placeholder="Entrez votre message ici…" oninput="onTextInput()"></textarea>
     </div>
 
     <div class="card">
-      <label>Signal R2-D2</label>
+      <label data-i18n="labelSignal">Signal R2-D2</label>
       <div class="signal-out" id="droid-out">
-        <span style="opacity:0.28;font-size:0.85rem;">Le signal apparaîtra ici…</span>
+        <span data-i18n="signalPlaceholder" style="opacity:0.28;font-size:0.85rem;">Le signal apparaîtra ici…</span>
       </div>
       <canvas class="visualizer" id="visualizer-enc"></canvas>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
@@ -410,18 +433,18 @@ footer a { color: var(--amber); text-decoration: none; }
         <div class="status" id="enc-status"></div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-primary" id="play-enc-btn" onclick="playDroid('enc')" disabled>▶ Écouter</button>
-        <button class="btn btn-ghost" id="stop-enc-btn" onclick="stopDroid()" style="display:none">⏹ Stop</button>
-        <button class="btn btn-ghost" id="copy-droid-btn" onclick="copyDroid()" disabled>⎘ Copier</button>
+        <button class="btn btn-primary" id="play-enc-btn" onclick="playDroid('enc')" disabled data-i18n="btnListen">▶ Écouter</button>
+        <button class="btn btn-ghost" id="stop-enc-btn" onclick="stopDroid()" style="display:none" data-i18n="btnStop">⏹ Stop</button>
+        <button class="btn btn-ghost" id="copy-droid-btn" onclick="copyDroid()" disabled data-i18n="btnCopySignal">⎘ Copier</button>
       </div>
     </div>
 
     <div class="card">
-      <label>Partager ce message</label>
-      <p class="share-hint">Transmettez ce lien — le destinataire pourra décoder le signal.</p>
+      <label data-i18n="labelShare">Partager ce message</label>
+      <p class="share-hint" data-i18n="shareHint">Transmettez ce lien — le destinataire pourra décoder le signal.</p>
       <div class="share-box">
-        <input type="text" id="share-link" readonly placeholder="Le lien apparaîtra ici…">
-        <button class="btn btn-ghost" onclick="copyLink()">⎘ Copier</button>
+        <input type="text" id="share-link" readonly data-i18n-placeholder="linkPlaceholder" placeholder="Le lien apparaîtra ici…">
+        <button class="btn btn-ghost" onclick="copyLink()" data-i18n="btnCopyLink">⎘ Copier</button>
       </div>
       <div class="status" id="link-status"></div>
     </div>
@@ -431,10 +454,10 @@ footer a { color: var(--amber); text-decoration: none; }
   <div id="panel-decode" class="panel">
     <div class="card">
       <div class="decode-header">
-        <p>🤖 <span>Vous avez reçu un message en langage droïde.</span></p>
+        <p>🤖 <span data-i18n="decodeIntro">Vous avez reçu un message en langage droïde.</span></p>
       </div>
-      <label>Signal R2-D2</label>
-      <textarea id="decode-input" placeholder="⚡ Collez le signal ici…" oninput="onDecodeInput()"></textarea>
+      <label data-i18n="labelSignal">Signal R2-D2</label>
+      <textarea id="decode-input" data-i18n-placeholder="placeholderPaste" placeholder="⚡ Collez le signal ici…" oninput="onDecodeInput()"></textarea>
       <canvas class="visualizer" id="visualizer-dec" style="margin-top:14px;"></canvas>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
         <div class="playing-indicator" id="play-dec-indicator">
@@ -445,25 +468,25 @@ footer a { color: var(--amber); text-decoration: none; }
       </div>
       <div class="listen-hint" id="dec-listen-hint">
         <span class="dish">📡</span>
-        <span>Écoutez le signal pour révéler le message</span>
+        <span data-i18n="listenHint">Écoutez le signal pour révéler le message</span>
         <span class="dish flip">📡</span>
       </div>
       <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-primary" id="play-dec-btn" onclick="playDroid('dec')" disabled
-          style="flex:1;justify-content:center;padding:12px;">▶ Écouter le signal</button>
-        <button class="btn btn-ghost" id="stop-dec-btn" onclick="stopDroid()" style="display:none">⏹ Stop</button>
+          style="flex:1;justify-content:center;padding:12px;" data-i18n="btnListenSignal">▶ Écouter le signal</button>
+        <button class="btn btn-ghost" id="stop-dec-btn" onclick="stopDroid()" style="display:none" data-i18n="btnStop">⏹ Stop</button>
       </div>
     </div>
 
     <div id="reveal-card" class="card">
-      <label>Message décodé</label>
+      <label data-i18n="labelDecoded">Message décodé</label>
       <div class="decoded-text" id="decoded-out"></div>
     </div>
   </div>
 </div>
 
 <div class="cross-link-mobile">
-  <span style="font-family:monospace;font-size:0.62rem;letter-spacing:0.1em;opacity:0.4;text-transform:uppercase;">Essayez aussi</span>
+  <span data-i18n="tryAlso" style="font-family:monospace;font-size:0.62rem;letter-spacing:0.1em;opacity:0.4;text-transform:uppercase;">Essayez aussi</span>
   <a href="https://studioexistence.com/whale-song" target="_blank"
      style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(91,200,240,0.08);border:1px solid rgba(91,200,240,0.2);border-radius:2px;color:#5bc8f0;font-family:monospace;font-size:0.75rem;letter-spacing:0.08em;text-decoration:none;">
     🐋 WhaleSong
@@ -471,7 +494,7 @@ footer a { color: var(--amber); text-decoration: none; }
 </div>
 
 <footer>
-  Une expérience de <a href="https://studioexistence.com" target="_blank">Studio Existence</a>
+  <span data-i18n="footerBy">Une expérience de</span> <a href="https://studioexistence.com" target="_blank">Studio Existence</a>
 </footer>
 
 <!-- Modal -->
@@ -479,13 +502,121 @@ footer a { color: var(--amber); text-decoration: none; }
      onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
     <span class="modal-droid">🤖</span>
-    <div class="modal-label">Message décodé</div>
+    <div class="modal-label" data-i18n="labelDecoded">Message décodé</div>
     <div class="modal-message" id="modal-message"></div>
-    <button class="modal-close" onclick="closeModal()">Fermer</button>
+    <button class="modal-close" onclick="closeModal()" data-i18n="btnClose">Fermer</button>
   </div>
 </div>
 
 <script>
+// ─── I18N ─────────────────────────────────────────────────────────────────────
+const STRINGS = {
+  fr: {
+    subtitle:          'Générateur de langage droïde',
+    tryAlso:           'Essayez aussi',
+    tabEncode:         '⚙ Encoder',
+    tabDecode:         '📡 Décoder',
+    labelYourMessage:  'Message à encoder',
+    placeholderMessage:'Entrez votre message ici…',
+    labelSignal:       'Signal R2-D2',
+    signalPlaceholder: 'Le signal apparaîtra ici…',
+    btnListen:         '▶ Écouter',
+    btnListenSignal:   '▶ Écouter le signal',
+    btnReplay:         '↺ Rejouer',
+    btnStop:           '⏹ Stop',
+    btnCopySignal:     '⎘ Copier',
+    btnCopied:         '✓ Copié !',
+    labelShare:        'Partager ce message',
+    shareHint:         'Transmettez ce lien — le destinataire pourra décoder le signal.',
+    linkPlaceholder:   'Le lien apparaîtra ici…',
+    btnCopyLink:       '⎘ Copier',
+    linkCopied:        '✓ Lien copié !',
+    decodeIntro:       'Vous avez reçu un message en langage droïde.',
+    placeholderPaste:  '⚡ Collez le signal ici…',
+    listenHint:        'Écoutez le signal pour révéler le message',
+    labelDecoded:      'Message décodé',
+    labelInvalid:      'Signal invalide ou corrompu…',
+    btnClose:          'Fermer',
+    footerBy:          'Une expérience de',
+    encodedCount:      (n) => `${n} caractère${n > 1 ? 's' : ''} encodé${n > 1 ? 's' : ''}`,
+  },
+  en: {
+    subtitle:          'Droid language generator',
+    tryAlso:           'Also try',
+    tabEncode:         '⚙ Encode',
+    tabDecode:         '📡 Decode',
+    labelYourMessage:  'Message to encode',
+    placeholderMessage:'Enter your message here…',
+    labelSignal:       'R2-D2 signal',
+    signalPlaceholder: 'The signal will appear here…',
+    btnListen:         '▶ Listen',
+    btnListenSignal:   '▶ Listen to signal',
+    btnReplay:         '↺ Replay',
+    btnStop:           '⏹ Stop',
+    btnCopySignal:     '⎘ Copy',
+    btnCopied:         '✓ Copied!',
+    labelShare:        'Share this message',
+    shareHint:         'Transmit this link — the recipient can decode the signal.',
+    linkPlaceholder:   'The link will appear here…',
+    btnCopyLink:       '⎘ Copy',
+    linkCopied:        '✓ Link copied!',
+    decodeIntro:       'You received a message in droid language.',
+    placeholderPaste:  '⚡ Paste the signal here…',
+    listenHint:        'Listen to the signal to reveal the message',
+    labelDecoded:      'Decoded message',
+    labelInvalid:      'Invalid or corrupted signal…',
+    btnClose:          'Close',
+    footerBy:          'An experience by',
+    encodedCount:      (n) => `${n} character${n > 1 ? 's' : ''} encoded`,
+  }
+};
+
+let currentLang = 'fr';
+
+function t(key, ...args) {
+  const val = STRINGS[currentLang][key];
+  return typeof val === 'function' ? val(...args) : (val ?? key);
+}
+
+function applyLang() {
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  document.getElementById('lang-fr').classList.toggle('active', currentLang === 'fr');
+  document.getElementById('lang-en').classList.toggle('active', currentLang === 'en');
+  // Remettre le bon label sur les boutons play si pas en train de jouer
+  const encBtn = document.getElementById('play-enc-btn');
+  const decBtn = document.getElementById('play-dec-btn');
+  if (encBtn && playingSide !== 'enc') encBtn.textContent = t('btnListen');
+  if (decBtn && playingSide !== 'dec') decBtn.textContent = t('btnListenSignal');
+  // Placeholder du signal output si vide
+  const droidOut = document.getElementById('droid-out');
+  if (droidOut && !currentSignal) {
+    droidOut.innerHTML = `<span style="opacity:0.28;font-size:0.85rem;">${t('signalPlaceholder')}</span>`;
+  }
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('droidLang', lang);
+  applyLang();
+  if (currentSignal) onTextInput();
+}
+
+function initLang() {
+  const params = new URLSearchParams(location.search);
+  const urlLang = params.get('lang');
+  const stored = localStorage.getItem('droidLang');
+  currentLang = (urlLang === 'en' || urlLang === 'fr') ? urlLang
+              : (stored === 'en' || stored === 'fr') ? stored
+              : 'fr';
+  applyLang();
+}
+
 // ─── ENCODING : alphabet R2D2 ─────────────────────────────────────────────────
 const DROID_CHARS = [
   '⚙','⚡','◈','⬡','⬢','⟁','⊕','⊗','⊘','⊙',
@@ -720,10 +851,10 @@ function setPlayingState(side) {
     const sb = document.getElementById('stop-' + s + '-btn');
     if (!pb) return;
     if (side === s) {
-      pb.textContent = '↺ Rejouer';
+      pb.textContent = t('btnReplay');
       if (sb) sb.style.display = '';
     } else {
-      pb.textContent = s === 'enc' ? '▶ Écouter' : '▶ Écouter le signal';
+      pb.textContent = s === 'enc' ? t('btnListen') : t('btnListenSignal');
       if (sb) sb.style.display = 'none';
     }
   });
@@ -742,7 +873,7 @@ function onTextInput() {
   const out  = document.getElementById('droid-out');
 
   if (!text) {
-    out.innerHTML = '<span style="opacity:0.28;font-size:0.85rem;">Le signal apparaîtra ici…</span>';
+    out.innerHTML = `<span style="opacity:0.28;font-size:0.85rem;">${t('signalPlaceholder')}</span>`;
     currentSignal = '';
     document.getElementById('play-enc-btn').disabled = true;
     document.getElementById('copy-droid-btn').disabled = true;
@@ -760,18 +891,20 @@ function onTextInput() {
   let binary = '';
   bytes.forEach(b => binary += String.fromCharCode(b));
   const enc = btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
-  document.getElementById('share-link').value = `${location.href.split('?')[0]}?signal=${enc}`;
+  const base = location.href.split('?')[0];
+  const langParam = currentLang !== 'fr' ? `&lang=${currentLang}` : '';
+  document.getElementById('share-link').value = `${base}?signal=${enc}${langParam}`;
 
   const s = document.getElementById('enc-status');
-  s.textContent = `${text.length} caractère(s) encodé(s)`;
+  s.textContent = t('encodedCount', text.length);
   s.className = 'status ok';
 }
 
 function copyDroid() {
   navigator.clipboard.writeText(currentSignal);
   const btn = document.getElementById('copy-droid-btn');
-  btn.textContent = '✓ Copié !';
-  setTimeout(() => btn.textContent = '⎘ Copier', 1800);
+  btn.textContent = t('btnCopied');
+  setTimeout(() => btn.textContent = t('btnCopySignal'), 1800);
 }
 
 function copyLink() {
@@ -779,7 +912,7 @@ function copyLink() {
   if (!link) return;
   navigator.clipboard.writeText(link);
   const s = document.getElementById('link-status');
-  s.textContent = '✓ Lien copié !';
+  s.textContent = t('linkCopied');
   s.className = 'status ok';
   setTimeout(() => { s.textContent = ''; s.className = 'status'; }, 2500);
 }
@@ -804,7 +937,7 @@ function onDecodeInput() {
     if (hint) hint.classList.add('active');
   } catch {
     document.getElementById('decoded-out').innerHTML =
-      '<span style="opacity:0.4;">Signal invalide ou corrompu…</span>';
+      `<span style="opacity:0.4;">${t('labelInvalid')}</span>`;
   }
 }
 
@@ -833,6 +966,7 @@ function switchTab(tab) {
 
 // ─── URL PARAM ─────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
+  initLang();
   const sig = new URLSearchParams(location.search).get('signal');
   if (sig) {
     switchTab('decode');
