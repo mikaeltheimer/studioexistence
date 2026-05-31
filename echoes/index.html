@@ -1,11 +1,33 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Des messages d'une autre espèce." />
-<meta name="author" content="Studio Existence" />
-<title>Echos</title>
+<title>Echoes · Encode your words in another being's voice</title>
+<meta name="description" content="Echoes turns your messages into whale song, dolphin cries, birdsong or droid signal. Encode a word, share the link, let the other listen then reveal it. A Studio Existence experiment.">
+<meta name="author" content="Studio Existence">
+<meta name="theme-color" content="#04101d">
+<link rel="canonical" href="https://studioexistence.com/echoes/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Echoes">
+<meta property="og:title" content="Echoes · Messages of a different species">
+<meta property="og:description" content="Encode your words into whale song, dolphin cries, birdsong or droid signal, then share the link. A Studio Existence experiment.">
+<meta property="og:url" content="https://studioexistence.com/echoes/">
+<meta property="og:image" content="https://studioexistence.com/echoes/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Echoes — whale, dolphin, bird and droid">
+<meta property="og:locale" content="en_CA">
+<meta property="og:locale:alternate" content="fr_CA">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Echoes · Messages of a different species">
+<meta name="twitter:description" content="Encode your words in another being's voice, then share the link. A Studio Existence experiment.">
+<meta name="twitter:image" content="https://studioexistence.com/echoes/og-image.png">
+<meta name="twitter:image:alt" content="Echoes — whale, dolphin, bird and droid">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
@@ -107,6 +129,9 @@
     border:1px solid var(--line);border-radius:11px;padding:11px 18px;text-decoration:none;cursor:pointer;transition:.18s}
   .send-link:hover{background:var(--accent);color:var(--btnText);border-color:var(--accent)}
   .foot{text-align:center;font-size:0.66rem;opacity:0.4;margin-top:22px;line-height:1.6}
+  .credit{text-align:center;font-size:0.68rem;margin-top:10px}
+  .credit a{color:var(--accent);text-decoration:none;opacity:0.75;letter-spacing:0.04em;border-bottom:1px solid transparent;transition:.18s}
+  .credit a:hover{opacity:1;border-bottom-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -171,6 +196,7 @@
   <div class="send-own" id="send-own"><a class="send-link" id="send-link" onclick="enterComposer(event)"></a></div>
 
   <p class="foot" id="foot"></p>
+  <p class="credit"><a href="https://studioexistence.com" target="_blank" rel="noopener" id="credit-link"></a></p>
 </div>
 
 <div class="modal" id="decode-modal" onclick="closeModal(event)">
@@ -184,7 +210,7 @@
 <script>
 /* ════════════════ i18n ════════════════ */
 const STRINGS={
-  fr:{ brand:'Échos', tagline:"Des messages d'une autre espèce.",
+  fr:{ brand:'Échos', pageTitle:"Échos · Encodez vos mots dans la voix d'un autre être", tagline:"Des messages d'une autre espèce.",
     chooseVoice:'Choisissez une voix', tabEncode:'⚙ Encoder', tabDecode:'📡 Décoder',
     yourMessage:'Votre message', playEnc:'▶ Écouter', playDec:'▶ Écouter pour révéler',
     stop:'arrêter', shareLabel:'Lien à partager', copyLink:'Copier le lien', copied:'Lien copié !',
@@ -193,8 +219,9 @@ const STRINGS={
     close:'Fermer', invalid:'Signal invalide', sendOwn:'✍ Envoyer votre propre message',
     encodedCount:(n)=>`${n} caractère${n>1?'s':''} encodé${n>1?'s':''}`,
     placeholder:'Tapez un message, il devient un chant…',
-    foot:"Impression artistique. L'audio est décoratif : le décodage se fait sur les glyphes." },
-  en:{ brand:'Echoes', tagline:"Messages of a different species.",
+    foot:"Impression artistique. L'audio est décoratif : le décodage se fait sur les glyphes.",
+    credit:'Une expérience de Studio Existence' },
+  en:{ brand:'Echoes', pageTitle:"Echoes · Encode your words in another being's voice", tagline:"Messages of a different species.",
     chooseVoice:'Choose a voice', tabEncode:'⚙ Encode', tabDecode:'📡 Decode',
     yourMessage:'Your message', playEnc:'▶ Listen', playDec:'▶ Listen to reveal',
     stop:'stop', shareLabel:'Link to share', copyLink:'Copy link', copied:'Link copied!',
@@ -203,9 +230,10 @@ const STRINGS={
     close:'Close', invalid:'Invalid signal', sendOwn:'✍ Send your own message',
     encodedCount:(n)=>`${n} character${n>1?'s':''} encoded`,
     placeholder:'Type a message, it becomes a song…',
-    foot:'Artistic impression. Audio is decorative: decoding is done from the glyphs.' }
+    foot:'Artistic impression. Audio is decorative: decoding is done from the glyphs.',
+    credit:'A Studio Existence experiment' }
 };
-let currentLang='fr';
+let currentLang='en';
 function t(key,...a){ const v=STRINGS[currentLang][key]; return typeof v==='function'?v(...a):v; }
 
 /* ════════════════ Codec générique (base-N sur un alphabet de glyphes) ════════════════ */
@@ -578,6 +606,7 @@ function switchTab(tab){ stopAudio(); state.tab=tab;
 /* ════════════════ LANGUE ════════════════ */
 function applyLang(){
   document.documentElement.lang=currentLang;
+  document.title=t('pageTitle');
   document.getElementById('lang-fr').classList.toggle('on',currentLang==='fr');
   document.getElementById('lang-en').classList.toggle('on',currentLang==='en');
   document.getElementById('brand').textContent=t('brand');
@@ -600,6 +629,7 @@ function applyLang(){
   document.getElementById('modal-lbl').textContent=t('revealed');
   document.getElementById('modal-close').textContent=t('close');
   document.getElementById('foot').textContent=t('foot');
+  document.getElementById('credit-link').textContent=t('credit');
   const sl=document.getElementById('send-link'); if(sl) sl.textContent=t('sendOwn');
   document.querySelectorAll('.voice-card').forEach(c=>{ const v=voiceById(c.dataset.id);
     c.querySelector('.voice-name').textContent=v.name[currentLang]; c.querySelector('.voice-blurb').textContent=v.blurb[currentLang]; });
@@ -767,6 +797,7 @@ function gridAnim(acc,ac2){
 /* ════════════════ INIT ════════════════ */
 window.addEventListener('DOMContentLoaded',()=>{
   try{ const sl=localStorage.getItem('echosLang'); if(sl) currentLang=sl; }catch(e){}
+  // Anglais par défaut ; le bouton FR/EN bascule l'interface sur place
   const ql=new URLSearchParams(location.search).get('lang'); if(ql==='fr'||ql==='en') currentLang=ql;
   buildVoiceCards();
   loadFromHash();
