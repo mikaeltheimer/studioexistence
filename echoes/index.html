@@ -8,6 +8,7 @@
 <meta name="author" content="Studio Existence">
 <meta name="theme-color" content="#04101d">
 <link rel="canonical" href="https://studioexistence.com/echoes/">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="a2e97ed9-94cd-4ae2-a65a-433174510de8"></script>
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -480,11 +481,13 @@ const VOICES=[
 const voiceById=id=>VOICES.find(v=>v.id===id)||VOICES[0];
 
 /* ════════════════ ÉTAT ════════════════ */
-const state={ voice:'whale', tab:'encode', msg:'', codec:null, pending:null, playingSide:null, playToken:0, endTimer:null, suppressHash:false };
+const state={ voice:'whale', tab:'encode', msg:'', codec:null, pending:null, playingSide:null, playToken:0, endTimer:null, suppressHash:false, encodeTimer:null };
 
 /* ════════════════ THÈME / VOIX ════════════════ */
 function applyVoice(id,{keepHash=false}={}){
+  const prev=state.voice;
   const v=voiceById(id); state.voice=v.id; state.codec=makeCodec(v.glyphs);
+  if(prev !== v.id && typeof umami !== 'undefined') umami.track('voice_selected', { from_voice: prev, to_voice: v.id, lang: currentLang });
   for(const [k,val] of Object.entries(v.pal)) document.documentElement.style.setProperty(k,val);
   startBg(v);
   document.querySelectorAll('.voice-card').forEach(c=>c.classList.toggle('active',c.dataset.id===v.id));
@@ -515,9 +518,16 @@ function renderEncode(){
   const langQ=currentLang!=='fr'?`?lang=${currentLang}`:'';
   link.value=`${base}${langQ}#/${state.voice}/${payload}`;
   status.textContent=t('encodedCount',[...text].length); status.className='status ok';
+  // track encode with debounce (fire after 1.5s of inactivity)
+  clearTimeout(state.encodeTimer);
+  state.encodeTimer = setTimeout(() => {
+    if(typeof umami !== 'undefined') umami.track('encode_message', { voice: state.voice, lang: currentLang, char_count: [...text].length });
+  }, 1500);
 }
 function onTextInput(){ renderEncode(); }
-function copyLink(){ const link=document.getElementById('share-link').value; if(!link) return; navigator.clipboard.writeText(link); const s=document.getElementById('enc-status'); s.textContent=t('copied'); s.className='status ok'; }
+function copyLink(){ const link=document.getElementById('share-link').value; if(!link) return; navigator.clipboard.writeText(link); const s=document.getElementById('enc-status'); s.textContent=t('copied'); s.className='status ok';
+  if(typeof umami !== 'undefined') umami.track('copy_link', { voice: state.voice, lang: currentLang });
+}
 
 /* ════════════════ DECODE ════════════════ */
 function onDecodeInput(){
@@ -532,6 +542,7 @@ function onDecodeInput(){
 }
 function revealDecodedMessage(){
   if(state.pending==null) return;
+  if(typeof umami !== 'undefined') umami.track('decode_complete', { voice: state.voice, lang: currentLang });
   document.getElementById('modal-message').textContent=state.pending;
   document.getElementById('decode-modal').style.display='flex';
   const out=document.getElementById('decoded-out'); const card=document.getElementById('reveal-card');
@@ -665,6 +676,7 @@ function loadFromHash(){
   if(payload){
     setReceiverMode(true);
     switchTab('decode');
+    if(typeof umami !== 'undefined') umami.track('receive_message', { voice: vid, lang: currentLang });
     try{ const b64=payload.replace(/-/g,'+').replace(/_/g,'/'); const padded=b64+'=='.slice(0,(4-b64.length%4)%4);
       const bin=atob(padded); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
       const glyphs=new TextDecoder().decode(bytes);
