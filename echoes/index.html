@@ -481,13 +481,11 @@ const VOICES=[
 const voiceById=id=>VOICES.find(v=>v.id===id)||VOICES[0];
 
 /* ════════════════ ÉTAT ════════════════ */
-const state={ voice:'whale', tab:'encode', msg:'', codec:null, pending:null, playingSide:null, playToken:0, endTimer:null, suppressHash:false, encodeTimer:null };
+const state={ voice:'whale', tab:'encode', msg:'', codec:null, pending:null, playingSide:null, playToken:0, endTimer:null, suppressHash:false };
 
 /* ════════════════ THÈME / VOIX ════════════════ */
 function applyVoice(id,{keepHash=false}={}){
-  const prev=state.voice;
   const v=voiceById(id); state.voice=v.id; state.codec=makeCodec(v.glyphs);
-  if(prev !== v.id && typeof umami !== 'undefined') umami.track('voice_selected', { from_voice: prev, to_voice: v.id, lang: currentLang });
   for(const [k,val] of Object.entries(v.pal)) document.documentElement.style.setProperty(k,val);
   startBg(v);
   document.querySelectorAll('.voice-card').forEach(c=>c.classList.toggle('active',c.dataset.id===v.id));
@@ -518,11 +516,6 @@ function renderEncode(){
   const langQ=currentLang!=='fr'?`?lang=${currentLang}`:'';
   link.value=`${base}${langQ}#/${state.voice}/${payload}`;
   status.textContent=t('encodedCount',[...text].length); status.className='status ok';
-  // track encode with debounce (fire after 1.5s of inactivity)
-  clearTimeout(state.encodeTimer);
-  state.encodeTimer = setTimeout(() => {
-    if(typeof umami !== 'undefined') umami.track('encode_message', { voice: state.voice, lang: currentLang, char_count: [...text].length });
-  }, 1500);
 }
 function onTextInput(){ renderEncode(); }
 function copyLink(){ const link=document.getElementById('share-link').value; if(!link) return; navigator.clipboard.writeText(link); const s=document.getElementById('enc-status'); s.textContent=t('copied'); s.className='status ok';
@@ -542,7 +535,6 @@ function onDecodeInput(){
 }
 function revealDecodedMessage(){
   if(state.pending==null) return;
-  if(typeof umami !== 'undefined') umami.track('decode_complete', { voice: state.voice, lang: currentLang });
   document.getElementById('modal-message').textContent=state.pending;
   document.getElementById('decode-modal').style.display='flex';
   const out=document.getElementById('decoded-out'); const card=document.getElementById('reveal-card');
