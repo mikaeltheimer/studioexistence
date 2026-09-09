@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voyage au pays des grands nombres</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-2: #0f1526;
+    --ink: #f3efe2;
+    --ink-dim: #9aa0b4;
+    --teal: #5fd3ac;
+    --teal-dim: #2a5548;
+    --amber: #eab05a;
+    --amber-dim: #5a4526;
+    --danger: #e8615a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    scroll-behavior: auto;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+  }
+  .station {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    scroll-snap-align: start;
+    position: relative;
+    padding: 6vh 6vw;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20% 30%, rgba(243,239,226,0.5), transparent),
+      radial-gradient(1.5px 1.5px at 70% 65%, rgba(243,239,226,0.4), transparent),
+      radial-gradient(1px 1px at 40% 80%, rgba(243,239,226,0.35), transparent),
+      radial-gradient(1px 1px at 85% 20%, rgba(243,239,226,0.3), transparent),
+      radial-gradient(2px 2px at 55% 45%, rgba(243,239,226,0.3), transparent),
+      radial-gradient(1px 1px at 10% 90%, rgba(243,239,226,0.35), transparent),
+      radial-gradient(1px 1px at 92% 78%, rgba(243,239,226,0.3), transparent);
+    background-size: 100% 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .intro h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 6vw, 3.6rem);
+    line-height: 1.15;
+    max-width: 14ch;
+  }
+  .intro p {
+    margin-top: 1.2rem;
+    color: var(--ink-dim);
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    max-width: 34ch;
+  }
+  .scroll-cue {
+    position: absolute;
+    bottom: 6vh;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .scroll-cue .arrow {
+    width: 10px;
+    height: 10px;
+    border-right: 1.5px solid var(--ink-dim);
+    border-bottom: 1.5px solid var(--ink-dim);
+    transform: rotate(45deg);
+    animation: bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: rotate(45deg) translate(0,0); opacity: 0.5; }
+    50% { transform: rotate(45deg) translate(4px,4px); opacity: 1; }
+  }
+  .gap-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+    color: var(--ink-dim);
+    letter-spacing: 0.01em;
+    min-height: 1.4em;
+    margin-bottom: 1.6rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .gap-badge.shown { opacity: 1; }
+  .gap-badge .from { color: var(--ink-dim); }
+  .gap-badge .val { color: var(--ink); font-weight: 700; }
+  .number {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2.2rem, 8vw, 5rem);
+    line-height: 1.05;
+    max-width: 20ch;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .station.in .number { opacity: 1; transform: translateY(0); }
+  .label {
+    margin-top: 1rem;
+    font-size: clamp(1rem, 2.2vw, 1.25rem);
+    color: var(--ink-dim);
+    max-width: 30ch;
+  }
+  .station[data-cat="pop"] .number { color: var(--teal); }
+  .station[data-cat="combo"] .number { color: var(--amber); }
+  .station[data-cat="break"] .number { color: var(--danger); }
+
+  .break-station .label {
+    margin-top: 1.6rem;
+    max-width: 36ch;
+    color: var(--ink);
+    font-size: clamp(1rem, 2.4vw, 1.2rem);
+    line-height: 1.6;
+  }
+  .break-station .number { font-size: clamp(1.6rem, 6vw, 3.2rem); }
+  .break-station.shaking .number { animation: shake 0.5s ease; }
+  .collective-step {
+    margin-top: 1.8rem;
+    display: none;
+  }
+  .collective-step.shown { display: block; }
+  .collective-text {
+    max-width: 38ch;
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+    color: var(--ink-dim);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+  .collective-text strong { color: var(--danger); }
+  @keyframes shake {
+    0%, 100% { transform: translate(0,0); }
+    20% { transform: translate(-3px, 2px); }
+    40% { transform: translate(3px, -2px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(2px, 2px); }
+  }
+  .replay {
+    margin-top: 2.4rem;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .replay:hover { border-color: var(--ink); }
+  .replay:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  .count-zone {
+    height: 8000px;
+    position: relative;
+    scroll-snap-align: none;
+    background: var(--bg);
+  }
+  .count-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 6vw;
+  }
+  .count-number {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(3rem, 12vw, 7rem);
+    color: var(--teal);
+    font-variant-numeric: tabular-nums;
+  }
+  .count-bar {
+    width: min(60vw, 320px);
+    height: 3px;
+    background: rgba(255,255,255,0.12);
+    margin-top: 1.4rem;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .count-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--teal);
+  }
+  .count-label {
+    margin-top: 1.2rem;
+    color: var(--ink-dim);
+    font-size: clamp(0.85rem, 1.8vw, 1rem);
+    max-width: 32ch;
+  }
+  .transition-caption .label {
+    max-width: 36ch;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .number, .gap-badge, .scroll-cue .arrow, .break-station .number {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<section class="station intro">
+  <h1>Voyage au pays des grands nombres</h1>
+  <p>Chaque étape ci-dessous est un nombre réel. La distance entre deux étapes n'est pas la même — fais défiler pour la découvrir.</p>
+  <div class="scroll-cue"><span>Défiler</span><span class="arrow"></span></div>
+</section>
+
+<section id="countZone" class="count-zone">
+  <div class="count-sticky">
+    <div class="count-number" id="countNumber">0</div>
+    <div class="count-bar"><div class="count-bar-fill" id="countBarFill"></div></div>
+    <div class="count-label">Défile pour de vrai — chaque chiffre que tu vois est un chiffre que tu as fait défiler, jusqu'à 4 000</div>
+  </div>
+</section>
+
+<section class="station" data-cat="pop" data-role="reveal-rate">
+  <div class="gap-badge"></div>
+  <div class="number">4 000</div>
+  <div class="label">Habitants à Sutton, notre village</div>
+</section>
+
+<section class="station" data-cat="pop" data-value="4000000">
+  <div class="gap-badge"></div>
+  <div class="number">4 000 000</div>
+  <div class="label">Habitants à Montréal</div>
+</section>
+
+<section class="station" data-cat="pop" data-value="8900000">
+  <div class="gap-badge"></div>
+  <div class="number">8,9 millions</div>
+  <div class="label">Habitants au Québec</div>
+</section>
+
+<section class="station" data-cat="pop" data-value="8000000000">
+  <div class="gap-badge"></div>
+  <div class="number">8 milliards</div>
+  <div class="label">Habitants sur Terre</div>
+</section>
+
+<section class="station" data-cat="pop" data-value="300000000000">
+  <div class="gap-badge"></div>
+  <div class="number">~300 milliards</div>
+  <div class="label">Étoiles dans notre galaxie, la Voie lactée</div>
+</section>
+
+<section class="station" data-cat="pop" data-value="1e18">
+  <div class="gap-badge"></div>
+  <div class="number">10<sup>18</sup></div>
+  <div class="label">Grains de sable sur Terre (estimation)</div>
+</section>
+
+<section class="station" data-cat="pop" data-value="4.3252003274489856e19">
+  <div class="gap-badge"></div>
+  <div class="number">43 252 003 274 489 856 000</div>
+  <div class="label">Combinaisons possibles d'un Rubik's cube</div>
+</section>
+
+<section class="station" data-cat="combo" data-value="1e24">
+  <div class="gap-badge"></div>
+  <div class="number">10<sup>24</sup></div>
+  <div class="label">Étoiles dans l'univers observable (débattu)</div>
+</section>
+
+<section class="station" data-cat="combo" data-value="8.0658175e67">
+  <div class="gap-badge"></div>
+  <div class="number">~8 × 10<sup>67</sup></div>
+  <div class="label">Façons de mélanger un jeu de 52 cartes</div>
+</section>
+
+<section class="station" data-cat="combo" data-value="1e100">
+  <div class="gap-badge"></div>
+  <div class="number">10<sup>100</sup></div>
+  <div class="label">Un googol</div>
+</section>
+
+<section class="station break-station" data-cat="break" data-role="break">
+  <div class="gap-badge"></div>
+  <div class="number">10 puissance googol</div>
+  <div class="label">Un googolplex — même en utilisant chaque atome de l'univers observable comme un chiffre, il n'y en aurait pas assez pour l'écrire au complet. Ce dernier pas ne se mesure pas.</div>
+
+  <div id="collective1" class="collective-step">
+    <button class="replay" id="btnHumans">Et si tous les humains vivants défilaient avec toi ?</button>
+  </div>
+  <div id="collective2" class="collective-step">
+    <p class="collective-text">Même à 8 milliards de personnes défilant en même temps, le nombre de secondes nécessaires s'écrit encore avec environ <strong>un googol de chiffres</strong>. Diviser par 8 milliards ne change presque rien à un nombre qui en a déjà 10<sup>100</sup>.</p>
+    <button class="replay" id="btnAtoms">Et si chaque atome de l'univers observable était un humain qui défilait ?</button>
+  </div>
+  <div id="collective3" class="collective-step">
+    <p class="collective-text">Même à 10<sup>80</sup> « défileurs » à la fois — plus qu'il n'existe de particules dans tout l'univers connu — le résultat s'écrit toujours avec environ un googol de chiffres. Un googolplex ne bouge pas, peu importe combien on est.</p>
+  </div>
+
+  <button class="replay" onclick="window.scrollTo({top:0,behavior:'smooth'})">Revenir au départ</button>
+</section>
+
+<script>
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const YEAR_SEC = 365.25 * 24 * 3600;
+  const UNIVERSE_AGE_YEARS = 13.8e9;
+
+  function fmtNum(n) {
+    return Math.round(n).toLocaleString('fr-FR');
+  }
+
+  function formatDuration(sec) {
+    if (sec < 1) return "moins d'une seconde";
+    if (sec < 60) return fmtNum(sec) + ' secondes';
+    if (sec < 3600) return fmtNum(sec / 60) + ' minutes';
+    if (sec < 86400) return fmtNum(sec / 3600) + ' heures';
+    if (sec < YEAR_SEC) return fmtNum(sec / 86400) + ' jours';
+    const years = sec / YEAR_SEC;
+    if (years < UNIVERSE_AGE_YEARS) return fmtNum(years) + ' ans';
+    if (years < UNIVERSE_AGE_YEARS * 1e9) {
+      const mult = years / UNIVERSE_AGE_YEARS;
+      const rounded = mult < 100 ? Math.round(mult * 10) / 10 : fmtNum(mult);
+      return rounded + " fois l'âge de l'univers";
+    }
+    const digits = Math.floor(Math.log10(years)) + 1;
+    return 'un nombre d\u2019années à ' + digits + ' chiffres';
+  }
+
+  function flicker(el, finalText, isBreak, onDone, lead) {
+    if (reduced) { el.innerHTML = '<span class="from">' + lead + '</span> <span class="val">' + finalText + '</span>'; el.classList.add('shown'); if (onDone) onDone(); return; }
+    el.classList.add('shown');
+    const digits = '0123456789';
+    let ticks = 0;
+    const maxTicks = 16;
+    const interval = setInterval(() => {
+      ticks++;
+      if (ticks >= maxTicks) {
+        clearInterval(interval);
+        el.innerHTML = '<span class="from">' + lead + '</span> <span class="val">' + finalText + '</span>';
+        if (isBreak && onDone) onDone();
+        return;
+      }
+      let s = '';
+      const len = 3 + Math.floor(ticks / 2);
+      for (let i = 0; i < len; i++) s += digits[Math.floor(Math.random() * 10)];
+      el.textContent = s + 's…';
+    }, 55);
+  }
+
+  // --- Single real scroll zone: 0 to 4000, timed for real, constant density throughout ---
+  const zone = document.getElementById('countZone');
+  const number = document.getElementById('countNumber');
+  const bar = document.getElementById('countBarFill');
+  let zoneStartTime = null;
+  let measuredRate = null; // units per second, set once the zone completes
+
+  function updateZone() {
+    const rect = zone.getBoundingClientRect();
+    const scrollable = zone.offsetHeight - window.innerHeight;
+    let progress = scrollable > 0 ? -rect.top / scrollable : 0;
+    progress = Math.max(0, Math.min(1, progress));
+    if (progress > 0 && zoneStartTime === null) zoneStartTime = performance.now();
+    const val = Math.round(progress * 4000);
+    number.textContent = fmtNum(val);
+    bar.style.width = (progress * 100) + '%';
+    if (progress >= 1 && measuredRate === null && zoneStartTime !== null) {
+      const elapsedSec = Math.max((performance.now() - zoneStartTime) / 1000, 1);
+      measuredRate = 4000 / elapsedSec;
+    }
+  }
+  window.addEventListener('scroll', updateZone, { passive: true });
+  updateZone();
+
+  // --- Stations below: reveal measured rate, then project every later value from it ---
+  const FALLBACK_RATE = 1; // if something goes wrong, default to the original "1 per second" convention
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        const badge = entry.target.querySelector('.gap-badge');
+        if (badge.dataset.done) return;
+        const rate = measuredRate || FALLBACK_RATE;
+
+        if (entry.target.dataset.role === 'reveal-rate') {
+          badge.dataset.done = '1';
+          const rateTxt = (rate < 10 ? Math.round(rate * 10) / 10 : Math.round(rate)) + ' chiffres par seconde';
+          flicker(badge, rateTxt, false, null, 'tu viens de défiler jusqu\u2019ici pour de vrai — ta vitesse mesurée :');
+        } else if (entry.target.dataset.role === 'break') {
+          badge.dataset.done = '1';
+          flicker(badge, '', true, () => {
+            badge.textContent = '';
+            setTimeout(() => entry.target.classList.add('shaking'), 200);
+            setTimeout(() => document.getElementById('collective1').classList.add('shown'), 900);
+          }, '');
+        } else if (entry.target.dataset.value) {
+          badge.dataset.done = '1';
+          const value = parseFloat(entry.target.dataset.value);
+          const projectedSec = value / rate;
+          const txt = formatDuration(projectedSec);
+          flicker(badge, txt, false, null, 'à ta vitesse mesurée, il te faudrait défiler pendant');
+        }
+      }
+    });
+  }, { threshold: 0.55 });
+
+  document.querySelectorAll('.station').forEach((s) => {
+    if (!s.dataset.value && s.dataset.role !== 'reveal-rate' && s.dataset.role !== 'break') s.classList.add('in');
+    observer.observe(s);
+  });
+
+  document.getElementById('btnHumans').addEventListener('click', () => {
+    document.getElementById('collective1').classList.remove('shown');
+    document.getElementById('collective2').classList.add('shown');
+  });
+  document.getElementById('btnAtoms').addEventListener('click', () => {
+    document.getElementById('collective2').classList.remove('shown');
+    document.getElementById('collective3').classList.add('shown');
+  });
+</script>
+
+</body>
+</html>
