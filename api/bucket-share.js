@@ -33,6 +33,8 @@ export default function handler(req, res) {
       .replace(/<meta property="og:locale" [^>]*>/, `<meta property="og:locale" content="${fr ? 'fr_CA' : 'en_CA'}">`);
   }
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=86400');
+  // Pas de cache CDN : chaque lien a son propre aperçu (et le rendu ne coûte presque rien)
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Bucket-Share', p ? 'personalise' : (l ? 'invalide' : 'absent'));
   res.status(200).send(html);
 }
