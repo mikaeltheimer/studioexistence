@@ -432,9 +432,21 @@
   ]
  },
  {
-  "id": "perso",
-  "fr": "Accomplissements personnels",
+  "id": "accomplissements",
+  "fr": "Accomplissements",
   "items": [
+   {
+    "id": "new_perso_0",
+    "fr": "Planter un arbre qui nous survivra",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "p1",
+    "fr": "Publier un livre",
+    "ex": null,
+    "tour": true
+   },
    {
     "id": "pp3",
     "fr": "Apprendre une nouvelle langue",
@@ -442,9 +454,15 @@
     "tour": true
    },
    {
-    "id": "new_perso_0",
-    "fr": "Planter un arbre qui nous survivra",
+    "id": "p9",
+    "fr": "Créer une entreprise",
     "ex": null,
+    "tour": true
+   },
+   {
+    "id": "p4",
+    "fr": "Jouer un spectacle devant public",
+    "ex": "concert, théâtre, stand-up, open-mic…",
     "tour": true
    },
    {
@@ -457,19 +475,19 @@
     "id": "pp5",
     "fr": "Apprendre à jouer d'un instrument de musique",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "pp2",
     "fr": "Conquérir une phobie",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "new_perso_2",
     "fr": "Écrire une lettre à soi-même dans 10 ans",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "new_perso_1",
@@ -486,6 +504,72 @@
    {
     "id": "new_perso_3",
     "fr": "Construire un meuble de ses mains",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_pro_1",
+    "fr": "Donner une conférence devant une salle comble",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p3",
+    "fr": "Écrire et composer une chanson",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p13",
+    "fr": "Recevoir un prix de reconnaissance",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p11",
+    "fr": "Construire sa propre maison",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_pro_0",
+    "fr": "Remporter une compétition",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p2",
+    "fr": "Réaliser un film",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p7",
+    "fr": "Jouer ou faire de la figuration dans un film",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p8",
+    "fr": "Organiser une exposition de ses œuvres",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p10",
+    "fr": "Breveter une invention",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p12",
+    "fr": "Être élu·e à une fonction politique",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_pro_2",
+    "fr": "Devenir le mentor de quelqu'un",
     "ex": null,
     "tour": false
    }
@@ -672,96 +756,6 @@
    {
     "id": "cu41",
     "fr": "Fumer un grand cigare cubain",
-    "ex": null,
-    "tour": false
-   }
-  ]
- },
- {
-  "id": "pro",
-  "fr": "Accomplissements professionnels",
-  "items": [
-   {
-    "id": "p1",
-    "fr": "Publier un livre",
-    "ex": null,
-    "tour": true
-   },
-   {
-    "id": "p9",
-    "fr": "Créer une entreprise",
-    "ex": null,
-    "tour": true
-   },
-   {
-    "id": "new_pro_1",
-    "fr": "Donner une conférence devant une salle comble",
-    "ex": null,
-    "tour": true
-   },
-   {
-    "id": "p4",
-    "fr": "Jouer un spectacle devant public",
-    "ex": "concert, théâtre, stand-up, open-mic…",
-    "tour": true
-   },
-   {
-    "id": "p3",
-    "fr": "Écrire et composer une chanson",
-    "ex": null,
-    "tour": true
-   },
-   {
-    "id": "p13",
-    "fr": "Recevoir un prix de reconnaissance",
-    "ex": null,
-    "tour": true
-   },
-   {
-    "id": "p11",
-    "fr": "Construire sa propre maison",
-    "ex": null,
-    "tour": false
-   },
-   {
-    "id": "new_pro_0",
-    "fr": "Remporter une compétition",
-    "ex": null,
-    "tour": false
-   },
-   {
-    "id": "p2",
-    "fr": "Réaliser un film",
-    "ex": null,
-    "tour": false
-   },
-   {
-    "id": "p7",
-    "fr": "Jouer ou faire de la figuration dans un film",
-    "ex": null,
-    "tour": false
-   },
-   {
-    "id": "p8",
-    "fr": "Organiser une exposition de ses œuvres",
-    "ex": null,
-    "tour": false
-   },
-   {
-    "id": "p10",
-    "fr": "Breveter une invention",
-    "ex": null,
-    "tour": false
-   },
-   {
-    "id": "p12",
-    "fr": "Être élu·e à une fonction politique",
-    "ex": null,
-    "tour": false
-   },
-   {
-    "id": "new_pro_2",
-    "fr": "Devenir le mentor de quelqu'un",
     "ex": null,
     "tour": false
    }
