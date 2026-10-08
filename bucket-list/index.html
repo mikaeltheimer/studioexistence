@@ -190,6 +190,14 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 .intro .top{display:flex;align-items:center;justify-content:space-between}
 .intro .resume{font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px;align-self:center}
 
+/* En-tête de catégorie : le titre se replie, « Passer » reste toujours visible */
+.cat-top{align-items:flex-start}
+.cat-name{flex:1 1 auto;min-width:0;font-size:clamp(28px,8.4vw,36px);overflow-wrap:break-word}
+.cat-step,.skipcat{flex-shrink:0;margin-top:6px}
+/* Pas de zoom au double-tap (le double-tap sert à « Ça me tente ») */
+html,body,button,.app,.stack,.card{touch-action:manipulation}
+.card{touch-action:none}
+
 /* Fin de catégorie : tout tient dans la carte, boutons toujours visibles */
 .inter{padding:clamp(16px,3vh,24px) 18px 16px;gap:clamp(8px,1.6vh,12px)}
 .inter h2,.coach h2{margin:0}
@@ -212,7 +220,7 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 .s-top .mark{margin-right:auto}
 .back{font-weight:800;font-size:14px;padding:7px 12px;border-radius:999px;border:1.5px solid var(--ink);background:var(--card)}
 .screen h1{font-family:var(--display);font-weight:400;font-size:clamp(32px,8vw,44px);line-height:1.02;letter-spacing:-.6px;text-wrap:balance;margin:0}
-.screen h1 em{color:var(--pink)}
+.screen h1 em{color:var(--ink);padding:0 .12em;background:linear-gradient(176deg,transparent 34%,#FFEE2E 34%,#FFEE2E 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .screen h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.1;margin:0}
 .screen p{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
 .stats2{display:flex;flex-wrap:wrap;gap:8px}
@@ -628,6 +636,9 @@ function undo(){
   renderCounts(false);renderStack(true);toast(t('undone'));
 }
 $('undo').onclick=undo;
+let lastTouch=0;
+$('play').addEventListener('touchend',e=>{const now=Date.now();if(now-lastTouch<350&&!e.target.closest('button,input,a'))e.preventDefault();lastTouch=now;},{passive:false});
+$('play').addEventListener('dblclick',e=>e.preventDefault());
 $('mini').onclick=()=>route('bilan');
 $('skipcat').onclick=()=>{
   snapshot();closeCoach();
@@ -977,6 +988,10 @@ function renderShared(){
     <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
     <h1>${nameH}</h1>
     <p>${esc(t('shared_p')(d,tt))}</p>
+    <div class="styles" role="group" id="sStyles">
+      <button data-style="man" aria-pressed="${sh.style==='man'}">${esc(t('style_man'))}<small>${esc(t('style_man_s'))}</small></button>
+      <button data-style="ros" aria-pressed="${sh.style==='ros'}">${esc(t('style_ros'))}<small>${esc(t('style_ros_s'))}</small></button>
+    </div>
     <canvas class="pv" id="sPv" role="img" aria-label="${esc(t('share_t')(sh.name))}"></canvas>
     <button class="primary" id="mine">${esc(hasMine?t('back_mine'):t('mine'))}</button>
     <div class="shared-list">${groups}</div>
@@ -985,7 +1000,9 @@ function renderShared(){
   </div>`;
   show('shared');
   $('mine').onclick=leaveShared; $('mine2').onclick=leaveShared;
-  withFonts(()=>drawPosterTo($('sPv'),items,sh.name,sh.style,S.lang));
+  const drawS=()=>withFonts(()=>drawPosterTo($('sPv'),items,sh.name,sh.style,S.lang));
+  $('sStyles').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{sh.style=b.dataset.style;$('sStyles').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawS();});
+  drawS();
 }
 function leaveShared(){SHARED=null;history.replaceState(null,'',location.pathname.replace(/\/partage\/?$/,'/'));start();}
 
