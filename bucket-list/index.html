@@ -272,6 +272,12 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 .pens{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}
 .pens i{width:22px;height:9px;border-radius:2px;border:1px solid var(--ink)}
 
+/* Commande */
+.shop{display:flex;flex-direction:column;gap:12px;padding:16px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);box-shadow:6px 6px 0 #FFEE2E}
+.shop .styles button{background:var(--paper)}
+.shop .styles button[aria-pressed="true"]{background:var(--ink)}
+.shop-status{min-height:1.4em;font-weight:700;color:var(--ink)!important}
+
 /* Vue partagée */
 .shared-list{display:flex;flex-direction:column;gap:14px}
 .sl-cat{display:flex;flex-direction:column;gap:6px}
@@ -310,6 +316,7 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 <section class="screen" id="list" hidden></section>
 <section class="screen wide" id="poster" hidden></section>
 <section class="screen wide" id="shared" hidden></section>
+<section class="screen" id="merci" hidden></section>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -324,6 +331,8 @@ const STORE = 'bl2';           // clé de sauvegarde locale
 /* Palette : les 8 surligneurs STABILO BOSS ORIGINAL (approximation écran) */
 const PAL ={nature:'#57E36A',voyages:'#FFEE2E',corps:'#FF5A5F',sensations:'#FF9F2E',accomplissements:'#3FE0D0',relations:'#FF66B8',culture:'#55B8FF',mystere:'#C29BFF'};
 const PAL2={nature:'#FF66B8',voyages:'#FF66B8',corps:'#55B8FF',sensations:'#C29BFF',accomplissements:'#FF66B8',relations:'#55B8FF',culture:'#FF66B8',mystere:'#FFEE2E'};
+/* Boutique : prix affichés (CAD, livraison incluse). Les prix facturés viennent de api/_shop.js. */
+const SHOP={'30x40':{label:'30 × 40 cm',price:49},'50x70':{label:'50 × 70 cm',price:69}};
 const PEN={fr:{nature:'vert',voyages:'jaune',corps:'rouge',sensations:'orange',accomplissements:'turquoise',relations:'rose',culture:'bleu',mystere:'lilas'},
            en:{nature:'green',voyages:'yellow',corps:'red',sensations:'orange',accomplissements:'turquoise',relations:'pink',culture:'blue',mystere:'lilac'}};
 
@@ -359,6 +368,13 @@ const T={
   download:"Télécharger l'affiche", save_img:"Enregistrer l'image", poster_note:'Format A4 à 300 dpi, prêt à imprimer.',
   tip:'<b>À surligner au fil de ta vie.</b> Les couleurs suivent un paquet de 8 surligneurs STABILO BOSS ORIGINAL : quand tu vis une nouvelle expérience, surligne-la sur ton affiche avec la couleur de sa catégorie.',
   pens_l:'Ta palette',
+  shop_h:'Commander ton affiche imprimée', shop_p:'Papier mat épais de qualité musée, imprimé et expédié par Printful. Livraison incluse au Canada.',
+  shop_btn:p=>`Commander · ${p} $`, shop_wait:"Préparation du fichier d'impression…", shop_pay:'Redirection vers le paiement sécurisé…',
+  shop_err:"La commande n'a pas pu démarrer. Réessaie dans un instant.", shop_off:'La commande en ligne fonctionne seulement sur studioexistence.com.',
+  shop_need:"Ajoute au moins une expérience avant de commander.", shop_preview:'Aperçu au format',
+  thanks_h:'Merci, <em>c\'est commandé</em>', thanks_p:"Ton affiche part à l'impression. Tu recevras un courriel de confirmation de Stripe, puis un avis d'expédition. Compte environ une à deux semaines pour la livraison.",
+  thanks_tip:'En attendant, prépare tes surligneurs : chaque nouvelle expérience vécue mérite son coup de couleur.', thanks_back:'Revenir à ma liste',
+  cancel_t:'Paiement annulé. Ta liste est intacte.',
   link_copied:'Lien copié !', copy:'Copier', share_t:n=>n?`La Bucket List ${deN(n)}`:'Ma Bucket List', share_txt:'Voici ce que j\'ai vécu et ce que je veux encore vivre.',
   shared_h:n=>n?`La Bucket List <em>${deN(n)}</em>`:'Une <em>Bucket List</em>', shared_p:(d,t)=>`${d} expérience${d>1?'s':''} vécue${d>1?'s':''} · ${t} à vivre`,
   mine:'Faire la mienne', back_mine:'Revenir à ma liste', s_lived:'Vécu', s_tolive:'À vivre', shared_bad:"Ce lien de partage est incomplet ou abîmé.",
@@ -394,6 +410,13 @@ const T={
   download:'Download the poster', save_img:'Save the image', poster_note:'A4 at 300 dpi, ready to print.',
   tip:'<b>Highlight it as you live.</b> The colours follow a pack of 8 STABILO BOSS ORIGINAL highlighters: when you live a new experience, highlight it on your poster in its category colour.',
   pens_l:'Your palette',
+  shop_h:'Order your printed poster', shop_p:'Thick museum-quality matte paper, printed and shipped by Printful. Shipping included within Canada.',
+  shop_btn:p=>`Order · $${p}`, shop_wait:'Preparing the print file…', shop_pay:'Redirecting to secure checkout…',
+  shop_err:"The order couldn't start. Please try again in a moment.", shop_off:'Online ordering only works on studioexistence.com.',
+  shop_need:'Add at least one experience before ordering.', shop_preview:'Preview in',
+  thanks_h:'Thank you, <em>it\'s ordered</em>', thanks_p:"Your poster is off to the printer. You'll get a confirmation email from Stripe, then a shipping notice. Allow about one to two weeks for delivery.",
+  thanks_tip:'In the meantime, get your highlighters ready: every new experience deserves its stroke of colour.', thanks_back:'Back to my list',
+  cancel_t:'Payment cancelled. Your list is untouched.',
   link_copied:'Link copied!', copy:'Copy', share_t:n=>n?`${n}'s Bucket List`:'My Bucket List', share_txt:"Here's what I've lived and what I still want to live.",
   shared_h:n=>n?`<em>${n}'s</em> Bucket List`:'A <em>Bucket List</em>', shared_p:(d,t)=>`${d} lived · ${t} to live`,
   mine:'Make my own', back_mine:'Back to my list', s_lived:'Lived', s_tolive:'To live', shared_bad:'This share link is incomplete or damaged.',
@@ -453,7 +476,7 @@ function migrate(){
 /* =====================================================================
    NAVIGATION
    ===================================================================== */
-const SCREENS=['intro','play','bilan','list','poster','shared'];
+const SCREENS=['intro','play','bilan','list','poster','shared','merci'];
 function show(name){
   SCREENS.forEach(s=>{$(s).hidden=s!==name;});
   document.body.style.overflow=name==='play'?'hidden':'';
@@ -474,6 +497,7 @@ function route(name){
   else if(name==='list') renderList();
   else if(name==='poster') renderPoster();
   else if(name==='shared') renderShared();
+  else if(name==='merci') renderThanks();
 }
 
 /* =====================================================================
@@ -812,16 +836,57 @@ function renderPoster(){
     </div>
     <div class="field"><label for="pName">${esc(t('name_l'))}</label><input id="pName" maxlength="40" autocomplete="given-name" placeholder="${esc(t('name_p'))}" value="${esc(S.name)}"></div>
     <canvas class="pv" id="pv" role="img" aria-label="${esc(t('poster_h').replace(/<[^>]+>/g,''))}"></canvas>
-    <div class="btns"><button class="primary" id="dl">${esc(coarse?t('save_img'):t('download'))}</button><p style="text-align:center">${esc(t('poster_note'))}</p></div>
+    <div class="shop" id="shop">
+      <h2>${esc(t('shop_h'))}</h2>
+      <p>${esc(t('shop_p'))}</p>
+      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(f.label)}<small>${f.price} $ CAD</small></button>`).join('')}</div>
+      <button class="primary" id="orderBtn">${esc(t('shop_btn')(SHOP[shopFmt].price))}</button>
+      <p class="shop-status" id="shopStatus" role="status" aria-live="polite"></p>
+    </div>
+    <div class="btns"><button class="ghost" id="dl">${esc(coarse?t('save_img'):t('download'))}</button><p style="text-align:center">${esc(t('poster_note'))}</p></div>
     <div class="tip"><div>${t('tip')}<div class="pens" aria-label="${esc(t('pens_l'))}">${CATS.map(c=>`<i style="background:${PAL[c.id]}" title="${esc(catName(c))} : ${esc(PEN[S.lang][c.id])}"></i>`).join('')}</div></div></div>
   </div>`;
   show('poster');
   $('pBack').onclick=()=>route('bilan');
   $('poster').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{S.style=b.dataset.style;save();$('poster').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));draw();});
   const nm=$('pName');let tm;nm.addEventListener('input',()=>{S.name=nm.value.trim().slice(0,40);save();clearTimeout(tm);tm=setTimeout(draw,200);});
-  const draw=()=>withFonts(()=>drawPosterTo($('pv'),posterItems(S),S.name,S.style,S.lang));
+  const draw=()=>withFonts(()=>drawPosterTo($('pv'),posterItems(S),S.name,S.style,S.lang,fmtPreview));
   $('dl').onclick=()=>exportPoster($('pv'),S.name);
+  $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=t('shop_btn')(SHOP[shopFmt].price);fmtPreview=shopFmt;draw();});
+  $('orderBtn').onclick=placeOrder;
   draw();
+}
+let shopFmt='50x70', fmtPreview='a4';
+const ONLINE=/(^|\.)studioexistence\.com$|\.vercel\.app$/.test(location.hostname);
+async function placeOrder(){
+  const btn=$('orderBtn'), st=$('shopStatus'); const items=posterItems(S);
+  if(!items.length){st.textContent=t('shop_need');return;}
+  if(!ONLINE){st.textContent=t('shop_off');return;}
+  btn.disabled=true; st.textContent=t('shop_wait');
+  try{
+    await new Promise(r=>withFonts(r));
+    const cv=document.createElement('canvas'); drawPosterTo(cv,items,S.name,S.style,S.lang,shopFmt,true);
+    let blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.9));
+    if(blob&&blob.size>4.2e6) blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.8));
+    if(!blob) throw new Error('blob');
+    st.textContent=t('shop_pay');
+    const q=new URLSearchParams({format:shopFmt,style:S.style,lang:S.lang,name:S.name||''});
+    const r=await fetch('/api/checkout?'+q.toString(),{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.url) throw new Error(j.error||('http '+r.status));
+    location.href=j.url;
+  }catch(e){ st.textContent=t('shop_err'); btn.disabled=false; console.error(e); }
+}
+function renderThanks(){
+  $('merci').innerHTML=`<div class="screen-in">
+    <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
+    <h1>${t('thanks_h')}</h1><p>${esc(t('thanks_p'))}</p>
+    <canvas class="thumb" id="tThumb" aria-hidden="true"></canvas>
+    <div class="tip"><div>${esc(t('thanks_tip'))}<div class="pens">${CATS.map(c=>`<i style="background:${PAL[c.id]}"></i>`).join('')}</div></div></div>
+    <button class="primary" id="tBack">${esc(t('thanks_back'))}</button></div>`;
+  show('merci');
+  $('tBack').onclick=()=>route(S.finished?'bilan':'intro');
+  withFonts(()=>drawPosterTo($('tThumb'),posterItems(S),S.name,S.style,S.lang));
 }
 function exportPoster(cv,name){
   const fname=('bucket-list'+(name?'-'+name:'')).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9-]+/g,'-')+'.png';
@@ -847,7 +912,10 @@ function withFonts(fn){
   fontsReady.then(fn,fn);
 }
 let GRAIN=null;
-function setup(cv){const W=2480,H=3508;cv.width=W;cv.height=H;const ctx=cv.getContext('2d');
+/* Formats : proportion de la feuille et échelle de rendu (1 = 2480 px de large) */
+const FORMATS={a4:{ratio:Math.SQRT2,k:1},'30x40':{ratio:4/3,k:1},'50x70':{ratio:1.4,k:1.19}};  // 30×40 ≈ 210 dpi, 50×70 ≈ 150 dpi
+let P_FMT='a4', P_K=1;
+function setup(cv){const W=2480,H=Math.round(W*FORMATS[P_FMT].ratio);cv.width=Math.round(W*P_K);cv.height=Math.round(H*P_K);const ctx=cv.getContext('2d');ctx.setTransform(P_K,0,0,P_K,0,0);
   if(!ctx.roundRect){ctx.roundRect=function(x,y,w,h){this.rect(x,y,w,h);};}
   ctx.fillStyle=PAPER;ctx.fillRect(0,0,W,H);
   if(!GRAIN){GRAIN=document.createElement('canvas');GRAIN.width=GRAIN.height=256;const g=GRAIN.getContext('2d');const im=g.createImageData(256,256);
@@ -869,7 +937,7 @@ const pDate=lng=>new Date().toLocaleDateString(T[lng].locale,{year:'numeric',mon
 function pFooter(ctx,W,H){smallCaps(ctx,'STUDIOEXISTENCE.COM/BUCKET-LIST',W/2,H-80,22,'center',.45);}
 function fitText(ctx,txt,maxW){let s=txt;while(ctx.measureText(s).width>maxW&&s.length>3)s=s.slice(0,-1);return s===txt?s:s.slice(0,-1).trimEnd()+'…';}
 function emptyMsg(ctx,W,H,lng){ctx.font=`italic 400 64px ${DISPLAY}`;ctx.fillStyle=INK;ctx.globalAlpha=.55;const s=T[lng].p_empty;const L=[];let l='';s.split(' ').forEach(w=>{const tt=l?l+' '+w:w;if(ctx.measureText(tt).width>W-500&&l){L.push(l);l=w;}else l=tt;});L.push(l);L.forEach((ln,i)=>{const w=ctx.measureText(ln).width;ctx.fillText(ln,W/2-w/2,H/2+i*84);});ctx.globalAlpha=1;}
-function drawPosterTo(cv,items,name,style,lng){ if(style==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); }
+function drawPosterTo(cv,items,name,style,lng,fmt='a4',print=false){ P_FMT=FORMATS[fmt]?fmt:'a4'; P_K=print?FORMATS[P_FMT].k:1; if(style==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); P_FMT='a4'; P_K=1; }
 
 function drawManifeste(cv,items,name,lng){
   const {ctx,W,H}=setup(cv);
@@ -1014,11 +1082,15 @@ function leaveShared(){SHARED=null;history.replaceState(null,'',location.pathnam
 function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove('show'),1800);}
 function start(){
   if(SHARED){route('shared');return;}
+  if(ORDER_RET==='merci'){route('merci');return;}
+  if(ORDER_RET==='annulee'){route(S.finished?'poster':'intro');toast(t('cancel_t'));return;}
   if(!S.seenIntro) route('intro');
   else if(S.finished) route('bilan');
   else route('intro');
 }
 SHARED=parseShared();
+const ORDER_RET=new URLSearchParams(location.search).get('commande');
+if(ORDER_RET) history.replaceState(null,'',location.pathname);
 if(SHARED&&!SHARED.bad&&!load(STORE)&&!load('bl-state')) S.lang=SHARED.lang;
 applyLang(); save(); start();
 </script>
