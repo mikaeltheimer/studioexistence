@@ -1,8 +1,36 @@
 {
   "rewrites": [
-    { "source": "/whale-song",   "destination": "/api/og" },
-    { "source": "/whale-song/",  "destination": "/api/og" },
-    { "source": "/droid-lang",   "destination": "/api/og" },
-    { "source": "/droid-lang/",  "destination": "/api/og" }
-  ]
+    {
+      "source": "/whale-song",
+      "destination": "/api/og"
+    },
+    {
+      "source": "/whale-song/",
+      "destination": "/api/og"
+    },
+    {
+      "source": "/droid-lang",
+      "destination": "/api/og"
+    },
+    {
+      "source": "/droid-lang/",
+      "destination": "/api/og"
+    },
+    {
+      "source": "/bucket-list/partage",
+      "destination": "/api/bucket-share"
+    },
+    {
+      "source": "/bucket-list/partage/",
+      "destination": "/api/bucket-share"
+    }
+  ],
+  "functions": {
+    "api/bucket-share.js": {
+      "includeFiles": "bucket-list/index.html"
+    },
+    "api/bucket-og.js": {
+      "includeFiles": "{bucket-list/index.html,bucket-list/fonts/**}"
+    }
+  }
 }

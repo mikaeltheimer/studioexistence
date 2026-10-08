@@ -736,7 +736,9 @@ function shareUrl(){
   Object.entries(S.answers).forEach(([id,s])=>{ if(s!=='done'&&s!=='todo')return; const it=byId(id); if(!it)return;
     if(it.custom) c.push([it.label,it.cat,s==='done'?1:0]); else (s==='done'?d:tt).push(id); });
   const payload={v:2,n:S.name||'',d,t:tt,c,p:S.style,l:S.lang};
-  return location.origin+location.pathname+'?l='+b64e(payload);
+  // En ligne, les liens passent par /bucket-list/partage : une fonction y ajoute l'aperçu personnalisé (image, titre)
+  const online=/(^|\.)studioexistence\.com$|\.vercel\.app$/.test(location.hostname);
+  return location.origin+(online?'/bucket-list/partage':location.pathname)+'?l='+b64e(payload);
 }
 async function shareList(){
   const url=shareUrl(), title=t('share_t')(S.name);
@@ -985,7 +987,7 @@ function renderShared(){
   $('mine').onclick=leaveShared; $('mine2').onclick=leaveShared;
   withFonts(()=>drawPosterTo($('sPv'),items,sh.name,sh.style,S.lang));
 }
-function leaveShared(){SHARED=null;history.replaceState(null,'',location.pathname);start();}
+function leaveShared(){SHARED=null;history.replaceState(null,'',location.pathname.replace(/\/partage\/?$/,'/'));start();}
 
 /* =====================================================================
    DÉMARRAGE
