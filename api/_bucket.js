@@ -44,3 +44,6 @@ export function itemsOf(p) {
 }
 
 export const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// « de Marie » mais « d'Anne », « d'Hélène »
+export const deN = n => (/^[aeiouyhàâäéèêëîïôöûüœæ]/i.test(n) ? 'd\u2019' : 'de ') + n;

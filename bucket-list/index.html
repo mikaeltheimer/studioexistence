@@ -330,6 +330,8 @@ const PEN={fr:{nature:'vert',voyages:'jaune',corps:'rouge',sensations:'orange',a
 /* =====================================================================
    TEXTES FR / EN
    ===================================================================== */
+// « de Marie » mais « d'Anne », « d'Hélène »
+function deN(n){return (/^[aeiouyhàâäéèêëîïôöûüœæ]/i.test(n)?'d\u2019':'de ')+n;}
 const T={
  fr:{
   title:'Bucket List — Studio Existence', intro_h:'Ce que tu as vécu. Ce que tu veux encore vivre.',
@@ -357,12 +359,12 @@ const T={
   download:"Télécharger l'affiche", save_img:"Enregistrer l'image", poster_note:'Format A4 à 300 dpi, prêt à imprimer.',
   tip:'<b>À surligner au fil de ta vie.</b> Les couleurs suivent un paquet de 8 surligneurs STABILO BOSS ORIGINAL : quand tu vis une nouvelle expérience, surligne-la sur ton affiche avec la couleur de sa catégorie.',
   pens_l:'Ta palette',
-  link_copied:'Lien copié !', copy:'Copier', share_t:n=>n?`La Bucket List de ${n}`:'Ma Bucket List', share_txt:'Voici ce que j\'ai vécu et ce que je veux encore vivre.',
-  shared_h:n=>n?`La Bucket List <em>de ${n}</em>`:'Une <em>Bucket List</em>', shared_p:(d,t)=>`${d} expérience${d>1?'s':''} vécue${d>1?'s':''} · ${t} à vivre`,
+  link_copied:'Lien copié !', copy:'Copier', share_t:n=>n?`La Bucket List ${deN(n)}`:'Ma Bucket List', share_txt:'Voici ce que j\'ai vécu et ce que je veux encore vivre.',
+  shared_h:n=>n?`La Bucket List <em>${deN(n)}</em>`:'Une <em>Bucket List</em>', shared_p:(d,t)=>`${d} expérience${d>1?'s':''} vécue${d>1?'s':''} · ${t} à vivre`,
   mine:'Faire la mienne', back_mine:'Revenir à ma liste', s_lived:'Vécu', s_tolive:'À vivre', shared_bad:"Ce lien de partage est incomplet ou abîmé.",
   by:'Une expérience de', saved_local:'Ta liste est sauvegardée dans ce navigateur.',
   // affiche
-  p_title:n=>n?[['La Bucket List ',0],['de '+n,1]]:[['Bucket ',0],['List',1]], p_lived:'VÉCUES', p_tolive:'À VIVRE',
+  p_title:n=>n?[['La Bucket List ',0],[deN(n),1]]:[['Bucket ',0],['List',1]], p_lived:'VÉCUES', p_tolive:'À VIVRE',
   p_leg1:'surligné : vécu', p_leg2:'souligné : à vivre (à surligner un jour)', p_leg2s:'souligné : à vivre', p_empty:'Rien encore. Ta liste attend ses premières expériences.',
   locale:'fr-CA'
  },

@@ -2,7 +2,7 @@
 import { ImageResponse } from '@vercel/og';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { PAL, decode, itemsOf } from './_bucket.js';
+import { PAL, decode, itemsOf, deN } from './_bucket.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -53,7 +53,7 @@ export function render(p) {
     h('div', { fontFamily: 'Serif', fontSize: 38, lineHeight: 1 }, String(n)),
     h('div', { fontFamily: 'Sans', fontWeight: 800, fontSize: 20 }, word));
   const titleTop = fr ? 'La Bucket List' : (name ? `${name}'s` : 'A');
-  const titleHl = fr ? (name ? `de ${name}` : '') : 'Bucket List';
+  const titleHl = fr ? (name ? deN(name) : '') : 'Bucket List';
   const max = titleHl ? 4 : 5;
   const pick = d.slice(0, max - 1).concat(t.slice(0, Math.max(1, max - Math.min(max - 1, d.length)))).slice(0, max);
   return h('div', { width: 1200, height: 630, display: 'flex', background: PAPER, color: INK, padding: '50px 60px', position: 'relative', fontFamily: 'Sans' },
