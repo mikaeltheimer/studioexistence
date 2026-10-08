@@ -1,0 +1,830 @@
+[
+ {
+  "id": "nature",
+  "fr": "Nature",
+  "items": [
+   {
+    "id": "n2",
+    "fr": "Voir une aurore boréale",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "n20",
+    "fr": "Dormir à la belle étoile",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "n18",
+    "fr": "Voir une baleine en mer",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "n1",
+    "fr": "Voir la Voie lactée à l'œil nu",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "na2",
+    "fr": "Voir un grand fauve à l'état sauvage",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "n16",
+    "fr": "Prendre un bain de minuit",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "n22b",
+    "fr": "Voir une éruption volcanique",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_nature_0",
+    "fr": "Se baigner dans une mer bioluminescente",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "n4",
+    "fr": "Assister à une éclipse solaire",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n11",
+    "fr": "Voir une tornade",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n13",
+    "fr": "Danser sous une pluie battante",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n_quake",
+    "fr": "Vivre un tremblement de terre",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n17",
+    "fr": "Marcher sur un glacier",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n_hotspring",
+    "fr": "Se baigner dans une source chaude naturelle",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n_waterfall",
+    "fr": "Se baigner sous une cascade",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n21",
+    "fr": "Traverser un désert",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n24",
+    "fr": "Faire un safari",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "n28",
+    "fr": "Sauver un animal sauvage et le relâcher",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "na3",
+    "fr": "Voir des gorilles dans leur milieu naturel",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "na8",
+    "fr": "Voir un ours polaire à l'état sauvage",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "v34",
+    "fr": "Voir les tortues géantes des Galápagos",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_nature_1",
+    "fr": "Faire un vœu sous une pluie d'étoiles filantes",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "voyages",
+  "fr": "Voyages & Géographie",
+  "items": [
+   {
+    "id": "v0",
+    "fr": "Faire le tour du monde",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "vx9",
+    "fr": "Dormir sur une île déserte",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "v30",
+    "fr": "Voir les ruines d'une civilisation ancienne",
+    "ex": "Machu Picchu, pyramides de Gizeh, Petra, île de Pâques…",
+    "tour": true
+   },
+   {
+    "id": "vx7",
+    "fr": "Vivre dans un pays étranger",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "v48",
+    "fr": "Voir un monument mythique",
+    "ex": "Tour Eiffel, Grande Muraille, Colisée, Chapelle Sixtine…",
+    "tour": true
+   },
+   {
+    "id": "new_voyages_0",
+    "fr": "Fouler le sol de l'Antarctique",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "c13",
+    "fr": "Faire un grand pèlerinage",
+    "ex": "Compostelle, Kumano Kodo, Shikoku…",
+    "tour": true
+   },
+   {
+    "id": "vx2",
+    "fr": "Vivre plusieurs semaines en van",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "vx4",
+    "fr": "Traverser un continent en train",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "vx6",
+    "fr": "Traverser un pays à pied",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "c12",
+    "fr": "Traverser un pays à vélo",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "vx8",
+    "fr": "Dormir dans un igloo",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "v51",
+    "fr": "Voir un lieu sacré légendaire",
+    "ex": "Angkor Vat, Taj Mahal, Borobudur, Kinkaku-ji…",
+    "tour": false
+   },
+   {
+    "id": "v23",
+    "fr": "Voir un site naturel extraordinaire",
+    "ex": "Grand Canyon, Blue Hole, salines d'Uyuni, fjords norvégiens…",
+    "tour": false
+   },
+   {
+    "id": "v32",
+    "fr": "Voir des chutes géantes",
+    "ex": "Iguazú, Victoria, Niagara…",
+    "tour": false
+   },
+   {
+    "id": "v39b",
+    "fr": "Voir l'Everest de ses propres yeux",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_voyages_1",
+    "fr": "Partir avec un billet aller simple",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_voyages_2",
+    "fr": "Voyager seul·e dans un pays dont on ne parle pas la langue",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "corps",
+  "fr": "Corps & Limites physiques",
+  "items": [
+   {
+    "id": "c1",
+    "fr": "Courir un marathon",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "c3",
+    "fr": "Gravir un sommet de plus de 4 000 m",
+    "ex": "Kilimandjaro, Mont-Blanc, Aconcagua…",
+    "tour": true
+   },
+   {
+    "id": "c_surf",
+    "fr": "Surfer dans un tube",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "c7",
+    "fr": "Apprendre à marcher sur les mains",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "c2",
+    "fr": "Compléter un Ironman",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "c6",
+    "fr": "Obtenir une ceinture noire dans un art martial",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "c15",
+    "fr": "Vivre en autonomie en pleine nature",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_corps_0",
+    "fr": "Traverser un lac à la nage",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "c10",
+    "fr": "Escalader une voie en falaise naturelle",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "c17",
+    "fr": "Traverser un grand vide sur une slackline",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "c_sail",
+    "fr": "Apprendre à faire de la voile",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "sensations",
+  "fr": "Sensations fortes",
+  "items": [
+   {
+    "id": "s1",
+    "fr": "Sauter en parachute",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "s20",
+    "fr": "Faire un tour en montgolfière",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "s16",
+    "fr": "Nager avec des baleines",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "s_cliff",
+    "fr": "Sauter d'une falaise dans l'eau",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "s2",
+    "fr": "Sauter à l'élastique",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "s21",
+    "fr": "Faire du vol libre",
+    "ex": "parapente, deltaplane, paramoteur…",
+    "tour": true
+   },
+   {
+    "id": "s_scuba",
+    "fr": "Faire de la plongée sous-marine",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "s14",
+    "fr": "Plonger avec des requins",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "s3",
+    "fr": "Faire du wingsuit",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s5",
+    "fr": "Piloter un avion",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s7",
+    "fr": "Piloter une voiture de course sur circuit",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s12",
+    "fr": "Faire du canyoning",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s13",
+    "fr": "Faire du rafting en eaux vives",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s19",
+    "fr": "Galoper à cheval sur une plage",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s_apesant",
+    "fr": "Faire l'expérience de l'apesanteur",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s_chien",
+    "fr": "Faire du chien de traîneau",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "s_speleo",
+    "fr": "Faire de la spéléologie",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "perso",
+  "fr": "Accomplissements personnels",
+  "items": [
+   {
+    "id": "pp3",
+    "fr": "Apprendre une nouvelle langue",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_perso_0",
+    "fr": "Planter un arbre qui nous survivra",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "pp8",
+    "fr": "Se faire tatouer",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "pp5",
+    "fr": "Apprendre à jouer d'un instrument de musique",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "pp2",
+    "fr": "Conquérir une phobie",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_perso_2",
+    "fr": "Écrire une lettre à soi-même dans 10 ans",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_perso_1",
+    "fr": "Faire une retraite de silence",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_perso_4",
+    "fr": "Lire un classique de plus de 1 000 pages",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_perso_3",
+    "fr": "Construire un meuble de ses mains",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "relations",
+  "fr": "Relations humaines",
+  "items": [
+   {
+    "id": "r19",
+    "fr": "Écrire une lettre d'amour à la main",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "r16",
+    "fr": "Rencontrer son héros",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_relations_1",
+    "fr": "Retrouver un ami perdu de vue depuis 20 ans",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "r12",
+    "fr": "Pardonner quelqu'un qui ne s'est pas excusé",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "r1",
+    "fr": "Se marier",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "r2",
+    "fr": "Avoir un enfant",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "r9",
+    "fr": "Sauver une vie",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "r20",
+    "fr": "Envoyer une bouteille à la mer",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "r5",
+    "fr": "Adopter un enfant",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "r6",
+    "fr": "Devenir grand-parent",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "r8",
+    "fr": "Partager 50 ans avec la même personne",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "r13",
+    "fr": "Se réconcilier avec un ennemi",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "r17",
+    "fr": "Inspirer quelqu'un à changer de vie",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_relations_2",
+    "fr": "Partir en voyage seul·e avec un de ses parents",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "culture",
+  "fr": "Culture",
+  "items": [
+   {
+    "id": "new_culture_0",
+    "fr": "Crowdsurfer pendant un concert",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "cu_festival",
+    "fr": "Vivre un festival géant",
+    "ex": "Burning Man, Coachella, Glastonbury…",
+    "tour": true
+   },
+   {
+    "id": "cu1",
+    "fr": "Voir un chef-d'œuvre de la peinture en vrai",
+    "ex": "La Joconde, La Nuit étoilée, Guernica…",
+    "tour": true
+   },
+   {
+    "id": "cu38",
+    "fr": "Manger dans un restaurant 3 étoiles Michelin",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "cu_fusee",
+    "fr": "Assister au décollage d'une fusée",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "cu15",
+    "fr": "Voir son idole ou une légende de la musique en concert",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "cu34",
+    "fr": "Vivre un carnaval ou une fête populaire légendaire",
+    "ex": "Rio, Venise, Holi, La Tomatina…",
+    "tour": true
+   },
+   {
+    "id": "cu39",
+    "fr": "Goûter un mets hors du commun",
+    "ex": "fugu, serpent, mygale…",
+    "tour": true
+   },
+   {
+    "id": "cu28",
+    "fr": "Assister à un opéra",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "cu29",
+    "fr": "Assister à un ballet",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "cu30",
+    "fr": "Assister à un concert symphonique",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "cu_cdm",
+    "fr": "Assister à la Coupe du Monde de football",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "cu_jo",
+    "fr": "Assister aux Jeux olympiques",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "cu40",
+    "fr": "Boire un grand cru classé",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "cu41",
+    "fr": "Fumer un grand cigare cubain",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "pro",
+  "fr": "Accomplissements professionnels",
+  "items": [
+   {
+    "id": "p1",
+    "fr": "Publier un livre",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "p9",
+    "fr": "Créer une entreprise",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_pro_1",
+    "fr": "Donner une conférence devant une salle comble",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "p4",
+    "fr": "Jouer un spectacle devant public",
+    "ex": "concert, théâtre, stand-up, open-mic…",
+    "tour": true
+   },
+   {
+    "id": "p3",
+    "fr": "Écrire et composer une chanson",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "p13",
+    "fr": "Recevoir un prix de reconnaissance",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "p11",
+    "fr": "Construire sa propre maison",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_pro_0",
+    "fr": "Remporter une compétition",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "p2",
+    "fr": "Réaliser un film",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p7",
+    "fr": "Jouer ou faire de la figuration dans un film",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p8",
+    "fr": "Organiser une exposition de ses œuvres",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p10",
+    "fr": "Breveter une invention",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "p12",
+    "fr": "Être élu·e à une fonction politique",
+    "ex": null,
+    "tour": false
+   },
+   {
+    "id": "new_pro_2",
+    "fr": "Devenir le mentor de quelqu'un",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ },
+ {
+  "id": "mystere",
+  "fr": "Insolite & mystère",
+  "items": [
+   {
+    "id": "new_mystere_0",
+    "fr": "Se faire arrêter par la police",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "m2",
+    "fr": "Voir un ovni",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "m6",
+    "fr": "Passer une nuit dans un lieu réputé hanté",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_mystere_2",
+    "fr": "Battre un record, même petit",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "m4",
+    "fr": "Voir un fantôme",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_mystere_1",
+    "fr": "Faire la une du journal",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "new_mystere_3",
+    "fr": "Participer à une émission de télé",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "m5",
+    "fr": "Participer à une séance de spiritisme",
+    "ex": null,
+    "tour": true
+   },
+   {
+    "id": "m3",
+    "fr": "Être enlevé·e par des extraterrestres",
+    "ex": null,
+    "tour": false
+   }
+  ]
+ }
+]
