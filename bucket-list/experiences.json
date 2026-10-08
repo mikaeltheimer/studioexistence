@@ -43,13 +43,13 @@
     "id": "n22b",
     "fr": "Voir une éruption volcanique",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "new_nature_0",
     "fr": "Se baigner dans une mer bioluminescente",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "n4",
@@ -181,13 +181,13 @@
     "id": "c13",
     "fr": "Faire un grand pèlerinage",
     "ex": "Compostelle, Kumano Kodo, Shikoku…",
-    "tour": true
+    "tour": false
    },
    {
     "id": "vx2",
     "fr": "Vivre plusieurs semaines en van",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "vx4",
@@ -295,13 +295,13 @@
     "id": "c15",
     "fr": "Vivre en autonomie en pleine nature",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "new_corps_0",
     "fr": "Traverser un lac à la nage",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "c10",
@@ -367,13 +367,13 @@
     "id": "s_scuba",
     "fr": "Faire de la plongée sous-marine",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "s14",
     "fr": "Plonger avec des requins",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "s3",
@@ -475,13 +475,13 @@
     "id": "new_perso_1",
     "fr": "Faire une retraite de silence",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "new_perso_4",
     "fr": "Lire un classique de plus de 1 000 pages",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "new_perso_3",
@@ -535,13 +535,13 @@
     "id": "r9",
     "fr": "Sauver une vie",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "r20",
     "fr": "Envoyer une bouteille à la mer",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "r5",
@@ -625,13 +625,13 @@
     "id": "cu34",
     "fr": "Vivre un carnaval ou une fête populaire légendaire",
     "ex": "Rio, Venise, Holi, La Tomatina…",
-    "tour": true
+    "tour": false
    },
    {
     "id": "cu39",
     "fr": "Goûter un mets hors du commun",
     "ex": "fugu, serpent, mygale…",
-    "tour": true
+    "tour": false
    },
    {
     "id": "cu28",
@@ -721,13 +721,13 @@
     "id": "p11",
     "fr": "Construire sa propre maison",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "new_pro_0",
     "fr": "Remporter une compétition",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "p2",
@@ -811,13 +811,13 @@
     "id": "new_mystere_3",
     "fr": "Participer à une émission de télé",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "m5",
     "fr": "Participer à une séance de spiritisme",
     "ex": null,
-    "tour": true
+    "tour": false
    },
    {
     "id": "m3",
