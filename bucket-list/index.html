@@ -177,6 +177,20 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 .intro .top{display:flex;align-items:center;justify-content:space-between}
 .intro .resume{font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px;align-self:center}
 
+/* Fin de catégorie : tout tient dans la carte, boutons toujours visibles */
+.inter{padding:clamp(16px,3vh,24px) 18px 16px;gap:clamp(8px,1.6vh,12px)}
+.inter h2,.coach h2{margin:0}
+.inter h2{font-size:clamp(30px,5.4vh,44px)}
+.inter .top{flex:1;min-height:0;display:flex;flex-direction:column;gap:clamp(8px,1.6vh,12px);overflow:hidden}
+.inter .stats{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.inter .stats div{flex-direction:row;align-items:baseline;gap:7px;padding:6px 12px;border-radius:999px;background:rgba(255,253,248,.55);border:1.5px solid var(--ink)}
+.inter .stats strong{font-size:28px}
+.inter .stats span{font-size:14px;opacity:1}
+.inter .stats i{font-style:normal;font-weight:800;font-size:14px}
+.inter .grow{padding-top:2px}
+.inter .acts2{flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+.inter .q{max-width:none}
+
 /* Écrans défilants (bilan, liste, affiche, partage) */
 .screen{position:fixed;inset:0;z-index:40;overflow-y:auto;background-color:var(--paper);background-image:var(--grain);padding:max(14px,env(safe-area-inset-top,0px)) 16px max(28px,env(safe-area-inset-bottom,0px))}
 .screen-in{max-width:520px;margin-inline:auto;display:flex;flex-direction:column;gap:18px;animation:enter .3s ease both}
@@ -188,10 +202,11 @@ body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset
 .screen h1 em{color:var(--pink)}
 .screen h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.1;margin:0}
 .screen p{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
-.stats2{display:flex;gap:26px}
-.stats2 div{display:flex;flex-direction:column}
-.stats2 strong{font-family:var(--display);font-weight:400;font-size:52px;line-height:1;font-variant-numeric:tabular-nums}
-.stats2 span{font-size:13px;font-weight:700;color:var(--muted)}
+.stats2{display:flex;flex-wrap:wrap;gap:8px}
+.stats2 div{display:flex;align-items:baseline;gap:8px;padding:7px 14px;border-radius:999px;background:var(--card);border:1.5px solid var(--ink)}
+.stats2 i{font-style:normal;font-weight:800;font-size:15px}
+.stats2 strong{font-family:var(--display);font-weight:400;font-size:32px;line-height:1;font-variant-numeric:tabular-nums}
+.stats2 span{font-size:14px;font-weight:700}
 .btns{display:flex;flex-direction:column;gap:10px}
 .btns.row{flex-direction:row;flex-wrap:wrap}
 .btns.row>*{flex:1 1 180px}
@@ -307,9 +322,9 @@ const T={
   skip:'Passer →', next:'Suivante →', finish:'Terminer', deeper:'Approfondir', undone:'Réponse annulée',
   coach_h:'Réponds à chaque carte', coach1:"Glisse à droite : je l'ai fait", coach2:'Double-tap : ça me tente', coach3:'Glisse à gauche : pas pour moi', go:"C'est parti",
   coach_keys:'Au clavier : → ↑ ←',
-  cat_done:'Catégorie complétée', expl_done:'Exploration terminée', lived:'vécues', tempt:'te tentent',
-  speaks:'Ça semble te parler.', further:"Envie d'aller plus loin ?", rem:n=>`Il reste ${n} expériences dans cette catégorie.`,
-  more:n=>`Encore ${n} expériences`, see_bilan:'Voir mon bilan →',
+  cat_done:'Catégorie complétée', expl_done:'Exploration terminée', lived:'vécues', tempt:'te tentent', lived1:'vécue', tempt1:'te tente',
+  further:'Tu veux aller plus loin dans cette catégorie ?', rem:n=>`Il reste ${n} expérience${n>1?'s':''}.`,
+  more:n=>`Encore ${n} expérience${n>1?'s':''}`, see_bilan:'Voir mon bilan →',
   bilan_h:'Ta Bucket List <em>prend forme</em>', bilan_p:'Crée ton affiche, partage ta liste, ou approfondis les catégories qui te parlent.',
   name_l:'Ton prénom (affiche et partage)', name_p:'ex : Marie',
   make_poster:'Créer mon affiche', share:'Partager ma liste', edit:'Revoir mes réponses', continue_:'Continuer les cartes',
@@ -342,9 +357,9 @@ const T={
   skip:'Skip →', next:'Next →', finish:'Finish', deeper:'Going deeper', undone:'Answer undone',
   coach_h:'Answer each card', coach1:'Swipe right: done it', coach2:'Double-tap: want to', coach3:'Swipe left: not for me', go:"Let's go",
   coach_keys:'Keyboard: → ↑ ←',
-  cat_done:'Category complete', expl_done:'Exploration complete', lived:'lived', tempt:'tempting',
-  speaks:'This seems to speak to you.', further:'Want to go further?', rem:n=>`${n} more experiences in this category.`,
-  more:n=>`${n} more experiences`, see_bilan:'See my summary →',
+  cat_done:'Category complete', expl_done:'Exploration complete', lived:'lived', tempt:'tempting', lived1:'lived', tempt1:'tempting',
+  further:'Want to go further in this category?', rem:n=>`${n} more experience${n>1?'s':''} to discover.`,
+  more:n=>`${n} more experience${n>1?'s':''}`, see_bilan:'See my summary →',
   bilan_h:'Your Bucket List <em>is taking shape</em>', bilan_p:'Create your poster, share your list, or go deeper into the categories that speak to you.',
   name_l:'Your first name (poster and sharing)', name_p:'e.g. Marie',
   make_poster:'Create my poster', share:'Share my list', edit:'Review my answers', continue_:'Keep answering',
@@ -615,15 +630,20 @@ function renderInter(){
   const nextLabel=S.toFinal||last?t('see_bilan'):`${catName(CATS[S.catIndex+1])} →`;
   st.innerHTML=`<div class="inter" style="${vars(c.id)}">
     <canvas class="confetti" id="conf"></canvas>
-    <div class="kick">${esc(S.phase==='tour'?t('cat_done'):t('expl_done'))}</div>
-    <h2>${esc(catName(c))}</h2>
-    <div class="stats"><div><strong>${d}</strong><span>${esc(t('lived'))}</span></div><div><strong>${tt}</strong><span>${esc(t('tempt'))}</span></div></div>
-    <div class="grow">${its.filter(i=>S.answers[i.id]==='done'||S.answers[i.id]==='todo').slice(-6).map(i=>`<div class="got"><span>${S.answers[i.id]==='done'?'✓':'★'}</span>${esc(label(i))}</div>`).join('')}</div>
-    ${rem?`<div class="q">${esc(d+tt>=2?t('speaks'):t('further'))} ${esc(t('rem')(rem))}</div><button class="primary" id="more">${esc(t('more')(Math.min(MORE,rem)))}</button>`:''}
-    <button class="${rem?'ghost':'primary'}" id="next">${esc(nextLabel)}</button>
+    <div class="top">
+      <div class="kick">${esc(S.phase==='tour'?t('cat_done'):t('expl_done'))}</div>
+      <h2>${esc(catName(c))}</h2>
+      <div class="stats"><div><i>✓</i><strong>${d}</strong><span>${esc(d===1?t('lived1'):t('lived'))}</span></div><div><i>★</i><strong>${tt}</strong><span>${esc(tt===1?t('tempt1'):t('tempt'))}</span></div></div>
+      <div class="grow">${its.filter(i=>S.answers[i.id]==='done'||S.answers[i.id]==='todo').slice(-6).map(i=>`<div class="got"><span>${S.answers[i.id]==='done'?'✓':'★'}</span>${esc(label(i))}</div>`).join('')}</div>
+    </div>
+    <div class="acts2">
+      ${rem?`<div class="q">${esc(t('further'))} ${esc(t('rem')(rem))}</div><button class="primary" id="more">${esc(t('more')(Math.min(MORE,rem)))}</button>`:''}
+      <button class="${rem?'ghost':'primary'}" id="next">${esc(nextLabel)}</button>
+    </div>
   </div>`;
   $('segs').querySelectorAll('i').forEach(i=>i.classList.add('on'));
   $('skipcat').hidden=true;
+  const g=st.querySelector('.grow'); while(g&&g.lastElementChild&&g.scrollHeight>g.clientHeight+1) g.lastElementChild.remove();
   confetti($('conf'),d+tt);
   if(rem)$('more').onclick=()=>{startSegment(S.catIndex,'more');renderStack(false);};
   $('next').onclick=()=>{if(S.toFinal||last){finishTour();return;}startSegment(S.catIndex+1,'tour');renderStack(false);};
@@ -664,8 +684,12 @@ function renderBilan(){
   $('bilan').innerHTML=`<div class="screen-in">
     <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
     <h1>${t('bilan_h')}</h1>
-    <div class="stats2"><div><strong>${d}</strong><span>${esc(t('lived'))}</span></div><div><strong>${tt}</strong><span>${esc(t('tempt'))}</span></div></div>
+    <div class="stats2"><div><i>✓</i><strong>${d}</strong><span>${esc(d===1?t('lived1'):t('lived'))}</span></div><div><i>★</i><strong>${tt}</strong><span>${esc(tt===1?t('tempt1'):t('tempt'))}</span></div></div>
     <p>${esc(t('bilan_p'))}</p>
+    <div class="styles" role="group" id="bStyles">
+      <button data-style="man" aria-pressed="${S.style==='man'}">${esc(t('style_man'))}<small>${esc(t('style_man_s'))}</small></button>
+      <button data-style="ros" aria-pressed="${S.style==='ros'}">${esc(t('style_ros'))}<small>${esc(t('style_ros_s'))}</small></button>
+    </div>
     <canvas class="thumb" id="bThumb" aria-hidden="true"></canvas>
     <div class="field"><label for="nameIn">${esc(t('name_l'))}</label><input id="nameIn" maxlength="40" autocomplete="given-name" placeholder="${esc(t('name_p'))}" value="${esc(S.name)}"></div>
     <div class="btns">
@@ -681,6 +705,7 @@ function renderBilan(){
   </div>`;
   show('bilan');
   const nm=$('nameIn'); let tm; nm.addEventListener('input',()=>{S.name=nm.value.trim().slice(0,40);save();clearTimeout(tm);tm=setTimeout(drawThumb,250);});
+  $('bStyles').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{S.style=b.dataset.style;save();$('bStyles').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawThumb();});
   $('bPoster').onclick=()=>route('poster');
   $('bShare').onclick=shareList;
   $('bList').onclick=()=>{listCat=0;route('list');};
