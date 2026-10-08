@@ -17,7 +17,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bucket List : ce que tu as vécu, ce que tu veux encore vivre">
 <meta name="twitter:description" content="Quelques minutes de cartes à glisser, et ton affiche Bucket List se compose. À imprimer, à accrocher, à surligner.">
-<!-- TODO lancement : ajouter og:image / twitter:image (1200×630) et favicon -->
+<meta property="og:image" content="https://studioexistence.com/bucket-list/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bucket List : une affiche en rosace des expériences vécues et à vivre">
+<meta name="twitter:image" content="https://studioexistence.com/bucket-list/og-image.jpg">
+<link rel="icon" href="/bucket-list/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/bucket-list/icon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/bucket-list/icon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/bucket-list/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
@@ -169,6 +177,11 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 /* ───────── Ajouts de l'app complète ───────── */
+/* Logo : rosace + « Bucket » + « List » surligné jaune */
+.mark{display:inline-flex;align-items:center;white-space:nowrap}
+.mark::before{content:'';display:inline-block;width:1.15em;height:1.15em;margin-right:.32em;background:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Cline x1="60.00" y1="34.00" x2="60.00" y2="10.00" stroke="%2357E36A" stroke-width="15" stroke-linecap="round"/%3E%3Cline x1="78.38" y1="41.62" x2="95.36" y2="24.64" stroke="%23FFEE2E" stroke-width="15" stroke-linecap="round"/%3E%3Cline x1="86.00" y1="60.00" x2="110.00" y2="60.00" stroke="%23FF5A5F" stroke-width="15" stroke-linecap="round"/%3E%3Cline x1="78.38" y1="78.38" x2="95.36" y2="95.36" stroke="%23FF9F2E" stroke-width="15" stroke-linecap="round"/%3E%3Cline x1="60.00" y1="86.00" x2="60.00" y2="110.00" stroke="%233FE0D0" stroke-width="15" stroke-linecap="round"/%3E%3Cline x1="41.62" y1="78.38" x2="24.64" y2="95.36" stroke="%23FF66B8" stroke-width="15" stroke-linecap="round"/%3E%3Cline x1="34.00" y1="60.00" x2="10.00" y2="60.00" stroke="%2355B8FF" stroke-width="15" stroke-linecap="round"/%3E%3Cline x1="41.62" y1="41.62" x2="24.64" y2="24.64" stroke="%23C29BFF" stroke-width="15" stroke-linecap="round"/%3E%3Ccircle cx="60" cy="60" r="20" fill="%231C1A2B"/%3E%3C/svg%3E') center/contain no-repeat;flex-shrink:0}
+.mark span{font-style:italic;color:var(--ink);margin-left:.24em;padding:0 .14em;background:linear-gradient(176deg,transparent 30%,#FFEE2E 30%,#FFEE2E 92%,transparent 92%)}
+.ip-t em{color:var(--ink);font-style:italic;background:linear-gradient(transparent 45%,#FFEE2E 45%,#FFEE2E 95%,transparent 95%)}
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0}
 body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -830,7 +843,9 @@ function pTitle(ctx,W,name,y,size,lng){
   const parts=T[lng].p_title(name);
   let tw=0;parts.forEach(([s,i])=>{ctx.font=`${i?'italic ':''}400 ${size}px ${DISPLAY}`;tw+=ctx.measureText(s).width;});
   const k=Math.min(1,(W-300)/tw);let x=W/2-tw*k/2;
-  parts.forEach(([s,i])=>{ctx.font=`${i?'italic ':''}400 ${size*k}px ${DISPLAY}`;ctx.fillStyle=i?PINK:INK;ctx.fillText(s,x,y);x+=ctx.measureText(s).width;});
+  parts.forEach(([s,i])=>{ctx.font=`${i?'italic ':''}400 ${size*k}px ${DISPLAY}`;const w=ctx.measureText(s).width;
+    if(i){const tr=s.trimEnd(),ww=ctx.measureText(tr).width,fs=size*k;ctx.save();ctx.globalCompositeOperation='multiply';ctx.fillStyle=YELLOW;ctx.beginPath();ctx.moveTo(x-fs*.06,y-fs*.5);ctx.lineTo(x+ww+fs*.08,y-fs*.56);ctx.lineTo(x+ww+fs*.05,y+fs*.12);ctx.lineTo(x-fs*.04,y+fs*.16);ctx.closePath();ctx.fill();ctx.restore();}
+    ctx.fillStyle=INK;ctx.fillText(s,x,y);x+=w;});
 }
 function smallCaps(ctx,txt,x,y,size,align='left',alpha=.6){
   ctx.font=`800 ${size}px ${BODY}`;ctx.letterSpacing=`${size*.22}px`;const w=ctx.measureText(txt).width;
