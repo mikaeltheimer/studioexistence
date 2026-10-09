@@ -11,7 +11,9 @@ const MAX = 4.4 * 1024 * 1024;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'method' }); }
-  if (!process.env.STRIPE_SECRET_KEY || !process.env.BLOB_READ_WRITE_TOKEN) return res.status(503).json({ error: 'not_configured' });
+  // noms des variables manquantes (jamais leurs valeurs), pour diagnostiquer la configuration Vercel
+  const missing = ['STRIPE_SECRET_KEY', 'BLOB_READ_WRITE_TOKEN'].filter(k => !process.env[k]);
+  if (missing.length) { console.error('checkout not_configured', missing.join(',')); return res.status(503).json({ error: 'not_configured', missing }); }
   const url = new URL(req.url, `https://${req.headers.host}`);
   const format = url.searchParams.get('format'), fmt = FORMATS[format];
   const style = STYLES[url.searchParams.get('style')] ? url.searchParams.get('style') : 'man';
