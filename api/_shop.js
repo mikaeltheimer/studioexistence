@@ -3,8 +3,8 @@
 import { createHash } from 'crypto';
 
 export const FORMATS = {
-  '30x40': { fr: 'Affiche Bucket List 30 × 40 cm', en: 'Bucket List poster 30 × 40 cm', price: 4900, variantEnv: 'PRINTFUL_VARIANT_30X40' },
-  '50x70': { fr: 'Affiche Bucket List 50 × 70 cm', en: 'Bucket List poster 50 × 70 cm', price: 6900, variantEnv: 'PRINTFUL_VARIANT_50X70' },
+  a3: { fr: 'Affiche Bucket List A3 (29,7 × 42 cm)', en: 'Bucket List poster A3 (29.7 × 42 cm)', price: 4900, variantEnv: 'PRINTFUL_VARIANT_A3' },
+  a2: { fr: 'Affiche Bucket List A2 (42 × 59,4 cm)', en: 'Bucket List poster A2 (42 × 59.4 cm)', price: 6900, variantEnv: 'PRINTFUL_VARIANT_A2' },
 };
 export const STYLES = { man: { fr: 'Manifeste', en: 'Manifesto' }, ros: { fr: 'Rosace', en: 'Rosette' } };
 export const SHIP_TO = ['CA'];

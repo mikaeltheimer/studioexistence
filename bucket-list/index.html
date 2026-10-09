@@ -332,7 +332,7 @@ const STORE = 'bl2';           // clé de sauvegarde locale
 const PAL ={nature:'#57E36A',voyages:'#FFEE2E',corps:'#FF5A5F',sensations:'#FF9F2E',accomplissements:'#3FE0D0',relations:'#FF66B8',culture:'#55B8FF',mystere:'#C29BFF'};
 const PAL2={nature:'#FF66B8',voyages:'#FF66B8',corps:'#55B8FF',sensations:'#C29BFF',accomplissements:'#FF66B8',relations:'#55B8FF',culture:'#FF66B8',mystere:'#FFEE2E'};
 /* Boutique : prix affichés (CAD, livraison incluse). Les prix facturés viennent de api/_shop.js. */
-const SHOP={'30x40':{label:'30 × 40 cm',price:49},'50x70':{label:'50 × 70 cm',price:69}};
+const SHOP={a3:{label:'A3 · 29,7 × 42 cm',price:49},a2:{label:'A2 · 42 × 59,4 cm',price:69}};
 const PEN={fr:{nature:'vert',voyages:'jaune',corps:'rouge',sensations:'orange',accomplissements:'turquoise',relations:'rose',culture:'bleu',mystere:'lilas'},
            en:{nature:'green',voyages:'yellow',corps:'red',sensations:'orange',accomplissements:'turquoise',relations:'pink',culture:'blue',mystere:'lilac'}};
 
@@ -856,7 +856,7 @@ function renderPoster(){
   $('orderBtn').onclick=placeOrder;
   draw();
 }
-let shopFmt='50x70', fmtPreview='a4';
+let shopFmt='a2', fmtPreview='a4';
 const ONLINE=/(^|\.)studioexistence\.com$|\.vercel\.app$/.test(location.hostname);
 async function placeOrder(){
   const btn=$('orderBtn'), st=$('shopStatus'); const items=posterItems(S);
@@ -913,7 +913,7 @@ function withFonts(fn){
 }
 let GRAIN=null;
 /* Formats : proportion de la feuille et échelle de rendu (1 = 2480 px de large) */
-const FORMATS={a4:{ratio:Math.SQRT2,k:1},'30x40':{ratio:4/3,k:1},'50x70':{ratio:1.4,k:1.19}};  // 30×40 ≈ 210 dpi, 50×70 ≈ 150 dpi
+const FORMATS={a4:{ratio:Math.SQRT2,k:1},a3:{ratio:Math.SQRT2,k:1},a2:{ratio:Math.SQRT2,k:1.17}};  // A3 ≈ 212 dpi (2480 px), A2 ≈ 175 dpi (2902 px)
 let P_FMT='a4', P_K=1;
 function setup(cv){const W=2480,H=Math.round(W*FORMATS[P_FMT].ratio);cv.width=Math.round(W*P_K);cv.height=Math.round(H*P_K);const ctx=cv.getContext('2d');ctx.setTransform(P_K,0,0,P_K,0,0);
   if(!ctx.roundRect){ctx.roundRect=function(x,y,w,h){this.rect(x,y,w,h);};}
