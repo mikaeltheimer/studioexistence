@@ -1,21 +1,11 @@
 {
+  "redirects": [
+    { "source": "/whale-song", "destination": "/echoes#/whale", "permanent": true },
+    { "source": "/whale-song/", "destination": "/echoes#/whale", "permanent": true },
+    { "source": "/droid-lang", "destination": "/echoes#/droide", "permanent": true },
+    { "source": "/droid-lang/", "destination": "/echoes#/droide", "permanent": true }
+  ],
   "rewrites": [
-    {
-      "source": "/whale-song",
-      "destination": "/api/og"
-    },
-    {
-      "source": "/whale-song/",
-      "destination": "/api/og"
-    },
-    {
-      "source": "/droid-lang",
-      "destination": "/api/og"
-    },
-    {
-      "source": "/droid-lang/",
-      "destination": "/api/og"
-    },
     {
       "source": "/bucket-list/partage",
       "destination": "/api/bucket-share"
