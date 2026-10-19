@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Voyage au pays des grands nombres</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* Mise en page : une colonne étroite dans la nuit. Une seule règle (1 nombre = 2 px) tient tout le voyage ;
+     seuls les moyens de transport changent. Palette et polices reprises de grands-nombres/index.html. */
+  :root {
+    color-scheme: dark;
+    --bg: #0a0e1a;
+    --bg-2: #10162a;
+    --ink: #f3efe2;
+    --ink-dim: #9aa0b4;
+    --ink-faint: #343b52;
+    --teal: #5fd3ac;
+    --amber: #eab05a;
+    --lilac: #b9a3f0;
+    --danger: #e8615a;
+    --f-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --f-body: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --f-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scrollbar-gutter: stable; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    overflow-x: hidden;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    background-image:
+      radial-gradient(1.5px 1.5px at 20% 30%, rgba(243,239,226,0.45), transparent),
+      radial-gradient(1px 1px at 70% 65%, rgba(243,239,226,0.35), transparent),
+      radial-gradient(1px 1px at 40% 80%, rgba(243,239,226,0.3), transparent),
+      radial-gradient(1px 1px at 85% 20%, rgba(243,239,226,0.3), transparent),
+      radial-gradient(1px 1px at 10% 90%, rgba(243,239,226,0.3), transparent);
+    background-attachment: fixed;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  h1, h2 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+
+  [data-cat="gens"] { --c: var(--teal); }
+  [data-cat="matiere"] { --c: var(--amber); }
+  [data-cat="arrangements"] { --c: var(--lilac); }
+  [data-cat="idee"] { --c: var(--ink); }
+  [data-cat="fin"] { --c: var(--danger); }
+
+  /* ---------- Intro ---------- */
+  .intro { padding-block: 18vh 14vh; }
+  .intro .wrap { display: grid; gap: 1.2rem; }
+  .eyebrow { font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); }
+  .intro h1 { font-size: clamp(2.2rem, 7vw, 4rem); line-height: 1.08; max-width: 14ch; }
+  .intro p { color: var(--ink-dim); font-size: clamp(1rem, 2.2vw, 1.15rem); max-width: 46ch; }
+  .intro p strong { color: var(--ink); font-weight: 500; }
+  .rule-card {
+    margin-top: 0.6rem; border: 1px solid var(--ink-faint); border-radius: 6px;
+    padding: 0.9rem 1rem; font-family: var(--f-mono); font-size: 0.85rem; color: var(--ink);
+    display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; max-width: 46ch;
+  }
+  .rule-card .swatch { display: inline-block; width: 2px; height: 1.2em; background: var(--teal); box-shadow: 4px 0 0 var(--teal), 8px 0 0 var(--teal); margin-right: 8px; }
+
+  /* ---------- Zone 1 : 0 → 4 000 ---------- */
+  .count-zone { position: relative; height: calc(8000px + 100vh); }
+  .count-sticky { position: sticky; top: 0; height: 100vh; display: grid; place-items: center; text-align: center; }
+  .count-inner { display: grid; gap: 1rem; justify-items: center; }
+  .count-number {
+    font-family: var(--f-display); font-weight: 600;
+    font-size: clamp(3.2rem, 13vw, 7.5rem); line-height: 1;
+    color: var(--teal); font-variant-numeric: tabular-nums;
+  }
+  .count-bar { width: min(70vw, 340px); height: 3px; background: var(--ink-faint); border-radius: 2px; overflow: hidden; }
+  .count-bar > div { height: 100%; width: 0; background: var(--teal); }
+  .count-label { color: var(--ink-dim); max-width: 34ch; font-size: 0.95rem; }
+  .count-meta { font-family: var(--f-mono); font-size: 0.8rem; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Stations ---------- */
+  .station { padding-block: 14vh; border-top: 1px solid rgba(243,239,226,0.05); }
+  .station .wrap { display: grid; gap: 0.9rem; }
+  .tag { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c, var(--ink-dim)); }
+  .big { font-size: clamp(2.2rem, 8vw, 4.4rem); line-height: 1.05; color: var(--c, var(--ink)); }
+  .label { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--ink); max-width: 36ch; }
+  .note { color: var(--ink-dim); font-size: 0.92rem; max-width: 52ch; }
+  .note b { color: var(--ink); font-weight: 500; }
+  .digits { font-family: var(--f-mono); font-size: clamp(0.78rem, 1.8vw, 0.95rem); color: var(--ink-dim); word-break: break-all; line-height: 1.7; }
+
+  .facts { margin: 0.6rem 0 0; display: grid; gap: 0.55rem; border-top: 1px solid var(--ink-faint); padding-top: 0.9rem; }
+  .facts > div { display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); gap: 1rem; }
+  .facts dt { font-family: var(--f-mono); font-size: 0.78rem; color: var(--ink-dim); padding-top: 0.15em; }
+  .facts dd { margin: 0; color: var(--ink); min-width: 0; }
+  .facts dd small, .t-stats small { color: var(--ink-dim); font-size: 0.88em; display: block; }
+  @media (max-width: 560px) { .facts > div { grid-template-columns: 1fr; gap: 0.1rem; } }
+
+  .btn {
+    background: transparent; color: var(--ink);
+    border: 1px solid rgba(243,239,226,0.25); border-radius: 999px;
+    font-family: var(--f-body); font-size: 0.92rem;
+    padding: 0.6rem 1.2rem; cursor: pointer; text-align: left;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+  .btn.primary { border-color: var(--c, var(--teal)); color: var(--c, var(--teal)); }
+  .btn.small { font-size: 0.8rem; padding: 0.35rem 0.9rem; color: var(--ink-dim); }
+
+  /* ---------- Tunnels ---------- */
+  .tunnel { position: relative; min-height: 100vh; overflow: hidden; border-top: 1px solid rgba(243,239,226,0.05); }
+  .tunnel .ruler { position: absolute; left: 0; top: 0; width: 84px; height: 100%; }
+  .tunnel-inner {
+    min-height: 100vh; display: grid; align-content: center; gap: 0.9rem;
+    max-width: 680px; margin: 0 auto; padding-left: 96px; padding-block: 4vh;
+  }
+  .t-compare { color: var(--ink-dim); max-width: 46ch; }
+  .t-compare b { color: var(--ink); font-weight: 500; }
+  .t-compare b.now { color: var(--c, var(--teal)); }
+  .t-num {
+    font-family: var(--f-display); font-weight: 600; line-height: 1.05;
+    color: var(--c, var(--teal)); font-variant-numeric: tabular-nums;
+    word-break: break-all; font-size: 3.6rem;
+  }
+  .t-track { height: 6px; background: var(--ink-faint); border-radius: 3px; position: relative; overflow: hidden; }
+  .t-track > div { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--c, var(--teal)); min-width: 1px; }
+  .t-ends { display: flex; justify-content: space-between; gap: 0.6rem; font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink-dim); }
+  .t-ends span:nth-child(2) { color: var(--ink); }
+  .t-stats { display: grid; gap: 0.45rem; font-size: 0.95rem; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+  .t-stats b { color: var(--ink); font-weight: 500; }
+  .t-stats .arr b { color: var(--c, var(--teal)); }
+  .t-hint { font-family: var(--f-mono); font-size: 0.8rem; color: var(--c, var(--teal)); min-height: 1.4em; max-width: 52ch; }
+  .t-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .t-result { color: var(--ink); max-width: 50ch; }
+  .t-result strong { color: var(--c, var(--teal)); font-weight: 500; }
+  @media (max-width: 560px) {
+    .tunnel .ruler { width: 52px; }
+    .tunnel-inner { padding-left: 60px; }
+  }
+
+  /* ---------- Fin ---------- */
+  .zeros {
+    font-family: var(--f-mono); color: var(--danger); opacity: 0.7;
+    white-space: nowrap; overflow: hidden; font-size: 1rem; letter-spacing: 0.15em;
+    mask-image: linear-gradient(90deg, #000 70%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent);
+  }
+  .zeros span { display: inline-block; animation: drift 30s linear infinite; }
+  @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .collective { display: grid; gap: 0.8rem; justify-items: start; margin-top: 0.6rem; }
+  .collective p { color: var(--ink-dim); max-width: 50ch; }
+  .collective strong { color: var(--danger); font-weight: 500; }
+  @media (prefers-reduced-motion: reduce) { .zeros span { animation: none; } }
+</style>
+</head>
+<body>
+<!-- ==================== INTRO ==================== -->
+<section class="intro">
+  <div class="wrap">
+    <p class="eyebrow">Départ : Sutton, Cantons-de-l'Est</p>
+    <h1>Voyage au pays des grands nombres</h1>
+    <!-- À RÉÉCRIRE PAR MIKA : la vraie histoire de la naissance du projet à Sutton. -->
+    <p>Ce voyage part de <strong>Sutton</strong>, un village d'environ 4&nbsp;000 habitants dans les Cantons-de-l'Est. C'est ici qu'il est né, alors c'est ici qu'on commence à compter.</p>
+    <p>Une seule règle pour tout le voyage, et on ne trichera jamais avec elle&nbsp;:</p>
+    <div class="rule-card"><span class="swatch" aria-hidden="true"></span>1 nombre = 2 pixels de défilement</div>
+    <p>Premier tronçon&nbsp;: un nombre pour chaque habitant de Sutton. Défile.</p>
+  </div>
+</section>
+
+<!-- ==================== ZONE 1 : 0 → 4 000 ==================== -->
+<section class="count-zone" id="zone1" aria-label="Défilement de 0 à 4 000">
+  <div class="count-sticky">
+    <div class="count-inner">
+      <div class="count-number" id="z1Number">0</div>
+      <div class="count-bar"><div id="z1Bar"></div></div>
+      <p class="count-label">Chaque nombre que tu vois passer, tu l'as vraiment défilé. Jusqu'à 4&nbsp;000.</p>
+      <p class="count-meta" id="z1Meta">0 cm de ruban</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SUTTON ==================== -->
+<section class="station" data-cat="gens" id="sutton">
+  <div class="wrap">
+    <p class="tag">Des gens</p>
+    <h2 class="big">4&nbsp;000</h2>
+    <p class="label">habitants à Sutton</p>
+    <dl class="facts">
+      <div><dt>Ruban défilé</dt><dd>environ 2,1 mètres<small>un peu plus que la hauteur d'une porte</small></dd></div>
+      <div><dt>Ta vitesse mesurée</dt><dd id="suttonRate">défile la zone au-dessus pour la mesurer</dd></div>
+    </dl>
+    <p class="note">Prochain arrêt&nbsp;: le Grand Montréal. Même règle, même ruban. Continue de défiler.</p>
+  </div>
+</section>
+
+<!-- ==================== TUNNELS ET STATIONS (générés depuis STATIONS plus bas) ==================== -->
+<div id="journey"></div>
+
+<!-- ==================== GOOGOLPLEX ==================== -->
+<section class="station" data-cat="fin" id="finale">
+  <div class="wrap">
+    <p class="tag">Une idée pure</p>
+    <h2 class="big">Un googolplex</h2>
+    <p class="label">1 suivi d'un googol de zéros</p>
+    <div class="zeros" aria-hidden="true"><span id="zerosRow"></span></div>
+    <p class="note">Ici, plus aucun tunnel n'est possible. Le ruban jusqu'au googolplex est si long que <b>son nombre de kilomètres s'écrirait lui-même avec un googol de chiffres</b>. Même en utilisant chaque atome de l'univers pour écrire un chiffre, on n'arriverait pas à écrire cette longueur.</p>
+    <p class="note">Ton pouce, la voiture, la fusée, la lumière&nbsp;: aucun ne change rien. Le temps de voyage ne s'écrit pas non plus.</p>
+    <div class="collective">
+      <button class="btn" id="btnHumans">Et si tous les humains défilaient avec toi&nbsp;?</button>
+      <p id="c2" hidden>Même à 8 milliards de personnes, le nombre de secondes s'écrit encore avec environ <strong>un googol de chiffres</strong>. Diviser par 8 milliards enlève à peine 10 chiffres à un nombre qui en a 10<sup>100</sup>.</p>
+      <button class="btn" id="btnAtoms" hidden>Et si chaque atome de l'univers défilait avec toi&nbsp;?</button>
+      <p id="c3" hidden>Même à 10<sup>80</sup> défileurs, il reste environ un googol de chiffres. Un googolplex ne bouge pas, peu importe combien on est.</p>
+    </div>
+    <button class="btn small" id="btnTop" style="margin-top:1.4rem">Revenir à Sutton</button>
+  </div>
+</section>
+
+<script>
+(() => {
+  // ================= Données du voyage =================
+  // value = le nombre réel ; digits = son écriture exacte (sert à afficher le compteur sans arrondi).
+  // unlock = à ce saut, on peut monter jusqu'à ce moyen de transport (index dans VEHICLES).
+  const STATIONS = [
+    { id: 'montreal', cat: 'gens', tag: 'Des gens', short: 'Montréal', value: 4e6, digits: '4000000',
+      big: '4 millions', label: 'de personnes dans le Grand Montréal' },
+    { id: 'quebec', cat: 'gens', tag: 'Des gens', short: 'le Québec', value: 9e6, digits: '9000000',
+      big: '9 millions', label: 'de personnes au Québec (environ)' },
+    { id: 'terre', cat: 'gens', tag: 'Des gens', short: 'la Terre', value: 8.2e9, digits: '8200000000', unlock: 2,
+      big: '8,2 milliards', label: 'd’humains sur Terre' },
+    { id: 'galaxie', cat: 'matiere', tag: 'La matière', short: 'la Voie lactée', value: 3e11, digits: '300000000000', unlock: 3,
+      big: '300 milliards', label: 'd’étoiles dans notre galaxie, la Voie lactée (entre 100 et 400 milliards selon les estimations)' },
+    { id: 'sable', cat: 'matiere', tag: 'La matière', short: 'le sable', value: 7.5e18, digits: '7500000000000000000', unlock: 5,
+      big: '7,5 milliards de milliards', label: 'de grains de sable sur toutes les plages de la Terre (estimation)' },
+    { id: 'rubik', cat: 'arrangements', tag: 'Des façons d’arranger', short: 'le Rubik’s cube', value: 43252003274489856000, digits: '43252003274489856000',
+      big: '43 milliards de milliards', label: 'de façons de mélanger un Rubik’s cube' },
+    { id: 'etoiles', cat: 'matiere', tag: 'La matière', short: 'les étoiles', value: 1e24, digits: '1' + '0'.repeat(24),
+      big: '1 million de milliards de milliards', label: 'd’étoiles dans l’univers observable (estimation haute)' },
+    { id: 'corps', cat: 'matiere', tag: 'La matière', short: 'ton corps', value: 7e27, digits: '7' + '0'.repeat(27),
+      big: '7 milliards de milliards de milliards', label: 'd’atomes dans ton corps' },
+    { id: 'cartes', cat: 'arrangements', tag: 'Des façons d’arranger', short: 'le jeu de cartes', value: 8.0658175170943878e67,
+      digits: '80658175170943878571660636856403766975289505440883277824000000000000',
+      big: 'un nombre à 68 chiffres', label: 'de façons de mélanger un jeu de 52 cartes. Chaque fois que tu brasses un jeu, l’ordre obtenu n’a très probablement jamais existé.' },
+    { id: 'atomes', cat: 'matiere', tag: 'La matière', short: 'les atomes de l’univers', value: 1e80, digits: '1' + '0'.repeat(80),
+      big: '1 suivi de 80 zéros', label: 'd’atomes dans tout l’univers observable (environ)' },
+    { id: 'googol', cat: 'idee', tag: 'Une idée pure', short: 'le googol', value: 1e100, digits: '1' + '0'.repeat(100),
+      big: 'Un googol', label: '1 suivi de 100 zéros. Plus grand que tout ce qu’on peut compter dans l’univers.' },
+  ];
+
+  // Les véhicules roulent sur le MÊME ruban (1 nombre = 2 px). Seule la vitesse change.
+  const VEHICLES = [
+    { name: 'ton pouce', with: 'avec ton pouce', kmh: null },
+    { name: 'la voiture', with: 'en voiture', kmh: 100 },          // Formule 1 : remplacer par 350
+    { name: 'le train à grande vitesse', with: 'en train à grande vitesse', kmh: 320 },
+    { name: 'l’avion de chasse', with: 'en avion de chasse', kmh: 2400 },
+    { name: 'la fusée', with: 'en fusée', kmh: 40000 },
+    { name: 'la lumière', with: 'à la vitesse de la lumière', kmh: 1.0792528e9 },
+  ];
+
+  // ================= Constantes =================
+  const PX_PER_UNIT = 2;
+  const M_PER_PX = 0.0254 / 96;
+  const M_PER_UNIT = PX_PER_UNIT * M_PER_PX;
+  const LY = 9.4607e15, UNIV = 8.8e26;
+  const YEAR = 365.25 * 86400, UNIV_AGE = 13.8e9;
+  const SUTTON = { short: 'Sutton', value: 4000, digits: '4000' };
+  const FALLBACK_RATE = 400;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const LOC = 'fr-CA';
+
+  const LANDMARKS = [
+    [2, 'la hauteur d’une porte'],
+    [100, 'un terrain de soccer'],
+    [120e3, 'la route de Sutton à Montréal'],
+    [40075e3, 'le tour de la Terre'],
+    [384400e3, 'la distance Terre–Lune'],
+    [1.496e11, 'la distance Terre–Soleil'],
+    [4.5e12, 'la distance jusqu’à Neptune'],
+    [4.01e16, 'la distance jusqu’à l’étoile la plus proche'],
+    [9.5e20, 'la largeur de la Voie lactée'],
+    [2.4e22, 'la distance jusqu’à la galaxie d’Andromède'],
+    [UNIV, 'la largeur de l’univers observable'],
+  ];
+
+  // ================= Formatage =================
+  const isBig = (s) => /illion|illiard/.test(s);
+  function roundSig(x, d) {
+    if (!isFinite(x) || x === 0) return x;
+    const k = Math.floor(Math.log10(Math.abs(x)));
+    const p = Math.pow(10, d - 1 - k);
+    return Math.round(x * p) / p;
+  }
+  function fmt(x, d = 2) { return roundSig(x, d).toLocaleString(LOC, { maximumFractionDigits: 3 }); }
+  function sci(x) {
+    const k = Math.floor(Math.log10(x));
+    const m = Math.round(x / Math.pow(10, k) * 10) / 10;
+    return (m === 1 ? '' : m.toLocaleString(LOC) + ' × ') + '10<sup>' + k + '</sup>';
+  }
+  function words(x) {
+    if (x < 1e6) return fmt(x, 3);
+    const unit = (v, s, p) => { const r = roundSig(v, 2); return r.toLocaleString(LOC) + ' ' + (r >= 2 ? p : s); };
+    if (x < 1e9) return unit(x / 1e6, 'million', 'millions');
+    if (x < 1e12) return unit(x / 1e9, 'milliard', 'milliards');
+    if (x < 1e15) return roundSig(x / 1e12, 2).toLocaleString(LOC) + ' mille milliards';
+    return sci(x);
+  }
+  function landmark(m) {
+    if (m < 1.5 || m >= UNIV * 0.5) return '';
+    let below = null, above = null;
+    for (const L of LANDMARKS) { if (L[0] <= m) below = L; else { above = L; break; } }
+    if (above && m / above[0] >= 0.5) return 'plus de la moitié de ' + above[1];
+    if (!below) return '';
+    const r = m / below[0];
+    if (r < 1.3) return 'à peu près ' + below[1];
+    return (r < 1e6 ? fmt(r, 2) : words(r)) + ' fois ' + below[1];
+  }
+  function meters(m) {
+    if (m < 0.01) return fmt(m * 1000, 2) + ' mm';
+    if (m < 1) return fmt(m * 100, 2) + ' cm';
+    if (m < 1000) return fmt(m, 2) + ' m';
+    if (m < 1e14) return words(m / 1000) + ' km';
+    if (m < UNIV * 0.5) {
+      const ly = m / LY;
+      const lw = ly < 1e6 ? fmt(ly, 2) : words(ly);
+      return lw + (isBig(lw) ? ' d’années-lumière' : ly >= 2 ? ' années-lumière' : ' année-lumière');
+    }
+    return words(m / UNIV) + ' fois la largeur de l’univers observable';
+  }
+  function withLandmark(m) { const l = landmark(m); return meters(m) + (l ? '<small>' + l + '</small>' : ''); }
+  function duration(sec, withAge = true) {
+    if (sec < 1) return 'moins d’une seconde';
+    if (sec < 60) return fmt(sec, 2) + ' secondes';
+    if (sec < 3600) return fmt(sec / 60, 2) + ' minutes';
+    if (sec < 86400) return fmt(sec / 3600, 2) + ' heures';
+    if (sec < YEAR) return fmt(sec / 86400, 2) + ' jours';
+    const y = sec / YEAR;
+    const yw = y < 1e4 ? fmt(y, 2) : words(y);
+    let s = yw + (isBig(yw) ? ' d’années' : ' ans');
+    if (withAge && y > UNIV_AGE) {
+      const aw = words(y / UNIV_AGE);
+      s += '<small>' + aw + (isBig(aw) ? ' de fois' : ' fois') + ' l’âge de l’univers</small>';
+    }
+    return s;
+  }
+  // Date d'arrivée si on partait maintenant, sans jamais s'arrêter.
+  function arrival(sec) {
+    const years = sec / YEAR;
+    const now = new Date();
+    if (sec < 2 * 86400) {
+      const d = new Date(now.getTime() + sec * 1000);
+      const sameDay = d.toDateString() === now.toDateString();
+      return (sameDay ? 'aujourd’hui' : d.toLocaleDateString(LOC, { weekday: 'long' })) + ' à ' + d.toLocaleTimeString(LOC, { hour: 'numeric', minute: '2-digit' });
+    }
+    if (years < 9000) return 'le ' + new Date(now.getTime() + sec * 1000).toLocaleDateString(LOC, { day: 'numeric', month: 'long', year: 'numeric' });
+    if (years < 1e6) return 'en l’an ' + Math.round(now.getFullYear() + years).toLocaleString(LOC);
+    return 'dans ' + duration(sec, false);
+  }
+  const strip = (h) => h.replace(/<small>.*<\/small>/, '');
+  function groupDigits(s) { return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  // ================= Vitesse mesurée (défilement actif seulement) =================
+  let activePx = 0, activeMs = 0, lastFeed = 0;
+  function feed(dPx) {
+    const now = performance.now();
+    const dt = now - lastFeed;
+    lastFeed = now;
+    if (!dPx) return;
+    activePx += Math.abs(dPx);
+    activeMs += Math.min(Math.max(dt, 8), 120);
+  }
+  function rate() { return activeMs < 600 ? null : (activePx / PX_PER_UNIT) / (activeMs / 1000); }
+  function thumbRate() { return rate() || FALLBACK_RATE; }
+  function rateText() { const r = rate(); return r ? fmt(r, 2) + ' nombres par seconde' : 'environ ' + FALLBACK_RATE + ' nombres par seconde (estimation)'; }
+
+  let veh = 0; // moyen de transport actuel (garde son état d'un saut à l'autre)
+  function speedOf(v) { return v === 0 ? thumbRate() : VEHICLES[v].kmh / 3.6 / M_PER_UNIT; }
+
+  // ================= Zone 1 =================
+  const zone1 = document.getElementById('zone1');
+  const z1Number = document.getElementById('z1Number');
+  const z1Bar = document.getElementById('z1Bar');
+  const z1Meta = document.getElementById('z1Meta');
+  const suttonRate = document.getElementById('suttonRate');
+  function updateZone1() {
+    const rect = zone1.getBoundingClientRect();
+    const scrollable = zone1.offsetHeight - window.innerHeight; // = 8000 px
+    const p = Math.max(0, Math.min(1, -rect.top / scrollable));
+    const val = Math.round(p * SUTTON.value);
+    z1Number.textContent = val.toLocaleString(LOC);
+    z1Bar.style.width = (p * 100) + '%';
+    z1Meta.textContent = meters(val * M_PER_UNIT) + ' de ruban';
+    return p;
+  }
+
+  // ================= Construction des tunnels et des stations =================
+  const journey = document.getElementById('journey');
+  const chain = [SUTTON].concat(STATIONS);
+  const tunnels = [];
+  let unlockSoFar = 0;
+
+  STATIONS.forEach((s, i) => {
+    const from = chain[i];
+    if (s.unlock) unlockSoFar = Math.max(unlockSoFar, s.unlock);
+    const T = {
+      idx: i, from, to: s, gap: s.value - from.value,
+      fromBig: BigInt(from.digits), offset: 0,
+      done: false, unlockMax: unlockSoFar,
+      timeMs: 0, enteredAt: 0, skipTimer: null,
+    };
+    const el = document.createElement('section');
+    el.className = 'tunnel';
+    el.dataset.cat = s.cat;
+    el.setAttribute('aria-label', 'Le chemin de ' + from.short + ' à ' + s.short);
+    el.innerHTML =
+      '<canvas class="ruler" aria-hidden="true"></canvas>' +
+      '<div class="tunnel-inner">' +
+        '<p class="tag">En route vers ' + s.short + '</p>' +
+        (i > 0 ? '<p class="t-compare"></p>' : '') +
+        '<div class="t-num"></div>' +
+        '<div><div class="t-track"><div></div></div>' +
+          '<div class="t-ends"><span>' + from.short + '</span><span class="t-pct">0&nbsp;%</span><span>' + s.short + '</span></div></div>' +
+        '<div class="t-stats">' +
+          '<span>Moyen de transport&nbsp;: <b class="t-veh"></b></span>' +
+          '<span>Ruban parcouru&nbsp;: <b class="t-len">0 cm</b> sur ' + meters(T.gap * M_PER_UNIT) + '</span>' +
+          '<span>Il te reste, sans jamais t’arrêter&nbsp;: <b class="t-left"></b></span>' +
+          '<span class="arr">Si tu partais maintenant, tu arriverais&nbsp;: <b class="t-arr"></b></span>' +
+        '</div>' +
+        '<p class="t-hint"></p>' +
+        '<div class="t-actions">' +
+          '<button class="btn primary t-vbtn" type="button" hidden></button>' +
+          '<button class="btn t-skip" type="button"' + (i === 0 ? ' hidden' : '') + '>' +
+            (i === 0 ? 'Abandonner et sauter jusqu’à ' : 'Sauter jusqu’à ') + s.short + '</button>' +
+        '</div>' +
+        '<p class="t-result" hidden></p>' +
+        '<button class="btn t-continue" type="button" hidden style="justify-self:start">Continuer vers ' + s.short + ' ↓</button>' +
+      '</div>';
+    journey.appendChild(el);
+    const q = (c) => el.querySelector(c);
+    Object.assign(T, {
+      el, ruler: q('.ruler'), compare: q('.t-compare'), num: q('.t-num'), fill: q('.t-track > div'),
+      pct: q('.t-pct'), vehEl: q('.t-veh'), len: q('.t-len'), left: q('.t-left'), arr: q('.t-arr'),
+      hint: q('.t-hint'), vbtn: q('.t-vbtn'), skipBtn: q('.t-skip'), result: q('.t-result'), cont: q('.t-continue'),
+    });
+    T.vbtn.addEventListener('click', () => changeVehicle(T));
+    T.skipBtn.addEventListener('click', () => skip(T));
+    T.cont.addEventListener('click', () => document.getElementById('st-' + s.id).scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }));
+    tunnels.push(T);
+
+    const st = document.createElement('section');
+    st.className = 'station';
+    st.id = 'st-' + s.id;
+    st.dataset.cat = s.cat;
+    st.innerHTML =
+      '<div class="wrap">' +
+        '<p class="tag">' + s.tag + '</p>' +
+        '<h2 class="big">' + s.big + '</h2>' +
+        '<p class="label">' + s.label + '</p>' +
+        '<p class="digits">' + groupDigits(s.digits) + '</p>' +
+        '<dl class="facts">' +
+          '<div><dt>Ruban depuis zéro</dt><dd>' + withLandmark(s.value * M_PER_UNIT) + '</dd></div>' +
+          '<div><dt>Ce saut, avec ton pouce</dt><dd class="s-thumb"></dd></div>' +
+        '</dl>' +
+      '</div>';
+    journey.appendChild(st);
+    T.stThumb = st.querySelector('.s-thumb');
+  });
+
+  // ================= Logique des tunnels =================
+  let active = null;     // tunnel verrouillé
+  let skipping = false;
+
+  function nextVehicle(T) { return veh < T.unlockMax ? veh + 1 : null; }
+
+  function updateControls(T) {
+    const nv = nextVehicle(T);
+    T.vehEl.textContent = VEHICLES[veh].name;
+    if (T.done) { T.vbtn.hidden = true; return; }
+    if (nv !== null && active === T) {
+      T.vbtn.hidden = false;
+      T.vbtn.textContent = 'Changer de moyen de transport : prendre ' + VEHICLES[nv].name;
+    } else T.vbtn.hidden = true;
+    const left = (T.gap - T.offset) / speedOf(veh);
+    if (veh === 0) T.hint.textContent = 'Même règle : 1 nombre = 2 pixels. Défile.';
+    else if (nv === null && left > 100 * YEAR) T.hint.textContent = VEHICLES[veh].name.charAt(0).toUpperCase() + VEHICLES[veh].name.slice(1) + ' ne suffit plus, et il n’existe rien de plus rapide.';
+    else T.hint.textContent = 'Même ruban, même règle : ' + VEHICLES[veh].name + ' défile pour toi, plus vite.';
+  }
+
+  function changeVehicle(T) {
+    const nv = nextVehicle(T);
+    if (nv === null || active !== T) return;
+    veh = nv;
+    updateControls(T);
+  }
+
+  function lock(T) {
+    if (active || T.done) return;
+    active = T;
+    window.scrollTo(0, T.el.offsetTop);
+    document.documentElement.style.overflow = 'hidden';
+    T.enteredAt = performance.now();
+    lastAuto = performance.now();
+    updateControls(T);
+    if (T.idx === 0 && T.skipBtn.hidden) {
+      clearTimeout(T.skipTimer);
+      T.skipTimer = setTimeout(() => {
+        if (!T.done) { T.skipBtn.hidden = false; T.hint.textContent = 'Tu peux continuer… ou abandonner (Échap).'; }
+      }, 12000);
+    }
+  }
+  function unlock() {
+    if (!active) return;
+    active.timeMs += performance.now() - active.enteredAt;
+    clearTimeout(active.skipTimer);
+    active = null;
+    document.documentElement.style.overflow = '';
+  }
+
+  function manual(dPx) {
+    const T = active;
+    if (!T || skipping) return;
+    if (veh > 0) return; // le véhicule conduit
+    if (dPx < 0 && T.offset <= 0) { unlock(); window.scrollBy(0, -Math.max(120, -dPx)); return; }
+    feed(dPx);
+    T.offset = Math.min(T.gap, Math.max(0, T.offset + dPx / PX_PER_UNIT));
+    if (T.offset >= T.gap) finish(T, false);
+  }
+
+  window.addEventListener('wheel', (e) => {
+    if (!active) return;
+    e.preventDefault();
+    const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
+    manual(e.deltaY * k);
+  }, { passive: false });
+  let touchY = null;
+  window.addEventListener('touchstart', (e) => { if (active) touchY = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (!active || touchY === null) return;
+    e.preventDefault();
+    const y = e.touches[0].clientY;
+    manual(touchY - y);
+    touchY = y;
+  }, { passive: false });
+  window.addEventListener('keydown', (e) => {
+    if (!active) return;
+    if (e.key === 'Escape' && !active.skipBtn.hidden) { e.preventDefault(); skip(active); return; }
+    const page = window.innerHeight * 0.9;
+    const map = { ArrowDown: 80, ArrowUp: -80, PageDown: page, PageUp: -page, ' ': page };
+    if (e.key in map && !(document.activeElement && document.activeElement.tagName === 'BUTTON' && e.key === ' ')) {
+      e.preventDefault(); manual(map[e.key]);
+    }
+  });
+
+  function skip(T) {
+    if (T.done || skipping) return;
+    skipping = true;
+    T.skipBtn.hidden = true; T.vbtn.hidden = true;
+    const o0 = T.offset;
+    const leftSec = (T.gap - o0) / speedOf(veh);
+    const end = () => { skipping = false; T.offset = T.gap; finish(T, true, o0, leftSec); };
+    if (reduced) { end(); return; }
+    T.hint.textContent = 'Téléportation…';
+    const t0 = performance.now(), D = 2600;
+    const a = Math.log(Math.max(o0, 1)), b = Math.log(T.gap);
+    (function step(now) {
+      const t = Math.min(1, (now - t0) / D);
+      const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      T.offset = Math.exp(a + (b - a) * e);
+      if (t < 1) requestAnimationFrame(step); else end();
+    })(t0);
+  }
+
+  function finish(T, skipped, reached, leftSec) {
+    if (T.done) return;
+    T.done = true;
+    if (active === T) unlock();
+    T.skipBtn.hidden = true; T.vbtn.hidden = true;
+    T.hint.textContent = '';
+    const how = VEHICLES[veh].with;
+    if (skipped) {
+      const pct = reached / T.gap * 100;
+      T.result.innerHTML = 'Tu as parcouru <strong>' + meters(reached * M_PER_UNIT) + '</strong> ' + how +
+        ', soit <strong>' + (pct < 0.001 ? 'moins de 0,001' : fmt(pct, 2)) + '&nbsp;%</strong> du chemin. Il te restait encore <strong>' +
+        strip(duration(leftSec)) + '</strong> sans jamais t’arrêter.';
+    } else {
+      T.result.innerHTML = 'Tu es arrivé·e ' + how + '&nbsp;: <strong>' + meters(T.gap * M_PER_UNIT) + '</strong> de ruban, pour de vrai.';
+    }
+    T.result.hidden = false;
+    T.cont.hidden = false;
+    renderTunnel(T);
+  }
+
+  // ================= Rendu =================
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  const CAT_COLOR = { gens: '--teal', matiere: '--amber', arrangements: '--lilac', idee: '--ink' };
+
+  function drawRuler(T, pxPerFrame) {
+    const cv = T.ruler;
+    const dpr = window.devicePixelRatio || 1;
+    const W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const mid = H / 2;
+    const accent = cssVar(CAT_COLOR[T.to.cat] || '--teal');
+    const blur = skipping && active === T || pxPerFrame > 60;
+    if (blur) {
+      // Trop vite pour voir les graduations : traînées.
+      ctx.strokeStyle = cssVar('--ink-faint');
+      for (let x = W - 24; x < W; x += 5) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    } else {
+      const o = T.offset;
+      const first = Math.floor((o - mid / PX_PER_UNIT) / 10) * 10;
+      const last = o + mid / PX_PER_UNIT;
+      ctx.font = '10px "Space Mono", monospace';
+      ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
+      for (let k = first; k <= last; k += 10) {
+        const y = mid + (k - o) * PX_PER_UNIT;
+        const major = k % 100 === 0;
+        ctx.strokeStyle = major ? cssVar('--ink-dim') : cssVar('--ink-faint');
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(W - (major ? 22 : 10), Math.round(y) + 0.5); ctx.lineTo(W, Math.round(y) + 0.5); ctx.stroke();
+        if (major && k >= 0 && W > 60) {
+          ctx.fillStyle = cssVar('--ink-dim');
+          ctx.fillText('+' + (k >= 1000 ? (k / 1000).toLocaleString(LOC, { maximumFractionDigits: 1 }) + ' k' : k), W - 26, y);
+        }
+      }
+    }
+    ctx.strokeStyle = accent; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(W, mid); ctx.stroke();
+  }
+
+  function renderTunnel(T, pxPerFrame = 0) {
+    const cur = T.fromBig + BigInt(Math.floor(T.offset));
+    const s = cur.toLocaleString(LOC);
+    T.num.textContent = s;
+    T.num.style.fontSize = Math.max(1.05, Math.min(3.6, 34 / s.length * 1.6)) + 'rem';
+    const p = T.offset / T.gap * 100;
+    T.fill.style.width = p + '%';
+    T.pct.textContent = (p === 0 ? '0' : p < 0.001 ? '< 0,001' : fmt(p, 2)) + ' %';
+    T.len.textContent = meters(T.offset * M_PER_UNIT);
+    if (T.compare) {
+      const prev = chain[T.idx].value - chain[T.idx - 1].value;
+      T.compare.innerHTML = 'Le saut précédent, avec ton pouce&nbsp;: <b>' + strip(duration(prev / thumbRate())) +
+        '</b>. Celui-ci&nbsp;: <b class="now">' + strip(duration(T.gap / thumbRate())) + '</b>.';
+    }
+    if (!T.done) {
+      const left = (T.gap - T.offset) / speedOf(veh);
+      T.left.innerHTML = strip(duration(left));
+      T.arr.innerHTML = arrival(left);
+      T.vehEl.textContent = VEHICLES[veh].name;
+    } else {
+      T.left.textContent = '—';
+      T.arr.textContent = '—';
+    }
+    drawRuler(T, pxPerFrame);
+  }
+
+  function refreshStatic() {
+    tunnels.forEach((T) => {
+      T.stThumb.innerHTML = duration(T.gap / thumbRate()) + '<small>à ' + rateText() + '</small>';
+      if (T !== active) renderTunnel(T);
+    });
+    suttonRate.textContent = rateText();
+  }
+
+  // ================= Boucle =================
+  let lastAuto = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.1, (now - lastAuto) / 1000);
+    lastAuto = now;
+    if (active) {
+      let ppf = 0;
+      if (veh > 0 && !skipping && !active.done) {
+        const du = speedOf(veh) * dt;
+        active.offset = Math.min(active.gap, active.offset + du);
+        ppf = du * PX_PER_UNIT;
+        if (active.offset >= active.gap) finish(active, false);
+      }
+      if (active) renderTunnel(active, ppf);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  // ================= Défilement de la page =================
+  let lastY = window.scrollY;
+  let refreshPending = false;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const dy = y - lastY;
+    lastY = y;
+    const p = updateZone1();
+    if (p > 0 && p < 1) { feed(dy); suttonRate.textContent = rateText(); }
+    if (!refreshPending) { refreshPending = true; setTimeout(() => { refreshPending = false; refreshStatic(); }, 400); }
+    if (active || dy <= 0) return;
+    for (const T of tunnels) {
+      if (T.done) continue;
+      if (T.el.getBoundingClientRect().top <= 1) lock(T);
+      break; // on ne saute jamais par-dessus un tunnel non terminé
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', () => tunnels.forEach((T) => renderTunnel(T)));
+
+  // ================= Fin =================
+  document.getElementById('zerosRow').textContent = '0 '.repeat(400);
+  document.getElementById('btnHumans').addEventListener('click', (e) => {
+    e.currentTarget.hidden = true;
+    document.getElementById('c2').hidden = false;
+    document.getElementById('btnAtoms').hidden = false;
+  });
+  document.getElementById('btnAtoms').addEventListener('click', (e) => {
+    e.currentTarget.hidden = true;
+    document.getElementById('c3').hidden = false;
+  });
+  document.getElementById('btnTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
+
+  updateZone1();
+  refreshStatic();
+  tunnels.forEach(updateControls);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => tunnels.forEach((T) => renderTunnel(T)));
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
