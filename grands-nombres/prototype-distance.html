@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  /* Mise en page : une colonne dans la nuit. Chaque nombre est une étape : on compte jusqu'à lui
-     (le tunnel), puis il se révèle au même endroit. Une seule règle (1 nombre = 2 px) du début à la fin. */
+  /* Mise en page : une colonne centrée dans la nuit, avec un seul objet au centre de chaque étape —
+     un compteur mécanique à roues. Une seule unité dans tout le voyage : le temps. */
   :root {
     color-scheme: dark;
     --bg: #0a0e1a;
-    --bg-2: #10162a;
+    --bg-2: #121933;
     --ink: #f3efe2;
     --ink-dim: #9aa0b4;
     --ink-faint: #343b52;
@@ -46,7 +46,6 @@
       radial-gradient(1px 1px at 10% 90%, rgba(243,239,226,0.3), transparent);
     background-attachment: fixed;
   }
-  .wrap { max-width: 680px; margin: 0 auto; }
   h1, h2, h3 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; }
   p { margin: 0; }
 
@@ -59,113 +58,97 @@
   .mini { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
 
   /* ---------- Intro ---------- */
-  .intro { padding-block: 18vh 14vh; }
-  .intro .wrap { display: grid; gap: 1.2rem; }
+  .intro { padding-block: 18vh 12vh; }
+  .intro .wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 1.2rem; }
   .eyebrow { font-family: var(--f-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); }
   .intro h1 { font-size: clamp(2.2rem, 7vw, 4rem); line-height: 1.08; max-width: 14ch; }
   .intro p { color: var(--ink-dim); font-size: clamp(1rem, 2.2vw, 1.15rem); max-width: 46ch; }
   .intro p strong { color: var(--ink); font-weight: 500; }
-  .rule-card {
-    margin-top: 0.6rem; border: 1px solid var(--ink-faint); border-radius: 6px;
-    padding: 0.9rem 1rem; font-family: var(--f-mono); font-size: 0.85rem; color: var(--ink);
-    display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; max-width: 46ch;
-  }
-  .rule-card .swatch { display: inline-block; width: 2px; height: 1.2em; background: var(--teal); box-shadow: 4px 0 0 var(--teal), 8px 0 0 var(--teal); margin-right: 8px; }
 
-  /* ---------- Zone 1 : 0 → 4 000 ---------- */
+  /* ---------- Compteur à roues ---------- */
+  .odo { display: flex; justify-content: center; align-items: stretch; gap: 4px; --ww: 44px; }
+  .wheel {
+    width: var(--ww); height: calc(var(--ww) * 1.45); flex: none;
+    border-radius: 6px; border: 1px solid var(--ink-faint);
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.5), transparent 32%, transparent 68%, rgba(0,0,0,0.5)),
+      var(--bg-2);
+    display: grid; place-items: center; overflow: hidden; position: relative;
+    font-family: var(--f-mono); font-weight: 700; font-size: calc(var(--ww) * 0.66);
+    color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+  .wheel.grp { margin-left: calc(var(--ww) * 0.22); }
+  .wheel.zero { color: var(--ink-faint); }
+  .wheel.lead { border-color: var(--c, var(--teal)); box-shadow: 0 0 0 1px var(--c, var(--teal)); }
+  .wheel.blur span { filter: blur(calc(var(--ww) * 0.07)); opacity: 0.55; }
+  .wheel.bump span { animation: bump 0.4s ease-out; }
+  @keyframes bump { from { transform: translateY(-40%); opacity: 0.2; } to { transform: none; opacity: 1; } }
+  .gapcell {
+    flex: none; width: calc(var(--ww) * 2.6); display: grid; place-items: center; text-align: center;
+    font-family: var(--f-mono); font-size: 0.7rem; line-height: 1.3; color: var(--ink-dim);
+    border: 1px dashed var(--ink-faint); border-radius: 6px; padding: 0.2rem;
+  }
+  .gapcell b { display: block; color: var(--ink); font-size: 0.85rem; }
+
+  /* ---------- Sutton : défilement réel de 0 à 4 000 ---------- */
   .count-zone { position: relative; height: calc(8000px + 100vh); }
   .count-sticky { position: sticky; top: 0; height: 100vh; display: grid; place-items: center; text-align: center; }
-  .count-inner { display: grid; gap: 1rem; justify-items: center; }
-  .count-number {
-    font-family: var(--f-display); font-weight: 600;
-    font-size: clamp(3.2rem, 13vw, 7.5rem); line-height: 1;
-    color: var(--teal); font-variant-numeric: tabular-nums;
+  .count-inner { display: grid; gap: 1.4rem; justify-items: center; width: 100%; max-width: 640px; }
+  .count-inner .odo { --ww: 64px; }
+  .count-label { color: var(--ink-dim); max-width: 34ch; }
+
+  /* ---------- Étapes ---------- */
+  .leg { position: relative; min-height: 100vh; border-top: 1px solid rgba(243,239,226,0.05); }
+  .leg-inner {
+    min-height: 100vh; max-width: 760px; margin: 0 auto; padding-block: 6vh;
+    display: grid; align-content: center; justify-items: center; text-align: center; gap: 1.6rem;
   }
-  .count-bar { width: min(70vw, 340px); height: 3px; background: var(--ink-faint); border-radius: 2px; overflow: hidden; }
-  .count-bar > div { height: 100%; width: 0; background: var(--teal); }
-  .count-label { color: var(--ink-dim); max-width: 34ch; font-size: 0.95rem; }
-  .count-meta { font-family: var(--f-mono); font-size: 0.8rem; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
-
-  /* ---------- Sutton ---------- */
-  .station { padding-block: 14vh; border-top: 1px solid rgba(243,239,226,0.05); }
-  .station .wrap { display: grid; gap: 0.9rem; }
-  .tag { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c, var(--ink-dim)); }
-  .big { font-size: clamp(2.2rem, 8vw, 4.4rem); line-height: 1.05; color: var(--c, var(--ink)); }
-  .label { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--ink); max-width: 36ch; }
-  .note { color: var(--ink-dim); font-size: 0.95rem; max-width: 52ch; }
-  .note b { color: var(--ink); font-weight: 500; }
-
-  .facts { margin: 0; display: grid; gap: 0.55rem; border-top: 1px solid var(--ink-faint); padding-top: 0.9rem; }
-  .facts > div { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 1rem; }
-  .facts dt { font-family: var(--f-mono); font-size: 0.78rem; color: var(--ink-dim); padding-top: 0.15em; }
-  .facts dd { margin: 0; color: var(--ink); min-width: 0; }
-  .facts dd small { color: var(--ink-dim); font-size: 0.88em; display: block; }
-  @media (max-width: 560px) { .facts > div { grid-template-columns: 1fr; gap: 0.1rem; } }
+  .hero { display: grid; gap: 0.4rem; justify-items: center; }
+  .hero .big { font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1.02; color: var(--c, var(--ink)); }
+  .hero .label { font-size: clamp(1.05rem, 2.6vw, 1.35rem); color: var(--ink); max-width: 32ch; }
+  .odo-wrap { width: 100%; display: grid; gap: 0.7rem; }
+  .callout { color: var(--ink-dim); font-size: 0.95rem; max-width: 46ch; justify-self: center; }
+  .callout b { color: var(--c, var(--teal)); font-weight: 500; }
+  .eta { font-family: var(--f-display); font-size: clamp(1.15rem, 3vw, 1.55rem); line-height: 1.3; max-width: 38ch; min-height: 1.3em; }
+  .eta b { color: var(--c, var(--teal)); font-weight: 600; }
+  .speed { font-family: var(--f-mono); font-size: 0.8rem; color: var(--ink-dim); }
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+  .after { display: grid; gap: 0.6rem; justify-items: center; max-width: 48ch; }
+  .after p { color: var(--ink-dim); }
+  .after p b { color: var(--ink); font-weight: 500; }
 
   .btn {
     background: transparent; color: var(--ink);
     border: 1px solid rgba(243,239,226,0.25); border-radius: 999px;
-    font-family: var(--f-body); font-size: 0.92rem;
-    padding: 0.6rem 1.2rem; cursor: pointer; text-align: left;
+    font-family: var(--f-body); font-size: 0.92rem; padding: 0.6rem 1.2rem; cursor: pointer;
   }
   .btn:hover { border-color: var(--ink); }
   .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
   .btn.primary { border-color: var(--c, var(--teal)); color: var(--c, var(--teal)); }
   .btn.small { font-size: 0.8rem; padding: 0.35rem 0.9rem; color: var(--ink-dim); }
 
-  /* ---------- Étapes (un nombre = une section) ---------- */
-  .leg { position: relative; min-height: 100vh; border-top: 1px solid rgba(243,239,226,0.05); }
-  .leg .ruler { position: absolute; left: 0; top: 0; width: 84px; height: 100%; }
-  .leg-inner {
-    min-height: 100vh; display: grid; align-content: center; gap: 1.3rem;
-    max-width: 720px; margin: 0 auto; padding-left: 96px; padding-block: 5vh;
-  }
-  .goal { display: grid; gap: 0.5rem; }
-  .goal h2 { font-size: clamp(1.5rem, 4.2vw, 2.5rem); line-height: 1.15; color: var(--c, var(--ink)); max-width: 24ch; }
-  .compare { color: var(--ink-dim); max-width: 50ch; font-size: 0.95rem; }
-  .compare b { color: var(--ink); font-weight: 500; }
-  .compare b.now { color: var(--c, var(--teal)); }
-
-  .numbers { display: grid; gap: 0.35rem; min-width: 0; }
-  .nrow { display: grid; gap: 0.1rem; min-width: 0; }
-  .nline {
-    font-family: var(--f-mono); font-weight: 700; white-space: pre; text-align: right;
-    line-height: 1.25; overflow: hidden; font-variant-numeric: tabular-nums;
-  }
-  .n-target { color: var(--ink-dim); }
-  .n-count { color: var(--c, var(--teal)); }
-
-  .dash { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; border-top: 1px solid var(--ink-faint); padding-top: 1rem; }
-  .stat { display: grid; gap: 0.2rem; align-content: start; min-width: 0; }
-  .stat .v { font-family: var(--f-display); font-weight: 600; font-size: clamp(1.15rem, 2.6vw, 1.6rem); line-height: 1.15; color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-  .stat .v sup { font-size: 0.55em; }
-  .stat .s { color: var(--ink-dim); font-size: 0.85rem; }
-  .stat.speed .v { color: var(--c, var(--teal)); }
-  @media (max-width: 560px) { .dash { grid-template-columns: 1fr; } }
-
-  .status { font-family: var(--f-mono); font-size: 0.85rem; color: var(--c, var(--teal)); min-height: 1.4em; max-width: 56ch; }
-  .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-  .reveal { display: grid; gap: 0.9rem; }
-  .reveal .result { color: var(--ink); max-width: 52ch; }
-  .reveal .result strong { color: var(--c, var(--teal)); font-weight: 500; }
-  @media (max-width: 560px) {
-    .leg .ruler { width: 48px; }
-    .leg-inner { padding-left: 56px; }
-  }
-
   /* ---------- Fin ---------- */
+  .finale .leg-inner { gap: 1.2rem; }
+  .finale .note { color: var(--ink-dim); max-width: 50ch; }
+  .finale .note b { color: var(--ink); font-weight: 500; }
   .zeros {
-    font-family: var(--f-mono); color: var(--danger); opacity: 0.7;
+    width: 100%; font-family: var(--f-mono); color: var(--danger); opacity: 0.7;
     white-space: nowrap; overflow: hidden; font-size: 1rem; letter-spacing: 0.15em;
-    mask-image: linear-gradient(90deg, #000 70%, transparent);
-    -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
   }
   .zeros span { display: inline-block; animation: drift 30s linear infinite; }
   @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  .collective { display: grid; gap: 0.8rem; justify-items: start; margin-top: 0.6rem; }
+  .collective { display: grid; gap: 0.8rem; justify-items: center; }
   .collective p { color: var(--ink-dim); max-width: 50ch; }
   .collective strong { color: var(--danger); font-weight: 500; }
-  @media (prefers-reduced-motion: reduce) { .zeros span { animation: none; } }
+
+  @media (max-width: 560px) {
+    .count-inner .odo { --ww: 52px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .zeros span, .wheel.bump span { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -176,35 +159,29 @@
     <h1>Voyage au pays des grands nombres</h1>
     <!-- À RÉÉCRIRE PAR MIKA : la vraie histoire de la naissance du projet à Sutton. -->
     <p>Ce voyage part de <strong>Sutton</strong>, un village d'environ 4&nbsp;000 habitants dans les Cantons-de-l'Est. C'est ici qu'il est né, alors c'est ici qu'on commence à compter.</p>
-    <p>Une seule règle pour tout le voyage, et on ne trichera jamais avec elle&nbsp;:</p>
-    <div class="rule-card"><span class="swatch" aria-hidden="true"></span>1 nombre = 2 pixels de défilement</div>
-    <p>Premier tronçon&nbsp;: un nombre pour chaque habitant de Sutton. Défile.</p>
+    <p>Pour compter, il suffit de défiler. Commence par compter les habitants de Sutton, un par un.</p>
   </div>
 </section>
 
-<!-- ==================== ZONE 1 : 0 → 4 000 ==================== -->
-<section class="count-zone" id="zone1" aria-label="Défilement de 0 à 4 000">
+<!-- ==================== SUTTON : 0 → 4 000 ==================== -->
+<section class="count-zone" id="zone1" data-cat="gens" aria-label="Compter jusqu'à 4 000">
   <div class="count-sticky">
     <div class="count-inner">
-      <div class="count-number" id="z1Number">0</div>
-      <div class="count-bar"><div id="z1Bar"></div></div>
-      <p class="count-label">Chaque nombre que tu vois passer, tu l'as vraiment défilé. Jusqu'à 4&nbsp;000.</p>
-      <p class="count-meta" id="z1Meta">0 cm de ruban</p>
+      <div class="odo" id="z1Odo" aria-live="off"></div>
+      <p class="count-label" id="z1Label">Défile pour compter jusqu'à 4&nbsp;000.</p>
     </div>
   </div>
 </section>
 
-<!-- ==================== SUTTON ==================== -->
-<section class="station" data-cat="gens" id="sutton">
-  <div class="wrap">
-    <p class="tag">Des gens</p>
-    <h2 class="big">4&nbsp;000</h2>
-    <p class="label">habitants à Sutton</p>
-    <dl class="facts">
-      <div><dt>Ruban défilé</dt><dd>environ 2,1 mètres<small>un peu plus que la hauteur d'une porte</small></dd></div>
-      <div><dt>Ta vitesse mesurée</dt><dd id="suttonRate">défile la zone au-dessus pour la mesurer</dd></div>
-    </dl>
-    <p class="note">Prochain nombre&nbsp;: les habitants du Grand Montréal. Même règle, même ruban. Continue de défiler.</p>
+<section class="leg" data-cat="gens" id="sutton">
+  <div class="leg-inner">
+    <div class="hero">
+      <p class="mini">Étape 1 sur 8</p>
+      <h2 class="big">4&nbsp;000</h2>
+      <p class="label">habitants à Sutton</p>
+    </div>
+    <p class="eta" id="suttonRate">Tu viens de les compter, un par un.</p>
+    <p class="callout">Cette vitesse, c'est la tienne. On la garde pour tout le voyage. Continue de défiler.</p>
   </div>
 </section>
 
@@ -212,91 +189,65 @@
 <div id="journey"></div>
 
 <!-- ==================== GOOGOLPLEX ==================== -->
-<section class="station" data-cat="fin" id="finale">
-  <div class="wrap">
-    <p class="tag">Une idée pure</p>
-    <h2 class="big">Un googolplex</h2>
-    <p class="label">1 suivi d'un googol de zéros</p>
-    <div class="zeros" aria-hidden="true"><span id="zerosRow"></span></div>
-    <p class="note">Ici, plus aucune étape n'est possible. Le ruban jusqu'au googolplex est si long que <b>son nombre de kilomètres s'écrirait lui-même avec un googol de chiffres</b>. Même en utilisant chaque atome de l'univers pour écrire un chiffre, on n'arriverait pas à écrire cette longueur.</p>
-    <p class="note">Ton pouce, la Formule 1, la fusée, la lumière&nbsp;: aucun ne change rien. Le temps de voyage ne s'écrit pas non plus.</p>
-    <div class="collective">
-      <button class="btn" id="btnHumans">Et si tous les humains défilaient avec toi&nbsp;?</button>
-      <p id="c2" hidden>Même à 8 milliards de personnes, le nombre de secondes s'écrit encore avec environ <strong>un googol de chiffres</strong>. Diviser par 8 milliards enlève à peine 10 chiffres à un nombre qui en a 10<sup>100</sup>.</p>
-      <button class="btn" id="btnAtoms" hidden>Et si chaque atome de l'univers défilait avec toi&nbsp;?</button>
-      <p id="c3" hidden>Même à 10<sup>80</sup> défileurs, il reste environ un googol de chiffres. Un googolplex ne bouge pas, peu importe combien on est.</p>
+<section class="leg finale" data-cat="fin" id="finale">
+  <div class="leg-inner">
+    <div class="hero">
+      <p class="mini">Au-delà</p>
+      <h2 class="big">Un googolplex</h2>
+      <p class="label">1 suivi d'un googol de zéros</p>
     </div>
-    <button class="btn small" id="btnTop" style="margin-top:1.4rem">Revenir à Sutton</button>
+    <div class="zeros" aria-hidden="true"><span id="zerosRow"></span></div>
+    <p class="note">Ce compteur-là ne peut pas exister&nbsp;: il aurait <b>plus de roues qu'il n'y a d'atomes dans l'univers</b>. On ne pourrait même pas le construire, encore moins le faire tourner.</p>
+    <div class="collective">
+      <button class="btn" id="btnHumans">Et si tous les humains comptaient avec toi&nbsp;?</button>
+      <p id="c2" hidden>Même à 8 milliards de personnes, le nombre de secondes nécessaires s'écrit avec environ <strong>un googol de chiffres</strong>. Diviser par 8 milliards enlève à peine 10 chiffres à un nombre qui en a 10<sup>100</sup>.</p>
+      <button class="btn" id="btnAtoms" hidden>Et si chaque atome de l'univers était un superordinateur&nbsp;?</button>
+      <p id="c3" hidden>Toujours environ un googol de chiffres. Un googolplex ne bouge pas, peu importe combien on est.</p>
+    </div>
+    <button class="btn small" id="btnTop">Revenir à Sutton</button>
   </div>
 </section>
 
 <script>
 (() => {
-  // ================= Données du voyage =================
-  // goal  = le nombre, nommé comme le héros de l'étape ;
-  // digits = son écriture exacte (affichée chiffre à chiffre) ; value = le même nombre, pour les calculs ;
-  // offer = moyen de transport proposé à cette étape (index dans VEHICLES).
+  // ================= Le voyage =================
+  // big + label = le nombre, en mots ; digits = son écriture exacte (une roue par chiffre).
+  // offer = renfort proposé à cette étape (index dans HELPERS). calm = étape à regarder, pas à compter.
   const STATIONS = [
-    { id: 'montreal', cat: 'gens', short: 'Montréal', value: 4e6, digits: '4000000',
-      goal: 'le nombre de personnes qui vivent dans le Grand Montréal', big: '4 millions' },
-    { id: 'quebec', cat: 'gens', short: 'le Québec', value: 9e6, digits: '9000000',
-      goal: 'le nombre de personnes qui vivent au Québec', big: 'environ 9 millions' },
-    { id: 'terre', cat: 'gens', short: 'la Terre', value: 8.2e9, digits: '8200000000', offer: 1,
-      goal: 'le nombre d’humains sur Terre', big: '8,2 milliards' },
-    { id: 'galaxie', cat: 'matiere', short: 'la Voie lactée', value: 3e11, digits: '300000000000', offer: 2,
-      goal: 'le nombre d’étoiles dans la Voie lactée', big: 'environ 300 milliards', note: 'Les estimations vont de 100 à 400 milliards.' },
-    { id: 'sable', cat: 'matiere', short: 'le sable', value: 7.5e18, digits: '7500000000000000000', offer: 3,
-      goal: 'le nombre de grains de sable sur toutes les plages de la Terre', big: '7,5 milliards de milliards', note: 'C’est une estimation : personne ne les a comptés !' },
-    { id: 'rubik', cat: 'arrangements', short: 'le Rubik’s cube', value: 43252003274489856000, digits: '43252003274489856000', offer: 4,
-      goal: 'le nombre de façons de mélanger un Rubik’s cube', big: '43 milliards de milliards' },
-    { id: 'etoiles', cat: 'matiere', short: 'les étoiles', value: 1e24, digits: '1' + '0'.repeat(24),
-      goal: 'le nombre d’étoiles dans l’univers observable', big: '1 million de milliards de milliards', note: 'Estimation haute ; on en compte peut-être cent fois moins.' },
-    { id: 'corps', cat: 'matiere', short: 'ton corps', value: 7e27, digits: '7' + '0'.repeat(27),
-      goal: 'le nombre d’atomes dans ton corps', big: '7 milliards de milliards de milliards' },
-    { id: 'cartes', cat: 'arrangements', short: 'le jeu de cartes', value: 8.0658175170943878e67,
+    { id: 'quebec', cat: 'gens', value: 9e6, digits: '9000000', offer: 1,
+      big: '9 millions', label: 'de personnes au Québec' },
+    { id: 'terre', cat: 'gens', value: 8.2e9, digits: '8200000000',
+      big: '8,2 milliards', label: 'd’humains sur Terre' },
+    { id: 'sable', cat: 'matiere', value: 7.5e18, digits: '7500000000000000000', offer: 2,
+      big: '7,5 milliards de milliards', label: 'de grains de sable sur toutes les plages de la Terre', note: 'Une estimation : personne ne les a comptés.' },
+    { id: 'etoiles', cat: 'matiere', value: 1e24, digits: '1' + '0'.repeat(24), offer: 3,
+      big: '1 million de milliards de milliards', label: 'd’étoiles dans l’univers observable', note: 'Estimation haute ; il y en a peut-être cent fois moins.' },
+    { id: 'corps', cat: 'matiere', value: 7e27, digits: '7' + '0'.repeat(27),
+      big: '7 milliards de milliards de milliards', label: 'd’atomes dans ton corps' },
+    { id: 'cartes', cat: 'arrangements', value: 8.0658175170943878e67, calm: true,
       digits: '80658175170943878571660636856403766975289505440883277824000000000000',
-      goal: 'le nombre de façons de mélanger un jeu de 52 cartes', big: 'un nombre à 68 chiffres', note: 'Chaque fois que tu brasses un jeu, l’ordre obtenu n’a très probablement jamais existé.' },
-    { id: 'atomes', cat: 'matiere', short: 'les atomes de l’univers', value: 1e80, digits: '1' + '0'.repeat(80),
-      goal: 'le nombre d’atomes dans tout l’univers observable', big: '1 suivi de 80 zéros' },
-    { id: 'googol', cat: 'idee', short: 'le googol', value: 1e100, digits: '1' + '0'.repeat(100),
-      goal: 'un googol', big: '1 suivi de 100 zéros', note: 'Plus grand que tout ce qu’on peut compter dans l’univers.' },
+      big: 'Un nombre à 68 chiffres', label: 'de façons de mélanger un jeu de 52 cartes', note: 'Chaque fois que tu brasses un jeu, l’ordre obtenu n’a très probablement jamais existé.' },
+    { id: 'googol', cat: 'idee', value: 1e100, digits: '1' + '0'.repeat(100), calm: true,
+      big: 'Un googol', label: '1 suivi de 100 zéros', note: 'Plus grand que le nombre d’atomes dans tout l’univers.' },
   ];
 
-  // Les véhicules roulent sur le MÊME ruban (1 nombre = 2 px). Seule la vitesse change.
-  const VEHICLES = [
-    { name: 'ton pouce', with: 'avec ton pouce', kmh: null },
-    { name: 'la Formule 1', go: 'allons-y en Formule 1', with: 'en Formule 1', kmh: 350 },
-    { name: 'l’avion de chasse', go: 'allons-y en avion de chasse', with: 'en avion de chasse', kmh: 2400 },
-    { name: 'la fusée', go: 'allons-y en fusée', with: 'en fusée', kmh: 40000 },
-    { name: 'la lumière', go: 'voyageons à la vitesse de la lumière', with: 'à la vitesse de la lumière', kmh: 1079252849 },
+  // Renforts : ils comptent avec toi. persons = nombre de personnes qui comptent à ta vitesse ; rate = vitesse fixe.
+  const HELPERS = [
+    { persons: 1 },
+    { persons: 4000, call: 'Appeler du renfort : tout Sutton compte avec toi', who: 'Tout Sutton compte avec toi' },
+    { persons: 8.2e9, call: 'Appeler du renfort : toute l’humanité compte avec toi', who: 'Toute l’humanité compte avec toi' },
+    { rate: 1e18, call: 'Appeler du renfort : le superordinateur le plus rapide du monde', who: 'Le superordinateur le plus rapide du monde compte' },
   ];
 
   // ================= Constantes =================
-  const PX_PER_UNIT = 2;
-  const M_PER_PX = 0.0254 / 96;
-  const M_PER_UNIT = PX_PER_UNIT * M_PER_PX;
-  const LY = 9.4607e15, UNIV = 8.8e26;
+  const PX_PER_NUMBER = 2;        // règle interne : un nombre = 2 pixels de défilement (jamais montrée)
   const YEAR = 365.25 * 86400, UNIV_AGE = 13.8e9;
-  const SUTTON = { short: 'Sutton', value: 4000, digits: '4000' };
+  const SUTTON = { value: 4000, digits: '4000' };
   const FALLBACK_RATE = 400;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const LOC = 'fr-CA';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const LANDMARKS = [
-    [2, 'la hauteur d’une porte'],
-    [100, 'un terrain de soccer'],
-    [120e3, 'la route de Sutton à Montréal'],
-    [40075e3, 'le tour de la Terre'],
-    [384400e3, 'la distance Terre–Lune'],
-    [1.496e11, 'la distance Terre–Soleil'],
-    [4.5e12, 'la distance jusqu’à Neptune'],
-    [4.01e16, 'la distance jusqu’à l’étoile la plus proche'],
-    [9.5e20, 'la largeur de la Voie lactée'],
-    [2.4e22, 'la distance jusqu’à la galaxie d’Andromède'],
-    [UNIV, 'la largeur de l’univers observable'],
-  ];
-
-  // ================= Formatage =================
+  // ================= Formatage (temps uniquement) =================
   const isBig = (s) => /illion|illiard/.test(s);
   function roundSig(x, d) {
     if (!isFinite(x) || x === 0) return x;
@@ -318,48 +269,26 @@
     if (x < 1e15) return roundSig(x / 1e12, 2).toLocaleString(LOC) + ' mille milliards';
     return sci(x);
   }
-  function landmark(m) {
-    if (m < 1.5 || m >= UNIV * 0.5) return '';
-    let below = null, above = null;
-    for (const L of LANDMARKS) { if (L[0] <= m) below = L; else { above = L; break; } }
-    if (above && m / above[0] >= 0.5) return 'plus de la moitié de ' + above[1];
-    if (!below) return '';
-    const r = m / below[0];
-    if (r < 1.3) return 'à peu près ' + below[1];
-    return (r < 1e6 ? fmt(r, 2) : words(r)) + ' fois ' + below[1];
-  }
-  function meters(m) {
-    if (m <= 0) return '0 m';
-    if (m < 0.01) return fmt(m * 1000, 2) + ' mm';
-    if (m < 1) return fmt(m * 100, 2) + ' cm';
-    if (m < 1000) return fmt(m, 2) + ' m';
-    if (m < 1e14) return words(m / 1000) + ' km';
-    if (m < UNIV * 0.5) {
-      const ly = m / LY;
-      const lw = ly < 1e6 ? fmt(ly, 2) : words(ly);
-      return lw + (isBig(lw) ? ' d’années-lumière' : roundSig(ly, 2) >= 2 ? ' années-lumière' : ' année-lumière');
-    }
-    return words(m / UNIV) + ' fois la largeur de l’univers';
-  }
-  function withLandmark(m) { const l = landmark(m); return meters(m) + (l ? '<small>' + l + '</small>' : ''); }
-  function duration(sec, withAge = true) {
-    if (sec < 1) return 'moins d’une seconde';
-    if (sec < 60) return fmt(sec, 2) + ' secondes';
-    if (sec < 3600) return fmt(sec / 60, 2) + ' minutes';
-    if (sec < 86400) return fmt(sec / 3600, 2) + ' heures';
-    if (sec < YEAR) return fmt(sec / 86400, 2) + ' jours';
+  function plural(n, s, p) { return roundSig(n, 2) >= 2 ? p : s; }
+  function duration(sec) {
+    if (sec < 0.1) return 'une fraction de seconde';
+    if (sec < 60) return fmt(sec, 2) + ' ' + plural(sec, 'seconde', 'secondes');
+    if (sec < 3600) return fmt(sec / 60, 2) + ' ' + plural(sec / 60, 'minute', 'minutes');
+    if (sec < 86400) return fmt(sec / 3600, 2) + ' ' + plural(sec / 3600, 'heure', 'heures');
+    if (sec < YEAR) return fmt(sec / 86400, 2) + ' ' + plural(sec / 86400, 'jour', 'jours');
     const y = sec / YEAR;
-    const yw = y < 1e4 ? fmt(y, 2) : words(y);
-    let s = yw + (isBig(yw) ? ' d’années' : ' ans');
-    if (withAge && y > UNIV_AGE) {
-      const aw = words(y / UNIV_AGE);
-      s += '<small>' + aw + (isBig(aw) ? ' de fois' : ' fois') + ' l’âge de l’univers</small>';
+    if (y > UNIV_AGE * 100) {
+      const a = y / UNIV_AGE;
+      const aw = words(a);
+      return aw + (isBig(aw) ? ' de fois' : ' fois') + ' l’âge de l’univers';
     }
-    return s;
+    const yw = y < 1e4 ? fmt(y, 2) : words(y);
+    return yw + (isBig(yw) ? ' d’années' : ' ' + plural(y, 'an', 'ans'));
   }
   function arrival(sec) {
-    const years = sec / YEAR;
     const now = new Date();
+    const years = sec / YEAR;
+    if (sec < 1) return 'dans un instant';
     if (sec < 2 * 86400) {
       const d = new Date(now.getTime() + sec * 1000);
       const sameDay = d.toDateString() === now.toDateString();
@@ -367,18 +296,11 @@
     }
     if (years < 9000) return 'le ' + new Date(now.getTime() + sec * 1000).toLocaleDateString(LOC, { day: 'numeric', month: 'long', year: 'numeric' });
     if (years < 1e6) return 'en l’an ' + Math.round(now.getFullYear() + years).toLocaleString(LOC);
-    return 'dans ' + duration(sec, false);
+    return 'dans ' + duration(sec);
   }
-  const strip = (h) => h.replace(/<small>.*<\/small>/, '');
-  function eta(sec) {
-    const a = arrival(sec);
-    return 'À ce rythme, tu vas arriver ' + (a.startsWith('dans ') ? a : a + ' · dans ' + strip(duration(sec)));
-  }
-  const group = (s) => s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-  function kmhText(kmh) { return (kmh < 1e6 ? fmt(kmh, kmh < 10 ? 2 : 3) : words(kmh)) + ' km/h'; }
-  const unitsToKmh = (u) => u * M_PER_UNIT * 3.6;
+  const ORDER = ['unités', 'dizaines', 'centaines', 'milliers', 'dizaines de milliers', 'centaines de milliers', 'millions', 'dizaines de millions', 'centaines de millions', 'milliards'];
 
-  // ================= Vitesse mesurée du pouce (défilement actif seulement) =================
+  // ================= Vitesse de comptage (défilement actif seulement) =================
   let activePx = 0, activeMs = 0, lastFeed = 0;
   function feed(dPx) {
     const now = performance.now();
@@ -388,129 +310,160 @@
     activePx += Math.abs(dPx);
     activeMs += Math.min(Math.max(dt, 8), 120);
   }
-  function rate() { return activeMs < 600 ? null : (activePx / PX_PER_UNIT) / (activeMs / 1000); }
-  function thumbRate() { return rate() || FALLBACK_RATE; }
-  function rateText() {
-    const r = rate();
-    return r ? fmt(r, 2) + ' nombres par seconde, soit ' + kmhText(unitsToKmh(r))
-             : 'environ ' + FALLBACK_RATE + ' nombres par seconde (estimation)';
+  function measured() { return activeMs < 600 ? null : (activePx / PX_PER_NUMBER) / (activeMs / 1000); }
+  function thumbRate() { return measured() || FALLBACK_RATE; }
+
+  let helper = 0; // renfort actuel ; il reste d'une étape à l'autre
+  function rateOf(h) { return HELPERS[h].rate || HELPERS[h].persons * thumbRate(); }
+  const perSecond = (r) => r >= 1e15 ? fmt(r / 1e18, 2) + ' ' + plural(r / 1e18, 'milliard', 'milliards') + ' de milliards de' : (r >= 1e6 ? words(r) + ' de' : words(r));
+
+  // ================= Compteur à roues =================
+  // n roues ; si elles ne tiennent pas, on montre les premières et les dernières avec « … » au milieu.
+  function makeOdo(el, n) {
+    const o = { el, n, cells: [], shown: [], prev: [] };
+    o.layout = () => {
+      el.innerHTML = '';
+      o.cells = []; o.prev = [];
+      const W = el.clientWidth || el.parentElement.clientWidth || 600;
+      const base = parseFloat(getComputedStyle(el).getPropertyValue('--ww')) || 44;
+      let ww = Math.min(base, Math.max(26, (W - 4 * n) / (n * 1.08)));
+      let idx = [...Array(n).keys()]; // 0 = roue de gauche
+      let gap = null;
+      if ((ww + 4) * n * 1.08 > W) {
+        ww = Math.max(28, Math.min(base, 40));
+        const fit = Math.max(5, Math.floor((W - ww * 2.6 - 8) / ((ww + 4) * 1.08)));
+        const left = Math.max(2, Math.floor(fit / 2) - 1), right = fit - left;
+        gap = { after: left - 1, hidden: n - left - right };
+        idx = idx.slice(0, left).concat(idx.slice(n - right));
+      }
+      el.style.setProperty('--ww', ww + 'px');
+      idx.forEach((i, j) => {
+        const w = document.createElement('div');
+        w.className = 'wheel';
+        const pos = n - 1 - i; // puissance de 10 de cette roue
+        if (j > 0 && pos % 3 === 2 && !(gap && j === gap.after + 1)) w.classList.add('grp');
+        if (i === 0) w.classList.add('lead');
+        w.dataset.pos = pos;
+        w.innerHTML = '<span>0</span>';
+        el.appendChild(w);
+        o.cells.push({ i, pos, el: w, span: w.firstChild });
+        if (gap && j === gap.after) {
+          const g = document.createElement('div');
+          g.className = 'gapcell';
+          g.innerHTML = '<span><b>…</b>' + gap.hidden + ' roues<br>de plus</span>';
+          el.appendChild(g);
+        }
+      });
+      o.prev = o.cells.map(() => null);
+    };
+    // digits : chaîne de n chiffres ; rate : nombres/s (0 si arrêté)
+    o.set = (digits, rate, leadingZeroUpTo) => {
+      o.cells.forEach((c, k) => {
+        const d = digits[c.i];
+        const tick = rate > 0 ? Math.pow(10, c.pos) / rate : Infinity;
+        const blur = tick < 0.06;
+        c.el.classList.toggle('blur', blur);
+        c.el.classList.toggle('zero', c.i < leadingZeroUpTo);
+        if (o.prev[k] !== d) {
+          c.span.textContent = d;
+          if (!blur && o.prev[k] !== null && !reduced) { c.el.classList.remove('bump'); void c.el.offsetWidth; c.el.classList.add('bump'); }
+          o.prev[k] = d;
+        }
+      });
+    };
+    o.layout();
+    return o;
   }
+  function padTo(s, n) { return s.length >= n ? s.slice(-n) : '0'.repeat(n - s.length) + s; }
+  function firstNonZero(s) { const k = s.search(/[1-9]/); return k < 0 ? s.length - 1 : k; }
 
-  let veh = 0; // moyen de transport actuel ; il reste d'une étape à l'autre
-  function cruise(v) { return VEHICLES[v].kmh / 3.6 / M_PER_UNIT; } // nombres par seconde
-
-  // ================= Zone 1 =================
+  // ================= Sutton : 0 → 4 000 en défilant pour de vrai =================
   const zone1 = document.getElementById('zone1');
-  const z1Number = document.getElementById('z1Number');
-  const z1Bar = document.getElementById('z1Bar');
-  const z1Meta = document.getElementById('z1Meta');
+  const z1Odo = makeOdo(document.getElementById('z1Odo'), 4);
+  const z1Label = document.getElementById('z1Label');
   const suttonRate = document.getElementById('suttonRate');
+  let z1Last = 0, z1Speed = 0;
   function updateZone1() {
     const rect = zone1.getBoundingClientRect();
     const scrollable = zone1.offsetHeight - window.innerHeight; // = 8000 px
     const p = Math.max(0, Math.min(1, -rect.top / scrollable));
     const val = Math.round(p * SUTTON.value);
-    z1Number.textContent = val.toLocaleString(LOC);
-    z1Bar.style.width = (p * 100) + '%';
-    z1Meta.textContent = meters(val * M_PER_UNIT) + ' de ruban';
+    const s = padTo(String(val), 4);
+    z1Odo.set(s, performance.now() - lastFeed < 150 ? thumbRate() : 0, firstNonZero(s));
+    if (p >= 1) z1Label.textContent = '4 000. Tous les habitants de Sutton sont comptés.';
+    else if (p > 0) z1Label.textContent = 'Encore ' + (SUTTON.value - val).toLocaleString(LOC) + ' habitants à compter.';
     return p;
+  }
+  function suttonText() {
+    const m = measured();
+    suttonRate.innerHTML = m
+      ? 'Tu comptes à <b>' + perSecond(m) + ' nombres par seconde</b>.'
+      : 'Tu viens de les compter, un par un.';
   }
 
   // ================= Construction des étapes =================
   const journey = document.getElementById('journey');
   const chain = [SUTTON].concat(STATIONS);
   const legs = [];
-
   STATIONS.forEach((s, i) => {
     const from = chain[i];
-    const L = {
-      idx: i, from, to: s, gap: s.value - from.value,
-      fromBig: BigInt(from.digits), offset: 0, done: false,
-      targetStr: group(s.digits),
-    };
+    const L = { idx: i, s, from, gap: s.value - from.value, fromBig: BigInt(from.digits), offset: 0, done: !!s.calm, n: s.digits.length };
     const el = document.createElement('section');
     el.className = 'leg';
     el.id = 'st-' + s.id;
     el.dataset.cat = s.cat;
-    el.setAttribute('aria-label', 'Compter jusqu’à ' + s.goal);
+    el.setAttribute('aria-label', s.big + ' ' + s.label);
     el.innerHTML =
-      '<canvas class="ruler" aria-hidden="true"></canvas>' +
       '<div class="leg-inner">' +
-        '<div class="goal">' +
-          '<p class="mini">Prochain nombre</p>' +
-          '<h2>Compter jusqu’' + (s.goal.startsWith('un ') ? 'à ' : 'au ') + s.goal.replace(/^le /, '') + '</h2>' +
-          (i > 0 ? '<p class="compare"></p>' : '') +
+        '<div class="hero">' +
+          '<p class="mini">Étape ' + (i + 2) + ' sur 8' + (s.calm ? ' · on ne compte plus, on regarde' : '') + '</p>' +
+          '<h2 class="big">' + s.big + '</h2>' +
+          '<p class="label">' + s.label + '</p>' +
         '</div>' +
-        '<div class="numbers">' +
-          '<div class="nrow"><span class="mini">Le nombre</span><div class="nline n-target"></div></div>' +
-          '<div class="nrow"><span class="mini">Ton compteur</span><div class="nline n-count"></div></div>' +
-        '</div>' +
-        '<div class="dash">' +
-          '<div class="stat speed"><span class="mini">Vitesse</span><span class="v d-speed"></span><span class="s d-veh"></span></div>' +
-          '<div class="stat"><span class="mini d-donelbl">Parcouru</span><span class="v d-done"></span></div>' +
-          '<div class="stat d-goalbox"><span class="mini">Jusqu’au nombre</span><span class="v d-total">' + meters(L.gap * M_PER_UNIT) + '</span></div>' +
-        '</div>' +
-        '<p class="status"></p>' +
+        '<div class="odo-wrap"><div class="odo"></div><p class="callout"></p></div>' +
+        '<p class="eta"></p>' +
+        '<p class="speed"></p>' +
         '<div class="actions">' +
-          '<button class="btn primary a-veh" type="button" hidden></button>' +
-          '<button class="btn a-skip" type="button"' + (i === 0 ? ' hidden' : '') + '>' +
-            (i === 0 ? 'Abandonner et sauter jusqu’à ce nombre' : 'Sauter jusqu’à ce nombre') + '</button>' +
+          '<button class="btn primary a-help" type="button" hidden></button>' +
+          '<button class="btn a-skip" type="button"' + (i === 0 ? ' hidden' : '') + '>' + (i === 0 ? 'Abandonner et sauter' : 'Sauter') + ' jusqu’à ce nombre</button>' +
         '</div>' +
-        '<div class="reveal" hidden>' +
-          '<h3 class="big">' + s.big + '</h3>' +
-          (s.note ? '<p class="note">' + s.note + '</p>' : '') +
-          '<p class="result"></p>' +
-          '<dl class="facts">' +
-            '<div><dt>Ruban depuis zéro</dt><dd>' + withLandmark(s.value * M_PER_UNIT) + '</dd></div>' +
-            '<div><dt>Cette étape, avec ton pouce</dt><dd class="r-thumb"></dd></div>' +
-          '</dl>' +
-          '<p class="note">Continue de défiler vers le prochain nombre.</p>' +
+        '<div class="after" hidden>' +
+          (s.note ? '<p>' + s.note + '</p>' : '') +
+          '<p class="a-alone"></p>' +
         '</div>' +
       '</div>';
     journey.appendChild(el);
     const q = (c) => el.querySelector(c);
     Object.assign(L, {
-      el, ruler: q('.ruler'), compare: q('.compare'), numbers: q('.numbers'),
-      nTarget: q('.n-target'), nCount: q('.n-count'),
-      dash: q('.dash'), dSpeed: q('.d-speed'), dVeh: q('.d-veh'), dDone: q('.d-done'), dDoneLbl: q('.d-donelbl'), dGoalBox: q('.d-goalbox'),
-      status: q('.status'), actions: q('.actions'), aVeh: q('.a-veh'), aSkip: q('.a-skip'),
-      reveal: q('.reveal'), result: q('.result'), rThumb: q('.r-thumb'),
+      el, callout: q('.callout'), eta: q('.eta'), speed: q('.speed'), actions: q('.actions'),
+      aHelp: q('.a-help'), aSkip: q('.a-skip'), after: q('.after'), alone: q('.a-alone'),
     });
-    L.nTarget.textContent = L.targetStr;
-    L.aVeh.addEventListener('click', () => takeVehicle(L));
+    L.odo = makeOdo(q('.odo'), L.n);
+    L.aHelp.addEventListener('click', () => callHelp(L));
     L.aSkip.addEventListener('click', () => skip(L));
+    if (s.calm) { L.actions.hidden = true; L.speed.hidden = true; L.after.hidden = false; }
     legs.push(L);
   });
 
-  // Les deux lignes de chiffres partagent la même taille, calculée pour que le nombre tienne sur une ligne.
-  function fitDigits(L) {
-    const w = L.numbers.clientWidth;
-    const size = Math.max(5, Math.min(40, w / (L.targetStr.length * 0.61)));
-    L.nTarget.style.fontSize = size + 'px';
-    L.nCount.style.fontSize = size + 'px';
-  }
-
   // ================= Logique =================
-  let active = null;
-  let skipping = false;
-  let lastInput = 0, startedInput = false, pendingUnits = 0, instRate = 0;
+  let active = null, skipping = false;
+  let lastInput = 0, started = false;
 
-  function offerFor(L) { return (L.to.offer && veh < L.to.offer) ? L.to.offer : null; }
+  function offerFor(L) { return (L.s.offer && helper < L.s.offer) ? L.s.offer : null; }
+  function currentRate() { return rateOf(helper); }
+  function moving(L) { return active === L && (helper > 0 || performance.now() - lastInput < 250) && !L.done; }
 
-  function updateControls(L) {
+  function updateHelp(L) {
     const of = offerFor(L);
-    if (!L.done && active === L && of !== null) {
-      L.aVeh.hidden = false;
-      L.aVeh.textContent = (veh === 0 ? 'On arrête de défiler' : 'On laisse ' + VEHICLES[veh].name) +
-        ' : ' + VEHICLES[of].go + ' (' + kmhText(VEHICLES[of].kmh) + ')';
-    } else L.aVeh.hidden = true;
+    L.aHelp.hidden = !(of !== null && active === L && !L.done);
+    if (!L.aHelp.hidden) L.aHelp.textContent = HELPERS[of].call;
   }
-
-  function takeVehicle(L) {
+  function callHelp(L) {
     const of = offerFor(L);
     if (of === null || active !== L) return;
-    veh = of;
-    updateControls(L);
+    helper = of;
+    updateHelp(L);
+    render(L);
   }
 
   function lock(L) {
@@ -518,9 +471,9 @@
     active = L;
     window.scrollTo(0, L.el.offsetTop);
     document.documentElement.style.overflow = 'hidden';
-    startedInput = false; instRate = 0; pendingUnits = 0;
+    started = false;
     lastTick = performance.now();
-    updateControls(L);
+    updateHelp(L);
     if (L.idx === 0 && L.aSkip.hidden) {
       clearTimeout(L.skipTimer);
       L.skipTimer = setTimeout(() => { if (!L.done) L.aSkip.hidden = false; }, 12000);
@@ -535,15 +488,13 @@
 
   function manual(dPx) {
     const L = active;
-    if (!L || skipping || veh > 0) return;
+    if (!L || skipping || helper > 0) return;
     if (dPx < 0 && L.offset <= 0) { unlock(); window.scrollBy(0, -Math.max(120, -dPx)); return; }
     feed(dPx);
-    const du = dPx / PX_PER_UNIT;
-    L.offset = Math.min(L.gap, Math.max(0, L.offset + du));
-    if (dPx > 0) { pendingUnits += du; lastInput = performance.now(); startedInput = true; }
-    if (L.offset >= L.gap) finish(L, false);
+    L.offset = Math.min(L.gap, Math.max(0, L.offset + dPx / PX_PER_NUMBER));
+    if (dPx > 0) { lastInput = performance.now(); started = true; }
+    if (L.offset >= L.gap) finish(L);
   }
-
   window.addEventListener('wheel', (e) => {
     if (!active) return;
     e.preventDefault();
@@ -568,18 +519,13 @@
     if (e.key in map) { e.preventDefault(); manual(map[e.key]); }
   });
 
-  function currentSpeed() { return veh > 0 ? cruise(veh) : thumbRate(); }
-
   function skip(L) {
     if (L.done || skipping) return;
     skipping = true;
-    L.aSkip.hidden = true; L.aVeh.hidden = true;
-    const o0 = L.offset;
-    const leftSec = (L.gap - o0) / currentSpeed();
-    const end = () => { skipping = false; L.offset = L.gap; finish(L, true, o0, leftSec); };
+    L.aSkip.hidden = true; L.aHelp.hidden = true;
+    const end = () => { skipping = false; finish(L); };
     if (reduced) { end(); return; }
-    L.status.textContent = 'Téléportation…';
-    const t0 = performance.now(), D = 2600;
+    const o0 = L.offset, t0 = performance.now(), D = 2400;
     const a = Math.log(Math.max(o0, 1)), b = Math.log(L.gap);
     (function step(now) {
       const t = Math.min(1, (now - t0) / D);
@@ -589,154 +535,97 @@
     })(t0);
   }
 
-  function finish(L, skipped, reached, leftSec) {
+  function finish(L) {
     if (L.done) return;
     L.done = true;
-    if (active === L) unlock();
     L.offset = L.gap;
-    const how = VEHICLES[veh].with;
-    if (skipped) {
-      L.result.innerHTML = 'Tu as parcouru <strong>' + meters(reached * M_PER_UNIT) + '</strong> ' + how +
-        ' avant de sauter. À ce rythme, il te restait encore <strong>' + strip(duration(leftSec)) + '</strong>.';
-    } else {
-      L.result.innerHTML = 'Tu es arrivé·e ' + how + ', pour de vrai&nbsp;: <strong>' + meters(L.gap * M_PER_UNIT) + '</strong> de ruban.';
-    }
-    // Une fois arrivé : il ne reste que le ruban parcouru.
-    L.dash.querySelector('.speed').hidden = true;
-    L.dGoalBox.hidden = true;
-    L.dDoneLbl.textContent = 'Ruban parcouru';
-    L.status.hidden = true;
+    if (active === L) unlock();
     L.actions.hidden = true;
-    L.reveal.hidden = false;
+    L.speed.hidden = true;
+    L.after.hidden = false;
     render(L);
   }
 
   // ================= Rendu =================
-  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
-  const CAT_COLOR = { gens: '--teal', matiere: '--amber', arrangements: '--lilac', idee: '--ink' };
-
-  function drawRuler(L, pxPerFrame) {
-    const cv = L.ruler;
-    const dpr = window.devicePixelRatio || 1;
-    const W = cv.clientWidth, H = cv.clientHeight;
-    if (!W || !H) return;
-    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
-    const ctx = cv.getContext('2d');
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, W, H);
-    const mid = Math.min(H, window.innerHeight) / 2;
-    const accent = cssVar(CAT_COLOR[L.to.cat] || '--teal');
-    if ((skipping && active === L) || pxPerFrame > 60) {
-      ctx.strokeStyle = cssVar('--ink-faint');
-      for (let x = W - 24; x < W; x += 5) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
-    } else {
-      // Graduations relatives : 1 graduation = 10 nombres = 20 px. Jamais de calcul sur le nombre absolu
-      // (au-delà de 9 millions de milliards, ajouter 10 ne change plus rien en JavaScript).
-      const o = L.offset;
-      const precise = o < 1e12;
-      const phase = precise ? o % 10 : 0;
-      const baseTick = precise ? Math.round((o - phase) / 10) : 0; // index de la graduation la plus proche
-      const n = Math.ceil(mid / 20) + 1;
-      ctx.font = '10px "Space Mono", monospace';
-      ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
-      for (let j = -n; j <= n; j++) {
-        const y = mid + (j * 10 - phase) * PX_PER_UNIT;
-        const idx = baseTick + j;
-        const major = precise ? idx % 10 === 0 : j % 10 === 0;
-        ctx.strokeStyle = major ? cssVar('--ink-dim') : cssVar('--ink-faint');
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(W - (major ? 22 : 10), Math.round(y) + 0.5); ctx.lineTo(W, Math.round(y) + 0.5); ctx.stroke();
-        if (major && precise && idx >= 0 && W > 60) {
-          const k = idx * 10;
-          ctx.fillStyle = cssVar('--ink-dim');
-          ctx.fillText('+' + (k >= 1000 ? (k / 1000).toLocaleString(LOC, { maximumFractionDigits: 1 }) + ' k' : k), W - 26, y);
-        }
-      }
-    }
-    ctx.strokeStyle = accent; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(W, mid); ctx.stroke();
-  }
-
-  function render(L, pxPerFrame = 0) {
+  function counterDigits(L) {
+    if (L.done) return L.s.digits;
     const cur = L.fromBig + BigInt(Math.floor(Math.min(L.offset, L.gap)));
-    L.nCount.textContent = group(L.done ? L.to.digits : cur.toString());
-    L.dDone.innerHTML = meters(L.offset * M_PER_UNIT);
-    if (L.compare) {
-      const prev = chain[L.idx].value - chain[L.idx - 1].value;
-      L.compare.innerHTML = 'Le nombre précédent t’aurait demandé <b>' + strip(duration(prev / thumbRate())) +
-        '</b> de défilement avec ton pouce. Celui-ci&nbsp;: <b class="now">' + strip(duration(L.gap / thumbRate())) + '</b>.';
-    }
-    if (!L.done) {
-      const now = performance.now();
-      const left = L.gap - L.offset;
-      if (veh > 0) {
-        L.dSpeed.textContent = kmhText(VEHICLES[veh].kmh);
-        L.dVeh.textContent = VEHICLES[veh].name;
-      } else {
-        L.dSpeed.textContent = kmhText(unitsToKmh(instRate));
-        L.dVeh.textContent = 'ton pouce';
-      }
-      if (skipping && active === L) {
-        L.status.textContent = 'Téléportation…';
-      } else if (active !== L) {
-        L.status.textContent = '';
-      } else if (veh > 0) {
-        const sec = left / cruise(veh);
-        L.status.innerHTML = eta(sec) +
-          (offerFor(L) === null && veh === VEHICLES.length - 1 && sec > 100 * YEAR ? '. Rien n’existe de plus rapide.' : '.');
-      } else if (!startedInput) {
-        L.status.textContent = 'Défile pour avancer. Même règle : 1 nombre = 2 pixels.';
-      } else if (now - lastInput > 1200) {
-        L.status.textContent = 'Tu t’es arrêté·e. Le compteur t’attend.';
-      } else {
-        const sec = left / thumbRate();
-        L.status.innerHTML = eta(sec) + '.';
-      }
-    }
-    drawRuler(L, pxPerFrame);
+    return padTo(cur.toString(), L.n);
   }
 
-  function refreshStatic() {
-    legs.forEach((L) => {
-      L.rThumb.innerHTML = duration(L.gap / thumbRate()) + '<small>à ' + rateText() + '</small>';
-      if (L !== active) render(L);
-    });
-    suttonRate.textContent = rateText();
+  function leadText(L, rate, solo) {
+    const pos = L.n - 1;
+    const tick = Math.pow(10, pos) / rate;
+    const name = pos < ORDER.length ? 'des ' + ORDER[pos] : 'de gauche';
+    return 'La roue ' + name + ' avance d’un cran ' + (tick < 1 ? 'plusieurs fois par seconde' : 'toutes les <b>' + duration(tick) + '</b>') +
+      (solo ? ', même avec le superordinateur.' : '.');
   }
+
+  function render(L) {
+    const digits = counterDigits(L);
+    const isMoving = (skipping && active === L) || moving(L);
+    L.odo.set(digits, isMoving ? (skipping && active === L ? 1e300 : currentRate()) : 0, L.done ? -1 : firstNonZero(digits));
+    const solo = thumbRate();
+    if (L.s.calm) {
+      L.callout.innerHTML = 'Cette roue de gauche, la plus lente, est celle qu’il faudrait faire avancer.';
+      L.eta.innerHTML = 'Même le superordinateur le plus rapide du monde mettrait <b>' + duration(Math.pow(10, L.n - 1) / HELPERS[3].rate) + '</b> à la faire avancer d’un seul cran.';
+      L.alone.innerHTML = '';
+      return;
+    }
+    if (L.done) {
+      L.callout.innerHTML = leadText(L, solo);
+      L.eta.innerHTML = 'Seul·e, à ta vitesse, il t’aurait fallu <b>' + duration(L.gap / solo) + '</b>.';
+      L.alone.innerHTML = 'Continue de défiler vers le prochain nombre.';
+      return;
+    }
+    const rate = currentRate();
+    L.callout.innerHTML = leadText(L, rate);
+    const left = (L.gap - L.offset) / rate;
+    if (active !== L) {
+      L.eta.innerHTML = 'Seul·e, à ta vitesse&nbsp;: <b>' + duration(L.gap / solo) + '</b> pour y arriver.';
+    } else if (skipping) {
+      L.eta.textContent = '…';
+    } else if (helper === 0 && !started) {
+      L.eta.innerHTML = 'Défile pour compter. Seul·e, à ta vitesse, tu arriveras ' + '<b>' + arrival(L.gap / solo) + '</b>.';
+    } else if (helper === 0 && performance.now() - lastInput > 1200) {
+      L.eta.textContent = 'Tu t’es arrêté·e. Le compteur t’attend.';
+    } else {
+      L.eta.innerHTML = 'À ce rythme, tu arriveras <b>' + arrival(left) + '</b>.';
+    }
+    L.speed.textContent = helper === 0
+      ? 'Ta vitesse : ' + perSecond(solo) + ' nombres par seconde'
+      : HELPERS[helper].who + ' : ' + perSecond(rate) + ' nombres par seconde';
+  }
+
+  function refreshAll() { legs.forEach((L) => { if (L !== active) render(L); }); suttonText(); }
 
   // ================= Boucle =================
   let lastTick = performance.now();
   function loop(now) {
     const dt = Math.max(0.001, Math.min(0.1, (now - lastTick) / 1000));
     lastTick = now;
-    // Vitesse instantanée du pouce, lissée ; elle retombe à 0 quand on s'arrête.
-    instRate = instRate * 0.85 + (pendingUnits / dt) * 0.15;
-    pendingUnits = 0;
-    if (now - lastInput > 300) instRate *= 0.85;
-    if (instRate < 0.5) instRate = 0;
     if (active) {
-      let ppf = 0;
-      if (veh > 0 && !skipping && !active.done) {
-        const du = cruise(veh) * dt;
-        active.offset = Math.min(active.gap, active.offset + du);
-        ppf = du * PX_PER_UNIT;
-        if (active.offset >= active.gap) finish(active, false);
+      const L = active;
+      if (helper > 0 && !skipping && !L.done) {
+        L.offset = Math.min(L.gap, L.offset + currentRate() * dt);
+        if (L.offset >= L.gap) finish(L);
       }
-      if (active) render(active, ppf);
+      render(L);
     }
     requestAnimationFrame(loop);
   }
 
   // ================= Défilement de la page =================
-  let lastY = window.scrollY;
-  let refreshPending = false;
+  let lastY = window.scrollY, refreshPending = false;
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
     const dy = y - lastY;
     lastY = y;
-    const p = updateZone1();
-    if (p > 0 && p < 1) { feed(dy); suttonRate.textContent = rateText(); }
-    if (!refreshPending) { refreshPending = true; setTimeout(() => { refreshPending = false; refreshStatic(); }, 400); }
+    const rect = zone1.getBoundingClientRect();
+    const inZone = rect.top < 0 && rect.bottom > window.innerHeight;
+    if (inZone) feed(dy);
+    updateZone1();
+    if (!refreshPending) { refreshPending = true; setTimeout(() => { refreshPending = false; refreshAll(); }, 400); }
     if (active || dy <= 0) return;
     for (const L of legs) {
       if (L.done) continue;
@@ -745,7 +634,11 @@
     }
   }, { passive: true });
 
-  window.addEventListener('resize', () => legs.forEach((L) => { fitDigits(L); render(L); }));
+  let resizeT = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { z1Odo.layout(); updateZone1(); legs.forEach((L) => { L.odo.layout(); render(L); }); }, 150);
+  });
 
   // ================= Fin =================
   document.getElementById('zerosRow').textContent = '0 '.repeat(400);
@@ -761,9 +654,8 @@
   document.getElementById('btnTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
 
   updateZone1();
-  legs.forEach(fitDigits);
-  refreshStatic();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => legs.forEach((L) => { fitDigits(L); render(L); }));
+  refreshAll();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { z1Odo.layout(); updateZone1(); legs.forEach((L) => { L.odo.layout(); render(L); }); });
   requestAnimationFrame(loop);
 })();
 </script>
