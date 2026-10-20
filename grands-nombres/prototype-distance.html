@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  /* Mise en page : une colonne étroite dans la nuit. Une seule règle (1 nombre = 2 px) tient tout le voyage ;
-     seuls les moyens de transport changent. Palette et polices reprises de grands-nombres/index.html. */
+  /* Mise en page : une colonne dans la nuit. Chaque nombre est une étape : on compte jusqu'à lui
+     (le tunnel), puis il se révèle au même endroit. Une seule règle (1 nombre = 2 px) du début à la fin. */
   :root {
     color-scheme: dark;
     --bg: #0a0e1a;
@@ -26,6 +26,7 @@
     --f-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { scrollbar-gutter: stable; }
   body {
     margin: 0;
@@ -46,7 +47,7 @@
     background-attachment: fixed;
   }
   .wrap { max-width: 680px; margin: 0 auto; }
-  h1, h2 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; }
+  h1, h2, h3 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; }
   p { margin: 0; }
 
   [data-cat="gens"] { --c: var(--teal); }
@@ -54,6 +55,8 @@
   [data-cat="arrangements"] { --c: var(--lilac); }
   [data-cat="idee"] { --c: var(--ink); }
   [data-cat="fin"] { --c: var(--danger); }
+
+  .mini { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
 
   /* ---------- Intro ---------- */
   .intro { padding-block: 18vh 14vh; }
@@ -83,21 +86,20 @@
   .count-label { color: var(--ink-dim); max-width: 34ch; font-size: 0.95rem; }
   .count-meta { font-family: var(--f-mono); font-size: 0.8rem; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
 
-  /* ---------- Stations ---------- */
+  /* ---------- Sutton ---------- */
   .station { padding-block: 14vh; border-top: 1px solid rgba(243,239,226,0.05); }
   .station .wrap { display: grid; gap: 0.9rem; }
   .tag { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c, var(--ink-dim)); }
   .big { font-size: clamp(2.2rem, 8vw, 4.4rem); line-height: 1.05; color: var(--c, var(--ink)); }
   .label { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--ink); max-width: 36ch; }
-  .note { color: var(--ink-dim); font-size: 0.92rem; max-width: 52ch; }
+  .note { color: var(--ink-dim); font-size: 0.95rem; max-width: 52ch; }
   .note b { color: var(--ink); font-weight: 500; }
-  .digits { font-family: var(--f-mono); font-size: clamp(0.78rem, 1.8vw, 0.95rem); color: var(--ink-dim); word-break: break-all; line-height: 1.7; }
 
-  .facts { margin: 0.6rem 0 0; display: grid; gap: 0.55rem; border-top: 1px solid var(--ink-faint); padding-top: 0.9rem; }
-  .facts > div { display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); gap: 1rem; }
+  .facts { margin: 0; display: grid; gap: 0.55rem; border-top: 1px solid var(--ink-faint); padding-top: 0.9rem; }
+  .facts > div { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 1rem; }
   .facts dt { font-family: var(--f-mono); font-size: 0.78rem; color: var(--ink-dim); padding-top: 0.15em; }
   .facts dd { margin: 0; color: var(--ink); min-width: 0; }
-  .facts dd small, .t-stats small { color: var(--ink-dim); font-size: 0.88em; display: block; }
+  .facts dd small { color: var(--ink-dim); font-size: 0.88em; display: block; }
   @media (max-width: 560px) { .facts > div { grid-template-columns: 1fr; gap: 0.1rem; } }
 
   .btn {
@@ -111,35 +113,44 @@
   .btn.primary { border-color: var(--c, var(--teal)); color: var(--c, var(--teal)); }
   .btn.small { font-size: 0.8rem; padding: 0.35rem 0.9rem; color: var(--ink-dim); }
 
-  /* ---------- Tunnels ---------- */
-  .tunnel { position: relative; min-height: 100vh; overflow: hidden; border-top: 1px solid rgba(243,239,226,0.05); }
-  .tunnel .ruler { position: absolute; left: 0; top: 0; width: 84px; height: 100%; }
-  .tunnel-inner {
-    min-height: 100vh; display: grid; align-content: center; gap: 0.9rem;
-    max-width: 680px; margin: 0 auto; padding-left: 96px; padding-block: 4vh;
+  /* ---------- Étapes (un nombre = une section) ---------- */
+  .leg { position: relative; min-height: 100vh; border-top: 1px solid rgba(243,239,226,0.05); }
+  .leg .ruler { position: absolute; left: 0; top: 0; width: 84px; height: 100%; }
+  .leg-inner {
+    min-height: 100vh; display: grid; align-content: center; gap: 1.3rem;
+    max-width: 720px; margin: 0 auto; padding-left: 96px; padding-block: 5vh;
   }
-  .t-compare { color: var(--ink-dim); max-width: 46ch; }
-  .t-compare b { color: var(--ink); font-weight: 500; }
-  .t-compare b.now { color: var(--c, var(--teal)); }
-  .t-num {
-    font-family: var(--f-display); font-weight: 600; line-height: 1.05;
-    color: var(--c, var(--teal)); font-variant-numeric: tabular-nums;
-    word-break: break-all; font-size: 3.6rem;
+  .goal { display: grid; gap: 0.5rem; }
+  .goal h2 { font-size: clamp(1.5rem, 4.2vw, 2.5rem); line-height: 1.15; color: var(--c, var(--ink)); max-width: 24ch; }
+  .compare { color: var(--ink-dim); max-width: 50ch; font-size: 0.95rem; }
+  .compare b { color: var(--ink); font-weight: 500; }
+  .compare b.now { color: var(--c, var(--teal)); }
+
+  .numbers { display: grid; gap: 0.35rem; min-width: 0; }
+  .nrow { display: grid; gap: 0.1rem; min-width: 0; }
+  .nline {
+    font-family: var(--f-mono); font-weight: 700; white-space: pre; text-align: right;
+    line-height: 1.25; overflow: hidden; font-variant-numeric: tabular-nums;
   }
-  .t-track { height: 6px; background: var(--ink-faint); border-radius: 3px; position: relative; overflow: hidden; }
-  .t-track > div { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--c, var(--teal)); min-width: 1px; }
-  .t-ends { display: flex; justify-content: space-between; gap: 0.6rem; font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink-dim); }
-  .t-ends span:nth-child(2) { color: var(--ink); }
-  .t-stats { display: grid; gap: 0.45rem; font-size: 0.95rem; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
-  .t-stats b { color: var(--ink); font-weight: 500; }
-  .t-stats .arr b { color: var(--c, var(--teal)); }
-  .t-hint { font-family: var(--f-mono); font-size: 0.8rem; color: var(--c, var(--teal)); min-height: 1.4em; max-width: 52ch; }
-  .t-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-  .t-result { color: var(--ink); max-width: 50ch; }
-  .t-result strong { color: var(--c, var(--teal)); font-weight: 500; }
+  .n-target { color: var(--ink-dim); }
+  .n-count { color: var(--c, var(--teal)); }
+
+  .dash { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; border-top: 1px solid var(--ink-faint); padding-top: 1rem; }
+  .stat { display: grid; gap: 0.2rem; align-content: start; min-width: 0; }
+  .stat .v { font-family: var(--f-display); font-weight: 600; font-size: clamp(1.15rem, 2.6vw, 1.6rem); line-height: 1.15; color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .stat .v sup { font-size: 0.55em; }
+  .stat .s { color: var(--ink-dim); font-size: 0.85rem; }
+  .stat.speed .v { color: var(--c, var(--teal)); }
+  @media (max-width: 560px) { .dash { grid-template-columns: 1fr; } }
+
+  .status { font-family: var(--f-mono); font-size: 0.85rem; color: var(--c, var(--teal)); min-height: 1.4em; max-width: 56ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .reveal { display: grid; gap: 0.9rem; }
+  .reveal .result { color: var(--ink); max-width: 52ch; }
+  .reveal .result strong { color: var(--c, var(--teal)); font-weight: 500; }
   @media (max-width: 560px) {
-    .tunnel .ruler { width: 52px; }
-    .tunnel-inner { padding-left: 60px; }
+    .leg .ruler { width: 48px; }
+    .leg-inner { padding-left: 56px; }
   }
 
   /* ---------- Fin ---------- */
@@ -193,11 +204,11 @@
       <div><dt>Ruban défilé</dt><dd>environ 2,1 mètres<small>un peu plus que la hauteur d'une porte</small></dd></div>
       <div><dt>Ta vitesse mesurée</dt><dd id="suttonRate">défile la zone au-dessus pour la mesurer</dd></div>
     </dl>
-    <p class="note">Prochain arrêt&nbsp;: le Grand Montréal. Même règle, même ruban. Continue de défiler.</p>
+    <p class="note">Prochain nombre&nbsp;: les habitants du Grand Montréal. Même règle, même ruban. Continue de défiler.</p>
   </div>
 </section>
 
-<!-- ==================== TUNNELS ET STATIONS (générés depuis STATIONS plus bas) ==================== -->
+<!-- ==================== ÉTAPES (générées depuis STATIONS plus bas) ==================== -->
 <div id="journey"></div>
 
 <!-- ==================== GOOGOLPLEX ==================== -->
@@ -207,8 +218,8 @@
     <h2 class="big">Un googolplex</h2>
     <p class="label">1 suivi d'un googol de zéros</p>
     <div class="zeros" aria-hidden="true"><span id="zerosRow"></span></div>
-    <p class="note">Ici, plus aucun tunnel n'est possible. Le ruban jusqu'au googolplex est si long que <b>son nombre de kilomètres s'écrirait lui-même avec un googol de chiffres</b>. Même en utilisant chaque atome de l'univers pour écrire un chiffre, on n'arriverait pas à écrire cette longueur.</p>
-    <p class="note">Ton pouce, la voiture, la fusée, la lumière&nbsp;: aucun ne change rien. Le temps de voyage ne s'écrit pas non plus.</p>
+    <p class="note">Ici, plus aucune étape n'est possible. Le ruban jusqu'au googolplex est si long que <b>son nombre de kilomètres s'écrirait lui-même avec un googol de chiffres</b>. Même en utilisant chaque atome de l'univers pour écrire un chiffre, on n'arriverait pas à écrire cette longueur.</p>
+    <p class="note">Ton pouce, la Formule 1, la fusée, la lumière&nbsp;: aucun ne change rien. Le temps de voyage ne s'écrit pas non plus.</p>
     <div class="collective">
       <button class="btn" id="btnHumans">Et si tous les humains défilaient avec toi&nbsp;?</button>
       <p id="c2" hidden>Même à 8 milliards de personnes, le nombre de secondes s'écrit encore avec environ <strong>un googol de chiffres</strong>. Diviser par 8 milliards enlève à peine 10 chiffres à un nombre qui en a 10<sup>100</sup>.</p>
@@ -222,42 +233,42 @@
 <script>
 (() => {
   // ================= Données du voyage =================
-  // value = le nombre réel ; digits = son écriture exacte (sert à afficher le compteur sans arrondi).
-  // unlock = à ce saut, on peut monter jusqu'à ce moyen de transport (index dans VEHICLES).
+  // goal  = le nombre, nommé comme le héros de l'étape ;
+  // digits = son écriture exacte (affichée chiffre à chiffre) ; value = le même nombre, pour les calculs ;
+  // offer = moyen de transport proposé à cette étape (index dans VEHICLES).
   const STATIONS = [
-    { id: 'montreal', cat: 'gens', tag: 'Des gens', short: 'Montréal', value: 4e6, digits: '4000000',
-      big: '4 millions', label: 'de personnes dans le Grand Montréal' },
-    { id: 'quebec', cat: 'gens', tag: 'Des gens', short: 'le Québec', value: 9e6, digits: '9000000',
-      big: '9 millions', label: 'de personnes au Québec (environ)' },
-    { id: 'terre', cat: 'gens', tag: 'Des gens', short: 'la Terre', value: 8.2e9, digits: '8200000000', unlock: 2,
-      big: '8,2 milliards', label: 'd’humains sur Terre' },
-    { id: 'galaxie', cat: 'matiere', tag: 'La matière', short: 'la Voie lactée', value: 3e11, digits: '300000000000', unlock: 3,
-      big: '300 milliards', label: 'd’étoiles dans notre galaxie, la Voie lactée (entre 100 et 400 milliards selon les estimations)' },
-    { id: 'sable', cat: 'matiere', tag: 'La matière', short: 'le sable', value: 7.5e18, digits: '7500000000000000000', unlock: 5,
-      big: '7,5 milliards de milliards', label: 'de grains de sable sur toutes les plages de la Terre (estimation)' },
-    { id: 'rubik', cat: 'arrangements', tag: 'Des façons d’arranger', short: 'le Rubik’s cube', value: 43252003274489856000, digits: '43252003274489856000',
-      big: '43 milliards de milliards', label: 'de façons de mélanger un Rubik’s cube' },
-    { id: 'etoiles', cat: 'matiere', tag: 'La matière', short: 'les étoiles', value: 1e24, digits: '1' + '0'.repeat(24),
-      big: '1 million de milliards de milliards', label: 'd’étoiles dans l’univers observable (estimation haute)' },
-    { id: 'corps', cat: 'matiere', tag: 'La matière', short: 'ton corps', value: 7e27, digits: '7' + '0'.repeat(27),
-      big: '7 milliards de milliards de milliards', label: 'd’atomes dans ton corps' },
-    { id: 'cartes', cat: 'arrangements', tag: 'Des façons d’arranger', short: 'le jeu de cartes', value: 8.0658175170943878e67,
+    { id: 'montreal', cat: 'gens', short: 'Montréal', value: 4e6, digits: '4000000',
+      goal: 'le nombre de personnes qui vivent dans le Grand Montréal', big: '4 millions' },
+    { id: 'quebec', cat: 'gens', short: 'le Québec', value: 9e6, digits: '9000000',
+      goal: 'le nombre de personnes qui vivent au Québec', big: 'environ 9 millions' },
+    { id: 'terre', cat: 'gens', short: 'la Terre', value: 8.2e9, digits: '8200000000', offer: 1,
+      goal: 'le nombre d’humains sur Terre', big: '8,2 milliards' },
+    { id: 'galaxie', cat: 'matiere', short: 'la Voie lactée', value: 3e11, digits: '300000000000', offer: 2,
+      goal: 'le nombre d’étoiles dans la Voie lactée', big: 'environ 300 milliards', note: 'Les estimations vont de 100 à 400 milliards.' },
+    { id: 'sable', cat: 'matiere', short: 'le sable', value: 7.5e18, digits: '7500000000000000000', offer: 3,
+      goal: 'le nombre de grains de sable sur toutes les plages de la Terre', big: '7,5 milliards de milliards', note: 'C’est une estimation : personne ne les a comptés !' },
+    { id: 'rubik', cat: 'arrangements', short: 'le Rubik’s cube', value: 43252003274489856000, digits: '43252003274489856000', offer: 4,
+      goal: 'le nombre de façons de mélanger un Rubik’s cube', big: '43 milliards de milliards' },
+    { id: 'etoiles', cat: 'matiere', short: 'les étoiles', value: 1e24, digits: '1' + '0'.repeat(24),
+      goal: 'le nombre d’étoiles dans l’univers observable', big: '1 million de milliards de milliards', note: 'Estimation haute ; on en compte peut-être cent fois moins.' },
+    { id: 'corps', cat: 'matiere', short: 'ton corps', value: 7e27, digits: '7' + '0'.repeat(27),
+      goal: 'le nombre d’atomes dans ton corps', big: '7 milliards de milliards de milliards' },
+    { id: 'cartes', cat: 'arrangements', short: 'le jeu de cartes', value: 8.0658175170943878e67,
       digits: '80658175170943878571660636856403766975289505440883277824000000000000',
-      big: 'un nombre à 68 chiffres', label: 'de façons de mélanger un jeu de 52 cartes. Chaque fois que tu brasses un jeu, l’ordre obtenu n’a très probablement jamais existé.' },
-    { id: 'atomes', cat: 'matiere', tag: 'La matière', short: 'les atomes de l’univers', value: 1e80, digits: '1' + '0'.repeat(80),
-      big: '1 suivi de 80 zéros', label: 'd’atomes dans tout l’univers observable (environ)' },
-    { id: 'googol', cat: 'idee', tag: 'Une idée pure', short: 'le googol', value: 1e100, digits: '1' + '0'.repeat(100),
-      big: 'Un googol', label: '1 suivi de 100 zéros. Plus grand que tout ce qu’on peut compter dans l’univers.' },
+      goal: 'le nombre de façons de mélanger un jeu de 52 cartes', big: 'un nombre à 68 chiffres', note: 'Chaque fois que tu brasses un jeu, l’ordre obtenu n’a très probablement jamais existé.' },
+    { id: 'atomes', cat: 'matiere', short: 'les atomes de l’univers', value: 1e80, digits: '1' + '0'.repeat(80),
+      goal: 'le nombre d’atomes dans tout l’univers observable', big: '1 suivi de 80 zéros' },
+    { id: 'googol', cat: 'idee', short: 'le googol', value: 1e100, digits: '1' + '0'.repeat(100),
+      goal: 'un googol', big: '1 suivi de 100 zéros', note: 'Plus grand que tout ce qu’on peut compter dans l’univers.' },
   ];
 
   // Les véhicules roulent sur le MÊME ruban (1 nombre = 2 px). Seule la vitesse change.
   const VEHICLES = [
     { name: 'ton pouce', with: 'avec ton pouce', kmh: null },
-    { name: 'la voiture', with: 'en voiture', kmh: 100 },          // Formule 1 : remplacer par 350
-    { name: 'le train à grande vitesse', with: 'en train à grande vitesse', kmh: 320 },
-    { name: 'l’avion de chasse', with: 'en avion de chasse', kmh: 2400 },
-    { name: 'la fusée', with: 'en fusée', kmh: 40000 },
-    { name: 'la lumière', with: 'à la vitesse de la lumière', kmh: 1.0792528e9 },
+    { name: 'la Formule 1', go: 'allons-y en Formule 1', with: 'en Formule 1', kmh: 350 },
+    { name: 'l’avion de chasse', go: 'allons-y en avion de chasse', with: 'en avion de chasse', kmh: 2400 },
+    { name: 'la fusée', go: 'allons-y en fusée', with: 'en fusée', kmh: 40000 },
+    { name: 'la lumière', go: 'voyageons à la vitesse de la lumière', with: 'à la vitesse de la lumière', kmh: 1079252849 },
   ];
 
   // ================= Constantes =================
@@ -318,6 +329,7 @@
     return (r < 1e6 ? fmt(r, 2) : words(r)) + ' fois ' + below[1];
   }
   function meters(m) {
+    if (m <= 0) return '0 m';
     if (m < 0.01) return fmt(m * 1000, 2) + ' mm';
     if (m < 1) return fmt(m * 100, 2) + ' cm';
     if (m < 1000) return fmt(m, 2) + ' m';
@@ -325,9 +337,9 @@
     if (m < UNIV * 0.5) {
       const ly = m / LY;
       const lw = ly < 1e6 ? fmt(ly, 2) : words(ly);
-      return lw + (isBig(lw) ? ' d’années-lumière' : ly >= 2 ? ' années-lumière' : ' année-lumière');
+      return lw + (isBig(lw) ? ' d’années-lumière' : roundSig(ly, 2) >= 2 ? ' années-lumière' : ' année-lumière');
     }
-    return words(m / UNIV) + ' fois la largeur de l’univers observable';
+    return words(m / UNIV) + ' fois la largeur de l’univers';
   }
   function withLandmark(m) { const l = landmark(m); return meters(m) + (l ? '<small>' + l + '</small>' : ''); }
   function duration(sec, withAge = true) {
@@ -345,7 +357,6 @@
     }
     return s;
   }
-  // Date d'arrivée si on partait maintenant, sans jamais s'arrêter.
   function arrival(sec) {
     const years = sec / YEAR;
     const now = new Date();
@@ -359,9 +370,15 @@
     return 'dans ' + duration(sec, false);
   }
   const strip = (h) => h.replace(/<small>.*<\/small>/, '');
-  function groupDigits(s) { return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function eta(sec) {
+    const a = arrival(sec);
+    return 'À ce rythme, tu vas arriver ' + (a.startsWith('dans ') ? a : a + ' · dans ' + strip(duration(sec)));
+  }
+  const group = (s) => s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  function kmhText(kmh) { return (kmh < 1e6 ? fmt(kmh, kmh < 10 ? 2 : 3) : words(kmh)) + ' km/h'; }
+  const unitsToKmh = (u) => u * M_PER_UNIT * 3.6;
 
-  // ================= Vitesse mesurée (défilement actif seulement) =================
+  // ================= Vitesse mesurée du pouce (défilement actif seulement) =================
   let activePx = 0, activeMs = 0, lastFeed = 0;
   function feed(dPx) {
     const now = performance.now();
@@ -373,10 +390,14 @@
   }
   function rate() { return activeMs < 600 ? null : (activePx / PX_PER_UNIT) / (activeMs / 1000); }
   function thumbRate() { return rate() || FALLBACK_RATE; }
-  function rateText() { const r = rate(); return r ? fmt(r, 2) + ' nombres par seconde' : 'environ ' + FALLBACK_RATE + ' nombres par seconde (estimation)'; }
+  function rateText() {
+    const r = rate();
+    return r ? fmt(r, 2) + ' nombres par seconde, soit ' + kmhText(unitsToKmh(r))
+             : 'environ ' + FALLBACK_RATE + ' nombres par seconde (estimation)';
+  }
 
-  let veh = 0; // moyen de transport actuel (garde son état d'un saut à l'autre)
-  function speedOf(v) { return v === 0 ? thumbRate() : VEHICLES[v].kmh / 3.6 / M_PER_UNIT; }
+  let veh = 0; // moyen de transport actuel ; il reste d'une étape à l'autre
+  function cruise(v) { return VEHICLES[v].kmh / 3.6 / M_PER_UNIT; } // nombres par seconde
 
   // ================= Zone 1 =================
   const zone1 = document.getElementById('zone1');
@@ -395,137 +416,132 @@
     return p;
   }
 
-  // ================= Construction des tunnels et des stations =================
+  // ================= Construction des étapes =================
   const journey = document.getElementById('journey');
   const chain = [SUTTON].concat(STATIONS);
-  const tunnels = [];
-  let unlockSoFar = 0;
+  const legs = [];
 
   STATIONS.forEach((s, i) => {
     const from = chain[i];
-    if (s.unlock) unlockSoFar = Math.max(unlockSoFar, s.unlock);
-    const T = {
+    const L = {
       idx: i, from, to: s, gap: s.value - from.value,
-      fromBig: BigInt(from.digits), offset: 0,
-      done: false, unlockMax: unlockSoFar,
-      timeMs: 0, enteredAt: 0, skipTimer: null,
+      fromBig: BigInt(from.digits), offset: 0, done: false,
+      targetStr: group(s.digits),
     };
     const el = document.createElement('section');
-    el.className = 'tunnel';
+    el.className = 'leg';
+    el.id = 'st-' + s.id;
     el.dataset.cat = s.cat;
-    el.setAttribute('aria-label', 'Le chemin de ' + from.short + ' à ' + s.short);
+    el.setAttribute('aria-label', 'Compter jusqu’à ' + s.goal);
     el.innerHTML =
       '<canvas class="ruler" aria-hidden="true"></canvas>' +
-      '<div class="tunnel-inner">' +
-        '<p class="tag">En route vers ' + s.short + '</p>' +
-        (i > 0 ? '<p class="t-compare"></p>' : '') +
-        '<div class="t-num"></div>' +
-        '<div><div class="t-track"><div></div></div>' +
-          '<div class="t-ends"><span>' + from.short + '</span><span class="t-pct">0&nbsp;%</span><span>' + s.short + '</span></div></div>' +
-        '<div class="t-stats">' +
-          '<span>Moyen de transport&nbsp;: <b class="t-veh"></b></span>' +
-          '<span>Ruban parcouru&nbsp;: <b class="t-len">0 cm</b> sur ' + meters(T.gap * M_PER_UNIT) + '</span>' +
-          '<span>Il te reste, sans jamais t’arrêter&nbsp;: <b class="t-left"></b></span>' +
-          '<span class="arr">Si tu partais maintenant, tu arriverais&nbsp;: <b class="t-arr"></b></span>' +
+      '<div class="leg-inner">' +
+        '<div class="goal">' +
+          '<p class="mini">Prochain nombre</p>' +
+          '<h2>Compter jusqu’' + (s.goal.startsWith('un ') ? 'à ' : 'au ') + s.goal.replace(/^le /, '') + '</h2>' +
+          (i > 0 ? '<p class="compare"></p>' : '') +
         '</div>' +
-        '<p class="t-hint"></p>' +
-        '<div class="t-actions">' +
-          '<button class="btn primary t-vbtn" type="button" hidden></button>' +
-          '<button class="btn t-skip" type="button"' + (i === 0 ? ' hidden' : '') + '>' +
-            (i === 0 ? 'Abandonner et sauter jusqu’à ' : 'Sauter jusqu’à ') + s.short + '</button>' +
+        '<div class="numbers">' +
+          '<div class="nrow"><span class="mini">Le nombre</span><div class="nline n-target"></div></div>' +
+          '<div class="nrow"><span class="mini">Ton compteur</span><div class="nline n-count"></div></div>' +
         '</div>' +
-        '<p class="t-result" hidden></p>' +
-        '<button class="btn t-continue" type="button" hidden style="justify-self:start">Continuer vers ' + s.short + ' ↓</button>' +
+        '<div class="dash">' +
+          '<div class="stat speed"><span class="mini">Vitesse</span><span class="v d-speed"></span><span class="s d-veh"></span></div>' +
+          '<div class="stat"><span class="mini d-donelbl">Parcouru</span><span class="v d-done"></span></div>' +
+          '<div class="stat d-goalbox"><span class="mini">Jusqu’au nombre</span><span class="v d-total">' + meters(L.gap * M_PER_UNIT) + '</span></div>' +
+        '</div>' +
+        '<p class="status"></p>' +
+        '<div class="actions">' +
+          '<button class="btn primary a-veh" type="button" hidden></button>' +
+          '<button class="btn a-skip" type="button"' + (i === 0 ? ' hidden' : '') + '>' +
+            (i === 0 ? 'Abandonner et sauter jusqu’à ce nombre' : 'Sauter jusqu’à ce nombre') + '</button>' +
+        '</div>' +
+        '<div class="reveal" hidden>' +
+          '<h3 class="big">' + s.big + '</h3>' +
+          (s.note ? '<p class="note">' + s.note + '</p>' : '') +
+          '<p class="result"></p>' +
+          '<dl class="facts">' +
+            '<div><dt>Ruban depuis zéro</dt><dd>' + withLandmark(s.value * M_PER_UNIT) + '</dd></div>' +
+            '<div><dt>Cette étape, avec ton pouce</dt><dd class="r-thumb"></dd></div>' +
+          '</dl>' +
+          '<p class="note">Continue de défiler vers le prochain nombre.</p>' +
+        '</div>' +
       '</div>';
     journey.appendChild(el);
     const q = (c) => el.querySelector(c);
-    Object.assign(T, {
-      el, ruler: q('.ruler'), compare: q('.t-compare'), num: q('.t-num'), fill: q('.t-track > div'),
-      pct: q('.t-pct'), vehEl: q('.t-veh'), len: q('.t-len'), left: q('.t-left'), arr: q('.t-arr'),
-      hint: q('.t-hint'), vbtn: q('.t-vbtn'), skipBtn: q('.t-skip'), result: q('.t-result'), cont: q('.t-continue'),
+    Object.assign(L, {
+      el, ruler: q('.ruler'), compare: q('.compare'), numbers: q('.numbers'),
+      nTarget: q('.n-target'), nCount: q('.n-count'),
+      dash: q('.dash'), dSpeed: q('.d-speed'), dVeh: q('.d-veh'), dDone: q('.d-done'), dDoneLbl: q('.d-donelbl'), dGoalBox: q('.d-goalbox'),
+      status: q('.status'), actions: q('.actions'), aVeh: q('.a-veh'), aSkip: q('.a-skip'),
+      reveal: q('.reveal'), result: q('.result'), rThumb: q('.r-thumb'),
     });
-    T.vbtn.addEventListener('click', () => changeVehicle(T));
-    T.skipBtn.addEventListener('click', () => skip(T));
-    T.cont.addEventListener('click', () => document.getElementById('st-' + s.id).scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }));
-    tunnels.push(T);
-
-    const st = document.createElement('section');
-    st.className = 'station';
-    st.id = 'st-' + s.id;
-    st.dataset.cat = s.cat;
-    st.innerHTML =
-      '<div class="wrap">' +
-        '<p class="tag">' + s.tag + '</p>' +
-        '<h2 class="big">' + s.big + '</h2>' +
-        '<p class="label">' + s.label + '</p>' +
-        '<p class="digits">' + groupDigits(s.digits) + '</p>' +
-        '<dl class="facts">' +
-          '<div><dt>Ruban depuis zéro</dt><dd>' + withLandmark(s.value * M_PER_UNIT) + '</dd></div>' +
-          '<div><dt>Ce saut, avec ton pouce</dt><dd class="s-thumb"></dd></div>' +
-        '</dl>' +
-      '</div>';
-    journey.appendChild(st);
-    T.stThumb = st.querySelector('.s-thumb');
+    L.nTarget.textContent = L.targetStr;
+    L.aVeh.addEventListener('click', () => takeVehicle(L));
+    L.aSkip.addEventListener('click', () => skip(L));
+    legs.push(L);
   });
 
-  // ================= Logique des tunnels =================
-  let active = null;     // tunnel verrouillé
+  // Les deux lignes de chiffres partagent la même taille, calculée pour que le nombre tienne sur une ligne.
+  function fitDigits(L) {
+    const w = L.numbers.clientWidth;
+    const size = Math.max(5, Math.min(40, w / (L.targetStr.length * 0.61)));
+    L.nTarget.style.fontSize = size + 'px';
+    L.nCount.style.fontSize = size + 'px';
+  }
+
+  // ================= Logique =================
+  let active = null;
   let skipping = false;
+  let lastInput = 0, startedInput = false, pendingUnits = 0, instRate = 0;
 
-  function nextVehicle(T) { return veh < T.unlockMax ? veh + 1 : null; }
+  function offerFor(L) { return (L.to.offer && veh < L.to.offer) ? L.to.offer : null; }
 
-  function updateControls(T) {
-    const nv = nextVehicle(T);
-    T.vehEl.textContent = VEHICLES[veh].name;
-    if (T.done) { T.vbtn.hidden = true; return; }
-    if (nv !== null && active === T) {
-      T.vbtn.hidden = false;
-      T.vbtn.textContent = 'Changer de moyen de transport : prendre ' + VEHICLES[nv].name;
-    } else T.vbtn.hidden = true;
-    const left = (T.gap - T.offset) / speedOf(veh);
-    if (veh === 0) T.hint.textContent = 'Même règle : 1 nombre = 2 pixels. Défile.';
-    else if (nv === null && left > 100 * YEAR) T.hint.textContent = VEHICLES[veh].name.charAt(0).toUpperCase() + VEHICLES[veh].name.slice(1) + ' ne suffit plus, et il n’existe rien de plus rapide.';
-    else T.hint.textContent = 'Même ruban, même règle : ' + VEHICLES[veh].name + ' défile pour toi, plus vite.';
+  function updateControls(L) {
+    const of = offerFor(L);
+    if (!L.done && active === L && of !== null) {
+      L.aVeh.hidden = false;
+      L.aVeh.textContent = (veh === 0 ? 'On arrête de défiler' : 'On laisse ' + VEHICLES[veh].name) +
+        ' : ' + VEHICLES[of].go + ' (' + kmhText(VEHICLES[of].kmh) + ')';
+    } else L.aVeh.hidden = true;
   }
 
-  function changeVehicle(T) {
-    const nv = nextVehicle(T);
-    if (nv === null || active !== T) return;
-    veh = nv;
-    updateControls(T);
+  function takeVehicle(L) {
+    const of = offerFor(L);
+    if (of === null || active !== L) return;
+    veh = of;
+    updateControls(L);
   }
 
-  function lock(T) {
-    if (active || T.done) return;
-    active = T;
-    window.scrollTo(0, T.el.offsetTop);
+  function lock(L) {
+    if (active || L.done) return;
+    active = L;
+    window.scrollTo(0, L.el.offsetTop);
     document.documentElement.style.overflow = 'hidden';
-    T.enteredAt = performance.now();
-    lastAuto = performance.now();
-    updateControls(T);
-    if (T.idx === 0 && T.skipBtn.hidden) {
-      clearTimeout(T.skipTimer);
-      T.skipTimer = setTimeout(() => {
-        if (!T.done) { T.skipBtn.hidden = false; T.hint.textContent = 'Tu peux continuer… ou abandonner (Échap).'; }
-      }, 12000);
+    startedInput = false; instRate = 0; pendingUnits = 0;
+    lastTick = performance.now();
+    updateControls(L);
+    if (L.idx === 0 && L.aSkip.hidden) {
+      clearTimeout(L.skipTimer);
+      L.skipTimer = setTimeout(() => { if (!L.done) L.aSkip.hidden = false; }, 12000);
     }
   }
   function unlock() {
     if (!active) return;
-    active.timeMs += performance.now() - active.enteredAt;
     clearTimeout(active.skipTimer);
     active = null;
     document.documentElement.style.overflow = '';
   }
 
   function manual(dPx) {
-    const T = active;
-    if (!T || skipping) return;
-    if (veh > 0) return; // le véhicule conduit
-    if (dPx < 0 && T.offset <= 0) { unlock(); window.scrollBy(0, -Math.max(120, -dPx)); return; }
+    const L = active;
+    if (!L || skipping || veh > 0) return;
+    if (dPx < 0 && L.offset <= 0) { unlock(); window.scrollBy(0, -Math.max(120, -dPx)); return; }
     feed(dPx);
-    T.offset = Math.min(T.gap, Math.max(0, T.offset + dPx / PX_PER_UNIT));
-    if (T.offset >= T.gap) finish(T, false);
+    const du = dPx / PX_PER_UNIT;
+    L.offset = Math.min(L.gap, Math.max(0, L.offset + du));
+    if (dPx > 0) { pendingUnits += du; lastInput = performance.now(); startedInput = true; }
+    if (L.offset >= L.gap) finish(L, false);
   }
 
   window.addEventListener('wheel', (e) => {
@@ -545,85 +561,93 @@
   }, { passive: false });
   window.addEventListener('keydown', (e) => {
     if (!active) return;
-    if (e.key === 'Escape' && !active.skipBtn.hidden) { e.preventDefault(); skip(active); return; }
+    if (e.key === 'Escape' && !active.aSkip.hidden) { e.preventDefault(); skip(active); return; }
+    if (e.key === ' ' && document.activeElement && document.activeElement.tagName === 'BUTTON') return;
     const page = window.innerHeight * 0.9;
     const map = { ArrowDown: 80, ArrowUp: -80, PageDown: page, PageUp: -page, ' ': page };
-    if (e.key in map && !(document.activeElement && document.activeElement.tagName === 'BUTTON' && e.key === ' ')) {
-      e.preventDefault(); manual(map[e.key]);
-    }
+    if (e.key in map) { e.preventDefault(); manual(map[e.key]); }
   });
 
-  function skip(T) {
-    if (T.done || skipping) return;
+  function currentSpeed() { return veh > 0 ? cruise(veh) : thumbRate(); }
+
+  function skip(L) {
+    if (L.done || skipping) return;
     skipping = true;
-    T.skipBtn.hidden = true; T.vbtn.hidden = true;
-    const o0 = T.offset;
-    const leftSec = (T.gap - o0) / speedOf(veh);
-    const end = () => { skipping = false; T.offset = T.gap; finish(T, true, o0, leftSec); };
+    L.aSkip.hidden = true; L.aVeh.hidden = true;
+    const o0 = L.offset;
+    const leftSec = (L.gap - o0) / currentSpeed();
+    const end = () => { skipping = false; L.offset = L.gap; finish(L, true, o0, leftSec); };
     if (reduced) { end(); return; }
-    T.hint.textContent = 'Téléportation…';
+    L.status.textContent = 'Téléportation…';
     const t0 = performance.now(), D = 2600;
-    const a = Math.log(Math.max(o0, 1)), b = Math.log(T.gap);
+    const a = Math.log(Math.max(o0, 1)), b = Math.log(L.gap);
     (function step(now) {
       const t = Math.min(1, (now - t0) / D);
       const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      T.offset = Math.exp(a + (b - a) * e);
+      L.offset = Math.min(L.gap, Math.exp(a + (b - a) * e));
       if (t < 1) requestAnimationFrame(step); else end();
     })(t0);
   }
 
-  function finish(T, skipped, reached, leftSec) {
-    if (T.done) return;
-    T.done = true;
-    if (active === T) unlock();
-    T.skipBtn.hidden = true; T.vbtn.hidden = true;
-    T.hint.textContent = '';
+  function finish(L, skipped, reached, leftSec) {
+    if (L.done) return;
+    L.done = true;
+    if (active === L) unlock();
+    L.offset = L.gap;
     const how = VEHICLES[veh].with;
     if (skipped) {
-      const pct = reached / T.gap * 100;
-      T.result.innerHTML = 'Tu as parcouru <strong>' + meters(reached * M_PER_UNIT) + '</strong> ' + how +
-        ', soit <strong>' + (pct < 0.001 ? 'moins de 0,001' : fmt(pct, 2)) + '&nbsp;%</strong> du chemin. Il te restait encore <strong>' +
-        strip(duration(leftSec)) + '</strong> sans jamais t’arrêter.';
+      L.result.innerHTML = 'Tu as parcouru <strong>' + meters(reached * M_PER_UNIT) + '</strong> ' + how +
+        ' avant de sauter. À ce rythme, il te restait encore <strong>' + strip(duration(leftSec)) + '</strong>.';
     } else {
-      T.result.innerHTML = 'Tu es arrivé·e ' + how + '&nbsp;: <strong>' + meters(T.gap * M_PER_UNIT) + '</strong> de ruban, pour de vrai.';
+      L.result.innerHTML = 'Tu es arrivé·e ' + how + ', pour de vrai&nbsp;: <strong>' + meters(L.gap * M_PER_UNIT) + '</strong> de ruban.';
     }
-    T.result.hidden = false;
-    T.cont.hidden = false;
-    renderTunnel(T);
+    // Une fois arrivé : il ne reste que le ruban parcouru.
+    L.dash.querySelector('.speed').hidden = true;
+    L.dGoalBox.hidden = true;
+    L.dDoneLbl.textContent = 'Ruban parcouru';
+    L.status.hidden = true;
+    L.actions.hidden = true;
+    L.reveal.hidden = false;
+    render(L);
   }
 
   // ================= Rendu =================
   function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
   const CAT_COLOR = { gens: '--teal', matiere: '--amber', arrangements: '--lilac', idee: '--ink' };
 
-  function drawRuler(T, pxPerFrame) {
-    const cv = T.ruler;
+  function drawRuler(L, pxPerFrame) {
+    const cv = L.ruler;
     const dpr = window.devicePixelRatio || 1;
     const W = cv.clientWidth, H = cv.clientHeight;
+    if (!W || !H) return;
     if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     const ctx = cv.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    const mid = H / 2;
-    const accent = cssVar(CAT_COLOR[T.to.cat] || '--teal');
-    const blur = skipping && active === T || pxPerFrame > 60;
-    if (blur) {
-      // Trop vite pour voir les graduations : traînées.
+    const mid = Math.min(H, window.innerHeight) / 2;
+    const accent = cssVar(CAT_COLOR[L.to.cat] || '--teal');
+    if ((skipping && active === L) || pxPerFrame > 60) {
       ctx.strokeStyle = cssVar('--ink-faint');
       for (let x = W - 24; x < W; x += 5) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
     } else {
-      const o = T.offset;
-      const first = Math.floor((o - mid / PX_PER_UNIT) / 10) * 10;
-      const last = o + mid / PX_PER_UNIT;
+      // Graduations relatives : 1 graduation = 10 nombres = 20 px. Jamais de calcul sur le nombre absolu
+      // (au-delà de 9 millions de milliards, ajouter 10 ne change plus rien en JavaScript).
+      const o = L.offset;
+      const precise = o < 1e12;
+      const phase = precise ? o % 10 : 0;
+      const baseTick = precise ? Math.round((o - phase) / 10) : 0; // index de la graduation la plus proche
+      const n = Math.ceil(mid / 20) + 1;
       ctx.font = '10px "Space Mono", monospace';
       ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
-      for (let k = first; k <= last; k += 10) {
-        const y = mid + (k - o) * PX_PER_UNIT;
-        const major = k % 100 === 0;
+      for (let j = -n; j <= n; j++) {
+        const y = mid + (j * 10 - phase) * PX_PER_UNIT;
+        const idx = baseTick + j;
+        const major = precise ? idx % 10 === 0 : j % 10 === 0;
         ctx.strokeStyle = major ? cssVar('--ink-dim') : cssVar('--ink-faint');
         ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(W - (major ? 22 : 10), Math.round(y) + 0.5); ctx.lineTo(W, Math.round(y) + 0.5); ctx.stroke();
-        if (major && k >= 0 && W > 60) {
+        if (major && precise && idx >= 0 && W > 60) {
+          const k = idx * 10;
           ctx.fillStyle = cssVar('--ink-dim');
           ctx.fillText('+' + (k >= 1000 ? (k / 1000).toLocaleString(LOC, { maximumFractionDigits: 1 }) + ' k' : k), W - 26, y);
         }
@@ -633,54 +657,72 @@
     ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(W, mid); ctx.stroke();
   }
 
-  function renderTunnel(T, pxPerFrame = 0) {
-    const cur = T.fromBig + BigInt(Math.floor(T.offset));
-    const s = cur.toLocaleString(LOC);
-    T.num.textContent = s;
-    T.num.style.fontSize = Math.max(1.05, Math.min(3.6, 34 / s.length * 1.6)) + 'rem';
-    const p = T.offset / T.gap * 100;
-    T.fill.style.width = p + '%';
-    T.pct.textContent = (p === 0 ? '0' : p < 0.001 ? '< 0,001' : fmt(p, 2)) + ' %';
-    T.len.textContent = meters(T.offset * M_PER_UNIT);
-    if (T.compare) {
-      const prev = chain[T.idx].value - chain[T.idx - 1].value;
-      T.compare.innerHTML = 'Le saut précédent, avec ton pouce&nbsp;: <b>' + strip(duration(prev / thumbRate())) +
-        '</b>. Celui-ci&nbsp;: <b class="now">' + strip(duration(T.gap / thumbRate())) + '</b>.';
+  function render(L, pxPerFrame = 0) {
+    const cur = L.fromBig + BigInt(Math.floor(Math.min(L.offset, L.gap)));
+    L.nCount.textContent = group(L.done ? L.to.digits : cur.toString());
+    L.dDone.innerHTML = meters(L.offset * M_PER_UNIT);
+    if (L.compare) {
+      const prev = chain[L.idx].value - chain[L.idx - 1].value;
+      L.compare.innerHTML = 'Le nombre précédent t’aurait demandé <b>' + strip(duration(prev / thumbRate())) +
+        '</b> de défilement avec ton pouce. Celui-ci&nbsp;: <b class="now">' + strip(duration(L.gap / thumbRate())) + '</b>.';
     }
-    if (!T.done) {
-      const left = (T.gap - T.offset) / speedOf(veh);
-      T.left.innerHTML = strip(duration(left));
-      T.arr.innerHTML = arrival(left);
-      T.vehEl.textContent = VEHICLES[veh].name;
-    } else {
-      T.left.textContent = '—';
-      T.arr.textContent = '—';
+    if (!L.done) {
+      const now = performance.now();
+      const left = L.gap - L.offset;
+      if (veh > 0) {
+        L.dSpeed.textContent = kmhText(VEHICLES[veh].kmh);
+        L.dVeh.textContent = VEHICLES[veh].name;
+      } else {
+        L.dSpeed.textContent = kmhText(unitsToKmh(instRate));
+        L.dVeh.textContent = 'ton pouce';
+      }
+      if (skipping && active === L) {
+        L.status.textContent = 'Téléportation…';
+      } else if (active !== L) {
+        L.status.textContent = '';
+      } else if (veh > 0) {
+        const sec = left / cruise(veh);
+        L.status.innerHTML = eta(sec) +
+          (offerFor(L) === null && veh === VEHICLES.length - 1 && sec > 100 * YEAR ? '. Rien n’existe de plus rapide.' : '.');
+      } else if (!startedInput) {
+        L.status.textContent = 'Défile pour avancer. Même règle : 1 nombre = 2 pixels.';
+      } else if (now - lastInput > 1200) {
+        L.status.textContent = 'Tu t’es arrêté·e. Le compteur t’attend.';
+      } else {
+        const sec = left / thumbRate();
+        L.status.innerHTML = eta(sec) + '.';
+      }
     }
-    drawRuler(T, pxPerFrame);
+    drawRuler(L, pxPerFrame);
   }
 
   function refreshStatic() {
-    tunnels.forEach((T) => {
-      T.stThumb.innerHTML = duration(T.gap / thumbRate()) + '<small>à ' + rateText() + '</small>';
-      if (T !== active) renderTunnel(T);
+    legs.forEach((L) => {
+      L.rThumb.innerHTML = duration(L.gap / thumbRate()) + '<small>à ' + rateText() + '</small>';
+      if (L !== active) render(L);
     });
     suttonRate.textContent = rateText();
   }
 
   // ================= Boucle =================
-  let lastAuto = performance.now();
+  let lastTick = performance.now();
   function loop(now) {
-    const dt = Math.min(0.1, (now - lastAuto) / 1000);
-    lastAuto = now;
+    const dt = Math.max(0.001, Math.min(0.1, (now - lastTick) / 1000));
+    lastTick = now;
+    // Vitesse instantanée du pouce, lissée ; elle retombe à 0 quand on s'arrête.
+    instRate = instRate * 0.85 + (pendingUnits / dt) * 0.15;
+    pendingUnits = 0;
+    if (now - lastInput > 300) instRate *= 0.85;
+    if (instRate < 0.5) instRate = 0;
     if (active) {
       let ppf = 0;
       if (veh > 0 && !skipping && !active.done) {
-        const du = speedOf(veh) * dt;
+        const du = cruise(veh) * dt;
         active.offset = Math.min(active.gap, active.offset + du);
         ppf = du * PX_PER_UNIT;
         if (active.offset >= active.gap) finish(active, false);
       }
-      if (active) renderTunnel(active, ppf);
+      if (active) render(active, ppf);
     }
     requestAnimationFrame(loop);
   }
@@ -696,14 +738,14 @@
     if (p > 0 && p < 1) { feed(dy); suttonRate.textContent = rateText(); }
     if (!refreshPending) { refreshPending = true; setTimeout(() => { refreshPending = false; refreshStatic(); }, 400); }
     if (active || dy <= 0) return;
-    for (const T of tunnels) {
-      if (T.done) continue;
-      if (T.el.getBoundingClientRect().top <= 1) lock(T);
-      break; // on ne saute jamais par-dessus un tunnel non terminé
+    for (const L of legs) {
+      if (L.done) continue;
+      if (L.el.getBoundingClientRect().top <= 1) lock(L);
+      break; // on ne passe jamais par-dessus une étape non terminée
     }
   }, { passive: true });
 
-  window.addEventListener('resize', () => tunnels.forEach((T) => renderTunnel(T)));
+  window.addEventListener('resize', () => legs.forEach((L) => { fitDigits(L); render(L); }));
 
   // ================= Fin =================
   document.getElementById('zerosRow').textContent = '0 '.repeat(400);
@@ -719,9 +761,9 @@
   document.getElementById('btnTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }));
 
   updateZone1();
+  legs.forEach(fitDigits);
   refreshStatic();
-  tunnels.forEach(updateControls);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => tunnels.forEach((T) => renderTunnel(T)));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => legs.forEach((L) => { fitDigits(L); render(L); }));
   requestAnimationFrame(loop);
 })();
 </script>
