@@ -383,6 +383,28 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 .inter .own input{flex:1;min-width:0;font:inherit;font-size:16px;padding:9px 11px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink)}
 .inter .own button{flex-shrink:0;width:42px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);font-weight:800}
 .inter .linkish{background:none;border:0;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:2px;align-self:center}
+
+/* Effacer sa liste */
+.reset{align-self:center;background:none;border:0;color:var(--muted);font-weight:700;font-size:14px;text-decoration:underline;text-underline-offset:3px;padding:6px}
+.reset:hover{color:#C2183C}
+dialog.confirm{max-width:min(420px,calc(100vw - 32px));padding:20px;border:1.5px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);box-shadow:8px 8px 0 #FF5A5F}
+dialog.confirm::backdrop{background:rgba(28,26,43,.45)}
+dialog.confirm h2{font-family:var(--display);font-weight:400;font-size:28px;line-height:1.1;margin:0 0 10px}
+dialog.confirm p{margin:0 0 18px;color:var(--muted);font-size:15px;line-height:1.45}
+dialog.confirm .btns{display:flex;flex-direction:column;gap:8px}
+dialog.confirm .danger{background:#C2183C;color:#fff;font-weight:800;border-radius:8px;padding:13px 18px;font-size:16px;border:1.5px solid var(--ink)}
+
+@media (min-width:1024px){
+  /* Mes expériences : catégories à gauche (collantes), expériences sur deux colonnes */
+  #list .screen-in{max-width:1180px;display:grid;grid-template-columns:250px minmax(0,1fr);column-gap:48px;row-gap:20px;align-items:start;padding-inline:16px}
+  #list .s-top,#list h1{grid-column:1/-1}
+  #list .tabs{grid-column:1;grid-row:3/span 2;position:sticky;top:12px;flex-direction:column;overflow:visible;padding:0;margin:0}
+  #list .tab{justify-content:flex-start;border-radius:8px;padding:10px 12px;font-size:15px;white-space:normal;text-align:left}
+  #list .tab small{margin-left:auto}
+  #list .items{grid-column:2;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #list .add{grid-column:2}
+  #list .add .btns.row{flex-wrap:nowrap}
+}
 </style>
 </head>
 <body>
@@ -458,7 +480,7 @@ const T={
   name_l:'Ton prénom (affiche et partage)', name_p:'ex : Marie',
   make_poster:'Créer mon affiche', share:'Partager ma liste', edit:'Modifier mes expériences', continue_:'Continuer les cartes',
   deep_t:'Approfondir une catégorie', deep_h:'Ta liste peut encore grandir', deep_p:n=>`Il reste ${n} expérience${n>1?'s':''} à découvrir. Chaque catégorie explorée enrichit ton affiche.`, deep_next:c=>`Approfondir : ${c} →`, own_t:'Il manque quelque chose ? Ajoute ta propre expérience', need_more:'Réponds à quelques cartes pour composer ton affiche.',
-  list_h:'Mes expériences', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
+  list_h:'Mes expériences', reset:'Effacer ma Bucket List', reset_h:'Tout effacer et repartir à zéro ?', reset_p:n=>`Tes ${n} réponse${n>1?'s':''}, les expériences que tu as ajoutées et ton prénom seront supprimés de ce navigateur. C'est définitif. Les liens que tu as déjà partagés continueront de fonctionner.`, reset_ok:'Oui, tout effacer', reset_no:'Annuler', reset_done:'Ta Bucket List a été effacée', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
   add_done:"Je l'ai fait", add_todo:'Ça me tente', added:'Ajoutée à ta liste', removed:'Retirée', del:'Retirer',
   seg_done:"Je l'ai fait", seg_todo:'Ça me tente', seg_skip:'Pas pour moi',
   poster_h:'Ton <em>affiche</em>', style_man:'Manifeste', style_man_s:'Ta liste en un grand texte', style_ros:'Rosace', style_ros_s:'Un portrait en rayons',
@@ -500,7 +522,7 @@ const T={
   name_l:'Your first name (poster and sharing)', name_p:'e.g. Marie',
   make_poster:'Create my poster', share:'Share my list', edit:'Edit my experiences', continue_:'Keep answering',
   deep_t:'Go deeper into a category', deep_h:'Your list can still grow', deep_p:n=>`${n} more experience${n>1?'s':''} to discover. Every category you explore fills out your poster.`, deep_next:c=>`Go deeper: ${c} →`, own_t:'Something missing? Add your own experience', need_more:'Answer a few cards to build your poster.',
-  list_h:'My experiences', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
+  list_h:'My experiences', reset:'Erase my Bucket List', reset_h:'Erase everything and start over?', reset_p:n=>`Your ${n} answer${n>1?'s':''}, the experiences you added and your name will be deleted from this browser. This can't be undone. Links you've already shared will keep working.`, reset_ok:'Yes, erase everything', reset_no:'Cancel', reset_done:'Your Bucket List has been erased', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
   add_done:'Done it', add_todo:'Want to', added:'Added to your list', removed:'Removed', del:'Remove',
   seg_done:'Done it', seg_todo:'Want to', seg_skip:'Not for me',
   poster_h:'Your <em>poster</em>', style_man:'Manifesto', style_man_s:'Your list as one big text', style_ros:'Rosette', style_ros_s:'A portrait in rays',
@@ -784,6 +806,25 @@ function addOwn(kind){
   snapshot(); const id=genId(); S.custom.push({id,label:v,cat:cat().id,custom:true}); S.answers[id]=kind; S.order.push(id); save();
   renderCounts(true); drawLive(id); toast(t('added')); renderInter();
 }
+
+/* Effacer toute la liste (confirmation obligatoire) : seule la langue est conservée */
+function askReset(){
+  const n=Object.keys(S.answers).length;
+  let dlg=$('resetDlg'); if(dlg) dlg.remove();
+  document.body.insertAdjacentHTML('beforeend',`<dialog class="confirm" id="resetDlg" aria-labelledby="resetH">
+    <h2 id="resetH">${esc(t('reset_h'))}</h2><p>${esc(t('reset_p')(n))}</p>
+    <div class="btns"><button class="danger" id="resetOk">${esc(t('reset_ok'))}</button><button class="ghost" id="resetNo" autofocus>${esc(t('reset_no'))}</button></div></dialog>`);
+  dlg=$('resetDlg');
+  $('resetNo').onclick=()=>dlg.close();
+  $('resetOk').onclick=()=>{dlg.close();resetAll();};
+  dlg.addEventListener('close',()=>dlg.remove());
+  if(dlg.showModal) dlg.showModal(); else if(confirm(t('reset_h'))) resetAll();
+}
+function resetAll(){
+  const lang=S.lang; S=JSON.parse(JSON.stringify(DEFAULT)); S.lang=lang; save();
+  Q={queue:[],segTotal:0,segDone:0}; undoStack.length=0; $('undo').disabled=true; listCat=0;
+  toast(t('reset_done')); route('intro');
+}
 function finishTour(){S.finished=true;S.toFinal=false;save();route('bilan');}
 function renderInter(){
   const c=cat();const st=$('stack');
@@ -906,6 +947,7 @@ function renderBilan(){
     </div>
     ${d+tt?'':deepCard()}
     ${desk&&d+tt?tipHTML():''}
+    ${Object.keys(S.answers).length||S.custom.length?`<button class="reset" id="bReset">${esc(t('reset'))}</button>`:''}
     <p class="foot-note">${esc(t('saved_local'))} · ${esc(t('by'))} <a href="https://studioexistence.com" target="_blank" rel="noopener">Studio Existence</a></p>
     ${desk?'</div>':''}
   </div>`;
@@ -913,6 +955,7 @@ function renderBilan(){
   const nm=$('nameIn'); let tm; nm.addEventListener('input',()=>{S.name=nm.value.trim().slice(0,40);save();clearTimeout(tm);tm=setTimeout(drawThumb,250);});
   $('bStyles').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{S.style=b.dataset.style;save();$('bStyles').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawThumb();});
   if($('bPoster')) $('bPoster').onclick=()=>route('poster');
+  if($('bReset')) $('bReset').onclick=askReset;
   if(desk&&$('shop')) wireShop(drawThumb);
   $('bShare').onclick=shareList;
   $('bList').onclick=()=>{listCat=0;route('list');};
