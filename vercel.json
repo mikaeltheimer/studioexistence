@@ -1,9 +1,35 @@
 {
   "redirects": [
-    { "source": "/whale-song", "destination": "/echoes#/whale", "permanent": true },
-    { "source": "/whale-song/", "destination": "/echoes#/whale", "permanent": true },
-    { "source": "/droid-lang", "destination": "/echoes#/droide", "permanent": true },
-    { "source": "/droid-lang/", "destination": "/echoes#/droide", "permanent": true }
+    {
+      "source": "/whale-song",
+      "destination": "/echoes#/whale",
+      "permanent": true
+    },
+    {
+      "source": "/whale-song/",
+      "destination": "/echoes#/whale",
+      "permanent": true
+    },
+    {
+      "source": "/droid-lang",
+      "destination": "/echoes#/droide",
+      "permanent": true
+    },
+    {
+      "source": "/droid-lang/",
+      "destination": "/echoes#/droide",
+      "permanent": true
+    },
+    {
+      "source": "/terms",
+      "destination": "/conditions/#en",
+      "permanent": false
+    },
+    {
+      "source": "/privacy",
+      "destination": "/confidentialite/#en",
+      "permanent": false
+    }
   ],
   "rewrites": [
     {

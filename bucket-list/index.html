@@ -276,6 +276,7 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 .shop{display:flex;flex-direction:column;gap:12px;padding:16px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);box-shadow:6px 6px 0 #FFEE2E}
 .shop .styles button{background:var(--paper)}
 .shop .styles button[aria-pressed="true"]{background:var(--ink)}
+.shop-legal{font-size:13px;margin:0;color:var(--muted)}.shop-legal a{color:inherit}
 .shop-status{min-height:1.4em;font-weight:700;color:var(--ink)!important}
 
 /* Vue partagée */
@@ -371,7 +372,7 @@ const T={
   shop_h:'Commander ton affiche imprimée', shop_p:'Papier mat épais de qualité musée, imprimé et expédié par Printful. Livraison incluse au Canada.',
   shop_btn:p=>`Commander · ${p} $`, shop_wait:"Préparation du fichier d'impression…", shop_pay:'Redirection vers le paiement sécurisé…',
   shop_err:"La commande n'a pas pu démarrer. Réessaie dans un instant.", shop_off:'La commande en ligne fonctionne seulement sur studioexistence.com.',
-  shop_need:"Ajoute au moins une expérience avant de commander.", shop_preview:'Aperçu au format',
+  shop_need:"Ajoute au moins une expérience avant de commander.", shop_legal:'En commandant, tu acceptes nos <a href="/conditions/" target="_blank" rel="noopener">conditions de vente</a>. <a href="/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>', shop_preview:'Aperçu au format',
   thanks_h:'Merci, <em>c\'est commandé</em>', thanks_p:"Ton affiche part à l'impression. Tu recevras un courriel de confirmation de Stripe, puis un avis d'expédition. Compte environ une à deux semaines pour la livraison.",
   thanks_tip:'En attendant, prépare tes surligneurs : chaque nouvelle expérience vécue mérite son coup de couleur.', thanks_back:'Revenir à ma liste',
   cancel_t:'Paiement annulé. Ta liste est intacte.',
@@ -413,7 +414,7 @@ const T={
   shop_h:'Order your printed poster', shop_p:'Thick museum-quality matte paper, printed and shipped by Printful. Shipping included within Canada.',
   shop_btn:p=>`Order · $${p}`, shop_wait:'Preparing the print file…', shop_pay:'Redirecting to secure checkout…',
   shop_err:"The order couldn't start. Please try again in a moment.", shop_off:'Online ordering only works on studioexistence.com.',
-  shop_need:'Add at least one experience before ordering.', shop_preview:'Preview in',
+  shop_need:'Add at least one experience before ordering.', shop_legal:'By ordering, you accept our <a href="/conditions/#en" target="_blank" rel="noopener">terms of sale</a>. <a href="/confidentialite/#en" target="_blank" rel="noopener">Privacy</a>', shop_preview:'Preview in',
   thanks_h:'Thank you, <em>it\'s ordered</em>', thanks_p:"Your poster is off to the printer. You'll get a confirmation email from Stripe, then a shipping notice. Allow about one to two weeks for delivery.",
   thanks_tip:'In the meantime, get your highlighters ready: every new experience deserves its stroke of colour.', thanks_back:'Back to my list',
   cancel_t:'Payment cancelled. Your list is untouched.',
@@ -842,6 +843,7 @@ function renderPoster(){
       <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(f.label)}<small>${f.price} $ CAD</small></button>`).join('')}</div>
       <button class="primary" id="orderBtn">${esc(t('shop_btn')(SHOP[shopFmt].price))}</button>
       <p class="shop-status" id="shopStatus" role="status" aria-live="polite"></p>
+      <p class="shop-legal">${t('shop_legal')}</p>
     </div>
     <div class="btns"><button class="ghost" id="dl">${esc(coarse?t('save_img'):t('download'))}</button><p style="text-align:center">${esc(t('poster_note'))}</p></div>
     <div class="tip"><div>${t('tip')}<div class="pens" aria-label="${esc(t('pens_l'))}">${CATS.map(c=>`<i style="background:${PAL[c.id]}" title="${esc(catName(c))} : ${esc(PEN[S.lang][c.id])}"></i>`).join('')}</div></div></div>
