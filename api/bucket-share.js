@@ -18,7 +18,8 @@ export default function handler(req, res) {
     const stats = fr ? `${d} vécue${d > 1 ? 's' : ''} · ${t} à vivre` : `${d} lived · ${t} to live`;
     const sample = items.filter(i => i.s === 'done').slice(0, 3).map(i => i.label).join(', ');
     const desc = `${stats}${sample ? (fr ? ` — dont ${sample}…` : ` — including ${sample}…`) : ''} ${fr ? 'Et toi, que veux-tu vivre ?' : 'What do you want to live?'}`;
-    const img = `https://${req.headers.host}/api/bucket-og?l=${encodeURIComponent(l)}`;
+    // v= : à incrémenter quand le dessin de l'image change (l'image est mise en cache 7 jours par lien)
+    const img = `https://${req.headers.host}/api/bucket-og?v=2&l=${encodeURIComponent(l)}`;
     const pageUrl = `https://${req.headers.host}/bucket-list/partage?l=${encodeURIComponent(l)}`;
     const T = escAttr(title), D = escAttr(desc), I = escAttr(img), U = escAttr(pageUrl);
     html = html

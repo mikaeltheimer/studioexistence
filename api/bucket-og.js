@@ -1,4 +1,4 @@
-// Image d'aperçu (1200×630) d'une Bucket List partagée : prénom, compteurs, quelques expériences, rosace.
+// Image d'aperçu (1200×630) d'une Bucket List partagée : prénom, compteurs, quelques expériences, et l'affiche Manifeste en miniature.
 import { ImageResponse } from '@vercel/og';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -24,24 +24,33 @@ function mix(hex, p) { const a = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2)
 const hl = c => c === YEL ? c : mix(c, .62);
 const cut = (s, n) => s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s;
 
-function rosaceSvg(items, size) {
-  const N = items.length, c = size / 2, step = Math.PI * 2 / Math.max(N, 12);
-  const a0 = N < 12 ? -Math.PI / 2 - step * N / 2 : -Math.PI / 2;
-  const w = Math.max(3, Math.min(16, (2 * Math.PI * size * .3 / Math.max(N, 12)) * .55));
-  const r0 = size * .2, r1 = size * .48;
-  const rays = items.map((it, k) => {
-    const a = a0 + (k + .5) * step, col = PAL[it.cat] || INK;
-    const x1 = c + Math.cos(a) * r0, y1 = c + Math.sin(a) * r0, x2 = c + Math.cos(a) * r1, y2 = c + Math.sin(a) * r1;
-    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${col}" stroke-width="${w.toFixed(1)}" stroke-linecap="round"${it.s === 'todo' ? ' opacity=".55"' : ''}/>`;
-  }).join('');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${rays}<circle cx="${c}" cy="${c}" r="${r0 * .82}" fill="${INK}"/></svg>`;
-  return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
-}
 const LOGO = (() => {
   const C = ['#57E36A', '#FFEE2E', '#FF5A5F', '#FF9F2E', '#3FE0D0', '#FF66B8', '#55B8FF', '#C29BFF'];
   const rays = C.map((c, i) => { const a = -Math.PI / 2 + i * Math.PI / 4; return `<line x1="${60 + Math.cos(a) * 26}" y1="${60 + Math.sin(a) * 26}" x2="${60 + Math.cos(a) * 50}" y2="${60 + Math.sin(a) * 50}" stroke="${c}" stroke-width="15" stroke-linecap="round"/>`; }).join('');
   return 'data:image/svg+xml;base64,' + Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">${rays}<circle cx="60" cy="60" r="20" fill="${INK}"/></svg>`).toString('base64');
 })();
+
+const lineCol = c => c === YEL ? '#E0C400' : c;
+function manifeste(items, fr, name) {
+  const SW = 350, SH = Math.round(350 * Math.SQRT2), PAD = 26, BODY_H = SH - 2 * PAD - 70;
+  // taille de texte : la liste remplit la feuille, comme sur la vraie affiche (au-delà de la place disponible en 7 px, on tronque)
+  const area = (SW - 2 * PAD) * BODY_H * .8, cost = it => Math.min(it.label.length, 40) + 3;
+  const cap = area / (.5 * 1.62 * 49);
+  let list = [], used = 0; for (const it of items) { if (used + cost(it) > cap) break; list.push(it); used += cost(it); }
+  const fs = Math.max(7, Math.min(24, Math.sqrt(area / ((used || 1) * .5 * 1.62))));
+  const words = list.map(it => h('div', it.s === 'done'
+    ? { fontFamily: 'Serif', fontSize: fs, lineHeight: 1.3, background: hl(PAL[it.cat] || INK), padding: `0 ${fs * .18}px`, marginRight: fs * .35, marginBottom: fs * .28 }
+    : { fontFamily: 'Serif', fontSize: fs, lineHeight: 1.3, padding: `0 ${fs * .18}px`, marginRight: fs * .35, marginBottom: fs * .28, borderBottom: `${Math.max(1.5, fs * .09)}px dashed ${lineCol(PAL[it.cat] || INK)}` },
+    cut(it.label, 40)));
+  const tTop = fr ? 'La Bucket List' : (name ? `${name}'s` : 'A');
+  const tHl = fr ? (name ? deN(name) : '') : 'Bucket List';
+  return h('div', { position: 'absolute', right: 70, top: 34, width: SW + 24, height: SH + 24, padding: 12, background: INK, transform: 'rotate(3deg)', boxShadow: `16px 18px 0 ${YEL}` },
+    h('div', { width: SW, height: SH, background: PAPER, display: 'flex', flexDirection: 'column', padding: PAD },
+      h('div', { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', fontFamily: 'Serif', fontSize: 22, marginBottom: 18 },
+        h('div', { marginRight: 6 }, cut(tTop, 20)), tHl ? h('div', { fontStyle: 'italic', background: YEL, padding: '0 5px' }, cut(tHl, 18)) : null),
+      h('div', { display: 'flex', flexWrap: 'wrap', alignContent: 'flex-start', height: BODY_H }, words),
+      h('div', { display: 'flex', justifyContent: 'center', marginTop: 'auto', fontFamily: 'Sans', fontWeight: 800, fontSize: 7, letterSpacing: 1.5, opacity: .45 }, 'STUDIOEXISTENCE.COM/BUCKET-LIST')));
+}
 
 export function render(p) {
   const { items, lang, name } = itemsOf(p);
@@ -58,7 +67,7 @@ export function render(p) {
   const pick = d.slice(0, max - 1).concat(t.slice(0, Math.max(1, max - Math.min(max - 1, d.length)))).slice(0, max);
   return h('div', { width: 1200, height: 630, display: 'flex', background: PAPER, color: INK, padding: '50px 60px', position: 'relative', fontFamily: 'Sans' },
     // colonne gauche
-    h('div', { display: 'flex', flexDirection: 'column', width: 690 },
+    h('div', { display: 'flex', flexDirection: 'column', width: 660 },
       h('div', { display: 'flex', alignItems: 'center', gap: 12 },
         h('img', { width: 40, height: 40 }), // remplacé plus bas (props src)
         h('div', { fontFamily: 'Serif', fontSize: 30, display: 'flex' }, 'Bucket', h('div', { fontStyle: 'italic', marginLeft: 8, padding: '0 6px', background: YEL }, 'List'))),
@@ -73,20 +82,14 @@ export function render(p) {
             : { fontFamily: 'Serif', fontSize: 27, padding: '1px 8px', borderBottom: `3px dashed ${PAL[it.cat] === YEL ? '#E0C400' : PAL[it.cat]}` }, cut(it.label, 46))))),
       h('div', { display: 'flex', marginTop: 'auto', fontFamily: 'Sans', fontWeight: 800, fontSize: 17, letterSpacing: 3, opacity: .6 },
         (fr ? 'ET TOI ? · ' : 'YOUR TURN · ') + 'STUDIOEXISTENCE.COM/BUCKET-LIST')),
-    // rosace
-    h('div', { position: 'absolute', right: 50, top: 75, width: 480, height: 480, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-      h('img', { width: 480, height: 480 }),
-      h('div', { position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', color: PAPER },
-        h('div', { fontFamily: 'Serif', fontSize: 58, lineHeight: 1 }, String(d.length)),
-        h('div', { fontFamily: 'Sans', fontWeight: 800, fontSize: 12, letterSpacing: 2 }, fr ? 'VÉCUES' : 'LIVED'))));
+    // affiche Manifeste en miniature (même logique que l'app : surligné = vécu, souligné = à vivre)
+    manifeste(items, fr, name));
 }
 // branche les src des images (le constructeur h ne gère que les styles)
 function withImages(tree, p) {
-  const { items } = itemsOf(p);
   const imgs = [];
   (function walk(n) { if (!n || typeof n !== 'object') return; if (n.type === 'img') imgs.push(n); (n.props.children || []).forEach(walk); })(tree);
   imgs[0].props = { ...imgs[0].props, src: LOGO, width: 40, height: 40 };
-  imgs[1].props = { ...imgs[1].props, src: rosaceSvg(items.length ? items : [{ cat: 'voyages', s: 'todo' }], 480), width: 480, height: 480 };
   return tree;
 }
 
