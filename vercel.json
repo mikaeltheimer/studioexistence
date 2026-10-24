@@ -48,5 +48,11 @@
     "api/bucket-og.js": {
       "includeFiles": "{bucket-list/index.html,bucket-list/fonts/**}"
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/blob-cleanup",
+      "schedule": "17 8 1 * *"
+    }
+  ]
 }
