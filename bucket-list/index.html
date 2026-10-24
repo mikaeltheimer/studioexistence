@@ -358,6 +358,14 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
   .d-side{display:flex;flex-direction:column;gap:18px;padding-bottom:24px}
   .d-side h1{font-size:48px}
 }
+
+.invite{display:flex;flex-direction:column;gap:10px;padding:16px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);box-shadow:6px 6px 0 #FFEE2E}
+.invite h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.1;margin:0}
+@media (min-width:1024px){
+  #shared .screen-in.desk2{max-width:1240px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);column-gap:64px;row-gap:22px;align-items:start;padding-inline:16px}
+  #shared .d-side h1{font-size:48px}
+  #shared .shared-list{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
+}
 </style>
 </head>
 <body>
@@ -449,7 +457,7 @@ const T={
   cancel_t:'Paiement annulé. Ta liste est intacte.',
   link_copied:'Lien copié !', copy:'Copier', share_t:n=>n?`La Bucket List ${deN(n)}`:'Ma Bucket List', share_txt:'Voici ce que j\'ai vécu et ce que je veux encore vivre.',
   shared_h:n=>n?`La Bucket List <em>${deN(n)}</em>`:'Une <em>Bucket List</em>', shared_p:(d,t)=>`${d} expérience${d>1?'s':''} vécue${d>1?'s':''} · ${t} à vivre`,
-  mine:'Faire la mienne', back_mine:'Revenir à ma liste', s_lived:'Vécu', s_tolive:'À vivre', shared_bad:"Ce lien de partage est incomplet ou abîmé.",
+  mine:'Faire la mienne', inv_h:'Et toi, qu\u2019as-tu vécu ?', inv_p:'Quelques minutes de cartes, et ton affiche se compose sous tes yeux. Gratuit, sans compte.', back_mine:'Revenir à ma liste', s_lived:'Vécu', s_tolive:'À vivre', shared_bad:"Ce lien de partage est incomplet ou abîmé.",
   by:'Une expérience de', saved_local:'Ta liste est sauvegardée dans ce navigateur.',
   // affiche
   p_title:n=>n?[['La Bucket List ',0],[deN(n),1]]:[['Bucket ',0],['List',1]], p_lived:'VÉCUES', p_tolive:'À VIVRE',
@@ -491,7 +499,7 @@ const T={
   cancel_t:'Payment cancelled. Your list is untouched.',
   link_copied:'Link copied!', copy:'Copy', share_t:n=>n?`${n}'s Bucket List`:'My Bucket List', share_txt:"Here's what I've lived and what I still want to live.",
   shared_h:n=>n?`<em>${n}'s</em> Bucket List`:'A <em>Bucket List</em>', shared_p:(d,t)=>`${d} lived · ${t} to live`,
-  mine:'Make my own', back_mine:'Back to my list', s_lived:'Lived', s_tolive:'To live', shared_bad:'This share link is incomplete or damaged.',
+  mine:'Make my own', inv_h:'What about you?', inv_p:'A few minutes of cards, and your poster takes shape before your eyes. Free, no account.', back_mine:'Back to my list', s_lived:'Lived', s_tolive:'To live', shared_bad:'This share link is incomplete or damaged.',
   by:'An experience by', saved_local:'Your list is saved in this browser.',
   p_title:n=>n?[[n+"'s ",1],['Bucket List',0]]:[['Bucket ',0],['List',1]], p_lived:'LIVED', p_tolive:'TO LIVE',
   p_leg1:'highlighted: lived', p_leg2:'underlined: to live (highlight it one day)', p_leg2s:'underlined: to live', p_empty:'Nothing yet. Your list is waiting for its first experiences.',
@@ -817,7 +825,7 @@ function flashAdd(id){
   el.classList.add('on'); clearTimeout(liveAddTimer); liveAddTimer=setTimeout(()=>el.classList.remove('on'),1600);
 }
 $('liveStyles').addEventListener('click',e=>{const b=e.target.closest('[data-lstyle]');if(!b)return;S.style=b.dataset.lstyle;save();liveChrome();drawLive();});
-DESK.addEventListener('change',()=>{if(!$('play').hidden){liveChrome();drawLive();renderStack(true);}else if(!$('bilan').hidden||!$('poster').hidden){route(DESK.matches?'bilan':currentScreen());}});
+DESK.addEventListener('change',()=>{if(!$('play').hidden){liveChrome();drawLive();renderStack(true);}else if(!$('bilan').hidden||!$('poster').hidden){route(DESK.matches?'bilan':currentScreen());}else if(!$('shared').hidden&&SHARED){renderShared();}});
 
 /* =====================================================================
    BILAN
@@ -1172,20 +1180,25 @@ function renderShared(){
   const nameH=t('shared_h')(sh.name?esc(sh.name):'');
   const groups=CATS.map(c=>{const its=items.filter(i=>i.catId===c.id);if(!its.length)return'';
     return `<div class="sl-cat" style="--c:${PAL[c.id]}"><h3><span>${esc(catName(c))}</span></h3><ul>${its.map(i=>`<li><b>${i.s==='done'?'✓':'★'}</b>${esc(i.label)}</li>`).join('')}</ul></div>`;}).join('');
-  const hasMine=S.order.length>0;
-  $('shared').innerHTML=`<div class="screen-in">
+  const hasMine=S.order.length>0, desk=DESK.matches;
+  const cta=hasMine?`<button class="primary" id="mine">${esc(t('back_mine'))}</button>`
+    :`<div class="invite"><h2>${esc(t('inv_h'))}</h2><p>${esc(t('inv_p'))}</p><button class="primary" id="mine">${esc(t('mine'))}</button></div>`;
+  const pv=`<canvas class="pv" id="sPv" role="img" aria-label="${esc(t('share_t')(sh.name))}"></canvas>`;
+  $('shared').innerHTML=`<div class="screen-in${desk?' desk2':''}">
     <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
+    ${desk?`<div class="d-poster">${pv}</div><div class="d-side">`:''}
     <h1>${nameH}</h1>
     <p>${esc(t('shared_p')(d,tt))}</p>
     <div class="styles" role="group" id="sStyles">
       <button data-style="man" aria-pressed="${sh.style==='man'}">${esc(t('style_man'))}<small>${esc(t('style_man_s'))}</small></button>
       <button data-style="ros" aria-pressed="${sh.style==='ros'}">${esc(t('style_ros'))}<small>${esc(t('style_ros_s'))}</small></button>
     </div>
-    <canvas class="pv" id="sPv" role="img" aria-label="${esc(t('share_t')(sh.name))}"></canvas>
-    <button class="primary" id="mine">${esc(hasMine?t('back_mine'):t('mine'))}</button>
+    ${desk?'':pv}
+    ${cta}
     <div class="shared-list">${groups}</div>
     <button class="ghost" id="mine2">${esc(hasMine?t('back_mine'):t('mine'))}</button>
     <p class="foot-note">${esc(t('by'))} <a href="https://studioexistence.com" target="_blank" rel="noopener">Studio Existence</a></p>
+    ${desk?'</div>':''}
   </div>`;
   show('shared');
   $('mine').onclick=leaveShared; $('mine2').onclick=leaveShared;
