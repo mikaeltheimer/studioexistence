@@ -49,6 +49,7 @@ export default async function handler(req, res) {
         },
       }],
       shipping_address_collection: { allowed_countries: SHIP_TO },
+      allow_promotion_codes: true,   // codes promo créés dans Stripe (lancement, amis, partenaires)
       metadata: { format, style, lang, name, file: file.url },
       success_url: `${base}?commande=merci&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${base}?commande=annulee`,

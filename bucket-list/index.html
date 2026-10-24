@@ -29,6 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="a2e97ed9-94cd-4ae2-a65a-433174510de8" data-domains="www.studioexistence.com,studioexistence.com"></script>
 <style>
 /* Layout : colonne mobile pleine hauteur — barre fine, titre de catégorie surligné, lot de cartes fixe, légende des gestes.
    Direction « Riso » : papier grainé teinté par catégorie, encres fluo, ombres en surimpression. Look unique (clair) assumé. */
@@ -638,7 +639,7 @@ function renderIntro(){
     <p class="intro-note">${esc(t('intro_note'))}</p>
   </div>`;
   show('intro');
-  $('start').onclick=()=>{ S.seenIntro=true; save(); if(S.finished) route('bilan'); else route('play'); };
+  $('start').onclick=()=>{ track(has?'reprise':'demarrer'); S.seenIntro=true; save(); if(S.finished) route('bilan'); else route('play'); };
 }
 
 /* =====================================================================
@@ -825,7 +826,7 @@ function resetAll(){
   Q={queue:[],segTotal:0,segDone:0}; undoStack.length=0; $('undo').disabled=true; listCat=0;
   toast(t('reset_done')); route('intro');
 }
-function finishTour(){S.finished=true;S.toFinal=false;save();route('bilan');}
+function finishTour(){track('bilan');S.finished=true;S.toFinal=false;save();route('bilan');}
 function renderInter(){
   const c=cat();const st=$('stack');
   const its=allItems(c);
@@ -978,7 +979,7 @@ function shareUrl(){
   return location.origin+(online?'/bucket-list/partage':location.pathname)+'?l='+b64e(payload);
 }
 async function shareList(){
-  const url=shareUrl(), title=t('share_t')(S.name);
+  const url=shareUrl(), title=t('share_t')(S.name); track('partager');
   if(coarse&&navigator.share){try{await navigator.share({title,text:t('share_txt'),url});return;}catch(e){if(e&&e.name==='AbortError')return;}}
   const box=$('shareBox'), inp=$('shareUrl'); if(box){box.hidden=false;inp.value=url;}
   try{await navigator.clipboard.writeText(url);toast(t('link_copied'));}catch(e){if(inp){inp.focus();inp.select();}}
@@ -1063,7 +1064,7 @@ function tipHTML(){return `<div class="tip"><div>${t('tip')}<div class="pens" ar
 function wireShop(draw){
   $('dl').onclick=()=>exportPoster($('pv'),S.name);
   $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=t('shop_btn')(SHOP[shopFmt].price);fmtPreview=shopFmt;draw();});
-  $('orderBtn').onclick=placeOrder;
+  $('orderBtn').onclick=()=>{track('commander',{format:shopFmt,style:S.style});placeOrder();};
 }
 
 const ONLINE=/(^|\.)studioexistence\.com$|\.vercel\.app$/.test(location.hostname);
@@ -1074,6 +1075,7 @@ async function placeOrder(){
   btn.disabled=true; st.textContent=t('shop_wait');
   try{
     await new Promise(r=>withFonts(r));
+    if(!(await printFontsReady())) throw new Error('fonts');
     const cv=document.createElement('canvas'); drawPosterTo(cv,items,S.name,S.style,S.lang,shopFmt,true);
     let blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.9));
     if(blob&&blob.size>4.2e6) blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.8));
@@ -1083,10 +1085,11 @@ async function placeOrder(){
     const r=await fetch('/api/checkout?'+q.toString(),{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob});
     const j=await r.json().catch(()=>({}));
     if(!r.ok||!j.url) throw new Error(j.error||('http '+r.status));
-    location.href=j.url;
+    track('commande-paiement',{format:shopFmt,style:S.style}); location.href=j.url;
   }catch(e){ st.textContent=t('shop_err'); btn.disabled=false; console.error(e); }
 }
 function renderThanks(){
+  track('commande-merci');
   $('merci').innerHTML=`<div class="screen-in">
     <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
     <h1>${t('thanks_h')}</h1><p>${esc(t('thanks_p'))}</p>
@@ -1098,6 +1101,7 @@ function renderThanks(){
   withFonts(()=>drawPosterTo($('tThumb'),posterItems(S),S.name,S.style,S.lang));
 }
 function exportPoster(cv,name){
+  track('telecharger',{style:S.style});
   const fname=('bucket-list'+(name?'-'+name:'')).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9-]+/g,'-')+'.png';
   cv.toBlob(async blob=>{
     if(!blob) return;
@@ -1116,6 +1120,21 @@ function mix(hex,p,base=PAPER){const a=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),
 const hl=c=>isDarkInk(c)?mix(c,.36):c===YELLOW?c:mix(c,.62);
 const lineCol=c=>c===YELLOW?'#E0C400':c;
 let fontsReady=null;
+
+/* Mesure d'audience (Umami, sans témoins) : quelques étapes clés du parcours, jamais le contenu des listes */
+function track(ev,data){try{if(window.umami&&umami.track)umami.track(ev,data);}catch(e){}}
+/* Polices du fichier d'impression : on attend les vraies polices, jamais de police de secours sur une affiche vendue */
+const PRINT_FONTS=['400 40px "DM Serif Display"','italic 400 40px "DM Serif Display"','600 40px "Plus Jakarta Sans"','800 40px "Plus Jakarta Sans"'];
+// Copies locales des polices (aussi utilisées par l'image de partage), si Google Fonts ne répond pas
+const LOCAL_FONTS=[['DM Serif Display','dm-serif-display-400.woff',{weight:'400'}],['DM Serif Display','dm-serif-display-400-italic.woff',{style:'italic',weight:'400'}],
+  ['Plus Jakarta Sans','plus-jakarta-sans-600.woff',{weight:'400 650'}],['Plus Jakarta Sans','plus-jakarta-sans-800.woff',{weight:'651 900'}]];
+async function printFontsReady(){
+  if(!document.fonts||!window.FontFace) return true;
+  const tryLoad=()=>Promise.race([Promise.all(PRINT_FONTS.map(f=>document.fonts.load(f).then(a=>a.length>0,()=>false))),new Promise(r=>setTimeout(()=>r([false]),10000))]).then(r=>r.every(Boolean));
+  if(await tryLoad()) return true;
+  try{for(const [fam,file,d] of LOCAL_FONTS){const ff=new FontFace(fam,`url(/bucket-list/fonts/${file})`,d);await ff.load();document.fonts.add(ff);}}catch(e){return false;}
+  return tryLoad();
+}
 function withFonts(fn){
   if(!fontsReady){fontsReady=Promise.race([Promise.all(['400 40px "DM Serif Display"','italic 400 40px "DM Serif Display"','600 40px "Plus Jakarta Sans"','700 40px "Plus Jakarta Sans"','800 40px "Plus Jakarta Sans"'].map(f=>document.fonts?document.fonts.load(f):Promise.resolve())),new Promise(r=>setTimeout(r,2500))]);}
   fontsReady.then(fn,fn);
