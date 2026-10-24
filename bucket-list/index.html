@@ -292,6 +292,62 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 .share-box{display:flex;gap:6px}
 .share-box input{flex:1;min-width:0;font:inherit;font-size:13px;padding:9px 11px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card)}
 @media (min-width:900px){.app{padding-block:24px 18px}}
+
+/* ══ Accueil : deux vraies affiches d'exemple (Manifeste + Rosace) ══ */
+.intro-art{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:0;padding-block:10px 18px;min-height:0}
+.ex{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px;width:min(40%,150px)}
+.ex img{display:block;width:100%;height:auto;aspect-ratio:1/1.4142;border:5px solid var(--ink);background:var(--card)}
+.ex figcaption{font-size:11.5px;font-weight:800;letter-spacing:.3px;padding:3px 9px;border-radius:999px;border:1.5px solid var(--ink);background:var(--card)}
+.ex1{transform:rotate(-4deg) translateX(8px);z-index:1}
+.ex1 img{box-shadow:6px 7px 0 #FFEE2E}
+.ex2{transform:rotate(3.5deg) translate(-8px,14px)}
+.ex2 img{box-shadow:6px 7px 0 var(--pink)}
+
+@media (max-width:1023px) and (max-height:740px){.ex{width:min(30%,104px)}.ex figcaption{font-size:10.5px;padding:2px 7px}.intro-art{padding-block:4px 12px}}
+/* ══ Affiche en direct (ordinateur seulement) ══ */
+.live{display:none}
+
+@media (min-width:1024px){
+  /* Accueil : texte à gauche, affiches à droite */
+  .intro-in{max-width:1160px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-rows:auto 1fr auto auto auto auto 1fr;column-gap:72px;row-gap:22px;align-items:start;padding-block:12px 24px}
+  .intro-in>*{grid-column:1}
+  .intro-in>.top{grid-column:1/-1;grid-row:1}
+  .intro-in>h1{grid-row:3;font-size:56px}
+  .intro-in>ol{grid-row:4}
+  .intro-in>.primary{grid-row:5;margin-top:8px;max-width:420px}
+  .intro-in>.intro-note{grid-row:6;max-width:420px;text-align:left;margin-top:-10px}
+  .intro-in>.resume{grid-row:6}
+  .intro-in>.intro-art{grid-column:2;grid-row:2/-1;align-self:center;padding-block:24px}
+  .intro li{font-size:17px}
+  .ex{width:min(46%,300px)}
+  .ex img{border-width:8px}
+  .ex1 img{box-shadow:10px 12px 0 #FFEE2E}
+  .ex2 img{box-shadow:10px 12px 0 var(--pink)}
+  .ex figcaption{font-size:13px}
+  .ex1{transform:rotate(-4deg) translateX(18px)}
+  .ex2{transform:rotate(3.5deg) translate(-18px,36px)}
+
+  /* Jeu : cartes à gauche, affiche qui se compose à droite */
+  #play.app{max-width:1240px;display:grid;grid-template-columns:minmax(380px,440px) minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;column-gap:64px;row-gap:14px;padding-inline:32px}
+  #play.app>*{grid-column:1}
+  #play .stack{min-height:0}
+  #play .legend,#play #mini{display:none}
+  #play .live{display:flex;grid-column:2;grid-row:1/-1;flex-direction:column;gap:12px;min-height:0}
+  .live-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .live-k{font-family:var(--display);font-size:24px;line-height:1.1}
+  .live-k em{font-style:italic;padding:0 .12em;background:linear-gradient(176deg,transparent 30%,#FFEE2E 30%,#FFEE2E 92%,transparent 92%)}
+  .live .styles button{flex:0 0 auto;padding:6px 12px;font-size:13px}
+  .live-frame{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+  .live-sheet{position:relative;height:100%;max-height:100%;aspect-ratio:1/1.4142;max-width:100%;border:9px solid var(--ink);box-shadow:10px 12px 0 var(--cat2);background:var(--card);transition:box-shadow .4s}
+  .live-sheet canvas{position:absolute;inset:0;width:100%;height:100%;display:block;transition:opacity .35s ease}
+  .live-sheet canvas.off{opacity:0}
+  .live-add{position:absolute;left:50%;bottom:18px;transform:translate(-50%,8px);max-width:86%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800;font-size:14px;padding:7px 14px;border-radius:999px;border:1.5px solid var(--ink);background:var(--card);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none}
+  .live-add.on{opacity:1;transform:translate(-50%,0)}
+  .live-add i{font-style:normal;display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:1px}
+  .live-keys{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:13px;font-weight:600;color:var(--muted)}
+  .live-keys kbd{font:inherit;font-weight:800;color:var(--ink);display:inline-grid;place-items:center;min-width:26px;height:24px;padding:0 6px;margin-right:6px;border:1.5px solid var(--ink);border-bottom-width:3px;border-radius:6px;background:var(--card)}
+}
+@media (min-width:1024px) and (prefers-reduced-motion:reduce){.live-sheet canvas{transition:none}}
 </style>
 </head>
 <body>
@@ -310,6 +366,11 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
   </div>
   <div class="stack" id="stack"></div>
   <div class="legend" id="legend"></div>
+  <aside class="live" id="live" aria-label="Aperçu de l'affiche">
+    <div class="live-top"><div class="live-k" id="liveK"></div><div class="styles" role="group" id="liveStyles"></div></div>
+    <div class="live-frame"><div class="live-sheet"><canvas id="liveA"></canvas><canvas id="liveB" class="off"></canvas><div class="live-add" id="liveAdd"></div></div></div>
+    <div class="live-keys" id="liveKeys"></div>
+  </aside>
 </div>
 
 <section class="intro" id="intro" hidden></section>
@@ -350,7 +411,7 @@ const T={
   s3b:'Imprime-la et affiche-la', s3:' chez toi, puis surligne chaque nouveau rêve accompli.',
   start:'Créer ma Bucket List', resume:'Reprendre ma liste', intro_note:'Gratuit, sans compte. Ta liste reste dans ton navigateur.',
   done_c:'Expériences vécues', todo_c:'Expériences qui te tentent', undo:'Annuler la dernière réponse', mini:'Voir mon bilan',
-  leg_skip:'Pas pour moi', leg_todo:'Ça me tente', leg_done:"Je l'ai fait", tap2:'2× tap',
+  live_k:'Ton affiche <em>se compose</em>', leg_skip:'Pas pour moi', leg_todo:'Ça me tente', leg_done:"Je l'ai fait", tap2:'2× tap',
   st_done:"✓ Je l'ai fait", st_todo:'★ Ça me tente', st_skip:'Pas pour moi',
   skip:'Passer →', next:'Suivante →', finish:'Terminer', deeper:'Approfondir', undone:'Réponse annulée',
   coach_h:'Réponds à chaque carte', coach1:"Glisse à droite : je l'ai fait", coach2:'Double-tap : ça me tente', coach3:'Glisse à gauche : pas pour moi', go:"C'est parti",
@@ -392,7 +453,7 @@ const T={
   s3b:'Print it and hang it', s3:' at home, then highlight each new dream you live.',
   start:'Create my Bucket List', resume:'Resume my list', intro_note:'Free, no account. Your list stays in your browser.',
   done_c:"Experiences you've lived", todo_c:'Experiences you want', undo:'Undo last answer', mini:'See my summary',
-  leg_skip:'Not for me', leg_todo:'Want to', leg_done:'Done it', tap2:'Double-tap',
+  live_k:'Your poster <em>takes shape</em>', leg_skip:'Not for me', leg_todo:'Want to', leg_done:'Done it', tap2:'Double-tap',
   st_done:'✓ Done it', st_todo:'★ Want to', st_skip:'Not for me',
   skip:'Skip →', next:'Next →', finish:'Finish', deeper:'Going deeper', undone:'Answer undone',
   coach_h:'Answer each card', coach1:'Swipe right: done it', coach2:'Double-tap: want to', coach3:'Swipe left: not for me', go:"Let's go",
@@ -508,10 +569,7 @@ function renderIntro(){
   const has=S.order.length>0;
   $('intro').innerHTML=`<div class="intro-in">
     <div class="top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
-    <div class="intro-art" aria-hidden="true"><div class="frame"><div class="ip">
-      <div class="ip-t">${S.lang==='fr'?'La Bucket List <em>de Marie</em>':"<em>Marie's</em> Bucket List"}</div>
-      <div class="ip-rows">${CATS.map((c,ci)=>{const n=[7,8,4,7,8,5,7,3][ci]||4;return `<div style="--c:${PAL[c.id]}">${Array.from({length:n},(_,k)=>`<b class="${k%3===2?'t':''}" style="background:${PAL[c.id]}"></b>`).join('')}</div>`;}).join('')}</div>
-      <div class="ip-f">studioexistence.com/bucket-list</div></div></div></div>
+    <div class="intro-art" aria-hidden="true"><figure class="ex ex1"><img src="/bucket-list/exemple-man-${S.lang}.jpg" alt="" width="760" height="1075" fetchpriority="high"><figcaption>${esc(t('style_man'))}</figcaption></figure><figure class="ex ex2"><img src="/bucket-list/exemple-ros-${S.lang}.jpg" alt="" width="760" height="1075"><figcaption>${esc(t('style_ros'))}</figcaption></figure></div>
     <h1>${esc(t('intro_h'))}</h1>
     <ol>
       <li><span>1</span><div><b>${esc(t('s1b'))}</b>${esc(t('s1'))}</div></li>
@@ -540,7 +598,7 @@ function openPlay(){
   show('play');
   $('undo').setAttribute('aria-label',t('undo')); $('mini').setAttribute('aria-label',t('mini'));
   $('cDone').title=t('done_c'); $('cTodo').title=t('todo_c');
-  $('legend').innerHTML=`<span>← <b>${esc(t('leg_skip'))}</b></span><span>${esc(t('tap2'))} <b>${esc(t('leg_todo'))}</b></span><span><b>${esc(t('leg_done'))}</b> →</span>`;
+  $('legend').innerHTML=`<span>← <b>${esc(t('leg_skip'))}</b></span><span>${coarse?esc(t('tap2')):'↑'} <b>${esc(t('leg_todo'))}</b></span><span><b>${esc(t('leg_done'))}</b> →</span>`;
   // reprise : file recalculée à partir de la catégorie en cours
   if(!Q.queue.length){
     startSegment(S.catIndex,S.phase);
@@ -549,6 +607,7 @@ function openPlay(){
   }
   coachOpen=!S.coachDone;
   renderCounts(false); renderStack(false);
+  liveChrome(); drawLive();
 }
 function batchSize(){const h=$('stack').clientHeight;return Math.max(3,Math.min(6,Math.floor(h/112)));}
 function renderHeader(){
@@ -612,7 +671,7 @@ function answer(slot,kind){
   const id=slot.dataset.id; snapshot();
   S.answers[id]=kind; S.order=S.order.filter(x=>x!==id); S.order.push(id);
   Q.queue=Q.queue.filter(x=>x!==id); Q.segDone++; save();
-  renderCounts(true); renderHeader();
+  renderCounts(true); renderHeader(); drawLive(id);
   const card=slot.firstElementChild; setIntent(card,kind,1);
   const w=innerWidth;
   const to=kind==='done'?`translate(${w}px,-10px) rotate(14deg)`:kind==='skip'?`translate(${-w}px,10px) rotate(-14deg)`:`translate(0,-${innerHeight}px) rotate(-2deg)`;
@@ -660,7 +719,7 @@ function undo(){
   const snap=JSON.parse(undoStack.pop()); S=snap.S; Q=snap.Q; save();
   $('undo').disabled=!undoStack.length;
   if($('play').hidden) show('play');
-  renderCounts(false);renderStack(true);toast(t('undone'));
+  renderCounts(false);renderStack(true);drawLive();toast(t('undone'));
 }
 $('undo').onclick=undo;
 let lastTouch=0;
@@ -718,6 +777,37 @@ function addCoach(){
 }
 function closeCoach(){if(!coachOpen)return;coachOpen=false;S.coachDone=true;save();const c=$('coach');if(c)c.remove();document.querySelectorAll('.card.demo').forEach(x=>x.classList.remove('demo'));}
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(!$('play').hidden&&Q.queue.length)renderStack(true);},200);});
+
+
+/* =====================================================================
+   AFFICHE EN DIRECT (ordinateur) — aperçu basse définition redessiné à chaque réponse
+   ===================================================================== */
+const DESK=matchMedia('(min-width:1024px)');
+const LIVE_SCALE=.34;   // 2480 px × 0,34 ≈ 840 px : net à l'écran, rapide à redessiner
+let liveFront='liveA', liveTimer=0, liveAddTimer=0;
+function liveChrome(){
+  $('liveK').innerHTML=t('live_k');
+  $('liveStyles').innerHTML=['man','ros'].map(s=>`<button data-lstyle="${s}" aria-pressed="${S.style===s}">${esc(t(s==='man'?'style_man':'style_ros'))}</button>`).join('');
+  $('liveKeys').innerHTML=`<span><kbd>→</kbd>${esc(t('leg_done'))}</span><span><kbd>↑</kbd>${esc(t('leg_todo'))}</span><span><kbd>←</kbd>${esc(t('leg_skip'))}</span><span><kbd>⌫</kbd>${esc(t('undo'))}</span>`;
+}
+function drawLive(lastId){
+  if(!DESK.matches||$('play').hidden) return;
+  clearTimeout(liveTimer);
+  liveTimer=setTimeout(()=>withFonts(()=>{
+    const back=liveFront==='liveA'?'liveB':'liveA';
+    drawPosterTo($(back),posterItems(S),S.name,S.style,S.lang,'a4',LIVE_SCALE);
+    $(back).classList.remove('off'); $(liveFront).classList.add('off'); liveFront=back;
+    if(lastId) flashAdd(lastId);
+  }),60);
+}
+function flashAdd(id){
+  const it=byId(id), k=S.answers[id]; const el=$('liveAdd');
+  if(!it||(k!=='done'&&k!=='todo')){el.classList.remove('on');return;}
+  el.innerHTML=`<i style="background:${PAL[it.cat]}"></i>${k==='done'?'✓':'★'} ${esc(label(it))}`;
+  el.classList.add('on'); clearTimeout(liveAddTimer); liveAddTimer=setTimeout(()=>el.classList.remove('on'),1600);
+}
+$('liveStyles').addEventListener('click',e=>{const b=e.target.closest('[data-lstyle]');if(!b)return;S.style=b.dataset.lstyle;save();liveChrome();drawLive();});
+DESK.addEventListener('change',()=>{if(!$('play').hidden){liveChrome();drawLive();renderStack(true);}});
 
 /* =====================================================================
    BILAN
@@ -939,7 +1029,7 @@ const pDate=lng=>new Date().toLocaleDateString(T[lng].locale,{year:'numeric',mon
 function pFooter(ctx,W,H){smallCaps(ctx,'STUDIOEXISTENCE.COM/BUCKET-LIST',W/2,H-80,22,'center',.45);}
 function fitText(ctx,txt,maxW){let s=txt;while(ctx.measureText(s).width>maxW&&s.length>3)s=s.slice(0,-1);return s===txt?s:s.slice(0,-1).trimEnd()+'…';}
 function emptyMsg(ctx,W,H,lng){ctx.font=`italic 400 64px ${DISPLAY}`;ctx.fillStyle=INK;ctx.globalAlpha=.55;const s=T[lng].p_empty;const L=[];let l='';s.split(' ').forEach(w=>{const tt=l?l+' '+w:w;if(ctx.measureText(tt).width>W-500&&l){L.push(l);l=w;}else l=tt;});L.push(l);L.forEach((ln,i)=>{const w=ctx.measureText(ln).width;ctx.fillText(ln,W/2-w/2,H/2+i*84);});ctx.globalAlpha=1;}
-function drawPosterTo(cv,items,name,style,lng,fmt='a4',print=false){ P_FMT=FORMATS[fmt]?fmt:'a4'; P_K=print?FORMATS[P_FMT].k:1; if(style==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); P_FMT='a4'; P_K=1; }
+function drawPosterTo(cv,items,name,style,lng,fmt='a4',print=false){ P_FMT=FORMATS[fmt]?fmt:'a4'; P_K=typeof print==='number'?print:(print?FORMATS[P_FMT].k:1); if(style==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); P_FMT='a4'; P_K=1; }
 
 function drawManifeste(cv,items,name,lng){
   const {ctx,W,H}=setup(cv);
