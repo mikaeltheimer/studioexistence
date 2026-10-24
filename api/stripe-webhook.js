@@ -2,6 +2,7 @@
 // Par défaut la commande Printful est créée en BROUILLON (à confirmer dans le tableau de bord Printful).
 // Mettre PRINTFUL_AUTO_CONFIRM=1 pour l'envoyer directement en production.
 import Stripe from 'stripe';
+import { del } from '@vercel/blob';
 import { FORMATS, variantFor, externalId, recipientFrom, readRaw } from './_shop.js';
 
 export const config = { runtime: 'nodejs' };
@@ -28,6 +29,14 @@ export async function createPrintfulOrder(session, fetchImpl = fetch) {
   throw new Error(`printful ${r.status}: ${JSON.stringify(j).slice(0, 300)}`);
 }
 
+// Panier abandonné : la session a expiré sans paiement, le fichier d'impression ne sert plus à rien
+export async function dropAbandoned(session, delImpl = del) {
+  const f = session.metadata?.file || '';
+  if (session.payment_status === 'paid' || !/^https:\/\/[^/]+\.blob\.vercel-storage\.com\/bucket-list\/commandes\//.test(f)) return { deleted: false };
+  await delImpl(f);
+  return { deleted: true };
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_missing');
@@ -51,6 +60,10 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'printful' });
       }
     }
+  }
+  if (event.type === 'checkout.session.expired') {
+    try { console.log('abandon', event.data.object.id, JSON.stringify(await dropAbandoned(event.data.object))); }
+    catch (e) { console.error('abandon error', event.data.object.id, e.message); return res.status(500).json({ error: 'blob' }); }
   }
   return res.status(200).json({ received: true });
 }

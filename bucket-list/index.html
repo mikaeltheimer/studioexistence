@@ -17,11 +17,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bucket List : ce que tu as vécu, ce que tu veux encore vivre">
 <meta name="twitter:description" content="Quelques minutes de cartes à glisser, et ton affiche Bucket List se compose. À imprimer, à accrocher, à surligner.">
-<meta property="og:image" content="https://studioexistence.com/bucket-list/og-image.jpg">
+<meta property="og:image" content="https://studioexistence.com/bucket-list/og-image.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Bucket List : une affiche en rosace des expériences vécues et à vivre">
-<meta name="twitter:image" content="https://studioexistence.com/bucket-list/og-image.jpg">
+<meta name="twitter:image" content="https://studioexistence.com/bucket-list/og-image.jpg?v=2">
 <link rel="icon" href="/bucket-list/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/bucket-list/icon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/bucket-list/icon-16.png" sizes="16x16" type="image/png">
@@ -485,7 +485,7 @@ const T={
   add_done:"Je l'ai fait", add_todo:'Ça me tente', added:'Ajoutée à ta liste', removed:'Retirée', del:'Retirer',
   seg_done:"Je l'ai fait", seg_todo:'Ça me tente', seg_skip:'Pas pour moi',
   poster_h:'Ton <em>affiche</em>', style_man:'Manifeste', style_man_s:'Ta liste en un grand texte', style_ros:'Rosace', style_ros_s:'Un portrait en rayons',
-  download:"Télécharger l'affiche", save_img:"Enregistrer l'image", poster_note:'Format A4 à 300 dpi, prêt à imprimer.',
+  download:"Télécharger l'image", save_img:"Enregistrer l'image", poster_note:"Une image à partager. Pour l'accrocher au mur, commande l'affiche imprimée.",
   tip:'<b>À surligner au fil de ta vie.</b> Les couleurs suivent un paquet de 8 surligneurs STABILO BOSS ORIGINAL : quand tu vis une nouvelle expérience, surligne-la sur ton affiche avec la couleur de sa catégorie.',
   pens_l:'Ta palette',
   shop_h:'Commander ton affiche imprimée', shop_p:'Papier mat épais de qualité musée, imprimé et expédié par Printful. Livraison incluse au Canada.',
@@ -527,7 +527,7 @@ const T={
   add_done:'Done it', add_todo:'Want to', added:'Added to your list', removed:'Removed', del:'Remove',
   seg_done:'Done it', seg_todo:'Want to', seg_skip:'Not for me',
   poster_h:'Your <em>poster</em>', style_man:'Manifesto', style_man_s:'Your list as one big text', style_ros:'Rosette', style_ros_s:'A portrait in rays',
-  download:'Download the poster', save_img:'Save the image', poster_note:'A4 at 300 dpi, ready to print.',
+  download:'Download the image', save_img:'Save the image', poster_note:'An image to share. To hang it on your wall, order the printed poster.',
   tip:'<b>Highlight it as you live.</b> The colours follow a pack of 8 STABILO BOSS ORIGINAL highlighters: when you live a new experience, highlight it on your poster in its category colour.',
   pens_l:'Your palette',
   shop_h:'Order your printed poster', shop_p:'Thick museum-quality matte paper, printed and shipped by Printful. Shipping included within Canada.',
@@ -1165,7 +1165,10 @@ const pDate=lng=>new Date().toLocaleDateString(T[lng].locale,{year:'numeric',mon
 function pFooter(ctx,W,H){smallCaps(ctx,'STUDIOEXISTENCE.COM/BUCKET-LIST',W/2,H-80,22,'center',.45);}
 function fitText(ctx,txt,maxW){let s=txt;while(ctx.measureText(s).width>maxW&&s.length>3)s=s.slice(0,-1);return s===txt?s:s.slice(0,-1).trimEnd()+'…';}
 function emptyMsg(ctx,W,H,lng){ctx.font=`italic 400 64px ${DISPLAY}`;ctx.fillStyle=INK;ctx.globalAlpha=.55;const s=T[lng].p_empty;const L=[];let l='';s.split(' ').forEach(w=>{const tt=l?l+' '+w:w;if(ctx.measureText(tt).width>W-500&&l){L.push(l);l=w;}else l=tt;});L.push(l);L.forEach((ln,i)=>{const w=ctx.measureText(ln).width;ctx.fillText(ln,W/2-w/2,H/2+i*84);});ctx.globalAlpha=1;}
-function drawPosterTo(cv,items,name,style,lng,fmt='a4',print=false){ P_FMT=FORMATS[fmt]?fmt:'a4'; P_K=typeof print==='number'?print:(print?FORMATS[P_FMT].k:1); if(style==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); P_FMT='a4'; P_K=1; }
+// Aperçus à l'écran et image téléchargée : ~1090 px de large, net sur écran, trop léger pour imprimer en grand.
+// Seul le fichier envoyé à Printful est rendu en pleine définition (print=true).
+const SCREEN_K=.44;
+function drawPosterTo(cv,items,name,style,lng,fmt='a4',print=false){ P_FMT=FORMATS[fmt]?fmt:'a4'; P_K=typeof print==='number'?print:(print?FORMATS[P_FMT].k:SCREEN_K); if(style==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); P_FMT='a4'; P_K=1; }
 
 function drawManifeste(cv,items,name,lng){
   const {ctx,W,H}=setup(cv);

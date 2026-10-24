@@ -44,13 +44,16 @@ export default async function handler(req, res) {
           product_data: {
             name: fmt[lang],
             description: `${STYLES[style][lang]}${name ? ' · ' + name : ''} · ${lang === 'fr' ? 'livraison incluse' : 'shipping included'}`,
-            images: [file.url],
+            // image d'exemple : le fichier d'impression pleine définition ne doit jamais être visible du client
+            images: [`https://${req.headers.host}/bucket-list/exemple-${style}-${lang}.jpg`],
           },
         },
       }],
       shipping_address_collection: { allowed_countries: SHIP_TO },
       allow_promotion_codes: true,   // codes promo créés dans Stripe (lancement, amis, partenaires)
       metadata: { format, style, lang, name, file: file.url },
+      // panier abandonné : la session expire après 1 h et le webhook supprime le fichier (checkout.session.expired)
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
       success_url: `${base}?commande=merci&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${base}?commande=annulee`,
     });

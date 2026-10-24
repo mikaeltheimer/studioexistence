@@ -24,6 +24,7 @@ export default function handler(req, res) {
     html = html
       .replace(/<meta property="og:title"[^>]*>/, `<meta property="og:title" content="${T}">`)
       .replace(/<meta property="og:description"[^>]*>/, `<meta property="og:description" content="${D}">`)
+      .replace(/<link rel="canonical"[^>]*>/, `<link rel="canonical" href="${U}">`)
       .replace(/<meta property="og:url"[^>]*>/, `<meta property="og:url" content="${U}">`)
       .replace(/<meta property="og:image" [^>]*>/, `<meta property="og:image" content="${I}">`)
       .replace(/<meta property="og:image:alt"[^>]*>/, `<meta property="og:image:alt" content="${T}">`)
