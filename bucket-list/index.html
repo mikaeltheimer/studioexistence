@@ -348,6 +348,16 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
   .live-keys kbd{font:inherit;font-weight:800;color:var(--ink);display:inline-grid;place-items:center;min-width:26px;height:24px;padding:0 6px;margin-right:6px;border:1.5px solid var(--ink);border-bottom-width:3px;border-radius:6px;background:var(--card)}
 }
 @media (min-width:1024px) and (prefers-reduced-motion:reduce){.live-sheet canvas{transition:none}}
+
+@media (min-width:1024px){
+  /* Bilan + affiche + commande sur un seul écran : affiche à gauche (collante), réglages à droite */
+  #bilan .screen-in.desk2{max-width:1240px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);column-gap:64px;row-gap:22px;align-items:start;padding-inline:16px}
+  .desk2>.s-top{grid-column:1/-1}
+  .d-poster{position:sticky;top:12px;display:flex;justify-content:center}
+  .d-poster .pv{width:auto;max-width:100%;height:calc(100vh - 120px);max-height:none;aspect-ratio:1/1.4142;margin:0}
+  .d-side{display:flex;flex-direction:column;gap:18px;padding-bottom:24px}
+  .d-side h1{font-size:48px}
+}
 </style>
 </head>
 <body>
@@ -495,6 +505,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const coarse=matchMedia('(pointer: coarse)').matches;
+const DESK=matchMedia('(min-width:1024px)');   // mise en page ordinateur
 function lum(h){const c=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(x=>x<=.03928?x/12.92:((x+.055)/1.055)**2.4);return .2126*c[0]+.7152*c[1]+.0722*c[2];}
 function ratio(a,b){const[x,y]=[lum(a),lum(b)].sort((m,n)=>n-m);return(x+.05)/(y+.05);}
 const onColor=bg=>ratio(bg,'#1C1A2B')>=ratio(bg,'#FFFFFF')?'#1C1A2B':'#FFFFFF';
@@ -557,7 +568,7 @@ function route(name){
   else if(name==='play') openPlay();
   else if(name==='bilan') renderBilan();
   else if(name==='list') renderList();
-  else if(name==='poster') renderPoster();
+  else if(name==='poster') (DESK.matches?renderBilan():renderPoster());
   else if(name==='shared') renderShared();
   else if(name==='merci') renderThanks();
 }
@@ -605,7 +616,7 @@ function openPlay(){
     // si la catégorie en cours est déjà entièrement répondue, avancer
     while(!Q.queue.length && S.phase==='tour' && S.catIndex<CATS.length-1 && !S.toFinal) startSegment(S.catIndex+1,'tour');
   }
-  coachOpen=!S.coachDone;
+  coachOpen=!S.coachDone&&!DESK.matches;
   renderCounts(false); renderStack(false);
   liveChrome(); drawLive();
 }
@@ -782,7 +793,6 @@ let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(!$(
 /* =====================================================================
    AFFICHE EN DIRECT (ordinateur) — aperçu basse définition redessiné à chaque réponse
    ===================================================================== */
-const DESK=matchMedia('(min-width:1024px)');
 const LIVE_SCALE=.34;   // 2480 px × 0,34 ≈ 840 px : net à l'écran, rapide à redessiner
 let liveFront='liveA', liveTimer=0, liveAddTimer=0;
 function liveChrome(){
@@ -807,7 +817,7 @@ function flashAdd(id){
   el.classList.add('on'); clearTimeout(liveAddTimer); liveAddTimer=setTimeout(()=>el.classList.remove('on'),1600);
 }
 $('liveStyles').addEventListener('click',e=>{const b=e.target.closest('[data-lstyle]');if(!b)return;S.style=b.dataset.lstyle;save();liveChrome();drawLive();});
-DESK.addEventListener('change',()=>{if(!$('play').hidden){liveChrome();drawLive();renderStack(true);}});
+DESK.addEventListener('change',()=>{if(!$('play').hidden){liveChrome();drawLive();renderStack(true);}else if(!$('bilan').hidden||!$('poster').hidden){route(DESK.matches?'bilan':currentScreen());}});
 
 /* =====================================================================
    BILAN
@@ -822,8 +832,11 @@ function posterItems(src){ // src: {answers, custom}
 function renderBilan(){
   const {d,t:tt}=counts();
   const deep=CATS.map((c,i)=>{const r=remainingMore(c).length;return r?`<button data-ci="${i}" style="--c:${PAL[c.id]}"><i></i>${esc(catName(c))}<span>+${r}</span></button>`:'';}).join('');
-  $('bilan').innerHTML=`<div class="screen-in">
+  const desk=DESK.matches;
+  if(desk) $('poster').innerHTML='';   // évite les identifiants en double (pv, orderBtn…)
+  $('bilan').innerHTML=`<div class="screen-in${desk?' desk2':''}">
     <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
+    ${desk?`<div class="d-poster"><canvas class="pv" id="pv" role="img" aria-label="${esc(t('poster_h').replace(/<[^>]+>/g,''))}"></canvas></div><div class="d-side">`:''}
     <h1>${t('bilan_h')}</h1>
     <div class="stats2"><div><i>✓</i><strong>${d}</strong><span>${esc(d===1?t('lived1'):t('lived'))}</span></div><div><i>★</i><strong>${tt}</strong><span>${esc(tt===1?t('tempt1'):t('tempt'))}</span></div></div>
     <p>${esc(t('bilan_p'))}</p>
@@ -831,10 +844,11 @@ function renderBilan(){
       <button data-style="man" aria-pressed="${S.style==='man'}">${esc(t('style_man'))}<small>${esc(t('style_man_s'))}</small></button>
       <button data-style="ros" aria-pressed="${S.style==='ros'}">${esc(t('style_ros'))}<small>${esc(t('style_ros_s'))}</small></button>
     </div>
-    <canvas class="thumb" id="bThumb" aria-hidden="true"></canvas>
+    ${desk?'':`<canvas class="thumb" id="bThumb" aria-hidden="true"></canvas>`}
     <div class="field"><label for="nameIn">${esc(t('name_l'))}</label><input id="nameIn" maxlength="40" autocomplete="given-name" placeholder="${esc(t('name_p'))}" value="${esc(S.name)}"></div>
+    ${desk&&d+tt?shopHTML()+dlHTML():''}
     <div class="btns">
-      <button class="primary" id="bPoster" ${d+tt?'':'disabled'}>${esc(t('make_poster'))}</button>
+      ${desk?'':`<button class="primary" id="bPoster" ${d+tt?'':'disabled'}>${esc(t('make_poster'))}</button>`}
       ${d+tt?'':`<p>${esc(t('need_more'))}</p>`}
       <button class="ghost" id="bShare" ${d+tt?'':'disabled'}>${esc(t('share'))}</button>
       <div class="share-box" id="shareBox" hidden><input id="shareUrl" readonly aria-label="URL"><button class="ghost" id="copyUrl">${esc(t('copy'))}</button></div>
@@ -842,19 +856,22 @@ function renderBilan(){
       ${S.finished?'':`<button class="ghost" id="bPlay">${esc(t('continue_'))}</button>`}
     </div>
     ${deep?`<div class="btns"><p class="section-t">${esc(t('deep_t'))}</p><div class="deep">${deep}</div></div>`:''}
+    ${desk&&d+tt?tipHTML():''}
     <p class="foot-note">${esc(t('saved_local'))} · ${esc(t('by'))} <a href="https://studioexistence.com" target="_blank" rel="noopener">Studio Existence</a></p>
+    ${desk?'</div>':''}
   </div>`;
   show('bilan');
   const nm=$('nameIn'); let tm; nm.addEventListener('input',()=>{S.name=nm.value.trim().slice(0,40);save();clearTimeout(tm);tm=setTimeout(drawThumb,250);});
   $('bStyles').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{S.style=b.dataset.style;save();$('bStyles').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawThumb();});
-  $('bPoster').onclick=()=>route('poster');
+  if($('bPoster')) $('bPoster').onclick=()=>route('poster');
+  if(desk&&$('shop')) wireShop(drawThumb);
   $('bShare').onclick=shareList;
   $('bList').onclick=()=>{listCat=0;route('list');};
   if($('bPlay')) $('bPlay').onclick=()=>route('play');
   $('bilan').querySelectorAll('[data-ci]').forEach(b=>b.onclick=()=>{S.toFinal=true;startSegment(+b.dataset.ci,'more');show('play');openPlay();});
   drawThumb();
 }
-function drawThumb(){ const cv=$('bThumb'); if(!cv) return; withFonts(()=>drawPosterTo(cv,posterItems(S),S.name,S.style,S.lang)); }
+function drawThumb(){ const pv=$('bilan').querySelector('#pv'); const cv=pv||$('bThumb'); if(!cv) return; withFonts(()=>drawPosterTo(cv,posterItems(S),S.name,S.style,S.lang,pv?fmtPreview:'a4')); }
 
 /* Partage : lien en lecture seule (n'écrase jamais la liste de celui qui l'ouvre) */
 function b64e(obj){const b=new TextEncoder().encode(JSON.stringify(obj));let s='';b.forEach(x=>s+=String.fromCharCode(x));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
@@ -927,28 +944,36 @@ function renderPoster(){
     </div>
     <div class="field"><label for="pName">${esc(t('name_l'))}</label><input id="pName" maxlength="40" autocomplete="given-name" placeholder="${esc(t('name_p'))}" value="${esc(S.name)}"></div>
     <canvas class="pv" id="pv" role="img" aria-label="${esc(t('poster_h').replace(/<[^>]+>/g,''))}"></canvas>
-    <div class="shop" id="shop">
-      <h2>${esc(t('shop_h'))}</h2>
-      <p>${esc(t('shop_p'))}</p>
-      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(f.label)}<small>${f.price} $ CAD</small></button>`).join('')}</div>
-      <button class="primary" id="orderBtn">${esc(t('shop_btn')(SHOP[shopFmt].price))}</button>
-      <p class="shop-status" id="shopStatus" role="status" aria-live="polite"></p>
-      <p class="shop-legal">${t('shop_legal')}</p>
-    </div>
-    <div class="btns"><button class="ghost" id="dl">${esc(coarse?t('save_img'):t('download'))}</button><p style="text-align:center">${esc(t('poster_note'))}</p></div>
-    <div class="tip"><div>${t('tip')}<div class="pens" aria-label="${esc(t('pens_l'))}">${CATS.map(c=>`<i style="background:${PAL[c.id]}" title="${esc(catName(c))} : ${esc(PEN[S.lang][c.id])}"></i>`).join('')}</div></div></div>
+    ${shopHTML()}
+    ${dlHTML()}
+    ${tipHTML()}
   </div>`;
   show('poster');
   $('pBack').onclick=()=>route('bilan');
   $('poster').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{S.style=b.dataset.style;save();$('poster').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));draw();});
   const nm=$('pName');let tm;nm.addEventListener('input',()=>{S.name=nm.value.trim().slice(0,40);save();clearTimeout(tm);tm=setTimeout(draw,200);});
   const draw=()=>withFonts(()=>drawPosterTo($('pv'),posterItems(S),S.name,S.style,S.lang,fmtPreview));
-  $('dl').onclick=()=>exportPoster($('pv'),S.name);
-  $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=t('shop_btn')(SHOP[shopFmt].price);fmtPreview=shopFmt;draw();});
-  $('orderBtn').onclick=placeOrder;
+  wireShop(draw);
   draw();
 }
 let shopFmt='a2', fmtPreview='a4';
+/* Bloc commande (partagé entre l'écran Affiche et l'écran combiné sur ordinateur) */
+function shopHTML(){return `<div class="shop" id="shop">
+      <h2>${esc(t('shop_h'))}</h2>
+      <p>${esc(t('shop_p'))}</p>
+      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(f.label)}<small>${f.price} $ CAD</small></button>`).join('')}</div>
+      <button class="primary" id="orderBtn">${esc(t('shop_btn')(SHOP[shopFmt].price))}</button>
+      <p class="shop-status" id="shopStatus" role="status" aria-live="polite"></p>
+      <p class="shop-legal">${t('shop_legal')}</p>
+    </div>`;}
+function dlHTML(){return `<div class="btns"><button class="ghost" id="dl">${esc(coarse?t('save_img'):t('download'))}</button><p style="text-align:center">${esc(t('poster_note'))}</p></div>`;}
+function tipHTML(){return `<div class="tip"><div>${t('tip')}<div class="pens" aria-label="${esc(t('pens_l'))}">${CATS.map(c=>`<i style="background:${PAL[c.id]}" title="${esc(catName(c))} : ${esc(PEN[S.lang][c.id])}"></i>`).join('')}</div></div></div>`;}
+function wireShop(draw){
+  $('dl').onclick=()=>exportPoster($('pv'),S.name);
+  $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=t('shop_btn')(SHOP[shopFmt].price);fmtPreview=shopFmt;draw();});
+  $('orderBtn').onclick=placeOrder;
+}
+
 const ONLINE=/(^|\.)studioexistence\.com$|\.vercel\.app$/.test(location.hostname);
 async function placeOrder(){
   const btn=$('orderBtn'), st=$('shopStatus'); const items=posterItems(S);
