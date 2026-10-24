@@ -357,6 +357,8 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
   .d-poster .pv{width:auto;max-width:100%;height:calc(100vh - 120px);max-height:none;aspect-ratio:1/1.4142;margin:0}
   .d-side{display:flex;flex-direction:column;gap:18px;padding-bottom:24px}
   .d-side h1{font-size:48px}
+  .d-side .deepcard .deep{grid-template-columns:1fr 1fr}
+  .d-side .deepcard .deep button{padding:10px 12px;font-size:14.5px}
 }
 
 .invite{display:flex;flex-direction:column;gap:10px;padding:16px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);box-shadow:6px 6px 0 #FFEE2E}
@@ -366,6 +368,21 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
   #shared .d-side h1{font-size:48px}
   #shared .shared-list{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
 }
+
+/* Invitation à approfondir (bilan) */
+.deepcard{display:flex;flex-direction:column;gap:12px;padding:16px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);box-shadow:6px 6px 0 var(--pink)}
+.deepcard h2{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.1;margin:0}
+.deepcard .deep button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:10px;row-gap:7px;line-height:1.2}
+.deepcard .deep button span{margin-left:0;white-space:nowrap}
+.deepcard .deep button .bar{grid-column:1/-1;height:5px;border-radius:3px;background:color-mix(in srgb,var(--c) 22%,var(--paper));overflow:hidden}
+.deepcard .deep button .bar b{display:block;height:100%;background:var(--c)}
+/* Ajouter sa propre expérience, en fin de catégorie */
+.inter .own{display:flex;flex-direction:column;gap:6px}
+.inter .own label{font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;opacity:.8}
+.inter .own div{display:flex;gap:6px}
+.inter .own input{flex:1;min-width:0;font:inherit;font-size:16px;padding:9px 11px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink)}
+.inter .own button{flex-shrink:0;width:42px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);font-weight:800}
+.inter .linkish{background:none;border:0;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:2px;align-self:center}
 </style>
 </head>
 <body>
@@ -439,9 +456,9 @@ const T={
   more:n=>`Encore ${n} expérience${n>1?'s':''}`, see_bilan:'Voir mon bilan →',
   bilan_h:'Ta Bucket List <em>prend forme</em>', bilan_p:'Crée ton affiche, partage ta liste, ou approfondis les catégories qui te parlent.',
   name_l:'Ton prénom (affiche et partage)', name_p:'ex : Marie',
-  make_poster:'Créer mon affiche', share:'Partager ma liste', edit:'Revoir mes réponses', continue_:'Continuer les cartes',
-  deep_t:'Approfondir une catégorie', need_more:'Réponds à quelques cartes pour composer ton affiche.',
-  list_h:'Mes réponses', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
+  make_poster:'Créer mon affiche', share:'Partager ma liste', edit:'Modifier mes expériences', continue_:'Continuer les cartes',
+  deep_t:'Approfondir une catégorie', deep_h:'Ta liste peut encore grandir', deep_p:n=>`Il reste ${n} expérience${n>1?'s':''} à découvrir. Chaque catégorie explorée enrichit ton affiche.`, deep_next:c=>`Approfondir : ${c} →`, own_t:'Il manque quelque chose ? Ajoute ta propre expérience', need_more:'Réponds à quelques cartes pour composer ton affiche.',
+  list_h:'Mes expériences', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
   add_done:"Je l'ai fait", add_todo:'Ça me tente', added:'Ajoutée à ta liste', removed:'Retirée', del:'Retirer',
   seg_done:"Je l'ai fait", seg_todo:'Ça me tente', seg_skip:'Pas pour moi',
   poster_h:'Ton <em>affiche</em>', style_man:'Manifeste', style_man_s:'Ta liste en un grand texte', style_ros:'Rosace', style_ros_s:'Un portrait en rayons',
@@ -481,9 +498,9 @@ const T={
   more:n=>`${n} more experience${n>1?'s':''}`, see_bilan:'See my summary →',
   bilan_h:'Your Bucket List <em>is taking shape</em>', bilan_p:'Create your poster, share your list, or go deeper into the categories that speak to you.',
   name_l:'Your first name (poster and sharing)', name_p:'e.g. Marie',
-  make_poster:'Create my poster', share:'Share my list', edit:'Review my answers', continue_:'Keep answering',
-  deep_t:'Go deeper into a category', need_more:'Answer a few cards to build your poster.',
-  list_h:'My answers', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
+  make_poster:'Create my poster', share:'Share my list', edit:'Edit my experiences', continue_:'Keep answering',
+  deep_t:'Go deeper into a category', deep_h:'Your list can still grow', deep_p:n=>`${n} more experience${n>1?'s':''} to discover. Every category you explore fills out your poster.`, deep_next:c=>`Go deeper: ${c} →`, own_t:'Something missing? Add your own experience', need_more:'Answer a few cards to build your poster.',
+  list_h:'My experiences', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
   add_done:'Done it', add_todo:'Want to', added:'Added to your list', removed:'Removed', del:'Remove',
   seg_done:'Done it', seg_todo:'Want to', seg_skip:'Not for me',
   poster_h:'Your <em>poster</em>', style_man:'Manifesto', style_man_s:'Your list as one big text', style_ros:'Rosette', style_ros_s:'A portrait in rays',
@@ -635,7 +652,7 @@ function renderHeader(){
   $('catName').innerHTML=`<span>${esc(catName(c))}</span>`;
   $('catStep').textContent=S.phase==='tour'?`${S.catIndex+1} / ${CATS.length}`:t('deeper');
   const lastStop=S.toFinal||S.catIndex===CATS.length-1;
-  $('skipcat').textContent=S.phase==='more'?(lastStop?t('finish'):t('next')):(lastStop?t('finish'):t('skip'));
+  $('skipcat').textContent=S.toFinal?(nextDeep(S.catIndex)>=0?t('next'):t('finish')):S.phase==='more'?(lastStop?t('finish'):t('next')):(lastStop?t('finish'):t('skip'));
   $('skipcat').hidden=!Q.queue.length;
   $('segs').innerHTML=Array.from({length:Q.segTotal},(_,i)=>`<i class="${i<Q.segDone?'on':''}"></i>`).join('');
 }
@@ -747,16 +764,33 @@ $('play').addEventListener('dblclick',e=>e.preventDefault());
 $('mini').onclick=()=>route('bilan');
 $('skipcat').onclick=()=>{
   snapshot();closeCoach();
-  if(S.toFinal||S.catIndex===CATS.length-1){Q.queue=[];finishTour();return;}
+  if(S.toFinal){const nd=nextDeep(S.catIndex);if(nd>=0){startSegment(nd,'more');renderStack(false);toast(catName(cat()));}else{Q.queue=[];finishTour();}return;}
+  if(S.catIndex===CATS.length-1){Q.queue=[];finishTour();return;}
   startSegment(S.catIndex+1,'tour');renderStack(false);toast(catName(cat()));
 };
+
+/* Approfondir : prochaine catégorie qui a encore des cartes (en boucle à partir de la catégorie en cours) */
+function nextDeep(from){for(let k=1;k<=CATS.length;k++){const i=(from+k)%CATS.length;if(i!==from&&remainingMore(CATS[i]).length)return i;}return -1;}
+function deepCard(){
+  const rows=CATS.map((c,i)=>{const r=remainingMore(c).length;if(!r)return'';const tot=c.items.length,ans=tot-r;
+    return `<button data-ci="${i}" style="--c:${PAL[c.id]}"><i></i>${esc(catName(c))}<span>${ans} / ${tot}</span><span class="bar"><b style="width:${Math.round(ans/tot*100)}%"></b></span></button>`;}).join('');
+  if(!rows) return '';
+  const R=CATS.reduce((n,c)=>n+remainingMore(c).length,0);
+  return `<div class="deepcard"><h2>${esc(t('deep_h'))}</h2><p>${esc(t('deep_p')(R))}</p><div class="deep">${rows}</div></div>`;
+}
+function addOwn(kind){
+  const inp=$('ownIn'); const v=(inp.value||'').trim().slice(0,120); if(!v){inp.focus();return;}
+  snapshot(); const id=genId(); S.custom.push({id,label:v,cat:cat().id,custom:true}); S.answers[id]=kind; S.order.push(id); save();
+  renderCounts(true); drawLive(id); toast(t('added')); renderInter();
+}
 function finishTour(){S.finished=true;S.toFinal=false;save();route('bilan');}
 function renderInter(){
   const c=cat();const st=$('stack');
   const its=allItems(c);
   const d=its.filter(i=>S.answers[i.id]==='done').length,tt=its.filter(i=>S.answers[i.id]==='todo').length;
   const rem=remainingMore(c).length;const last=S.catIndex===CATS.length-1;
-  const nextLabel=S.toFinal||last?t('see_bilan'):`${catName(CATS[S.catIndex+1])} →`;
+  const deep=S.toFinal, nd=deep?nextDeep(S.catIndex):-1;
+  const nextLabel=deep?(nd>=0?t('deep_next')(catName(CATS[nd])):t('see_bilan')):(last?t('see_bilan'):`${catName(CATS[S.catIndex+1])} →`);
   st.innerHTML=`<div class="inter" style="${vars(c.id)}">
     <canvas class="confetti" id="conf"></canvas>
     <div class="top">
@@ -766,8 +800,10 @@ function renderInter(){
       <div class="grow">${its.filter(i=>S.answers[i.id]==='done'||S.answers[i.id]==='todo').slice(-6).map(i=>`<div class="got"><span>${S.answers[i.id]==='done'?'✓':'★'}</span>${esc(label(i))}</div>`).join('')}</div>
     </div>
     <div class="acts2">
+      <form class="own" id="own" autocomplete="off"><label for="ownIn">${esc(t('own_t'))}</label><div><input id="ownIn" maxlength="120" placeholder="${esc(t('add_p'))}"><button type="button" data-own="done" aria-label="${esc(t('add_done'))}" title="${esc(t('add_done'))}">✓</button><button type="button" data-own="todo" aria-label="${esc(t('add_todo'))}" title="${esc(t('add_todo'))}">★</button></div></form>
       ${rem?`<div class="q">${esc(t('further'))} ${esc(t('rem')(rem))}</div><button class="primary" id="more">${esc(t('more')(Math.min(MORE,rem)))}</button>`:''}
       <button class="${rem?'ghost':'primary'}" id="next">${esc(nextLabel)}</button>
+      ${deep&&nd>=0?`<button class="linkish" id="toBilan">${esc(t('see_bilan'))}</button>`:''}
     </div>
   </div>`;
   $('segs').querySelectorAll('i').forEach(i=>i.classList.add('on'));
@@ -775,7 +811,10 @@ function renderInter(){
   const g=st.querySelector('.grow'); while(g&&g.lastElementChild&&g.scrollHeight>g.clientHeight+1) g.lastElementChild.remove();
   confetti($('conf'),d+tt);
   if(rem)$('more').onclick=()=>{startSegment(S.catIndex,'more');renderStack(false);};
-  $('next').onclick=()=>{if(S.toFinal||last){finishTour();return;}startSegment(S.catIndex+1,'tour');renderStack(false);};
+  $('next').onclick=()=>{if(deep){if(nd>=0){startSegment(nd,'more');renderStack(false);}else finishTour();return;}if(last){finishTour();return;}startSegment(S.catIndex+1,'tour');renderStack(false);};
+  if($('toBilan')) $('toBilan').onclick=finishTour;
+  $('own').querySelectorAll('[data-own]').forEach(b=>b.onclick=()=>addOwn(b.dataset.own));
+  $('own').onsubmit=e=>{e.preventDefault();addOwn('done');};
 }
 function confetti(cv,n){
   if(reduced||!cv||n===0)return;
@@ -839,7 +878,6 @@ function posterItems(src){ // src: {answers, custom}
 }
 function renderBilan(){
   const {d,t:tt}=counts();
-  const deep=CATS.map((c,i)=>{const r=remainingMore(c).length;return r?`<button data-ci="${i}" style="--c:${PAL[c.id]}"><i></i>${esc(catName(c))}<span>+${r}</span></button>`:'';}).join('');
   const desk=DESK.matches;
   if(desk) $('poster').innerHTML='';   // évite les identifiants en double (pv, orderBtn…)
   $('bilan').innerHTML=`<div class="screen-in${desk?' desk2':''}">
@@ -848,6 +886,7 @@ function renderBilan(){
     <h1>${t('bilan_h')}</h1>
     <div class="stats2"><div><i>✓</i><strong>${d}</strong><span>${esc(d===1?t('lived1'):t('lived'))}</span></div><div><i>★</i><strong>${tt}</strong><span>${esc(tt===1?t('tempt1'):t('tempt'))}</span></div></div>
     <p>${esc(t('bilan_p'))}</p>
+    ${desk&&d+tt?deepCard():''}
     <div class="styles" role="group" id="bStyles">
       <button data-style="man" aria-pressed="${S.style==='man'}">${esc(t('style_man'))}<small>${esc(t('style_man_s'))}</small></button>
       <button data-style="ros" aria-pressed="${S.style==='ros'}">${esc(t('style_ros'))}<small>${esc(t('style_ros_s'))}</small></button>
@@ -855,15 +894,16 @@ function renderBilan(){
     ${desk?'':`<canvas class="thumb" id="bThumb" aria-hidden="true"></canvas>`}
     <div class="field"><label for="nameIn">${esc(t('name_l'))}</label><input id="nameIn" maxlength="40" autocomplete="given-name" placeholder="${esc(t('name_p'))}" value="${esc(S.name)}"></div>
     ${desk&&d+tt?shopHTML()+dlHTML():''}
+    ${desk?'':`<div class="btns"><button class="primary" id="bPoster" ${d+tt?'':'disabled'}>${esc(t('make_poster'))}</button></div>`}
+    ${!desk&&d+tt?deepCard():''}
     <div class="btns">
-      ${desk?'':`<button class="primary" id="bPoster" ${d+tt?'':'disabled'}>${esc(t('make_poster'))}</button>`}
       ${d+tt?'':`<p>${esc(t('need_more'))}</p>`}
       <button class="ghost" id="bShare" ${d+tt?'':'disabled'}>${esc(t('share'))}</button>
       <div class="share-box" id="shareBox" hidden><input id="shareUrl" readonly aria-label="URL"><button class="ghost" id="copyUrl">${esc(t('copy'))}</button></div>
       <button class="ghost" id="bList">${esc(t('edit'))}</button>
       ${S.finished?'':`<button class="ghost" id="bPlay">${esc(t('continue_'))}</button>`}
     </div>
-    ${deep?`<div class="btns"><p class="section-t">${esc(t('deep_t'))}</p><div class="deep">${deep}</div></div>`:''}
+    ${d+tt?'':deepCard()}
     ${desk&&d+tt?tipHTML():''}
     <p class="foot-note">${esc(t('saved_local'))} · ${esc(t('by'))} <a href="https://studioexistence.com" target="_blank" rel="noopener">Studio Existence</a></p>
     ${desk?'</div>':''}
