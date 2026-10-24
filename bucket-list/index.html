@@ -973,12 +973,14 @@ function drawManifeste(cv,items,name,lng){
   const ly=H-210;ctx.font=`600 30px ${BODY}`;
   const lab1=T[lng].p_leg1,lab2=T[lng].p_leg2;
   const w1=ctx.measureText(lab1).width,w2=ctx.measureText(lab2).width;let x=W/2-(w1+w2+120)/2;
-  ctx.save();ctx.globalCompositeOperation='multiply';ctx.fillStyle=YELLOW;ctx.fillRect(x-6,ly-24,w1*.36,30);ctx.restore();
+  ctx.save();ctx.globalCompositeOperation='multiply';ctx.fillStyle=YELLOW;ctx.fillRect(x-6,ly-24,ctx.measureText(lab1.split(/\s*:/)[0]).width+8,30);ctx.restore();
   ctx.fillStyle=INK;ctx.fillText(lab1,x,ly);x+=w1+120;ctx.fillText(lab2,x,ly);
-  ctx.strokeStyle=PINK;ctx.lineWidth=4;ctx.setLineDash([12,9]);ctx.beginPath();ctx.moveTo(x,ly+12);ctx.lineTo(x+w2*.42,ly+12);ctx.stroke();ctx.setLineDash([]);
+  legDash(ctx,x,ly+12,ctx.measureText(lab2.split(/\s*:/)[0]).width);
   pFooter(ctx,W,H);
 }
 
+// pointillé de légende : tirets répartis pour commencer et finir pile sous le mot
+function legDash(ctx,x,y,w){const d=12,n=Math.max(2,Math.round((w+9)/21)),g=(w-n*d)/(n-1);ctx.strokeStyle=PINK;ctx.lineWidth=4;ctx.setLineDash([d,g]);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w,y);ctx.stroke();ctx.setLineDash([]);}
 function drawRosace(cv,items,name,lng){
   const {ctx,W,H}=setup(cv);
   pTitle(ctx,W,name,300,150,lng); smallCaps(ctx,pDate(lng),W/2,400,24,'center');
@@ -1018,9 +1020,9 @@ function drawRosace(cv,items,name,lng){
   // légende
   const yL=H-190;ctx.font=`600 32px ${BODY}`;const A=T[lng].p_leg1,B=T[lng].p_leg2s,gap=77;
   const wa=ctx.measureText(A).width,wb=ctx.measureText(B).width;let x=W/2-(wa+wb+gap)/2;
-  ctx.save();ctx.globalCompositeOperation='multiply';ctx.fillStyle=YELLOW;ctx.fillRect(x-6,yL-26,wa*.4,32);ctx.restore();
+  ctx.save();ctx.globalCompositeOperation='multiply';ctx.fillStyle=YELLOW;ctx.fillRect(x-6,yL-26,ctx.measureText(A.split(/\s*:/)[0]).width+8,32);ctx.restore();
   ctx.fillStyle=INK;ctx.fillText(A,x,yL);x+=wa+gap;ctx.fillText(B,x,yL);
-  ctx.strokeStyle=PINK;ctx.lineWidth=4;ctx.setLineDash([12,9]);ctx.beginPath();ctx.moveTo(x,yL+12);ctx.lineTo(x+wb*.4,yL+12);ctx.stroke();ctx.setLineDash([]);
+  legDash(ctx,x,yL+12,ctx.measureText(B.split(/\s*:/)[0]).width);
   pFooter(ctx,W,H);
 }
 
