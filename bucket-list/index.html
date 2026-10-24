@@ -623,7 +623,8 @@ function renderIntro(){
    MODE DÉCOUVERTE
    ===================================================================== */
 function cat(){return CATS[S.catIndex];}
-function remainingMore(c){const tour=new Set(TOUR[c.id]);return c.items.filter(i=>!tour.has(i.id)&&!(i.id in S.answers));}
+// expériences sans aucun statut (ni vécu, ni ça me tente, ni pas pour moi), y compris celles du tour rapide passées ou remises à zéro
+function remainingMore(c){return allItems(c).filter(i=>!(i.id in S.answers));}
 function startSegment(ci,phase){
   S.catIndex=ci;S.phase=phase;const c=CATS[ci];
   Q.queue=phase==='tour'?TOUR[c.id].filter(id=>!(id in S.answers)):remainingMore(c).slice(0,MORE).map(i=>i.id);
@@ -772,7 +773,7 @@ $('skipcat').onclick=()=>{
 /* Approfondir : prochaine catégorie qui a encore des cartes (en boucle à partir de la catégorie en cours) */
 function nextDeep(from){for(let k=1;k<=CATS.length;k++){const i=(from+k)%CATS.length;if(i!==from&&remainingMore(CATS[i]).length)return i;}return -1;}
 function deepCard(){
-  const rows=CATS.map((c,i)=>{const r=remainingMore(c).length;if(!r)return'';const tot=c.items.length,ans=tot-r;
+  const rows=CATS.map((c,i)=>{const r=remainingMore(c).length;if(!r)return'';const tot=allItems(c).length,ans=tot-r;
     return `<button data-ci="${i}" style="--c:${PAL[c.id]}"><i></i>${esc(catName(c))}<span>${ans} / ${tot}</span><span class="bar"><b style="width:${Math.round(ans/tot*100)}%"></b></span></button>`;}).join('');
   if(!rows) return '';
   const R=CATS.reduce((n,c)=>n+remainingMore(c).length,0);
