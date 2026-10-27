@@ -50,7 +50,8 @@ export default async function handler(req, res) {
   }
   if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const session = event.data.object;
-    if (session.payment_status === 'paid') {
+    // « no_payment_required » : commande entièrement couverte par un code promo à 100 %
+    if (session.payment_status === 'paid' || session.payment_status === 'no_payment_required') {
       try {
         const out = await createPrintfulOrder(session);
         console.log('printful', session.id, JSON.stringify(out));
