@@ -15,15 +15,15 @@ const PENS = [
   ['#C29BFF', { fr: 'Lilas', en: 'Lilac' }, { fr: 'Insolite & mystère', en: 'Odd & Mysterious' }],
 ];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const money = (cents, lang) => new Intl.NumberFormat(lang === 'fr' ? 'fr-CA' : 'en-US',   // en anglais : « CA$ » pour lever l'ambiguïté avec le dollar américain
-  { style: 'currency', currency: 'CAD' }).format((cents || 0) / 100);
+// montant dans la devise de la commande ; en anglais, « CA$ » ou « $ » (USD) sans ambiguïté
+const money = (cents, lang, cur = 'cad') => new Intl.NumberFormat(lang === 'fr' ? 'fr-CA' : 'en-US', { style: 'currency', currency: String(cur || 'cad').toUpperCase() }).format((cents || 0) / 100);
 export const orderNo = sessionId => externalId(sessionId).slice(0, 8).toUpperCase();
 
 export function customerEmail(session, site = 'https://www.studioexistence.com') {
   const m = session.metadata || {}, fr = m.lang !== 'en', L = fr ? 'fr' : 'en';
   const fmt = FORMATS[m.format] || {}, style = (STYLES[m.style] || STYLES.man)[L];
   const r = recipientFrom(session), first = (m.name || r.name.split(' ')[0] || '').trim();
-  const no = orderNo(session.id), total = money(session.amount_total, L), tax = session.total_details?.amount_tax || 0;
+  const no = orderNo(session.id), total = money(session.amount_total, L, session.currency), tax = session.total_details?.amount_tax || 0;
   const T = fr ? {
     subject: `Ta Bucket List part à l'impression (commande ${no})`,
     hi: first ? `Merci, ${esc(first)} !` : 'Merci !',
@@ -56,7 +56,7 @@ ${img}
   <div style="font-family:Georgia,serif;font-size:20px;padding-bottom:8px">${T.recap}</div>
   <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
   ${row(T.no, no)}${row(T.item, esc(fmt[L] || m.format))}${row(T.styleL, esc(style) + (m.name ? ' · ' + esc(m.name) : ''))}
-  ${row(T.total, total + (tax ? ` <span style="font-weight:400;color:#4A4458">(${T.taxL} ${money(tax, L)})</span>` : ''))}
+  ${row(T.total, total + (tax ? ` <span style="font-weight:400;color:#4A4458">(${T.taxL} ${money(tax, L, session.currency)})</span>` : ''))}
   ${row(T.ship, addr.map(esc).join('<br>'))}
   </table>
   <div style="font-size:14px;line-height:1.5;color:#4A4458;padding-top:10px">${T.when}</div>
@@ -71,7 +71,7 @@ ${img}
 <tr><td style="font-size:12px;color:#4A4458;padding-top:6px">${T.by} · <a href="${site}/conditions/${fr ? '' : '#en'}" style="color:#4A4458">${T.terms}</a> · <a href="${site}/bucket-list/" style="color:#4A4458">studioexistence.com/bucket-list</a></td></tr>
 </table></td></tr></table></body></html>`;
   const text = [T.hi.replace(/&#39;/g, "'"), '', T.lead, '', `${T.no} : ${no}`, `${T.item} : ${fmt[L] || m.format}`, `${T.styleL} : ${style}${m.name ? ' · ' + m.name : ''}`,
-    `${T.total} : ${total}${tax ? ` (${T.taxL} ${money(tax, L)})` : ''}`, `${T.ship} : ${addr.join(', ')}`, '', T.when, '', `${T.kit} — ${T.kitp}`, '', T.help, '', T.by].join('\n');
+    `${T.total} : ${total}${tax ? ` (${T.taxL} ${money(tax, L, session.currency)})` : ''}`, `${T.ship} : ${addr.join(', ')}`, '', T.when, '', `${T.kit} — ${T.kitp}`, '', T.help, '', T.by].join('\n');
   return { subject: T.subject, html, text };
 }
 
@@ -80,14 +80,14 @@ export function sellerEmail(session, printful = {}) {
   const fmt = (FORMATS[m.format] || {}).fr || m.format;
   const lines = [
     `Commande ${no} — ${fmt}, ${(STYLES[m.style] || STYLES.man).fr}${m.name ? ' · ' + m.name : ''}`,
-    `Total : ${money(session.amount_total, 'fr')} (taxes ${money(session.total_details?.amount_tax, 'fr')})`,
+    `Total : ${money(session.amount_total, 'fr', session.currency)} (taxes ${money(session.total_details?.amount_tax, 'fr', session.currency)})`,
     `Client : ${r.name} <${r.email}>`,
     `Livraison : ${[r.address1, r.address2, r.city, r.state_code, r.zip].filter(Boolean).join(', ')}`,
     `Printful : commande ${printful.id || '?'}${printful.confirm ? ' (envoyée en production)' : ' (BROUILLON à confirmer dans Printful)'}`,
     `Fichier d'impression : ${m.file || '?'}`,
     `Stripe : ${session.id}`,
   ];
-  return { subject: `Nouvelle commande Bucket List ${no} — ${money(session.amount_total, 'fr')}`, text: lines.join('\n') };
+  return { subject: `Nouvelle commande Bucket List ${no} — ${money(session.amount_total, 'fr', session.currency)}`, text: lines.join('\n') };
 }
 
 // Envoi idempotent : Resend ignore un second envoi avec la même clé (webhook rejoué par Stripe)

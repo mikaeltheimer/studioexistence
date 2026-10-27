@@ -5,7 +5,7 @@
 import Stripe from 'stripe';
 import { put } from '@vercel/blob';
 import { randomUUID } from 'crypto';
-import { FORMATS, STYLES, SHIP_TO, readRaw } from './_shop.js';
+import { FORMATS, STYLES, CURRENCIES, readRaw } from './_shop.js';
 
 export const config = { runtime: 'nodejs' };
 const MAX = 4.4 * 1024 * 1024;
@@ -22,6 +22,7 @@ export default async function handler(req, res) {
   const format = url.searchParams.get('format'), fmt = FORMATS[format];
   const style = STYLES[url.searchParams.get('style')] ? url.searchParams.get('style') : 'man';
   const lang = url.searchParams.get('lang') === 'en' ? 'en' : 'fr';
+  const cur = url.searchParams.get('cur') === 'usd' ? 'usd' : 'cad', CUR = CURRENCIES[cur];
   const name = (url.searchParams.get('name') || '').replace(/[\u0000-\u001f]/g, '').slice(0, 40).trim();
   if (!fmt) return res.status(400).json({ error: 'format' });
 
@@ -50,8 +51,8 @@ export default async function handler(req, res) {
       line_items: [{
         quantity: 1,
         price_data: {
-          currency: 'cad',
-          unit_amount: fmt.price,
+          currency: cur,
+          unit_amount: fmt[CUR.field],
           tax_behavior: 'inclusive',   // prix affiché = prix payé : TPS/TVQ (ou TVH) incluses, calculées par Stripe Tax
           product_data: {
             name: fmt[lang],
@@ -62,10 +63,11 @@ export default async function handler(req, res) {
           },
         },
       }],
-      shipping_address_collection: { allowed_countries: SHIP_TO },
+      // un prix en USD ne se livre qu'aux États-Unis, un prix en CAD qu'au Canada
+      shipping_address_collection: { allowed_countries: CUR.ship },
       automatic_tax: { enabled: true },   // taxe selon la province de l'adresse de livraison
       allow_promotion_codes: true,   // codes promo créés dans Stripe (lancement, amis, partenaires)
-      metadata: { format, style, lang, name, file: file.url, ...(preview ? { preview: preview.url } : {}) },
+      metadata: { format, style, lang, name, cur, file: file.url, ...(preview ? { preview: preview.url } : {}) },
       // panier abandonné : la session expire après 1 h et le webhook supprime le fichier (checkout.session.expired)
       expires_at: Math.floor(Date.now() / 1000) + 3600,
       success_url: `${base}?commande=merci&session_id={CHECKOUT_SESSION_ID}`,

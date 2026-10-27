@@ -278,6 +278,7 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 .shop{display:flex;flex-direction:column;gap:12px;padding:16px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);box-shadow:6px 6px 0 #FFEE2E}
 .shop .styles button{background:var(--paper)}
 .shop .styles button[aria-pressed="true"]{background:var(--ink)}
+.shop-cur{font-size:13px;margin:0;color:var(--muted)}.shop-cur .linkish{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .shop-legal{font-size:13px;margin:0;color:var(--muted)}.shop-legal a{color:inherit}
 .shop-status{min-height:1.4em;font-weight:700;color:var(--ink)!important}
 
@@ -471,7 +472,12 @@ const STORE = 'bl2';           // clé de sauvegarde locale
 const PAL ={nature:'#57E36A',voyages:'#FFEE2E',corps:'#FF5A5F',sensations:'#FF9F2E',accomplissements:'#3FE0D0',relations:'#FF66B8',culture:'#55B8FF',mystere:'#C29BFF'};
 const PAL2={nature:'#FF66B8',voyages:'#FF66B8',corps:'#55B8FF',sensations:'#C29BFF',accomplissements:'#FF66B8',relations:'#55B8FF',culture:'#FF66B8',mystere:'#FFEE2E'};
 /* Boutique : prix affichés (CAD, livraison incluse). Les prix facturés viennent de api/_shop.js. */
-const SHOP={a3:{label:'A3 · 29,7 × 42 cm',price:49},a2:{label:'A2 · 42 × 59,4 cm',price:65}};
+const SHOP={a3:{label:'A3 · 29,7 × 42 cm',price:49,usd:39},a2:{label:'A2 · 42 × 59,4 cm',price:65,usd:49}};
+/* Devise : USD pour les visiteurs aux États-Unis (pays fourni par /api/geo), CAD sinon ; le visiteur peut changer */
+let CUR='cad'; try{const c=sessionStorage.getItem('bl-cur');if(c==='usd'||c==='cad')CUR=c;}catch(e){}
+const priceOf=k=>CUR==='usd'?SHOP[k].usd:SHOP[k].price;
+const money=n=>CUR==='usd'?(S.lang==='en'?`$${n} USD`:`${n} $ US`):(S.lang==='en'?`$${n} CAD`:`${n} $`);
+function setCur(c){CUR=c;try{sessionStorage.setItem('bl-cur',c);}catch(e){}const scr=currentScreen();if(scr==='bilan'||scr==='poster')route(scr);}
 const PEN={fr:{nature:'vert',voyages:'jaune',corps:'rouge',sensations:'orange',accomplissements:'turquoise',relations:'rose',culture:'bleu',mystere:'lilas'},
            en:{nature:'green',voyages:'yellow',corps:'red',sensations:'orange',accomplissements:'turquoise',relations:'pink',culture:'blue',mystere:'lilac'}};
 
@@ -508,7 +514,7 @@ const T={
   tip:'<b>À surligner au fil de ta vie.</b> Les couleurs suivent un paquet de 8 surligneurs STABILO BOSS ORIGINAL : quand tu vis une nouvelle expérience, surligne-la sur ton affiche avec la couleur de sa catégorie.',
   pens_l:'Ta palette',
   shop_h:'Commander ton affiche imprimée', shop_p:'Papier mat épais de qualité musée, imprimé et expédié par Printful. Taxes et livraison incluses au Canada et aux États-Unis.',
-  shop_btn:p=>`Commander · ${p} $`, shop_wait:"Préparation du fichier d'impression…", shop_pay:'Redirection vers le paiement sécurisé…',
+  shop_btn:p=>`Commander · ${p}`, cur_us:'Prix pour une livraison aux États-Unis.', cur_ca:'Prix pour une livraison au Canada.', cur_to_ca:'Livrer au Canada', cur_to_us:'Livrer aux États-Unis', shop_wait:"Préparation du fichier d'impression…", shop_pay:'Redirection vers le paiement sécurisé…',
   shop_err:"La commande n'a pas pu démarrer. Réessaie dans un instant.", shop_off:'La commande en ligne fonctionne seulement sur studioexistence.com.',
   shop_need:"Ajoute au moins une expérience avant de commander.", shop_legal:'En commandant, tu acceptes nos <a href="/conditions/" target="_blank" rel="noopener">conditions de vente</a>. <a href="/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>', shop_preview:'Aperçu au format',
   thanks_h:'Merci, <em>c\'est commandé</em>', thanks_p:"Ton affiche part à l'impression. Tu recevras un courriel de confirmation de Stripe, puis un avis d'expédition. Compte environ une à deux semaines pour la livraison.",
@@ -550,7 +556,7 @@ const T={
   tip:'<b>Highlight it as you live.</b> The colours follow a pack of 8 STABILO BOSS ORIGINAL highlighters: when you live a new experience, highlight it on your poster in its category colour.',
   pens_l:'Your palette',
   shop_h:'Order your printed poster', shop_p:'Thick museum-quality matte paper, printed and shipped by Printful. Taxes and shipping included to Canada and the US.',
-  shop_btn:p=>`Order · $${p} CAD`, shop_wait:'Preparing the print file…', shop_pay:'Redirecting to secure checkout…',
+  shop_btn:p=>`Order · ${p}`, cur_us:'Prices for delivery in the United States.', cur_ca:'Prices for delivery in Canada.', cur_to_ca:'Ship to Canada', cur_to_us:'Ship to the US', shop_wait:'Preparing the print file…', shop_pay:'Redirecting to secure checkout…',
   shop_err:"The order couldn't start. Please try again in a moment.", shop_off:'Online ordering only works on studioexistence.com.',
   shop_need:'Add at least one experience before ordering.', shop_legal:'By ordering, you accept our <a href="/conditions/#en" target="_blank" rel="noopener">terms of sale</a>. <a href="/confidentialite/#en" target="_blank" rel="noopener">Privacy</a>', shop_preview:'Preview in',
   thanks_h:'Thank you, <em>it\'s ordered</em>', thanks_p:"Your poster is off to the printer. You'll get a confirmation email from Stripe, then a shipping notice. Allow about one to two weeks for delivery.",
@@ -1076,8 +1082,9 @@ let shopFmt='a2', fmtPreview='a4';
 function shopHTML(){return `<div class="shop" id="shop">
       <h2>${esc(t('shop_h'))}</h2>
       <p>${esc(t('shop_p'))}</p>
-      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(S.lang==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${S.lang==='en'?'$'+f.price+' CAD':f.price+' $ CAD'}</small></button>`).join('')}</div>
-      <button class="primary" id="orderBtn">${esc(t('shop_btn')(SHOP[shopFmt].price))}</button>
+      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(S.lang==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${esc(money(priceOf(k)))}</small></button>`).join('')}</div>
+      <button class="primary" id="orderBtn">${esc(t('shop_btn')(money(priceOf(shopFmt))))}</button>
+      <p class="shop-cur">${esc(t(CUR==='usd'?'cur_us':'cur_ca'))} <button class="linkish" id="curSwitch">${esc(t(CUR==='usd'?'cur_to_ca':'cur_to_us'))}</button></p>
       <p class="shop-status" id="shopStatus" role="status" aria-live="polite"></p>
       <p class="shop-legal">${t('shop_legal')}</p>
     </div>`;}
@@ -1085,11 +1092,15 @@ function dlHTML(){return `<div class="btns"><button class="ghost" id="dl">${esc(
 function tipHTML(){return `<div class="tip"><div>${t('tip')}<div class="pens" aria-label="${esc(t('pens_l'))}">${CATS.map(c=>`<i style="background:${PAL[c.id]}" title="${esc(catName(c))} : ${esc(PEN[S.lang][c.id])}"></i>`).join('')}</div></div></div>`;}
 function wireShop(draw){
   $('dl').onclick=()=>exportPoster($('pv'),S.name);
-  $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=t('shop_btn')(SHOP[shopFmt].price);fmtPreview=shopFmt;draw();});
-  $('orderBtn').onclick=()=>{track('commander',{format:shopFmt,style:S.style});placeOrder();};
+  $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=t('shop_btn')(money(priceOf(shopFmt)));fmtPreview=shopFmt;draw();});
+  $('orderBtn').onclick=()=>{track('commander',{format:shopFmt,style:S.style,cur:CUR});placeOrder();};
+  $('curSwitch').onclick=()=>setCur(CUR==='usd'?'cad':'usd');
 }
 
 const ONLINE=/(^|\.)studioexistence\.com$|\.vercel\.app$/.test(location.hostname);
+// pays du visiteur : une seule fois par session, sans bloquer l'affichage
+if(ONLINE){let known=false;try{known=!!sessionStorage.getItem('bl-cur');}catch(e){}
+  if(!known) fetch('/api/geo').then(r=>r.json()).then(g=>{if(g&&g.currency&&g.currency!==CUR){setCur(g.currency);}else{try{sessionStorage.setItem('bl-cur',CUR);}catch(e){}}}).catch(()=>{});}
 async function placeOrder(){
   const btn=$('orderBtn'), st=$('shopStatus'); const items=posterItems(S);
   if(!items.length){st.textContent=t('shop_need');return;}
@@ -1107,7 +1118,7 @@ async function placeOrder(){
     if(!blob||!prev) throw new Error('blob');
     st.textContent=t('shop_pay');
     // corps = aperçu (800 px) suivi du fichier d'impression ; « pl » = taille de l'aperçu en octets
-    const q=new URLSearchParams({format:shopFmt,style,lang:S.lang,name:S.name||'',pl:String(prev.size)});
+    const q=new URLSearchParams({format:shopFmt,style,lang:S.lang,name:S.name||'',cur:CUR,pl:String(prev.size)});
     const r=await fetch('/api/checkout?'+q.toString(),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:new Blob([prev,blob])});
     const j=await r.json().catch(()=>({}));
     if(!r.ok||!j.url) throw new Error(j.error||('http '+r.status));
