@@ -7,7 +7,7 @@ export const FORMATS = {
   a2: { fr: 'Affiche Bucket List A2 (42 × 59,4 cm)', en: 'Bucket List poster A2 (42 × 59.4 cm)', price: 6500, variantEnv: 'PRINTFUL_VARIANT_A2' },
 };
 export const STYLES = { man: { fr: 'Manifeste', en: 'Manifesto' }, ros: { fr: 'Rosace', en: 'Rosette' } };
-export const SHIP_TO = ['CA'];
+export const SHIP_TO = ['CA', 'US'];   // Printful imprime et expédie depuis l'Amérique du Nord
 
 export const variantFor = fmt => Number(process.env[FORMATS[fmt]?.variantEnv] || 0);
 // identifiant de commande Printful (32 caractères max) dérivé de la session Stripe : rejouer le webhook ne crée pas de doublon

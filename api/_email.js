@@ -15,7 +15,8 @@ const PENS = [
   ['#C29BFF', { fr: 'Lilas', en: 'Lilac' }, { fr: 'Insolite & mystère', en: 'Odd & Mysterious' }],
 ];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const money = (cents, lang) => new Intl.NumberFormat(lang === 'fr' ? 'fr-CA' : 'en-CA', { style: 'currency', currency: 'CAD' }).format((cents || 0) / 100);
+const money = (cents, lang) => new Intl.NumberFormat(lang === 'fr' ? 'fr-CA' : 'en-US',   // en anglais : « CA$ » pour lever l'ambiguïté avec le dollar américain
+  { style: 'currency', currency: 'CAD' }).format((cents || 0) / 100);
 export const orderNo = sessionId => externalId(sessionId).slice(0, 8).toUpperCase();
 
 export function customerEmail(session, site = 'https://www.studioexistence.com') {
@@ -40,7 +41,7 @@ export function customerEmail(session, site = 'https://www.studioexistence.com')
     kit: 'Your highlighter kit', kitp: 'Your poster colours follow the pack of 8 STABILO BOSS ORIGINAL highlighters (classic colours). When you live a new experience, highlight it in its category colour.',
     help: 'A question, or a problem with delivery? Just reply to this email.', terms: 'Terms of sale', by: 'Studio Existence inc. · Sutton, Québec',
   };
-  const addr = [r.name, r.address1, r.address2, `${r.city}${r.state_code ? ' (' + r.state_code + ')' : ''} ${r.zip}`.trim()].filter(Boolean);
+  const addr = [r.name, r.address1, r.address2, `${r.city}${r.state_code ? ' (' + r.state_code + ')' : ''} ${r.zip}`.trim(), r.country_code === 'US' ? (fr ? 'États-Unis' : 'United States') : ''].filter(Boolean);
   const row = (k, v) => `<tr><td style="padding:4px 0;color:#4A4458;font-size:14px;width:120px;vertical-align:top">${k}</td><td style="padding:4px 0;font-size:14px;font-weight:700">${v}</td></tr>`;
   const pens = PENS.map(([c, n, cat]) => `<tr><td style="padding:3px 10px 3px 0;width:30px"><div style="width:26px;height:11px;background:${c};border:1px solid ${INK};border-radius:2px"></div></td><td style="padding:3px 0;font-size:14px"><b>${n[L]}</b> <span style="color:#4A4458">${cat[L]}</span></td></tr>`).join('');
   const img = m.preview ? `<tr><td style="padding:8px 0 24px" align="center"><img src="${esc(m.preview)}" width="260" alt="" style="display:block;width:260px;max-width:70%;height:auto;border:6px solid ${INK};box-shadow:8px 8px 0 ${PINK}"></td></tr>` : '';
