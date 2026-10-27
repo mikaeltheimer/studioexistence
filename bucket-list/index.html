@@ -406,6 +406,24 @@ dialog.confirm .danger{background:#C2183C;color:#fff;font-weight:800;border-radi
   #list .add{grid-column:2}
   #list .add .btns.row{flex-wrap:nowrap}
 }
+
+/* Remerciement */
+.kit{display:flex;flex-direction:column;gap:10px;padding:16px;border:1.5px solid var(--ink);border-radius:8px;background:var(--card);box-shadow:6px 6px 0 #FFEE2E}
+.kit h2{font-family:var(--display);font-weight:400;font-size:24px;line-height:1.1;margin:0}
+.kit-l{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.kit-l li{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:8px;row-gap:0;gap:8px;font-size:14px;line-height:1.25;min-width:0}
+.kit-l i{align-self:center;width:26px;height:11px;border-radius:2px;border:1px solid var(--ink);flex-shrink:0}
+.kit-l b{font-weight:800;text-transform:capitalize}
+.kit-l span{color:var(--muted)}
+.kit .kit-n{font-size:13px}
+.th-side{display:flex;flex-direction:column;gap:18px}
+@media (min-width:1024px){
+  #merci .screen-in.th{max-width:1180px;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,1fr);column-gap:64px;row-gap:22px;align-items:start;padding-inline:16px}
+  .th>.s-top{grid-column:1/-1}
+  .th-pv{position:sticky;top:12px;display:flex;justify-content:center}
+  .th-pv .thumb{width:auto;max-width:100%;height:calc(100vh - 120px);aspect-ratio:1/1.4142;border:9px solid var(--ink);box-shadow:10px 12px 0 var(--pink)}
+  .th-side h1{font-size:48px}
+}
 </style>
 </head>
 <body>
@@ -493,7 +511,7 @@ const T={
   shop_err:"La commande n'a pas pu démarrer. Réessaie dans un instant.", shop_off:'La commande en ligne fonctionne seulement sur studioexistence.com.',
   shop_need:"Ajoute au moins une expérience avant de commander.", shop_legal:'En commandant, tu acceptes nos <a href="/conditions/" target="_blank" rel="noopener">conditions de vente</a>. <a href="/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>', shop_preview:'Aperçu au format',
   thanks_h:'Merci, <em>c\'est commandé</em>', thanks_p:"Ton affiche part à l'impression. Tu recevras un courriel de confirmation de Stripe, puis un avis d'expédition. Compte environ une à deux semaines pour la livraison.",
-  thanks_tip:'En attendant, prépare tes surligneurs : chaque nouvelle expérience vécue mérite son coup de couleur.', thanks_back:'Revenir à ma liste',
+  thanks_tip:'En attendant, prépare tes surligneurs : chaque nouvelle expérience vécue mérite son coup de couleur.', thanks_back:'Revenir à ma liste', kit_h:'Ton kit de surligneurs', kit_p:'Les couleurs de ton affiche suivent le paquet de <b>8 surligneurs STABILO BOSS ORIGINAL</b> (couleurs classiques), en vente en papeterie, en librairie ou en ligne.', kit_n:"Quand tu vis une nouvelle expérience, surligne-la avec la couleur de sa catégorie. Ton affiche se remplit au fil de ta vie.", th_share_h:'En attendant le facteur', th_share_p:"Partage ta Bucket List à tes proches, ou garde l'image en fond d'écran.", th_dl:"Télécharger l'image (2048 px)",
   cancel_t:'Paiement annulé. Ta liste est intacte.',
   link_copied:'Lien copié !', copy:'Copier', share_t:n=>n?`La Bucket List ${deN(n)}`:'Ma Bucket List', share_txt:'Voici ce que j\'ai vécu et ce que je veux encore vivre.',
   shared_h:n=>n?`La Bucket List <em>${deN(n)}</em>`:'Une <em>Bucket List</em>', shared_p:(d,t)=>`${d} expérience${d>1?'s':''} vécue${d>1?'s':''} · ${t} à vivre`,
@@ -535,7 +553,7 @@ const T={
   shop_err:"The order couldn't start. Please try again in a moment.", shop_off:'Online ordering only works on studioexistence.com.',
   shop_need:'Add at least one experience before ordering.', shop_legal:'By ordering, you accept our <a href="/conditions/#en" target="_blank" rel="noopener">terms of sale</a>. <a href="/confidentialite/#en" target="_blank" rel="noopener">Privacy</a>', shop_preview:'Preview in',
   thanks_h:'Thank you, <em>it\'s ordered</em>', thanks_p:"Your poster is off to the printer. You'll get a confirmation email from Stripe, then a shipping notice. Allow about one to two weeks for delivery.",
-  thanks_tip:'In the meantime, get your highlighters ready: every new experience deserves its stroke of colour.', thanks_back:'Back to my list',
+  thanks_tip:'In the meantime, get your highlighters ready: every new experience deserves its stroke of colour.', thanks_back:'Back to my list', kit_h:'Your highlighter kit', kit_p:'Your poster colours follow the pack of <b>8 STABILO BOSS ORIGINAL highlighters</b> (classic colours), sold in stationery shops, bookstores and online.', kit_n:'When you live a new experience, highlight it in its category colour. Your poster fills up as you live.', th_share_h:'While you wait for the mail', th_share_p:'Share your Bucket List with friends, or keep the image as a wallpaper.', th_dl:'Download the image (2048 px)',
   cancel_t:'Payment cancelled. Your list is untouched.',
   link_copied:'Link copied!', copy:'Copy', share_t:n=>n?`${n}'s Bucket List`:'My Bucket List', share_txt:"Here's what I've lived and what I still want to live.",
   shared_h:n=>n?`<em>${n}'s</em> Bucket List`:'A <em>Bucket List</em>', shared_p:(d,t)=>`${d} lived · ${t} to live`,
@@ -803,7 +821,7 @@ function deepCard(){
   return `<div class="deepcard"><h2>${esc(t('deep_h'))}</h2><p>${esc(t('deep_p')(R))}</p><div class="deep">${rows}</div></div>`;
 }
 function addOwn(kind){
-  const inp=$('ownIn'); const v=(inp.value||'').trim().slice(0,120); if(!v){inp.focus();return;}
+  const inp=$('ownIn'); const v=(inp.value||'').trim().slice(0,80); if(!v){inp.focus();return;}
   snapshot(); const id=genId(); S.custom.push({id,label:v,cat:cat().id,custom:true}); S.answers[id]=kind; S.order.push(id); save();
   renderCounts(true); drawLive(id); toast(t('added')); renderInter();
 }
@@ -843,7 +861,7 @@ function renderInter(){
       <div class="grow">${its.filter(i=>S.answers[i.id]==='done'||S.answers[i.id]==='todo').slice(-6).map(i=>`<div class="got"><span>${S.answers[i.id]==='done'?'✓':'★'}</span>${esc(label(i))}</div>`).join('')}</div>
     </div>
     <div class="acts2">
-      <form class="own" id="own" autocomplete="off"><label for="ownIn">${esc(t('own_t'))}</label><div><input id="ownIn" maxlength="120" placeholder="${esc(t('add_p'))}"><button type="button" data-own="done" aria-label="${esc(t('add_done'))}" title="${esc(t('add_done'))}">✓</button><button type="button" data-own="todo" aria-label="${esc(t('add_todo'))}" title="${esc(t('add_todo'))}">★</button></div></form>
+      <form class="own" id="own" autocomplete="off"><label for="ownIn">${esc(t('own_t'))}</label><div><input id="ownIn" maxlength="80" placeholder="${esc(t('add_p'))}"><button type="button" data-own="done" aria-label="${esc(t('add_done'))}" title="${esc(t('add_done'))}">✓</button><button type="button" data-own="todo" aria-label="${esc(t('add_todo'))}" title="${esc(t('add_todo'))}">★</button></div></form>
       ${rem?`<div class="q">${esc(t('further'))} ${esc(t('rem')(rem))}</div><button class="primary" id="more">${esc(t('more')(Math.min(MORE,rem)))}</button>`:''}
       <button class="${rem?'ghost':'primary'}" id="next">${esc(nextLabel)}</button>
       ${deep&&nd>=0?`<button class="linkish" id="toBilan">${esc(t('see_bilan'))}</button>`:''}
@@ -1005,7 +1023,7 @@ function renderList(){
         <button data-set="skip" data-id="${esc(it.id)}" aria-pressed="${s==='skip'}" aria-label="${esc(t('seg_skip'))}">✕</button>
       </div>${it.custom?`<button class="del" data-del="${esc(it.id)}" aria-label="${esc(t('del'))}">✕</button>`:''}</div>`;}).join('')}</div>
     <div class="add"><p class="section-t">${esc(t('add_t'))}</p>
-      <input id="addIn" maxlength="120" placeholder="${esc(t('add_p'))}" aria-label="${esc(t('add_t'))}">
+      <input id="addIn" maxlength="80" placeholder="${esc(t('add_p'))}" aria-label="${esc(t('add_t'))}">
       <div class="btns row"><button class="ghost" data-add="done">✓ ${esc(t('add_done'))}</button><button class="ghost" data-add="todo">★ ${esc(t('add_todo'))}</button></div>
     </div>
   </div>`;
@@ -1018,7 +1036,7 @@ $('list').addEventListener('click',e=>{
   if(tab){listCat=+tab.dataset.tab;const y=scrollY;renderList();}
   if(set){const id=set.dataset.id,v=set.dataset.set;if(S.answers[id]===v)delete S.answers[id];else{S.answers[id]=v;S.order=S.order.filter(x=>x!==id);S.order.push(id);}save();keepScroll(renderList);}
   if(del){const id=del.dataset.del;S.custom=S.custom.filter(x=>x.id!==id);delete S.answers[id];S.order=S.order.filter(x=>x!==id);save();keepScroll(renderList);toast(t('removed'));}
-  if(add){const inp=$('addIn');const v=inp.value.trim().slice(0,120);if(!v){inp.focus();return;}
+  if(add){const inp=$('addIn');const v=inp.value.trim().slice(0,80);if(!v){inp.focus();return;}
     const id=genId();S.custom.push({id,label:v,cat:CATS[listCat].id,custom:true});S.answers[id]=add.dataset.add;S.order.push(id);save();keepScroll(renderList);toast(t('added'));}
 });
 $('list').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='addIn'){e.preventDefault();$('list').querySelector('[data-add="done"]').click();}});
@@ -1090,14 +1108,36 @@ async function placeOrder(){
 }
 function renderThanks(){
   track('commande-merci');
-  $('merci').innerHTML=`<div class="screen-in">
+  $('bilan').innerHTML=''; $('poster').innerHTML='';   // évite les identifiants en double (shareBox…)
+  const has=posterItems(S).length>0;
+  $('merci').innerHTML=`<div class="screen-in th">
     <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
-    <h1>${t('thanks_h')}</h1><p>${esc(t('thanks_p'))}</p>
-    <canvas class="thumb" id="tThumb" aria-hidden="true"></canvas>
-    <div class="tip"><div>${esc(t('thanks_tip'))}<div class="pens">${CATS.map(c=>`<i style="background:${PAL[c.id]}"></i>`).join('')}</div></div></div>
-    <button class="primary" id="tBack">${esc(t('thanks_back'))}</button></div>`;
+    ${has?`<div class="th-pv"><canvas class="thumb" id="tThumb" aria-hidden="true"></canvas></div>`:''}
+    <div class="th-side">
+      <h1>${t('thanks_h')}</h1><p>${esc(t('thanks_p'))}</p>
+      <div class="kit">
+        <h2>${esc(t('kit_h'))}</h2>
+        <p>${t('kit_p')}</p>
+        <ul class="kit-l">${CATS.map(c=>`<li><i style="background:${PAL[c.id]}"></i><b>${esc(PEN[S.lang][c.id])}</b><span>${esc(catName(c))}</span></li>`).join('')}</ul>
+        <p class="kit-n">${esc(t('kit_n'))}</p>
+      </div>
+      ${has?`<div class="kit">
+        <h2>${esc(t('th_share_h'))}</h2>
+        <p>${esc(t('th_share_p'))}</p>
+        <div class="btns">
+          <button class="ghost" id="tShare">${esc(t('share'))}</button>
+          <div class="share-box" id="shareBox" hidden><input id="shareUrl" readonly aria-label="URL"><button class="ghost" id="copyUrl">${esc(t('copy'))}</button></div>
+          <button class="ghost" id="tDl">${esc(t('th_dl'))}</button>
+        </div>
+      </div>`:''}
+      <button class="primary" id="tBack">${esc(t('thanks_back'))}</button>
+    </div></div>`;
   show('merci');
   $('tBack').onclick=()=>route(S.finished?'bilan':'intro');
+  if(!has) return;
+  $('tShare').onclick=shareList;
+  // image de belle taille pour les réseaux ou un fond d'écran (2048 px de large), toujours trop légère pour une impression en grand
+  $('tDl').onclick=async()=>{const b=$('tDl');b.disabled=true;await printFontsReady();const cv=document.createElement('canvas');drawPosterTo(cv,posterItems(S),S.name,S.style,S.lang,'a4',2048/2480);exportPoster(cv,S.name);b.disabled=false;};
   withFonts(()=>drawPosterTo($('tThumb'),posterItems(S),S.name,S.style,S.lang));
 }
 function exportPoster(cv,name){
@@ -1212,6 +1252,17 @@ function drawManifeste(cv,items,name,lng){
 
 // pointillé de légende : tirets répartis pour commencer et finir pile sous le mot
 function legDash(ctx,x,y,w){const d=12,n=Math.max(2,Math.round((w+9)/21)),g=(w-n*d)/(n-1);ctx.strokeStyle=PINK;ctx.lineWidth=4;ctx.setLineDash([d,g]);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w,y);ctx.stroke();ctx.setLineDash([]);}
+// Étiquette d'un rayon de la rosace : taille réduite jusqu'à 62 %, puis deux lignes (coupure au mot le plus proche du milieu)
+function rayLabel(ctx,txt,fs,maxW){
+  const W=s=>{ctx.font=`600 ${fs}px ${BODY}`;return ctx.measureText(s).width;};
+  const w=W(txt); if(w<=maxW) return {lines:[txt],f:fs};
+  if(fs*maxW/w>=fs*.62) return {lines:[txt],f:fs*maxW/w};
+  const sp=[...txt.matchAll(/ /g)].map(m=>m.index);
+  if(!sp.length){const f=fs*maxW/w;return {lines:[txt],f};}
+  const mid=txt.length/2, cut=sp.reduce((b,i)=>Math.abs(i-mid)<Math.abs(b-mid)?i:b,sp[0]);
+  const lines=[txt.slice(0,cut),txt.slice(cut+1)], wm=Math.max(...lines.map(W));
+  return {lines,f:Math.min(fs*.8,fs*maxW/wm)};
+}
 function drawRosace(cv,items,name,lng){
   const {ctx,W,H}=setup(cv);
   pTitle(ctx,W,name,300,150,lng); smallCaps(ctx,pDate(lng),W/2,400,24,'center');
@@ -1222,7 +1273,7 @@ function drawRosace(cv,items,name,lng){
   const fs=Math.min(36,Math.max(18,(2*Math.PI*640/Math.max(N,12))*.7));
   ctx.font=`600 ${fs}px ${BODY}`;
   const longest=Math.max(...seq.map(i=>ctx.measureText(i.label).width));
-  const labelLen=Math.min(longest,Rmax*.5);
+  const labelLen=Math.min(longest,Rmax*(N>60?.5:.56));   // liste dense : rayons plus longs, étiquettes plus espacées
   const r1=Rmax-labelLen-40,r0=Math.max(150,r1*.34);
   const a0=N<12?-Math.PI/2-step*N/2:-Math.PI/2;
   let a=a0;
@@ -1235,11 +1286,17 @@ function drawRosace(cv,items,name,lng){
     ctx.strokeStyle=lineCol(c);ctx.lineWidth=fs*.36;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(xs,ys);ctx.lineTo(xb,yb);ctx.stroke();
     ctx.save();ctx.translate(cx+ca*(r1+fs*.9),cy+sa*(r1+fs*.9));
     const left=ca<0;ctx.rotate(left?ang+Math.PI:ang);
-    ctx.font=`600 ${fs}px ${BODY}`;
-    const s=fitText(ctx,it.label,labelLen),tw=ctx.measureText(s).width,tx=left?-tw:0;
-    if(it.s==='done'){ctx.save();ctx.globalCompositeOperation='multiply';ctx.fillStyle=hl(c);ctx.fillRect(tx-fs*.2,-fs*.5,tw+fs*.4,fs*1.0);ctx.restore();}
-    else{ctx.strokeStyle=lineCol(c);ctx.lineWidth=Math.max(2.5,fs*.09);ctx.setLineDash([fs*.2,fs*.15]);ctx.beginPath();ctx.moveTo(tx,fs*.56);ctx.lineTo(tx+tw,fs*.56);ctx.stroke();ctx.setLineDash([]);}
-    ctx.fillStyle=INK;ctx.fillText(s,tx,fs*.34);ctx.restore();
+    // texte complet, jamais tronqué : on réduit la taille, puis on passe sur deux lignes si besoin
+    const {lines,f}=rayLabel(ctx,it.label,fs,labelLen);
+    ctx.font=`600 ${f}px ${BODY}`;
+    lines.forEach((ln,li)=>{
+      const dy=lines.length===1?0:(li===0?-f*.56:f*.56);
+      const tw=ctx.measureText(ln).width,tx=left?-tw:0;
+      if(it.s==='done'){ctx.save();ctx.globalCompositeOperation='multiply';ctx.fillStyle=hl(c);ctx.fillRect(tx-f*.2,dy-f*.5,tw+f*.4,f*1.0);ctx.restore();}
+      else{ctx.strokeStyle=lineCol(c);ctx.lineWidth=Math.max(2.5,f*.09);ctx.setLineDash([f*.2,f*.15]);ctx.beginPath();ctx.moveTo(tx,dy+f*.56);ctx.lineTo(tx+tw,dy+f*.56);ctx.stroke();ctx.setLineDash([]);}
+      ctx.fillStyle=INK;ctx.fillText(ln,tx,dy+f*.34);
+    });
+    ctx.restore();
   });
   const d=items.filter(i=>i.s==='done').length,td=N-d;
   ctx.fillStyle=INK;ctx.beginPath();ctx.arc(cx,cy,r0,0,7);ctx.fill();
