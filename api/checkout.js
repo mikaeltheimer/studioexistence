@@ -1,6 +1,7 @@
 // Démarre une commande d'affiche : reçoit le fichier d'impression (JPEG) rendu par l'app,
 // le dépose dans Vercel Blob, puis crée une session Stripe Checkout et renvoie son URL.
-// POST /api/checkout?format=50x70&style=ros&lang=fr&name=Marie   (corps : image/jpeg)
+// POST /api/checkout?format=a2&style=ros&lang=fr&name=Marie&pl=123456
+// corps : aperçu JPEG (pl octets, ~800 px) suivi du fichier d'impression JPEG ; sans « pl », le corps est le seul fichier d'impression
 import Stripe from 'stripe';
 import { put } from '@vercel/blob';
 import { randomUUID } from 'crypto';
@@ -26,11 +27,18 @@ export default async function handler(req, res) {
 
   let body;
   try { body = await readRaw(req, MAX); } catch (e) { return res.status(e.status || 400).json({ error: 'body' }); }
-  // fichier JPEG uniquement (signature FF D8 FF)
-  if (body.length < 1000 || body[0] !== 0xff || body[1] !== 0xd8 || body[2] !== 0xff) return res.status(400).json({ error: 'file' });
+  const isJpeg = b => b.length >= 1000 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+  const pl = Number(url.searchParams.get('pl') || 0);
+  const prev = pl > 0 && pl < body.length ? body.subarray(0, pl) : null;
+  const print = prev ? body.subarray(pl) : body;
+  // fichiers JPEG uniquement (signature FF D8 FF)
+  if (!isJpeg(print) || (prev && !isJpeg(prev))) return res.status(400).json({ error: 'file' });
 
   try {
-    const file = await put(`bucket-list/commandes/${new Date().toISOString().slice(0, 10)}-${randomUUID()}.jpg`, body, { access: 'public', contentType: 'image/jpeg' });
+    const key = `bucket-list/commandes/${new Date().toISOString().slice(0, 10)}-${randomUUID()}`;
+    const file = await put(`${key}.jpg`, print, { access: 'public', contentType: 'image/jpeg' });
+    // aperçu léger : image du produit chez Stripe et dans le courriel (jamais le fichier pleine définition)
+    const preview = prev ? await put(`${key}-apercu.jpg`, prev, { access: 'public', contentType: 'image/jpeg' }) : null;
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const base = `https://${req.headers.host}/bucket-list/`;
     // moyens de paiement : configuration choisie dans Stripe (son identifiant diffère entre le mode test et le mode réel)
@@ -49,15 +57,15 @@ export default async function handler(req, res) {
             name: fmt[lang],
             tax_code: 'txcd_99999999',   // bien matériel, taux général
             description: `${STYLES[style][lang]}${name ? ' · ' + name : ''} · ${lang === 'fr' ? 'taxes et livraison incluses' : 'taxes and shipping included'}`,
-            // image d'exemple : le fichier d'impression pleine définition ne doit jamais être visible du client
-            images: [`https://${req.headers.host}/bucket-list/exemple-${style}-${lang}.jpg`],
+            // aperçu de l'affiche (ou image d'exemple) : le fichier d'impression pleine définition ne doit jamais être visible du client
+            images: [preview ? preview.url : `https://${req.headers.host}/bucket-list/exemple-${style}-${lang}.jpg`],
           },
         },
       }],
       shipping_address_collection: { allowed_countries: SHIP_TO },
       automatic_tax: { enabled: true },   // taxe selon la province de l'adresse de livraison
       allow_promotion_codes: true,   // codes promo créés dans Stripe (lancement, amis, partenaires)
-      metadata: { format, style, lang, name, file: file.url },
+      metadata: { format, style, lang, name, file: file.url, ...(preview ? { preview: preview.url } : {}) },
       // panier abandonné : la session expire après 1 h et le webhook supprime le fichier (checkout.session.expired)
       expires_at: Math.floor(Date.now() / 1000) + 3600,
       success_url: `${base}?commande=merci&session_id={CHECKOUT_SESSION_ID}`,

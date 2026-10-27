@@ -266,6 +266,7 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 .styles button{flex:1;padding:11px 12px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);font-weight:800;text-align:left;display:flex;flex-direction:column;gap:2px}
 .styles button small{font-weight:500;font-size:12.5px;color:var(--muted)}
 .styles button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.styles button:disabled{opacity:.45;cursor:not-allowed}
 .styles button[aria-pressed="true"] small{color:rgba(251,244,230,.75)}
 .pv{display:block;width:100%;max-width:560px;margin-inline:auto;height:auto;border:10px solid var(--ink);box-shadow:10px 12px 0 var(--pink);background:var(--card)}
 .tip{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:8px;background:var(--card);border:1.5px solid var(--ink);font-size:14px;line-height:1.45}
@@ -502,7 +503,7 @@ const T={
   list_h:'Mes expériences', reset:'Effacer ma Bucket List', reset_h:'Tout effacer et repartir à zéro ?', reset_p:n=>`Tes ${n} réponse${n>1?'s':''}, les expériences que tu as ajoutées et ton prénom seront supprimés de ce navigateur. C'est définitif. Les liens que tu as déjà partagés continueront de fonctionner.`, reset_ok:'Oui, tout effacer', reset_no:'Annuler', reset_done:'Ta Bucket List a été effacée', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
   add_done:"Je l'ai fait", add_todo:'Ça me tente', added:'Ajoutée à ta liste', removed:'Retirée', del:'Retirer',
   seg_done:"Je l'ai fait", seg_todo:'Ça me tente', seg_skip:'Pas pour moi',
-  poster_h:'Ton <em>affiche</em>', style_man:'Manifeste', style_man_s:'Ta liste en un grand texte', style_ros:'Rosace', style_ros_s:'Un portrait en rayons',
+  poster_h:'Ton <em>affiche</em>', style_man:'Manifeste', style_man_s:'Ta liste en un grand texte', style_ros:'Rosace', style_ros_s:'Un portrait en rayons', ros_max:n=>`Jusqu\u2019à ${n} expériences`,
   download:"Télécharger l'image", save_img:"Enregistrer l'image", poster_note:"Une image à partager. Pour l'accrocher au mur, commande l'affiche imprimée.",
   tip:'<b>À surligner au fil de ta vie.</b> Les couleurs suivent un paquet de 8 surligneurs STABILO BOSS ORIGINAL : quand tu vis une nouvelle expérience, surligne-la sur ton affiche avec la couleur de sa catégorie.',
   pens_l:'Ta palette',
@@ -544,7 +545,7 @@ const T={
   list_h:'My experiences', reset:'Erase my Bucket List', reset_h:'Erase everything and start over?', reset_p:n=>`Your ${n} answer${n>1?'s':''}, the experiences you added and your name will be deleted from this browser. This can't be undone. Links you've already shared will keep working.`, reset_ok:'Yes, erase everything', reset_no:'Cancel', reset_done:'Your Bucket List has been erased', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
   add_done:'Done it', add_todo:'Want to', added:'Added to your list', removed:'Removed', del:'Remove',
   seg_done:'Done it', seg_todo:'Want to', seg_skip:'Not for me',
-  poster_h:'Your <em>poster</em>', style_man:'Manifesto', style_man_s:'Your list as one big text', style_ros:'Rosette', style_ros_s:'A portrait in rays',
+  poster_h:'Your <em>poster</em>', style_man:'Manifesto', style_man_s:'Your list as one big text', style_ros:'Rosette', style_ros_s:'A portrait in rays', ros_max:n=>`Up to ${n} experiences`,
   download:'Download the image', save_img:'Save the image', poster_note:'An image to share. To hang it on your wall, order the printed poster.',
   tip:'<b>Highlight it as you live.</b> The colours follow a pack of 8 STABILO BOSS ORIGINAL highlighters: when you live a new experience, highlight it on your poster in its category colour.',
   pens_l:'Your palette',
@@ -906,6 +907,7 @@ let liveFront='liveA', liveTimer=0, liveAddTimer=0;
 function liveChrome(){
   $('liveK').innerHTML=t('live_k');
   $('liveStyles').innerHTML=['man','ros'].map(s=>`<button data-lstyle="${s}" aria-pressed="${S.style===s}">${esc(t(s==='man'?'style_man':'style_ros'))}</button>`).join('');
+  guardRos($('liveStyles'),posterItems(S).length);
   $('liveKeys').innerHTML=`<span><kbd>→</kbd>${esc(t('leg_done'))}</span><span><kbd>↑</kbd>${esc(t('leg_todo'))}</span><span><kbd>←</kbd>${esc(t('leg_skip'))}</span><span><kbd>⌫</kbd>${esc(t('undo'))}</span>`;
 }
 function drawLive(lastId){
@@ -975,6 +977,7 @@ function renderBilan(){
   $('bStyles').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{S.style=b.dataset.style;save();$('bStyles').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawThumb();});
   if($('bPoster')) $('bPoster').onclick=()=>route('poster');
   if($('bReset')) $('bReset').onclick=askReset;
+  guardRos($('bilan'),posterItems(S).length);
   if(desk&&$('shop')) wireShop(drawThumb);
   $('bShare').onclick=shareList;
   $('bList').onclick=()=>{listCat=0;route('list');};
@@ -1065,6 +1068,7 @@ function renderPoster(){
   const nm=$('pName');let tm;nm.addEventListener('input',()=>{S.name=nm.value.trim().slice(0,40);save();clearTimeout(tm);tm=setTimeout(draw,200);});
   const draw=()=>withFonts(()=>drawPosterTo($('pv'),posterItems(S),S.name,S.style,S.lang,fmtPreview));
   wireShop(draw);
+  guardRos($('poster'),posterItems(S).length);
   draw();
 }
 let shopFmt='a2', fmtPreview='a4';
@@ -1094,13 +1098,17 @@ async function placeOrder(){
   try{
     await new Promise(r=>withFonts(r));
     if(!(await printFontsReady())) throw new Error('fonts');
-    const cv=document.createElement('canvas'); drawPosterTo(cv,items,S.name,S.style,S.lang,shopFmt,true);
+    const style=effStyle(S.style,items.length);
+    const pc=document.createElement('canvas'); drawPosterTo(pc,items,S.name,style,S.lang,shopFmt,800/2480);
+    const prev=await new Promise(r=>pc.toBlob(r,'image/jpeg',.75));
+    const cv=document.createElement('canvas'); drawPosterTo(cv,items,S.name,style,S.lang,shopFmt,true);
     let blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.9));
-    if(blob&&blob.size>4.2e6) blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.8));
-    if(!blob) throw new Error('blob');
+    if(blob&&prev&&blob.size+prev.size>3.9e6) blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.8));
+    if(!blob||!prev) throw new Error('blob');
     st.textContent=t('shop_pay');
-    const q=new URLSearchParams({format:shopFmt,style:S.style,lang:S.lang,name:S.name||''});
-    const r=await fetch('/api/checkout?'+q.toString(),{method:'POST',headers:{'Content-Type':'image/jpeg'},body:blob});
+    // corps = aperçu (800 px) suivi du fichier d'impression ; « pl » = taille de l'aperçu en octets
+    const q=new URLSearchParams({format:shopFmt,style,lang:S.lang,name:S.name||'',pl:String(prev.size)});
+    const r=await fetch('/api/checkout?'+q.toString(),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:new Blob([prev,blob])});
     const j=await r.json().catch(()=>({}));
     if(!r.ok||!j.url) throw new Error(j.error||('http '+r.status));
     track('commande-paiement',{format:shopFmt,style:S.style}); location.href=j.url;
@@ -1208,7 +1216,16 @@ function emptyMsg(ctx,W,H,lng){ctx.font=`italic 400 64px ${DISPLAY}`;ctx.fillSty
 // Aperçus à l'écran et image téléchargée : ~1090 px de large, net sur écran, trop léger pour imprimer en grand.
 // Seul le fichier envoyé à Printful est rendu en pleine définition (print=true).
 const SCREEN_K=.44;
-function drawPosterTo(cv,items,name,style,lng,fmt='a4',print=false){ P_FMT=FORMATS[fmt]?fmt:'a4'; P_K=typeof print==='number'?print:(print?FORMATS[P_FMT].k:SCREEN_K); if(style==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); P_FMT='a4'; P_K=1; }
+/* Rosace : au-delà de ROS_MAX expériences, les rayons deviennent trop serrés pour rester lisibles à l'impression */
+const ROS_MAX=150;
+const effStyle=(style,n)=>style==='ros'&&n>ROS_MAX?'man':style;
+function guardRos(root,n){
+  if(!root||n<=ROS_MAX) return;
+  root.querySelectorAll('[data-style="ros"],[data-lstyle="ros"]').forEach(b=>{b.disabled=true;b.setAttribute('aria-pressed','false');const sm=b.querySelector('small');if(sm)sm.textContent=t('ros_max')(ROS_MAX);else b.title=t('ros_max')(ROS_MAX);});
+  root.querySelectorAll('[data-style="man"],[data-lstyle="man"]').forEach(b=>b.setAttribute('aria-pressed','true'));
+}
+
+function drawPosterTo(cv,items,name,style,lng,fmt='a4',print=false){ P_FMT=FORMATS[fmt]?fmt:'a4'; P_K=typeof print==='number'?print:(print?FORMATS[P_FMT].k:SCREEN_K); if(effStyle(style,items.length)==='ros') drawRosace(cv,items,name,lng); else drawManifeste(cv,items,name,lng); P_FMT='a4'; P_K=1; }
 
 function drawManifeste(cv,items,name,lng){
   const {ctx,W,H}=setup(cv);
@@ -1366,6 +1383,7 @@ function renderShared(){
   show('shared');
   $('mine').onclick=leaveShared; $('mine2').onclick=leaveShared;
   const drawS=()=>withFonts(()=>drawPosterTo($('sPv'),items,sh.name,sh.style,S.lang));
+  guardRos($('sStyles'),items.length);
   $('sStyles').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{sh.style=b.dataset.style;$('sStyles').querySelectorAll('[data-style]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawS();});
   drawS();
 }

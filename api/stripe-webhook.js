@@ -4,6 +4,7 @@
 import Stripe from 'stripe';
 import { del } from '@vercel/blob';
 import { FORMATS, variantFor, externalId, recipientFrom, readRaw } from './_shop.js';
+import { sendOrderEmails } from './_email.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -31,10 +32,11 @@ export async function createPrintfulOrder(session, fetchImpl = fetch) {
 
 // Panier abandonné : la session a expiré sans paiement, le fichier d'impression ne sert plus à rien
 export async function dropAbandoned(session, delImpl = del) {
-  const f = session.metadata?.file || '';
-  if (session.payment_status === 'paid' || !/^https:\/\/[^/]+\.blob\.vercel-storage\.com\/bucket-list\/commandes\//.test(f)) return { deleted: false };
-  await delImpl(f);
-  return { deleted: true };
+  const ours = u => /^https:\/\/[^/]+\.blob\.vercel-storage\.com\/bucket-list\/commandes\//.test(u || '');
+  const files = [session.metadata?.file, session.metadata?.preview].filter(ours);
+  if (session.payment_status === 'paid' || !files.length) return { deleted: false };
+  await delImpl(files.length === 1 ? files[0] : files);
+  return { deleted: true, n: files.length };
 }
 
 export default async function handler(req, res) {
@@ -55,10 +57,12 @@ export default async function handler(req, res) {
       try {
         const out = await createPrintfulOrder(session);
         console.log('printful', session.id, JSON.stringify(out));
+        // courriels (Resend) : envoi idempotent, un rejeu du webhook ne crée pas de doublon
+        console.log('courriels', session.id, JSON.stringify(await sendOrderEmails(session, out)));
       } catch (e) {
         // 500 : Stripe réessaiera automatiquement (pendant ~3 jours), le temps de corriger la configuration
-        console.error('printful error', session.id, e.message);
-        return res.status(500).json({ error: 'printful' });
+        console.error('commande error', session.id, e.message);
+        return res.status(500).json({ error: 'commande' });
       }
     }
   }
