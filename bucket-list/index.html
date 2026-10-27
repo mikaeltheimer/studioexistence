@@ -1076,7 +1076,7 @@ let shopFmt='a2', fmtPreview='a4';
 function shopHTML(){return `<div class="shop" id="shop">
       <h2>${esc(t('shop_h'))}</h2>
       <p>${esc(t('shop_p'))}</p>
-      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(f.label)}<small>${S.lang==='en'?'$'+f.price+' CAD':f.price+' $ CAD'}</small></button>`).join('')}</div>
+      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(S.lang==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${S.lang==='en'?'$'+f.price+' CAD':f.price+' $ CAD'}</small></button>`).join('')}</div>
       <button class="primary" id="orderBtn">${esc(t('shop_btn')(SHOP[shopFmt].price))}</button>
       <p class="shop-status" id="shopStatus" role="status" aria-live="polite"></p>
       <p class="shop-legal">${t('shop_legal')}</p>
