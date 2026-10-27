@@ -33,7 +33,10 @@ export default async function handler(req, res) {
     const file = await put(`bucket-list/commandes/${new Date().toISOString().slice(0, 10)}-${randomUUID()}.jpg`, body, { access: 'public', contentType: 'image/jpeg' });
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const base = `https://${req.headers.host}/bucket-list/`;
+    // moyens de paiement : configuration choisie dans Stripe (son identifiant diffère entre le mode test et le mode réel)
+    const pmc = (process.env.STRIPE_PAYMENT_METHOD_CONFIG || '').trim();
     const session = await stripe.checkout.sessions.create({
+      ...(pmc ? { payment_method_configuration: pmc } : {}),
       mode: 'payment',
       locale: lang,
       line_items: [{
