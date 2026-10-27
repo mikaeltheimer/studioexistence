@@ -163,23 +163,17 @@
     .tag-new { font-family: var(--mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; background: var(--yellow); padding: 3px 9px; }
     .feat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
     .feat-art { background: #FBF4E6; border-right: 2px solid var(--ink); padding: 44px; display: flex; align-items: center; justify-content: center; min-height: 460px; }
-    .poster {
-      background: #FFFDF8; width: min(320px, 100%); padding: 30px 28px 26px;
-      box-shadow: 0 1px 0 rgba(0,0,0,.08), 10px 12px 0 rgba(33,27,48,.12);
-      transform: rotate(2.2deg); transition: transform .4s cubic-bezier(.23,1,.32,1);
-      display: flex; flex-direction: column; align-items: center; gap: 14px; color: #1C1A2B;
-    }
-    a.card:hover .poster { transform: rotate(-1deg) scale(1.02); }
-    .poster-title { font-family: 'DM Serif Display', var(--serif); font-size: 25px; text-align: center; line-height: 1.1; }
-    .poster-title em { background: linear-gradient(176deg, transparent 30%, #FFEE2E 30%, #FFEE2E 92%, transparent 92%); padding: 0 3px; }
-    .poster-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; font-size: 13px; line-height: 1.5; }
-    .poster-legend { font-family: var(--mono); font-size: 10px; letter-spacing: .08em; color: #5E5868; }
-    .rosace-bl line { transform-origin: 60px 60px; animation: ray 6s ease-in-out infinite; }
-    .rosace-bl line:nth-child(2) { animation-delay: -.75s; } .rosace-bl line:nth-child(3) { animation-delay: -1.5s; }
-    .rosace-bl line:nth-child(4) { animation-delay: -2.25s; } .rosace-bl line:nth-child(5) { animation-delay: -3s; }
-    .rosace-bl line:nth-child(6) { animation-delay: -3.75s; } .rosace-bl line:nth-child(7) { animation-delay: -4.5s; }
-    .rosace-bl line:nth-child(8) { animation-delay: -5.25s; }
-    @keyframes ray { 0%, 100% { transform: scale(1); } 50% { transform: scale(.88); } }
+    .duo { display: flex; justify-content: center; align-items: flex-start; width: 100%; max-width: 520px; }
+    .ex { margin: 0; width: 50%; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform .4s cubic-bezier(.23,1,.32,1); }
+    .ex img { display: block; width: 100%; height: auto; border: 7px solid #1C1A2B; background: #FFFDF8; }
+    .ex figcaption { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; padding: 3px 10px; border: 1.5px solid #1C1A2B; border-radius: 999px; background: #FFFDF8; color: #1C1A2B; }
+    .ex1 { transform: rotate(-4deg) translateX(14px); z-index: 1; }
+    .ex1 img { box-shadow: 9px 10px 0 #FFEE2E; }
+    .ex2 { transform: rotate(3.5deg) translate(-14px, 30px); }
+    .ex2 img { box-shadow: 9px 10px 0 var(--fluo); }
+    a.card:hover .ex1 { transform: rotate(-6deg) translateX(4px); }
+    a.card:hover .ex2 { transform: rotate(5.5deg) translate(-4px, 22px); }
+    @media (prefers-reduced-motion: reduce) { .ex { transition: none; } }
     .feat-body { padding: 52px 52px 48px; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
     .feat-title { margin: 0; font-family: 'DM Serif Display', var(--serif); font-weight: 400; font-size: clamp(44px, 5vw, 60px); line-height: .95; color: #1C1A2B; }
     .feat-title em { background: linear-gradient(176deg, transparent 30%, #FFEE2E 30%, #FFEE2E 92%, transparent 92%); padding: 0 6px; }
@@ -352,39 +346,21 @@
   </div>
   <a class="card feat" href="/bucket-list">
     <div class="feat-art">
-      <div class="poster">
-        <svg class="rosace-bl" viewBox="0 0 120 120" width="150" height="150" aria-hidden="true">
-          <line x1="60" y1="36" x2="60" y2="8" stroke="#57E36A" stroke-width="11" stroke-linecap="round"/>
-          <line x1="76.97" y1="43.03" x2="96.77" y2="23.23" stroke="#FFEE2E" stroke-width="11" stroke-linecap="round"/>
-          <line x1="84" y1="60" x2="112" y2="60" stroke="#FF5A5F" stroke-width="11" stroke-linecap="round"/>
-          <line x1="76.97" y1="76.97" x2="96.77" y2="96.77" stroke="#FF9F2E" stroke-width="11" stroke-linecap="round"/>
-          <line x1="60" y1="84" x2="60" y2="112" stroke="#3FE0D0" stroke-width="11" stroke-linecap="round"/>
-          <line x1="43.03" y1="76.97" x2="23.23" y2="96.77" stroke="#FF66B8" stroke-width="11" stroke-linecap="round"/>
-          <line x1="36" y1="60" x2="8" y2="60" stroke="#55B8FF" stroke-width="11" stroke-linecap="round"/>
-          <line x1="43.03" y1="43.03" x2="23.23" y2="23.23" stroke="#C29BFF" stroke-width="11" stroke-linecap="round"/>
-          <circle cx="60" cy="60" r="17" fill="#1C1A2B"/>
-        </svg>
-        <div class="poster-title">La Bucket List <em>de Marie</em></div>
-        <div class="poster-items">
-          <span style="background:#57E36A;padding:0 4px">Dormir à la belle étoile</span>
-          <span style="border-bottom:2px solid #FFEE2E">Voir une aurore boréale</span>
-          <span style="background:#FF9F2E;padding:0 4px">Sauter en parachute</span>
-          <span style="border-bottom:2px solid #55B8FF">Écrire un livre</span>
-          <span style="background:#FF66B8;padding:0 4px">Faire le tour du monde</span>
-          <span style="border-bottom:2px solid #C29BFF">Plonger sur une épave</span>
-        </div>
-        <div class="poster-legend">surligné : vécu · souligné : à vivre</div>
+      <!-- deux vraies affiches générées par le moteur de la Bucket List (bucket-list/exemple-*.jpg) -->
+      <div class="duo">
+        <figure class="ex ex1"><img src="/bucket-list/exemple-man-fr.jpg" alt="Exemple d'affiche Bucket List, style Manifeste : la liste en un grand texte, vécus surlignés, rêves soulignés" width="760" height="1075" loading="lazy"><figcaption>Manifeste</figcaption></figure>
+        <figure class="ex ex2"><img src="/bucket-list/exemple-ros-fr.jpg" alt="Exemple d'affiche Bucket List, style Rosace : un portrait en rayons aux couleurs des catégories" width="760" height="1075" loading="lazy"><figcaption>Rosace</figcaption></figure>
       </div>
     </div>
     <div class="feat-body">
       <h2 class="feat-title">Bucket <em>List</em></h2>
       <p class="feat-text">Quelques minutes de cartes à glisser — vécu, ça me tente, pas pour moi — et ton affiche se compose aux couleurs de huit surligneurs. Imprime-la, accroche-la, et surligne chaque nouveau rêve accompli au fil de ta vie.</p>
       <div class="chips">
-        <span>129 expériences</span><span>8 catégories</span><span>2 affiches : Manifeste, Rosace</span><span>FR / EN</span>
+        <span>129 expériences</span><span>8 catégories</span><span>2 styles : Manifeste, Rosace</span><span>FR / EN</span>
       </div>
       <div class="cta-row">
         <span class="cta">Composer mon affiche →</span>
-        <span class="cta-note">Ou la recevoir imprimée :<br><strong>A3 49 $ · A2 65 $</strong>, livraison incluse au Canada</span>
+        <span class="cta-note">Ou la recevoir imprimée :<br><strong>A3 49 $ · A2 65 $</strong>, taxes et livraison incluses au Canada</span>
       </div>
     </div>
   </a>
