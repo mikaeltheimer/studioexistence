@@ -45,7 +45,7 @@ export default async function handler(req, res) {
           product_data: {
             name: fmt[lang],
             tax_code: 'txcd_99999999',   // bien matériel, taux général
-            description: `${STYLES[style][lang]}${name ? ' · ' + name : ''} · ${lang === 'fr' ? 'livraison incluse' : 'shipping included'}`,
+            description: `${STYLES[style][lang]}${name ? ' · ' + name : ''} · ${lang === 'fr' ? 'taxes et livraison incluses' : 'taxes and shipping included'}`,
             // image d'exemple : le fichier d'impression pleine définition ne doit jamais être visible du client
             images: [`https://${req.headers.host}/bucket-list/exemple-${style}-${lang}.jpg`],
           },
