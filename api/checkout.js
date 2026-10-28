@@ -5,7 +5,7 @@
 import Stripe from 'stripe';
 import { put } from '@vercel/blob';
 import { randomUUID } from 'crypto';
-import { FORMATS, STYLES, CURRENCIES, readRaw } from './_shop.js';
+import { FORMATS, STYLES, CURRENCIES, readRaw, restoreMeta } from './_shop.js';
 
 export const config = { runtime: 'nodejs' };
 const MAX = 4.4 * 1024 * 1024;
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       shipping_address_collection: { allowed_countries: CUR.ship },
       automatic_tax: { enabled: true },   // taxe selon la province de l'adresse de livraison
       allow_promotion_codes: true,   // codes promo créés dans Stripe (lancement, amis, partenaires)
-      metadata: { format, style, lang, name, cur, file: file.url, ...(preview ? { preview: preview.url } : {}) },
+      metadata: { format, style, lang, name, cur, file: file.url, ...(preview ? { preview: preview.url } : {}), ...restoreMeta(url.searchParams.get('rc') || '') },
       // panier abandonné : la session expire après 1 h et le webhook supprime le fichier (checkout.session.expired)
       expires_at: Math.floor(Date.now() / 1000) + 3600,
       success_url: `${base}?commande=merci&session_id={CHECKOUT_SESSION_ID}`,

@@ -1,7 +1,7 @@
 // Courriels de commande envoyés par Resend (https://resend.com) : confirmation au client, avis de vente à Studio Existence.
 // Variables : RESEND_API_KEY (obligatoire pour envoyer), ORDER_FROM (ex. « Studio Existence <commandes@studioexistence.com> »,
 // domaine vérifié dans Resend), ORDER_NOTIFY (adresse qui reçoit l'avis de vente), ORDER_REPLY_TO (réponses des clients).
-import { FORMATS, STYLES, recipientFrom, externalId } from './_shop.js';
+import { FORMATS, STYLES, recipientFrom, externalId, restoreFromMeta } from './_shop.js';
 
 const INK = '#1C1A2B', PAPER = '#FBF4E6', CARD = '#FFFDF8', YEL = '#FFEE2E', PINK = '#FF66B8';
 const PENS = [
@@ -31,6 +31,7 @@ export function customerEmail(session, site = 'https://www.studioexistence.com')
     recap: 'Ta commande', no: 'Commande', item: 'Affiche', styleL: 'Style', total: 'Total payé', taxL: 'dont taxes', ship: 'Livraison à',
     when: "Délais : 2 à 5 jours ouvrables de fabrication, puis quelques jours de transport. Tu recevras un avis d'expédition avec le suivi du colis.",
     kit: 'Ton kit de surligneurs', kitp: 'Les couleurs de ton affiche suivent le paquet de 8 surligneurs STABILO BOSS ORIGINAL (couleurs classiques). Quand tu vis une nouvelle expérience, surligne-la avec la couleur de sa catégorie.',
+    keep: 'Ta liste, sur n\'importe quel appareil', keepp: 'Ce lien contient toute ta Bucket List. Ouvre-le sur un autre appareil, ou dans quelques mois, pour la retrouver telle quelle et commander une affiche mise à jour.', keepb: 'Retrouver ma liste', keepn: 'Garde-le pour toi : toute personne qui l\'ouvre peut copier ta liste.',
     help: "Une question, un souci à la livraison ? Réponds simplement à ce courriel.", terms: 'Conditions de vente', by: 'Studio Existence inc. · Sutton (Québec)',
   } : {
     subject: `Your Bucket List is off to the printer (order ${no})`,
@@ -39,12 +40,21 @@ export function customerEmail(session, site = 'https://www.studioexistence.com')
     recap: 'Your order', no: 'Order', item: 'Poster', styleL: 'Style', total: 'Total paid', taxL: 'incl. taxes', ship: 'Shipping to',
     when: "Timing: 2 to 5 business days to print, then a few days in transit. You'll get a shipping notice with tracking.",
     kit: 'Your highlighter kit', kitp: 'Your poster colours follow the pack of 8 STABILO BOSS ORIGINAL highlighters (classic colours). When you live a new experience, highlight it in its category colour.',
+    keep: 'Your list, on any device', keepp: 'This link holds your whole Bucket List. Open it on another device, or in a few months, to get it back exactly as it is and order an updated poster.', keepb: 'Get my list back', keepn: 'Keep it to yourself: anyone who opens it can copy your list.',
     help: 'A question, or a problem with delivery? Just reply to this email.', terms: 'Terms of sale', by: 'Studio Existence inc. · Sutton, Québec',
   };
   const addr = [r.name, r.address1, r.address2, `${r.city}${r.state_code ? ' (' + r.state_code + ')' : ''} ${r.zip}`.trim(), r.country_code === 'US' ? (fr ? 'États-Unis' : 'United States') : ''].filter(Boolean);
   const row = (k, v) => `<tr><td style="padding:4px 0;color:#4A4458;font-size:14px;width:120px;vertical-align:top">${k}</td><td style="padding:4px 0;font-size:14px;font-weight:700">${v}</td></tr>`;
   const pens = PENS.map(([c, n, cat]) => `<tr><td style="padding:3px 10px 3px 0;width:30px"><div style="width:26px;height:11px;background:${c};border:1px solid ${INK};border-radius:2px"></div></td><td style="padding:3px 0;font-size:14px"><b>${n[L]}</b> <span style="color:#4A4458">${cat[L]}</span></td></tr>`).join('');
   const img = m.preview ? `<tr><td style="padding:8px 0 24px" align="center"><img src="${esc(m.preview)}" width="260" alt="" style="display:block;width:260px;max-width:70%;height:auto;border:6px solid ${INK};box-shadow:8px 8px 0 ${PINK}"></td></tr>` : '';
+  const rc = restoreFromMeta(m), keepUrl = rc ? `${site}/bucket-list/?r=${rc}` : '';
+  const keepHtml = keepUrl ? `<tr><td style="height:18px"></td></tr>
+<tr><td style="background:${CARD};border:1.5px solid ${INK};border-radius:8px;padding:16px 18px">
+  <div style="font-family:Georgia,serif;font-size:20px;padding-bottom:8px">${T.keep}</div>
+  <div style="font-size:14px;line-height:1.5;padding-bottom:14px">${T.keepp}</div>
+  <a href="${esc(keepUrl)}" style="display:inline-block;background:${INK};color:${PAPER};text-decoration:none;font-weight:700;font-size:15px;padding:12px 20px;border-radius:8px">${T.keepb}</a>
+  <div style="font-size:12px;color:#4A4458;padding-top:10px">${T.keepn}</div>
+</td></tr>` : '';
   const html = `<!doctype html><html lang="${L}"><body style="margin:0;padding:0;background:${PAPER};color:${INK};font-family:Helvetica,Arial,sans-serif">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PAPER}"><tr><td align="center" style="padding:28px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
@@ -67,11 +77,12 @@ ${img}
   <div style="font-size:14px;line-height:1.5;padding-bottom:10px">${T.kitp}</div>
   <table role="presentation" cellpadding="0" cellspacing="0">${pens}</table>
 </td></tr>
+${keepHtml}
 <tr><td style="font-size:14px;line-height:1.5;padding:22px 0 6px">${T.help}</td></tr>
 <tr><td style="font-size:12px;color:#4A4458;padding-top:6px">${T.by} · <a href="${site}/conditions/${fr ? '' : '#en'}" style="color:#4A4458">${T.terms}</a> · <a href="${site}/bucket-list/" style="color:#4A4458">studioexistence.com/bucket-list</a></td></tr>
 </table></td></tr></table></body></html>`;
   const text = [T.hi.replace(/&#39;/g, "'"), '', T.lead, '', `${T.no} : ${no}`, `${T.item} : ${fmt[L] || m.format}`, `${T.styleL} : ${style}${m.name ? ' · ' + m.name : ''}`,
-    `${T.total} : ${total}${tax ? ` (${T.taxL} ${money(tax, L, session.currency)})` : ''}`, `${T.ship} : ${addr.join(', ')}`, '', T.when, '', `${T.kit} — ${T.kitp}`, '', T.help, '', T.by].join('\n');
+    `${T.total} : ${total}${tax ? ` (${T.taxL} ${money(tax, L, session.currency)})` : ''}`, `${T.ship} : ${addr.join(', ')}`, '', T.when, '', `${T.kit} — ${T.kitp}`, ...(keepUrl ? ['', `${T.keep} — ${keepUrl}`] : []), '', T.help, '', T.by].join('\n');
   return { subject: T.subject, html, text };
 }
 

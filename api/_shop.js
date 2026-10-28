@@ -11,6 +11,14 @@ export const STYLES = { man: { fr: 'Manifeste', en: 'Manifesto' }, ros: { fr: 'R
 export const CURRENCIES = { cad: { ship: ['CA'], field: 'price' }, usd: { ship: ['US'], field: 'usd' } };
 export const SHIP_TO = ['CA', 'US'];
 
+export const RC_MAX = 12000, RC_CHUNK = 490;
+export function restoreMeta(rc) {
+  if (!rc || rc.length > RC_MAX || !/^[zj][A-Za-z0-9_-]+$/.test(rc)) return {};
+  const m = {}; let i = 0;
+  for (let k = 0; k < rc.length; k += RC_CHUNK) m['rc' + i++] = rc.slice(k, k + RC_CHUNK);
+  return m;
+}
+export const restoreFromMeta = (meta = {}) => { let s = '', i = 0; while (meta['rc' + i] !== undefined) s += meta['rc' + i++]; return s; };
 export const variantFor = fmt => Number(process.env[FORMATS[fmt]?.variantEnv] || 0);
 // identifiant de commande Printful (32 caractères max) dérivé de la session Stripe : rejouer le webhook ne crée pas de doublon
 export const externalId = sessionId => createHash('md5').update(String(sessionId)).digest('hex');

@@ -1125,6 +1125,8 @@ async function placeOrder(){
     st.textContent=t('shop_pay');
     // corps = aperçu (800 px) suivi du fichier d'impression ; « pl » = taille de l'aperçu en octets
     const q=new URLSearchParams({format:shopFmt,style,lang:S.lang,name:S.name||'',cur:CUR,pl:String(prev.size)});
+    // lien de transfert : inclus dans le courriel de confirmation pour retrouver la liste plus tard
+    try{const rc=(await restoreUrl()).split('?r=')[1]||'';if(rc.length<12000)q.set('rc',rc);}catch(e){}
     const r=await fetch('/api/checkout?'+q.toString(),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:new Blob([prev,blob])});
     const j=await r.json().catch(()=>({}));
     if(!r.ok||!j.url) throw new Error(j.error||('http '+r.status));
