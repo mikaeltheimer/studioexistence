@@ -426,6 +426,10 @@ dialog.confirm .danger{background:#C2183C;color:#fff;font-weight:800;border-radi
   .th-pv .thumb{width:auto;max-width:100%;height:calc(100vh - 120px);aspect-ratio:1/1.4142;border:9px solid var(--ink);box-shadow:10px 12px 0 var(--pink)}
   .th-side h1{font-size:48px}
 }
+
+.transfer{display:flex;flex-direction:column;gap:10px;padding:14px;border:1.5px dashed var(--ink);border-radius:8px;background:var(--card)}
+.transfer p{margin:0;font-size:14px}
+.transfer .tr-n{font-size:12.5px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -506,7 +510,7 @@ const T={
   name_l:'Ton prénom (affiche et partage)', name_p:'ex : Marie',
   make_poster:'Créer mon affiche', share:'Partager ma liste', edit:'Modifier mes expériences', continue_:'Continuer les cartes',
   deep_t:'Approfondir une catégorie', deep_h:'Ta liste peut encore grandir', deep_p:n=>`Il reste ${n} expérience${n>1?'s':''} à découvrir. Chaque catégorie explorée enrichit ton affiche.`, deep_next:c=>`Approfondir : ${c} →`, own_t:'Il manque quelque chose ? Ajoute ta propre expérience', need_more:'Réponds à quelques cartes pour composer ton affiche.',
-  list_h:'Mes expériences', reset:'Effacer ma Bucket List', reset_h:'Tout effacer et repartir à zéro ?', reset_p:n=>`Tes ${n} réponse${n>1?'s':''}, les expériences que tu as ajoutées et ton prénom seront supprimés de ce navigateur. C'est définitif. Les liens que tu as déjà partagés continueront de fonctionner.`, reset_ok:'Oui, tout effacer', reset_no:'Annuler', reset_done:'Ta Bucket List a été effacée', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
+  list_h:'Mes expériences', reset:'Effacer ma Bucket List', tr_btn:'Retrouver ma liste sur un autre appareil', tr_p:"Ce lien contient toute ta liste. Ouvre-le sur ton autre appareil (ou plus tard) pour la retrouver telle quelle : réponses, ajouts, prénom et style.", tr_send:"M'envoyer le lien", tr_note:"Garde-le pour toi : toute personne qui l'ouvre peut copier ta liste. Il ne contient ni courriel ni adresse.", tr_title:'Ma Bucket List', tr_txt:'Le lien pour retrouver ma Bucket List', rs_h:'Retrouver cette Bucket List ?', rs_p:(n,nm)=>`Ce lien contient ${nm?'la liste de '+nm:'une liste'} : ${n} expérience${n>1?'s':''} vécue${n>1?'s':''} ou à vivre.`, rs_mine:'Elle remplacera la liste déjà présente sur cet appareil.', rs_ok:'Ouvrir ma liste', rs_replace:'Remplacer ma liste actuelle', rs_done:'Ta liste est de retour', rs_bad:'Ce lien de transfert est incomplet ou abîmé.', reset_h:'Tout effacer et repartir à zéro ?', reset_p:n=>`Tes ${n} réponse${n>1?'s':''}, les expériences que tu as ajoutées et ton prénom seront supprimés de ce navigateur. C'est définitif. Les liens que tu as déjà partagés continueront de fonctionner.`, reset_ok:'Oui, tout effacer', reset_no:'Annuler', reset_done:'Ta Bucket List a été effacée', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
   add_done:"Je l'ai fait", add_todo:'Ça me tente', added:'Ajoutée à ta liste', removed:'Retirée', del:'Retirer',
   seg_done:"Je l'ai fait", seg_todo:'Ça me tente', seg_skip:'Pas pour moi',
   poster_h:'Ton <em>affiche</em>', style_man:'Manifeste', style_man_s:'Ta liste en un grand texte', style_ros:'Rosace', style_ros_s:'Un portrait en rayons', ros_max:n=>`Jusqu\u2019à ${n} expériences`,
@@ -548,7 +552,7 @@ const T={
   name_l:'Your first name (poster and sharing)', name_p:'e.g. Marie',
   make_poster:'Create my poster', share:'Share my list', edit:'Edit my experiences', continue_:'Keep answering',
   deep_t:'Go deeper into a category', deep_h:'Your list can still grow', deep_p:n=>`${n} more experience${n>1?'s':''} to discover. Every category you explore fills out your poster.`, deep_next:c=>`Go deeper: ${c} →`, own_t:'Something missing? Add your own experience', need_more:'Answer a few cards to build your poster.',
-  list_h:'My experiences', reset:'Erase my Bucket List', reset_h:'Erase everything and start over?', reset_p:n=>`Your ${n} answer${n>1?'s':''}, the experiences you added and your name will be deleted from this browser. This can't be undone. Links you've already shared will keep working.`, reset_ok:'Yes, erase everything', reset_no:'Cancel', reset_done:'Your Bucket List has been erased', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
+  list_h:'My experiences', reset:'Erase my Bucket List', tr_btn:'Open my list on another device', tr_p:'This link holds your whole list. Open it on your other device (or later) to get it back exactly as it is: answers, additions, name and style.', tr_send:'Send me the link', tr_note:"Keep it to yourself: anyone who opens it can copy your list. It contains no email or address.", tr_title:'My Bucket List', tr_txt:'The link to get my Bucket List back', rs_h:'Open this Bucket List?', rs_p:(n,nm)=>`This link holds ${nm?nm+"'s list":'a list'}: ${n} experience${n>1?'s':''} lived or to live.`, rs_mine:'It will replace the list already on this device.', rs_ok:'Open my list', rs_replace:'Replace my current list', rs_done:'Your list is back', rs_bad:'This transfer link is incomplete or damaged.', reset_h:'Erase everything and start over?', reset_p:n=>`Your ${n} answer${n>1?'s':''}, the experiences you added and your name will be deleted from this browser. This can't be undone. Links you've already shared will keep working.`, reset_ok:'Yes, erase everything', reset_no:'Cancel', reset_done:'Your Bucket List has been erased', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
   add_done:'Done it', add_todo:'Want to', added:'Added to your list', removed:'Removed', del:'Remove',
   seg_done:'Done it', seg_todo:'Want to', seg_skip:'Not for me',
   poster_h:'Your <em>poster</em>', style_man:'Manifesto', style_man_s:'Your list as one big text', style_ros:'Rosette', style_ros_s:'A portrait in rays', ros_max:n=>`Up to ${n} experiences`,
@@ -970,6 +974,7 @@ function renderBilan(){
       <button class="ghost" id="bShare" ${d+tt?'':'disabled'}>${esc(t('share'))}</button>
       <div class="share-box" id="shareBox" hidden><input id="shareUrl" readonly aria-label="URL"><button class="ghost" id="copyUrl">${esc(t('copy'))}</button></div>
       <button class="ghost" id="bList">${esc(t('edit'))}</button>
+      ${d+tt?`<button class="ghost" id="bTransfer">${esc(t('tr_btn'))}</button><div class="transfer" id="trBox" hidden></div>`:''}
       ${S.finished?'':`<button class="ghost" id="bPlay">${esc(t('continue_'))}</button>`}
     </div>
     ${d+tt?'':deepCard()}
@@ -987,6 +992,7 @@ function renderBilan(){
   if(desk&&$('shop')) wireShop(drawThumb);
   $('bShare').onclick=shareList;
   $('bList').onclick=()=>{listCat=0;route('list');};
+  if($('bTransfer')) $('bTransfer').onclick=()=>showTransfer('trBox');
   if($('bPlay')) $('bPlay').onclick=()=>route('play');
   $('bilan').querySelectorAll('[data-ci]').forEach(b=>b.onclick=()=>{S.toFinal=true;startSegment(+b.dataset.ci,'more');show('play');openPlay();});
   drawThumb();
@@ -1147,6 +1153,7 @@ function renderThanks(){
           <button class="ghost" id="tShare">${esc(t('share'))}</button>
           <div class="share-box" id="shareBox" hidden><input id="shareUrl" readonly aria-label="URL"><button class="ghost" id="copyUrl">${esc(t('copy'))}</button></div>
           <button class="ghost" id="tDl">${esc(t('th_dl'))}</button>
+          <button class="ghost" id="tTransfer">${esc(t('tr_btn'))}</button><div class="transfer" id="tTrBox" hidden></div>
         </div>
       </div>`:''}
       <button class="primary" id="tBack">${esc(t('thanks_back'))}</button>
@@ -1155,6 +1162,7 @@ function renderThanks(){
   $('tBack').onclick=()=>route(S.finished?'bilan':'intro');
   if(!has) return;
   $('tShare').onclick=shareList;
+  $('tTransfer').onclick=()=>showTransfer('tTrBox');
   // image de belle taille pour les réseaux ou un fond d'écran (2048 px de large), toujours trop légère pour une impression en grand
   $('tDl').onclick=async()=>{const b=$('tDl');b.disabled=true;await printFontsReady();const cv=document.createElement('canvas');drawPosterTo(cv,posterItems(S),S.name,S.style,S.lang,'a4',2048/2480);exportPoster(cv,S.name);b.disabled=false;};
   withFonts(()=>drawPosterTo($('tThumb'),posterItems(S),S.name,S.style,S.lang));
@@ -1400,11 +1408,74 @@ function renderShared(){
 }
 function leaveShared(){SHARED=null;history.replaceState(null,'',location.pathname.replace(/\/partage\/?$/,'/'));start();}
 
+
+/* =====================================================================
+   TRANSFERT ENTRE APPAREILS (sans compte) : lien personnel /bucket-list/?r=…
+   Contient toutes les réponses ; compressé (deflate) quand le navigateur le permet.
+   ===================================================================== */
+const b64u=bytes=>{let s='';bytes.forEach(x=>s+=String.fromCharCode(x));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');};
+const unb64u=str=>{str=str.replace(/-/g,'+').replace(/_/g,'/');while(str.length%4)str+='=';return Uint8Array.from(atob(str),c=>c.charCodeAt(0));};
+async function zip(bytes,dir){const cs=dir==='in'?new CompressionStream('deflate-raw'):new DecompressionStream('deflate-raw');
+  return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(cs)).arrayBuffer());}
+async function restoreUrl(){
+  const a={d:[],t:[],s:[]};
+  Object.entries(S.answers).forEach(([id,s])=>{const it=byId(id);if(!it||it.custom)return;(s==='done'?a.d:s==='todo'?a.t:a.s).push(id);});
+  const c=S.custom.map(x=>[x.label,x.cat,S.answers[x.id]==='done'?'d':S.answers[x.id]==='todo'?'t':S.answers[x.id]==='skip'?'s':'']);
+  const raw=new TextEncoder().encode(JSON.stringify({v:1,n:S.name||'',p:S.style,l:S.lang,a,c}));
+  let code='j'+b64u(raw);
+  try{if(window.CompressionStream) code='z'+b64u(await zip(raw,'in'));}catch(e){}
+  return location.origin+'/bucket-list/?r='+code;
+}
+async function readRestore(code){
+  const bytes=unb64u(code.slice(1));
+  const raw=code[0]==='z'?await zip(bytes,'out'):bytes;
+  const p=JSON.parse(new TextDecoder().decode(raw));
+  if(!p||p.v!==1||!p.a) throw new Error('bad');
+  return p;
+}
+function applyRestore(p){
+  const answers={},order=[],custom=[];
+  [['d','done'],['t','todo'],['s','skip']].forEach(([k,v])=>(p.a[k]||[]).forEach(id=>{if(BASE[id]){answers[id]=v;order.push(id);}}));
+  (p.c||[]).forEach(([label,cat,st])=>{if(!label||!CATS.some(c=>c.id===cat))return;const id=genId();custom.push({id,label:String(label).slice(0,80),cat,custom:true});
+    const v=st==='d'?'done':st==='t'?'todo':st==='s'?'skip':null;if(v){answers[id]=v;order.push(id);}});
+  const lang=p.l==='en'?'en':(p.l==='fr'?'fr':S.lang);
+  S=Object.assign(JSON.parse(JSON.stringify(DEFAULT)),{lang,seenIntro:true,coachDone:true,finished:true,answers,order,custom,name:String(p.n||'').slice(0,40),style:p.p==='ros'?'ros':'man'});
+  save(); undoStack.length=0; Q={queue:[],segTotal:0,segDone:0};
+}
+async function askRestore(code){
+  let p; try{p=await readRestore(code);}catch(e){route(S.finished?'bilan':'intro');toast(t('rs_bad'));return;}
+  const n=['d','t'].reduce((k,x)=>k+(p.a[x]||[]).length,0)+(p.c||[]).filter(c=>c[2]==='d'||c[2]==='t').length;
+  const mine=Object.keys(S.answers).length>0;
+  if(!mine&&(p.l==='fr'||p.l==='en')&&p.l!==S.lang){S.lang=p.l;save();applyLang();}   // nouvel appareil : la langue de la liste
+  if(S.finished) route('bilan'); else route('intro');
+  let dlg=$('restoreDlg'); if(dlg) dlg.remove();
+  document.body.insertAdjacentHTML('beforeend',`<dialog class="confirm" id="restoreDlg" aria-labelledby="rsH">
+    <h2 id="rsH">${esc(t('rs_h'))}</h2><p>${esc(t('rs_p')(n,p.n))}${mine?' '+esc(t('rs_mine')):''}</p>
+    <div class="btns"><button class="primary" id="rsOk">${esc(t(mine?'rs_replace':'rs_ok'))}</button><button class="ghost" id="rsNo">${esc(t('reset_no'))}</button></div></dialog>`);
+  dlg=$('restoreDlg');
+  $('rsNo').onclick=()=>dlg.close();
+  $('rsOk').onclick=()=>{dlg.close();applyRestore(p);applyLang();route('bilan');toast(t('rs_done'));track('restaurer');};
+  dlg.addEventListener('close',()=>dlg.remove());
+  if(dlg.showModal) dlg.showModal();
+}
+async function showTransfer(boxId){
+  const box=$(boxId); if(!box) return;
+  const url=await restoreUrl(); track('transferer');
+  box.hidden=false; box.innerHTML=`<p>${esc(t('tr_p'))}</p>
+    <div class="share-box"><input readonly aria-label="URL" value="${esc(url)}"><button class="ghost" data-copy>${esc(t('copy'))}</button></div>
+    ${navigator.share?`<button class="ghost" data-send>${esc(t('tr_send'))}</button>`:''}
+    <p class="tr-n">${esc(t('tr_note'))}</p>`;
+  const inp=box.querySelector('input');
+  box.querySelector('[data-copy]').onclick=async()=>{try{await navigator.clipboard.writeText(url);toast(t('link_copied'));}catch(e){inp.select();}};
+  const sb=box.querySelector('[data-send]'); if(sb) sb.onclick=async()=>{try{await navigator.share({title:t('tr_title'),text:t('tr_txt'),url});}catch(e){}};
+}
+
 /* =====================================================================
    DÉMARRAGE
    ===================================================================== */
 function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove('show'),1800);}
 function start(){
+  if(RESTORE){const c=RESTORE;RESTORE=null;askRestore(c);return;}
   if(SHARED){route('shared');return;}
   if(ORDER_RET==='merci'){route('merci');return;}
   if(ORDER_RET==='annulee'){route(S.finished?'poster':'intro');toast(t('cancel_t'));return;}
@@ -1413,6 +1484,8 @@ function start(){
   else route('intro');
 }
 SHARED=parseShared();
+let RESTORE=new URLSearchParams(location.search).get('r');
+if(RESTORE) history.replaceState(null,'',location.pathname);
 const ORDER_RET=new URLSearchParams(location.search).get('commande');
 if(ORDER_RET) history.replaceState(null,'',location.pathname);
 if(SHARED&&!SHARED.bad&&!load(STORE)&&!load('bl-state')) S.lang=SHARED.lang;
