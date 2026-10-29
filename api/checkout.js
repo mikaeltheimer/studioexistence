@@ -6,6 +6,7 @@ import Stripe from 'stripe';
 import { put } from '@vercel/blob';
 import { randomUUID } from 'crypto';
 import { FORMATS, STYLES, CURRENCIES, readRaw, restoreMeta } from './_shop.js';
+import { lookupGift } from './_gift.js';
 
 export const config = { runtime: 'nodejs' };
 const MAX = 4.4 * 1024 * 1024;
@@ -43,8 +44,15 @@ export default async function handler(req, res) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const base = `https://${req.headers.host}/bucket-list/`;
     // moyens de paiement : configuration choisie dans Stripe (son identifiant diffère entre le mode test et le mode réel)
+    // bon cadeau : appliqué d'office s'il est valide et dans la même devise (sinon la commande se fait sans, au prix normal)
+    let gift = null;
+    if (url.searchParams.get('gift')) {
+      const g = await lookupGift(stripe, url.searchParams.get('gift')).catch(() => null);
+      if (g && g.valid && g.cur === cur) gift = g; else return res.status(409).json({ error: 'gift', reason: g?.reason || 'currency' });
+    }
     const pmc = (process.env.STRIPE_PAYMENT_METHOD_CONFIG || '').trim();
     const session = await stripe.checkout.sessions.create({
+      ...(gift ? { discounts: [{ promotion_code: gift.id }] } : { allow_promotion_codes: true }),
       ...(pmc ? { payment_method_configuration: pmc } : {}),
       mode: 'payment',
       locale: lang,
@@ -66,8 +74,8 @@ export default async function handler(req, res) {
       // un prix en USD ne se livre qu'aux États-Unis, un prix en CAD qu'au Canada
       shipping_address_collection: { allowed_countries: CUR.ship },
       automatic_tax: { enabled: true },   // taxe selon la province de l'adresse de livraison
-      allow_promotion_codes: true,   // codes promo créés dans Stripe (lancement, amis, partenaires)
-      metadata: { format, style, lang, name, cur, file: file.url, ...(preview ? { preview: preview.url } : {}), ...restoreMeta(url.searchParams.get('rc') || '') },
+      // codes promo créés dans Stripe (lancement, amis, partenaires) : proposés sauf si un bon cadeau est déjà appliqué
+      metadata: { format, style, lang, name, cur, ...(gift ? { gift: gift.code } : {}), file: file.url, ...(preview ? { preview: preview.url } : {}), ...restoreMeta(url.searchParams.get('rc') || '') },
       // panier abandonné : la session expire après 1 h et le webhook supprime le fichier (checkout.session.expired)
       expires_at: Math.floor(Date.now() / 1000) + 3600,
       success_url: `${base}?commande=merci&session_id={CHECKOUT_SESSION_ID}`,
