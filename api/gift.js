@@ -5,7 +5,8 @@
 //   GET  /api/gift?session_id=cs_…                                       -> code du bon après l'achat (page de remerciement)
 import Stripe from 'stripe';
 import { FORMATS, CURRENCIES, readRaw } from './_shop.js';
-import { lookupGift, cardPdf, clip, prettyCode } from './_gift.js';
+import { lookupGift, cardPdf, clip, prettyCode, createGift, giftUrl } from './_gift.js';
+import { sendGiftEmails } from './_email.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -43,8 +44,18 @@ export default async function handler(req, res) {
     if (q.get('session_id')) {
       const s = await stripe.checkout.sessions.retrieve(q.get('session_id'), { expand: ['payment_intent'] });
       if (s.metadata?.kind !== 'gift') return res.status(404).json({ error: 'not_gift' });
-      const code = s.payment_intent?.metadata?.gift_code;
-      return res.status(200).json(code ? { ready: true, code, to: s.metadata.to, lang: s.metadata.lang } : { ready: false });
+      if (s.payment_status !== 'paid') return res.status(200).json({ ready: false, paid: false });
+      // le paiement est confirmé : on crée le bon ici même, sans attendre le webhook (création et courriel idempotents,
+      // le webhook qui arrive ensuite retrouve le même code et Resend ignore le second envoi)
+      let code = s.payment_intent?.metadata?.gift_code;
+      if (!code) {
+        const g = await createGift(stripe, { ...s, payment_intent: s.payment_intent?.id || s.payment_intent });
+        code = g.code;
+        const m = s.metadata;
+        const pdf = await cardPdf({ code, format: m.format, cur: m.cur, lang: m.lang, from: m.from, to: m.to, msg: m.msg }).catch(e => { console.error('bon pdf', e.message); return null; });
+        console.log('cadeau (page)', s.id, code, JSON.stringify(await sendGiftEmails(s, code, giftUrl(code), pdf).catch(e => ({ erreur: e.message }))));
+      }
+      return res.status(200).json({ ready: true, code, to: s.metadata.to, lang: s.metadata.lang });
     }
     const code = prettyCode(q.get('code'));
     if (!code) return res.status(400).json({ valid: false, reason: 'format' });
