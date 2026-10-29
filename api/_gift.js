@@ -3,9 +3,8 @@
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { ImageResponse } from '@vercel/og';
-import { PDFDocument } from 'pdf-lib';
-import QRCode from 'qrcode';
+// @vercel/og, pdf-lib et qrcode sont chargés seulement pour fabriquer le bon (import dynamique) :
+// la vérification d'un code au moment de commander reste légère et ne dépend pas de ces bibliothèques
 import { FORMATS, CURRENCIES } from './_shop.js';
 
 export const SITE = 'https://www.studioexistence.com';
@@ -69,6 +68,7 @@ export const W = 1754, H = 1240;   // A5 paysage à ~212 dpi
 export async function cardTree(info) {
   const fr = info.lang !== 'en', L = fr ? 'fr' : 'en', fmt = FORMATS[info.format] || FORMATS.a3;
   const cur = CURRENCIES[info.cur] ? info.cur : 'cad', amount = info.amount ?? fmt[CURRENCIES[cur].field];
+  const QRCode = (await import('qrcode')).default;
   const qr = 'data:image/svg+xml;base64,' + Buffer.from(await QRCode.toString(giftUrl(info.code), { type: 'svg', margin: 0, color: { dark: INK, light: '#00000000' } })).toString('base64');
   const poster = 'data:image/jpeg;base64,' + file(`cadeau-man-${L}.jpg`).toString('base64');
   const T = fr ? {
@@ -104,11 +104,13 @@ export async function cardTree(info) {
       h('div', { fontSize: 19, marginTop: 26, color: '#4A4458' }, T.val)));
 }
 export async function cardPng(info) {
+  const { ImageResponse } = await import('@vercel/og');
   const r = new ImageResponse(await cardTree(info), { width: W, height: H, fonts: fonts() });
   return Buffer.from(await r.arrayBuffer());
 }
 export async function cardPdf(info) {
   const png = await cardPng(info);
+  const { PDFDocument } = await import('pdf-lib');
   const pdf = await PDFDocument.create(); pdf.setTitle(info.lang === 'en' ? 'Bucket List gift card' : 'Bon cadeau Bucket List'); pdf.setAuthor('Studio Existence inc.');
   const page = pdf.addPage([595.28, 419.53]);   // A5 paysage, en points
   const image = await pdf.embedPng(png);
