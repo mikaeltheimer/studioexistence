@@ -10,7 +10,9 @@ import { lookupGift, cardPdf, clip, prettyCode } from './_gift.js';
 export const config = { runtime: 'nodejs' };
 
 export default async function handler(req, res) {
-  if (!process.env.STRIPE_SECRET_KEY) return res.status(503).json({ error: 'not_configured' });
+  if (!process.env.STRIPE_SECRET_KEY) { console.error('gift not_configured STRIPE_SECRET_KEY'); return res.status(503).json({ error: 'not_configured', missing: ['STRIPE_SECRET_KEY'] }); }
+  // mode de la clé (jamais la clé elle-même), pour vérifier qu'un aperçu tourne bien en mode test
+  console.log('gift', req.method, (process.env.STRIPE_SECRET_KEY || '').startsWith('sk_live') ? 'live' : 'test');
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const url = new URL(req.url, `https://${req.headers.host}`), q = url.searchParams;
   res.setHeader('Cache-Control', 'private, no-store');
