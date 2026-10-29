@@ -57,6 +57,9 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .count i{font-style:normal;font-size:12px}
 .count.bump{animation:bump .35s ease}
 @keyframes bump{40%{transform:scale(1.15) rotate(-3deg)}}
+.bilan-back{height:34px;padding:0 13px;border-radius:999px;border:1.5px solid var(--ink);background:var(--card);font:inherit;font-size:13.5px;font-weight:800;color:var(--ink);white-space:nowrap;cursor:pointer;margin-right:auto}
+.from-bilan .bar .mark{display:none}
+@media (min-width:1024px){.from-bilan .bar .mark{display:inline-flex}.bilan-back{margin-right:6px;order:1}.bar .mark{order:0}.bar>:not(.mark):not(.bilan-back){order:2}}
 .icon-btn{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--ink);background:var(--card);font-size:16px;font-weight:700}
 .icon-btn:disabled{opacity:.3;cursor:default}
 .mini{width:30px;height:40px;border-radius:3px;background:var(--card);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--cat2);padding:3px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:1.5px;overflow:hidden}
@@ -312,14 +315,16 @@ html,body,button,.app,.stack,.card{touch-action:manipulation}
 
 @media (min-width:1024px){
   /* Accueil : texte à gauche, affiches à droite */
-  .intro-in{max-width:1160px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-rows:auto 1fr auto auto auto auto 1fr;column-gap:72px;row-gap:22px;align-items:start;padding-block:12px 24px}
+  .intro-in{max-width:1160px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-rows:auto 1fr auto auto auto auto auto auto 1fr;column-gap:72px;row-gap:22px;align-items:start;padding-block:12px 24px}
   .intro-in>*{grid-column:1}
   .intro-in>.top{grid-column:1/-1;grid-row:1}
   .intro-in>h1{grid-row:3;font-size:56px}
   .intro-in>ol{grid-row:4}
-  .intro-in>.primary{grid-row:5;margin-top:8px;max-width:420px}
-  .intro-in>.intro-note{grid-row:6;max-width:420px;text-align:left;margin-top:-10px}
-  .intro-in>.resume{grid-row:6}
+  .intro-in>.giftban{grid-row:5;max-width:420px}
+  .intro-in>.primary{grid-row:6;margin-top:8px;max-width:420px}
+  .intro-in>.intro-note{grid-row:7;max-width:420px;text-align:left;margin-top:-10px}
+  .intro-in>.resume{grid-row:7}
+  .intro-in>.intro-gift{grid-row:8;align-self:start;justify-self:start;padding:4px 0;margin-top:-4px}
   .intro-in>.intro-art{grid-column:2;grid-row:2/-1;align-self:center;padding-block:24px}
   .intro li{font-size:17px}
   .ex{width:min(46%,300px)}
@@ -469,6 +474,7 @@ dialog.gift .field input{font:inherit;font-size:18px;letter-spacing:2px;padding:
 
 <div class="app" id="play" hidden>
   <div class="bar">
+    <button class="bilan-back" id="toBilan" hidden></button>
     <div class="mark">Bucket <span>List</span></div>
     <div class="count" id="cDone"><i>✓</i><span>0</span></div>
     <div class="count" id="cTodo"><i>★</i><span>0</span></div>
@@ -536,7 +542,7 @@ const T={
   done_c:'Expériences vécues', todo_c:'Expériences qui te tentent', undo:'Annuler la dernière réponse', mini:'Voir mon bilan',
   live_k:'Ton affiche <em>se compose</em>', leg_skip:'Pas pour moi', leg_todo:'Ça me tente', leg_done:"Je l'ai fait", tap2:'2× tap',
   st_done:"✓ Je l'ai fait", st_todo:'★ Ça me tente', st_skip:'Pas pour moi',
-  skip:'Passer →', next:'Suivante →', finish:'Terminer', deeper:'Approfondir', undone:'Réponse annulée',
+  skip:'Passer →', to_bilan:'← Bilan', next:'Suivante →', finish:'Terminer', deeper:'Approfondir', undone:'Réponse annulée',
   coach_h:'Réponds à chaque carte', coach1:"Glisse à droite : je l'ai fait", coach2:'Double-tap : ça me tente', coach3:'Glisse à gauche : pas pour moi', go:"C'est parti",
   coach_keys:'Au clavier : → ↑ ←',
   cat_done:'Catégorie complétée', expl_done:'Exploration terminée', lived:'vécues', tempt:'te tentent', lived1:'vécue', tempt1:'te tente',
@@ -578,7 +584,7 @@ const T={
   done_c:"Experiences you've lived", todo_c:'Experiences you want', undo:'Undo last answer', mini:'See my summary',
   live_k:'Your poster <em>takes shape</em>', leg_skip:'Not for me', leg_todo:'Want to', leg_done:'Done it', tap2:'Double-tap',
   st_done:'✓ Done it', st_todo:'★ Want to', st_skip:'Not for me',
-  skip:'Skip →', next:'Next →', finish:'Finish', deeper:'Going deeper', undone:'Answer undone',
+  skip:'Skip →', to_bilan:'← Overview', next:'Next →', finish:'Finish', deeper:'Going deeper', undone:'Answer undone',
   coach_h:'Answer each card', coach1:'Swipe right: done it', coach2:'Double-tap: want to', coach3:'Swipe left: not for me', go:"Let's go",
   coach_keys:'Keyboard: → ↑ ←',
   cat_done:'Category complete', expl_done:'Exploration complete', lived:'lived', tempt:'tempting', lived1:'lived', tempt1:'tempting',
@@ -748,6 +754,7 @@ function renderHeader(){
   const lastStop=S.toFinal||S.catIndex===CATS.length-1;
   $('skipcat').textContent=S.toFinal?(nextDeep(S.catIndex)>=0?t('next'):t('finish')):S.phase==='more'?(lastStop?t('finish'):t('next')):(lastStop?t('finish'):t('skip'));
   $('skipcat').hidden=!Q.queue.length;
+  $('toBilan').hidden=!S.toFinal; $('toBilan').textContent=t('to_bilan'); $('play').classList.toggle('from-bilan',!!S.toFinal);
   $('segs').innerHTML=Array.from({length:Q.segTotal},(_,i)=>`<i class="${i<Q.segDone?'on':''}"></i>`).join('');
 }
 function counts(){const v=Object.entries(S.answers).filter(([id])=>byId(id)).map(([,s])=>s);return {d:v.filter(x=>x==='done').length,t:v.filter(x=>x==='todo').length};}
@@ -856,6 +863,7 @@ let lastTouch=0;
 $('play').addEventListener('touchend',e=>{const now=Date.now();if(now-lastTouch<350&&!e.target.closest('button,input,a'))e.preventDefault();lastTouch=now;},{passive:false});
 $('play').addEventListener('dblclick',e=>e.preventDefault());
 $('mini').onclick=()=>route('bilan');
+$('toBilan').onclick=()=>{S.toFinal=false;Q.queue=[];save();track('retour-bilan');route('bilan');};
 $('skipcat').onclick=()=>{
   snapshot();closeCoach();
   if(S.toFinal){const nd=nextDeep(S.catIndex);if(nd>=0){startSegment(nd,'more');renderStack(false);toast(catName(cat()));}else{Q.queue=[];finishTour();}return;}
@@ -1013,10 +1021,10 @@ function renderBilan(){
     <div class="btns">
       ${d+tt?'':`<p>${esc(t('need_more'))}</p>`}
       <button class="ghost" id="bShare" ${d+tt?'':'disabled'}>${esc(t('share'))}</button>
-      <button class="ghost" id="bGift">${esc(t('of_btn2'))}</button>
       <div class="share-box" id="shareBox" hidden><input id="shareUrl" readonly aria-label="URL"><button class="ghost" id="copyUrl">${esc(t('copy'))}</button></div>
       <button class="ghost" id="bList">${esc(t('edit'))}</button>
       ${d+tt?`<button class="ghost" id="bTransfer">${esc(t('tr_btn'))}</button><div class="transfer" id="trBox" hidden></div>`:''}
+      <button class="ghost" id="bGift">${esc(t('of_btn2'))}</button>
       ${S.finished?'':`<button class="ghost" id="bPlay">${esc(t('continue_'))}</button>`}
     </div>
     ${d+tt?'':deepCard()}
