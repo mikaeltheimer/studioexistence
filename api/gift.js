@@ -2,10 +2,11 @@
 //   POST /api/gift?format=a3&cur=cad&lang=fr   corps JSON {from,to,msg}  -> session Stripe d'achat du bon
 //   GET  /api/gift?code=BL-XXXX-XXXX                                     -> bon valide ? (de qui, pour qui, format)
 //   GET  /api/gift?code=BL-XXXX-XXXX&pdf=1                               -> bon à imprimer (PDF A5)
+//   GET  /api/gift?code=BL-XXXX-XXXX&png=1                               -> aperçu du bon (PNG)
 //   GET  /api/gift?session_id=cs_…                                       -> code du bon après l'achat (page de remerciement)
 import Stripe from 'stripe';
 import { FORMATS, CURRENCIES, readRaw } from './_shop.js';
-import { lookupGift, cardPdf, clip, prettyCode, createGift, giftUrl } from './_gift.js';
+import { lookupGift, cardPdf, cardPng, clip, prettyCode, createGift, giftUrl } from './_gift.js';
 import { sendGiftEmails } from './_email.js';
 
 export const config = { runtime: 'nodejs' };
@@ -60,11 +61,16 @@ export default async function handler(req, res) {
     const code = prettyCode(q.get('code'));
     if (!code) return res.status(400).json({ valid: false, reason: 'format' });
     const info = await lookupGift(stripe, code);
-    if (q.get('pdf')) {
+    if (q.get('pdf') || q.get('png')) {
       if (!info.valid && info.reason !== 'used') return res.status(404).send('not found');
       const r = await stripe.promotionCodes.list({ code, limit: 1, expand: ['data.promotion.coupon'] });
       const p = r.data[0], m = p.metadata, c = p.promotion?.coupon;
-      const pdf = await cardPdf({ code, format: m.format, cur: m.cur, lang: m.lang, from: m.from, to: m.to, msg: m.msg, amount: c?.amount_off });
+      const card = { code, format: m.format, cur: m.cur, lang: m.lang, from: m.from, to: m.to, msg: m.msg, amount: c?.amount_off };
+      if (q.get('png')) { // aperçu du bon sur la page de remerciement
+        res.setHeader('Content-Type', 'image/png');
+        return res.status(200).send(await cardPng(card));
+      }
+      const pdf = await cardPdf(card);
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `inline; filename="bon-cadeau-bucket-list-${code}.pdf"`);
       return res.status(200).send(pdf);

@@ -445,6 +445,24 @@ dialog.gift .gw-m{font-family:var(--display);font-style:italic;font-size:20px;co
 dialog.gift .field input{font:inherit;font-size:18px;letter-spacing:2px;padding:11px 13px;border-radius:8px;border:1.5px solid var(--ink);width:100%;margin-bottom:14px;text-transform:uppercase}
 .of-art{margin:0;display:flex;justify-content:center}.of-art img{width:min(100%,460px);height:auto;border:1.5px solid var(--ink);border-radius:6px;box-shadow:8px 9px 0 #FFEE2E;transform:rotate(-1.5deg)}
 #offrir textarea{font:inherit;font-size:16px;padding:11px 13px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);width:100%;resize:vertical}
+/* ══ Offrir : ordinateur ══ */
+.of-l,.of-r,.gt-side{display:contents}
+#cmerci .gt-art{order:1}#cmerci #gtBack{order:2}
+.gt-art.wait img{opacity:.35;filter:blur(2px) grayscale(.4)}
+.gt-art img{transition:opacity .4s,filter .4s}
+@media (min-width:1024px){
+  #offrir .screen-in,#cmerci .screen-in{max-width:1180px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,1fr);column-gap:64px;row-gap:22px;align-items:start;padding-inline:16px}
+  #offrir .s-top,#cmerci .s-top{grid-column:1/-1}
+  .of-l,.of-r,.gt-side{display:flex;flex-direction:column;gap:18px}
+  .of-l{position:sticky;top:12px}
+  .of-l h1,.gt-side h1{font-size:48px}
+  .of-l>p{font-size:17px;max-width:560px}
+  .of-art{justify-content:flex-start;padding:6px 14px 14px 6px}
+  .of-art img{width:100%;max-width:none;box-shadow:12px 13px 0 #FFEE2E}
+  .of-r{padding-top:6px}
+  #cmerci .gt-art{grid-column:1;grid-row:2;position:sticky;top:12px;align-self:start;margin-top:8px}
+  #cmerci .gt-side{grid-column:2;grid-row:2}
+}
 </style>
 </head>
 <body>
@@ -1529,17 +1547,17 @@ function renderGift(){
   const L=S.lang;
   $('offrir').innerHTML=`<div class="screen-in">
     <div class="s-top"><button class="back" id="gBack">${esc(t('back'))}</button><div class="mark" style="margin-left:auto">Bucket <span>List</span></div>${langBtn()}</div>
-    <h1>${t('of_h')}</h1>
+    <div class="of-l"><h1>${t('of_h')}</h1>
     <p>${esc(t('of_p'))}</p>
-    <figure class="of-art"><img src="/bucket-list/bon-exemple-${L}.jpg" alt="" width="1000" height="707"></figure>
-    <div class="styles" role="group" id="gFmts">${Object.entries(SHOP).map(([k,f])=>`<button data-gfmt="${k}" aria-pressed="${k===giftFmt}">${esc(L==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${esc(money(priceOf(k)))}</small></button>`).join('')}</div>
+    <figure class="of-art"><img src="/bucket-list/bon-exemple-${L}.jpg" alt="" width="1000" height="707"></figure></div>
+    <div class="of-r"><div class="styles" role="group" id="gFmts">${Object.entries(SHOP).map(([k,f])=>`<button data-gfmt="${k}" aria-pressed="${k===giftFmt}">${esc(L==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${esc(money(priceOf(k)))}</small></button>`).join('')}</div>
     <p class="shop-cur">${esc(t(CUR==='usd'?'of_us':'of_ca'))} <button class="linkish" id="gCur">${esc(t(CUR==='usd'?'cur_to_ca':'cur_to_us'))}</button></p>
     <div class="field"><label for="gFrom">${esc(t('of_from'))}</label><input id="gFrom" maxlength="40" value="${esc(S.name)}"></div>
     <div class="field"><label for="gTo">${esc(t('of_to'))}</label><input id="gTo" maxlength="40"></div>
     <div class="field"><label for="gMsg">${esc(t('of_msg'))}</label><textarea id="gMsg" maxlength="240" rows="3" placeholder="${esc(t('of_msg_p'))}"></textarea></div>
     <button class="primary" id="gBuy">${esc(t('of_btn')(money(priceOf(giftFmt))))}</button>
     <p class="shop-status" id="gStatus" role="status" aria-live="polite"></p>
-    <p class="shop-legal">${esc(t('of_note'))} ${t('shop_legal')}</p>
+    <p class="shop-legal">${esc(t('of_note'))} ${t('shop_legal')}</p></div>
   </div>`;
   show('offrir');
   $('gBack').onclick=()=>route(S.finished?'bilan':'intro');
@@ -1558,10 +1576,11 @@ function renderGift(){
 async function renderGiftThanks(){
   $('cmerci').innerHTML=`<div class="screen-in">
     <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
-    <h1>${t('gt_h')}</h1><p id="gtP">${esc(t('gt_wait'))}</p>
+    <figure class="of-art gt-art wait" id="gtArt"><img src="/bucket-list/bon-exemple-${S.lang}.jpg" alt="" width="1000" height="707"></figure>
+    <div class="gt-side"><h1>${t('gt_h')}</h1><p id="gtP">${esc(t('gt_wait'))}</p>
     <ol class="gt-steps" id="gtSteps"><li class="ok">${esc(t('gt_s1'))}</li><li class="on">${esc(t('gt_s2'))}</li><li>${esc(t('gt_s3'))}</li></ol>
     <div id="gtBox"></div>
-    <button class="ghost" id="gtBack">${esc(t('thanks_back'))}</button></div>`;
+    <button class="ghost" id="gtBack">${esc(t('thanks_back'))}</button></div></div>`;
   show('cmerci'); track('offrir-merci');
   $('gtBack').onclick=()=>route(S.finished?'bilan':'intro');
   for(let i=0;i<20&&GIFT_SID;i++){
@@ -1569,6 +1588,7 @@ async function renderGiftThanks(){
     try{const j=await (await fetch('/api/gift?session_id='+encodeURIComponent(GIFT_SID))).json();
       if(j.ready){$('gtSteps').hidden=true;if($('gtSlow'))$('gtSlow').remove();const link=location.origin+'/bucket-list/?cadeau='+encodeURIComponent(j.code), pdf='/api/gift?pdf=1&code='+encodeURIComponent(j.code);
         $('gtP').textContent=t('gt_p')(j.to);
+        {const a=$('gtArt'),im=new Image();im.width=1000;im.height=707;im.alt=t('gt_h').replace(/<[^>]+>/g,'');im.onload=()=>{a.replaceChildren(im);a.classList.remove('wait');};im.onerror=()=>a.classList.remove('wait');im.src='/api/gift?png=1&code='+encodeURIComponent(j.code);}
         $('gtBox').innerHTML=`<div class="kit"><h2>${esc(j.code)}</h2>
           <a class="primary" href="${pdf}" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">${esc(t('gt_pdf'))}</a>
           <div class="share-box"><input readonly value="${esc(link)}" aria-label="URL"><button class="ghost" id="gtCopy">${esc(t('copy'))}</button></div>
