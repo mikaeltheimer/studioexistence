@@ -4,7 +4,8 @@
 import Stripe from 'stripe';
 import { del } from '@vercel/blob';
 import { FORMATS, variantFor, externalId, recipientFrom, readRaw } from './_shop.js';
-import { sendOrderEmails } from './_email.js';
+import { sendOrderEmails, sendGiftEmails } from './_email.js';
+import { createGift, giftUrl, cardPdf } from './_gift.js';
 
 export const config = { runtime: 'nodejs' };
 
@@ -53,6 +54,17 @@ export default async function handler(req, res) {
   if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const session = event.data.object;
     // « no_payment_required » : commande entièrement couverte par un code promo à 100 %
+    if (session.metadata?.kind === 'gift' && session.payment_status === 'paid') {
+      // achat d'un bon cadeau : créer le code, puis envoyer le bon (PDF) à la personne qui offre
+      try {
+        const stripe2 = new Stripe(process.env.STRIPE_SECRET_KEY);
+        const g = await createGift(stripe2, session);
+        const link = giftUrl(g.code);
+        const pdf = await cardPdf({ code: g.code, format: session.metadata.format, cur: session.metadata.cur, lang: session.metadata.lang, from: session.metadata.from, to: session.metadata.to, msg: session.metadata.msg }).catch(e => { console.error('bon pdf', e.message); return null; });
+        console.log('cadeau', session.id, g.code, JSON.stringify(await sendGiftEmails(session, g.code, link, pdf)));
+      } catch (e) { console.error('cadeau error', session.id, e.message); return res.status(500).json({ error: 'cadeau' }); }
+      return res.status(200).json({ received: true });
+    }
     if (session.payment_status === 'paid' || session.payment_status === 'no_payment_required') {
       try {
         const out = await createPrintfulOrder(session);

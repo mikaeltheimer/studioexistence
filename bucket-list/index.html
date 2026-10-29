@@ -430,6 +430,15 @@ dialog.confirm .danger{background:#C2183C;color:#fff;font-weight:800;border-radi
 .transfer{display:flex;flex-direction:column;gap:10px;padding:14px;border:1.5px dashed var(--ink);border-radius:8px;background:var(--card)}
 .transfer p{margin:0;font-size:14px}
 .transfer .tr-n{font-size:12.5px;color:var(--muted)}
+
+.giftban{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1.5px solid var(--ink);border-radius:8px;background:#FFEE2E;font-size:14px}
+.giftban b{font-size:15px}
+.intro-gift{align-self:center;background:none;border:0;font:inherit;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px;color:var(--ink);padding:4px;cursor:pointer}
+dialog.gift .gw-k{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 6px}
+dialog.gift .gw-m{font-family:var(--display);font-style:italic;font-size:20px;color:var(--ink)}
+dialog.gift .field input{font:inherit;font-size:18px;letter-spacing:2px;padding:11px 13px;border-radius:8px;border:1.5px solid var(--ink);width:100%;margin-bottom:14px;text-transform:uppercase}
+.of-art{margin:0;display:flex;justify-content:center}.of-art img{width:min(100%,460px);height:auto;border:1.5px solid var(--ink);border-radius:6px;box-shadow:8px 9px 0 #FFEE2E;transform:rotate(-1.5deg)}
+#offrir textarea{font:inherit;font-size:16px;padding:11px 13px;border-radius:8px;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);width:100%;resize:vertical}
 </style>
 </head>
 <body>
@@ -461,6 +470,8 @@ dialog.confirm .danger{background:#C2183C;color:#fff;font-weight:800;border-radi
 <section class="screen wide" id="poster" hidden></section>
 <section class="screen wide" id="shared" hidden></section>
 <section class="screen" id="merci" hidden></section>
+<section class="screen" id="offrir" hidden></section>
+<section class="screen" id="cmerci" hidden></section>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -479,9 +490,10 @@ const PAL2={nature:'#FF66B8',voyages:'#FF66B8',corps:'#55B8FF',sensations:'#C29B
 const SHOP={a3:{label:'A3 · 29,7 × 42 cm',price:49,usd:39},a2:{label:'A2 · 42 × 59,4 cm',price:65,usd:49}};
 /* Devise : USD pour les visiteurs aux États-Unis (pays fourni par /api/geo), CAD sinon ; le visiteur peut changer */
 let CUR='cad'; try{const c=sessionStorage.getItem('bl-cur');if(c==='usd'||c==='cad')CUR=c;}catch(e){}
+try{const st=JSON.parse(localStorage.getItem('bl2')||'{}');if(st.gift&&(st.gift.cur==='usd'||st.gift.cur==='cad'))CUR=st.gift.cur;}catch(e){}
 const priceOf=k=>CUR==='usd'?SHOP[k].usd:SHOP[k].price;
 const money=n=>CUR==='usd'?(S.lang==='en'?`$${n} USD`:`${n} $ US`):(S.lang==='en'?`$${n} CAD`:`${n} $`);
-function setCur(c){CUR=c;try{sessionStorage.setItem('bl-cur',c);}catch(e){}const scr=currentScreen();if(scr==='bilan'||scr==='poster')route(scr);}
+function setCur(c){CUR=c;try{sessionStorage.setItem('bl-cur',c);}catch(e){}const scr=currentScreen();if(scr==='bilan'||scr==='poster'||scr==='offrir')route(scr);}
 const PEN={fr:{nature:'vert',voyages:'jaune',corps:'rouge',sensations:'orange',accomplissements:'turquoise',relations:'rose',culture:'bleu',mystere:'lilas'},
            en:{nature:'green',voyages:'yellow',corps:'red',sensations:'orange',accomplissements:'turquoise',relations:'pink',culture:'blue',mystere:'lilac'}};
 
@@ -510,7 +522,7 @@ const T={
   name_l:'Ton prénom (affiche et partage)', name_p:'ex : Marie',
   make_poster:'Créer mon affiche', share:'Partager ma liste', edit:'Modifier mes expériences', continue_:'Continuer les cartes',
   deep_t:'Approfondir une catégorie', deep_h:'Ta liste peut encore grandir', deep_p:n=>`Il reste ${n} expérience${n>1?'s':''} à découvrir. Chaque catégorie explorée enrichit ton affiche.`, deep_next:c=>`Approfondir : ${c} →`, own_t:'Il manque quelque chose ? Ajoute ta propre expérience', need_more:'Réponds à quelques cartes pour composer ton affiche.',
-  list_h:'Mes expériences', reset:'Effacer ma Bucket List', tr_btn:'Retrouver ma liste sur un autre appareil', tr_p:"Ce lien contient toute ta liste. Ouvre-le sur ton autre appareil (ou plus tard) pour la retrouver telle quelle : réponses, ajouts, prénom et style.", tr_send:"M'envoyer le lien", tr_note:"Garde-le pour toi : toute personne qui l'ouvre peut copier ta liste. Il ne contient ni courriel ni adresse.", tr_title:'Ma Bucket List', tr_txt:'Le lien pour retrouver ma Bucket List', rs_h:'Retrouver cette Bucket List ?', rs_p:(n,nm)=>`Ce lien contient ${nm?'la liste de '+nm:'une liste'} : ${n} expérience${n>1?'s':''} vécue${n>1?'s':''} ou à vivre.`, rs_mine:'Elle remplacera la liste déjà présente sur cet appareil.', rs_ok:'Ouvrir ma liste', rs_replace:'Remplacer ma liste actuelle', rs_done:'Ta liste est de retour', rs_bad:'Ce lien de transfert est incomplet ou abîmé.', reset_h:'Tout effacer et repartir à zéro ?', reset_p:n=>`Tes ${n} réponse${n>1?'s':''}, les expériences que tu as ajoutées et ton prénom seront supprimés de ce navigateur. C'est définitif. Les liens que tu as déjà partagés continueront de fonctionner.`, reset_ok:'Oui, tout effacer', reset_no:'Annuler', reset_done:'Ta Bucket List a été effacée', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
+  list_h:'Mes expériences', reset:'Effacer ma Bucket List', of_link:'Offrir une affiche à quelqu\u2019un →', of_btn2:'Offrir une Bucket List', of_h:'Offre une <em>Bucket List</em>', of_p:"La personne reçoit un bon cadeau : elle compose sa propre liste quand elle veut, et son affiche lui est imprimée et livrée.", of_ca:'Pour une personne qui vit au Canada.', of_us:'Pour une personne qui vit aux États-Unis.', of_from:'Ton prénom', of_to:'Son prénom', of_msg:'Un petit mot (facultatif)', of_msg_p:'Pour tous les rêves qui t\u2019attendent encore…', of_btn:p=>`Offrir · ${p}`, of_note:"Tu reçois le bon par courriel : un lien et un PDF à imprimer. Il n'expire jamais ; si les prix changent, la différence éventuelle sera à payer.", gb_h:f=>f?`Ton bon cadeau de ${f}`:'Ton bon cadeau', gb_p:fm=>`Il couvre ton affiche ${fm}, impression et livraison incluses.`, gift_incl:'Inclus dans ton bon', shop_btn_g:p=>`Commander avec mon bon · ${p}`, gift_used:'Ce bon cadeau a déjà été utilisé.', gift_bad:'Ce bon cadeau est introuvable.', gw_k:'Un cadeau pour toi', gw_h:f=>f?`${f} t\u2019offre ton affiche Bucket List`:'On t\u2019offre ton affiche Bucket List', gw_p:fm=>`Réponds aux cartes quand tu veux : ton affiche ${fm} se compose, et elle t'est imprimée et livrée. Ton bon s'appliquera tout seul.`, gw_go:'Commencer', ga_h:'Tu as un bon cadeau ?', ga_p:'Entre le code inscrit sur ton bon.', ga_ok:'Utiliser mon bon', gt_h:'Merci, <em>c\u2019est offert</em>', gt_wait:'Préparation du bon…', gt_p:to=>`Voici le bon${to?' pour '+to:''}. Tu le reçois aussi par courriel.`, gt_pdf:'Télécharger le bon à imprimer (PDF)', gt_send:'Envoyer le lien', gt_note:"Garde ce lien pour la personne à qui tu l'offres : il permet d'utiliser le bon.", gt_share_t:'Un cadeau pour toi', gt_share_txt:'Je t\u2019offre ton affiche Bucket List : crée ta liste quand tu veux !', gt_late:'Le bon arrive dans quelques minutes par courriel.', tr_btn:'Retrouver ma liste sur un autre appareil', tr_p:"Ce lien contient toute ta liste. Ouvre-le sur ton autre appareil (ou plus tard) pour la retrouver telle quelle : réponses, ajouts, prénom et style.", tr_send:"M'envoyer le lien", tr_note:"Garde-le pour toi : toute personne qui l'ouvre peut copier ta liste. Il ne contient ni courriel ni adresse.", tr_title:'Ma Bucket List', tr_txt:'Le lien pour retrouver ma Bucket List', rs_h:'Retrouver cette Bucket List ?', rs_p:(n,nm)=>`Ce lien contient ${nm?'la liste de '+nm:'une liste'} : ${n} expérience${n>1?'s':''} vécue${n>1?'s':''} ou à vivre.`, rs_mine:'Elle remplacera la liste déjà présente sur cet appareil.', rs_ok:'Ouvrir ma liste', rs_replace:'Remplacer ma liste actuelle', rs_done:'Ta liste est de retour', rs_bad:'Ce lien de transfert est incomplet ou abîmé.', reset_h:'Tout effacer et repartir à zéro ?', reset_p:n=>`Tes ${n} réponse${n>1?'s':''}, les expériences que tu as ajoutées et ton prénom seront supprimés de ce navigateur. C'est définitif. Les liens que tu as déjà partagés continueront de fonctionner.`, reset_ok:'Oui, tout effacer', reset_no:'Annuler', reset_done:'Ta Bucket List a été effacée', back:'← Retour', add_t:'Ajouter ma propre expérience', add_p:'ex : Voir les baleines de Tadoussac',
   add_done:"Je l'ai fait", add_todo:'Ça me tente', added:'Ajoutée à ta liste', removed:'Retirée', del:'Retirer',
   seg_done:"Je l'ai fait", seg_todo:'Ça me tente', seg_skip:'Pas pour moi',
   poster_h:'Ton <em>affiche</em>', style_man:'Manifeste', style_man_s:'Ta liste en un grand texte', style_ros:'Rosace', style_ros_s:'Un portrait en rayons', ros_max:n=>`Jusqu\u2019à ${n} expériences`,
@@ -552,7 +564,7 @@ const T={
   name_l:'Your first name (poster and sharing)', name_p:'e.g. Marie',
   make_poster:'Create my poster', share:'Share my list', edit:'Edit my experiences', continue_:'Keep answering',
   deep_t:'Go deeper into a category', deep_h:'Your list can still grow', deep_p:n=>`${n} more experience${n>1?'s':''} to discover. Every category you explore fills out your poster.`, deep_next:c=>`Go deeper: ${c} →`, own_t:'Something missing? Add your own experience', need_more:'Answer a few cards to build your poster.',
-  list_h:'My experiences', reset:'Erase my Bucket List', tr_btn:'Open my list on another device', tr_p:'This link holds your whole list. Open it on your other device (or later) to get it back exactly as it is: answers, additions, name and style.', tr_send:'Send me the link', tr_note:"Keep it to yourself: anyone who opens it can copy your list. It contains no email or address.", tr_title:'My Bucket List', tr_txt:'The link to get my Bucket List back', rs_h:'Open this Bucket List?', rs_p:(n,nm)=>`This link holds ${nm?nm+"'s list":'a list'}: ${n} experience${n>1?'s':''} lived or to live.`, rs_mine:'It will replace the list already on this device.', rs_ok:'Open my list', rs_replace:'Replace my current list', rs_done:'Your list is back', rs_bad:'This transfer link is incomplete or damaged.', reset_h:'Erase everything and start over?', reset_p:n=>`Your ${n} answer${n>1?'s':''}, the experiences you added and your name will be deleted from this browser. This can't be undone. Links you've already shared will keep working.`, reset_ok:'Yes, erase everything', reset_no:'Cancel', reset_done:'Your Bucket List has been erased', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
+  list_h:'My experiences', reset:'Erase my Bucket List', of_link:'Give a poster to someone →', of_btn2:'Give a Bucket List', of_h:'Give a <em>Bucket List</em>', of_p:'They get a gift card: they build their own list whenever they like, and their poster is printed and delivered.', of_ca:'For someone who lives in Canada.', of_us:'For someone who lives in the US.', of_from:'Your name', of_to:'Their name', of_msg:'A short note (optional)', of_msg_p:'For all the dreams still waiting for you…', of_btn:p=>`Give · ${p}`, of_note:'You get the gift card by email: a link and a printable PDF. It never expires; if prices change, any difference will be due at checkout.', gb_h:f=>f?`Your gift card from ${f}`:'Your gift card', gb_p:fm=>`It covers your ${fm} poster, printing and shipping included.`, gift_incl:'Included in your gift', shop_btn_g:p=>`Order with my gift card · ${p}`, gift_used:'This gift card has already been used.', gift_bad:"We couldn't find this gift card.", gw_k:'A gift for you', gw_h:f=>f?`${f} is giving you a Bucket List poster`:'Someone is giving you a Bucket List poster', gw_p:fm=>`Answer the cards whenever you like: your ${fm} poster takes shape, then gets printed and delivered. Your gift card applies automatically.`, gw_go:'Start', ga_h:'Have a gift card?', ga_p:'Enter the code printed on your card.', ga_ok:'Use my gift card', gt_h:'Thank you, <em>it\u2019s a gift</em>', gt_wait:'Preparing the gift card…', gt_p:to=>`Here is the gift card${to?' for '+to:''}. You'll also get it by email.`, gt_pdf:'Download the printable card (PDF)', gt_send:'Send the link', gt_note:"Keep this link for the person you're giving it to: it lets them use the gift card.", gt_share_t:'A gift for you', gt_share_txt:"I'm giving you a Bucket List poster: build your list whenever you like!", gt_late:'The gift card will arrive by email in a few minutes.', tr_btn:'Open my list on another device', tr_p:'This link holds your whole list. Open it on your other device (or later) to get it back exactly as it is: answers, additions, name and style.', tr_send:'Send me the link', tr_note:"Keep it to yourself: anyone who opens it can copy your list. It contains no email or address.", tr_title:'My Bucket List', tr_txt:'The link to get my Bucket List back', rs_h:'Open this Bucket List?', rs_p:(n,nm)=>`This link holds ${nm?nm+"'s list":'a list'}: ${n} experience${n>1?'s':''} lived or to live.`, rs_mine:'It will replace the list already on this device.', rs_ok:'Open my list', rs_replace:'Replace my current list', rs_done:'Your list is back', rs_bad:'This transfer link is incomplete or damaged.', reset_h:'Erase everything and start over?', reset_p:n=>`Your ${n} answer${n>1?'s':''}, the experiences you added and your name will be deleted from this browser. This can't be undone. Links you've already shared will keep working.`, reset_ok:'Yes, erase everything', reset_no:'Cancel', reset_done:'Your Bucket List has been erased', back:'← Back', add_t:'Add my own experience', add_p:'e.g. See the whales in Tadoussac',
   add_done:'Done it', add_todo:'Want to', added:'Added to your list', removed:'Removed', del:'Remove',
   seg_done:'Done it', seg_todo:'Want to', seg_skip:'Not for me',
   poster_h:'Your <em>poster</em>', style_man:'Manifesto', style_man_s:'Your list as one big text', style_ros:'Rosette', style_ros_s:'A portrait in rays', ros_max:n=>`Up to ${n} experiences`,
@@ -626,7 +638,7 @@ function migrate(){
 /* =====================================================================
    NAVIGATION
    ===================================================================== */
-const SCREENS=['intro','play','bilan','list','poster','shared','merci'];
+const SCREENS=['intro','play','bilan','list','poster','shared','merci','offrir','cmerci'];
 function show(name){
   SCREENS.forEach(s=>{$(s).hidden=s!==name;});
   document.body.style.overflow=name==='play'?'hidden':'';
@@ -648,6 +660,8 @@ function route(name){
   else if(name==='poster') (DESK.matches?renderBilan():renderPoster());
   else if(name==='shared') renderShared();
   else if(name==='merci') renderThanks();
+  else if(name==='offrir') renderGift();
+  else if(name==='cmerci') renderGiftThanks();
 }
 
 /* =====================================================================
@@ -664,10 +678,13 @@ function renderIntro(){
       <li><span>2</span><div><b>${esc(t('s2b'))}</b>${esc(t('s2'))}</div></li>
       <li><span>3</span><div><b>${esc(t('s3b'))}</b>${esc(t('s3'))}</div></li>
     </ol>
+    ${giftBanner()}
     <button class="primary" id="start">${esc(has?t('resume'):t('start'))}</button>
     <p class="intro-note">${esc(t('intro_note'))}</p>
+    ${S.gift?'':`<button class="intro-gift" id="giftLink">${esc(t('of_link'))}</button>`}
   </div>`;
   show('intro');
+  if($('giftLink')) $('giftLink').onclick=()=>route('offrir');
   $('start').onclick=()=>{ track(has?'reprise':'demarrer'); S.seenIntro=true; save(); if(S.finished) route('bilan'); else route('play'); };
 }
 
@@ -972,6 +989,7 @@ function renderBilan(){
     <div class="btns">
       ${d+tt?'':`<p>${esc(t('need_more'))}</p>`}
       <button class="ghost" id="bShare" ${d+tt?'':'disabled'}>${esc(t('share'))}</button>
+      <button class="ghost" id="bGift">${esc(t('of_btn2'))}</button>
       <div class="share-box" id="shareBox" hidden><input id="shareUrl" readonly aria-label="URL"><button class="ghost" id="copyUrl">${esc(t('copy'))}</button></div>
       <button class="ghost" id="bList">${esc(t('edit'))}</button>
       ${d+tt?`<button class="ghost" id="bTransfer">${esc(t('tr_btn'))}</button><div class="transfer" id="trBox" hidden></div>`:''}
@@ -991,6 +1009,7 @@ function renderBilan(){
   guardRos($('bilan'),posterItems(S).length);
   if(desk&&$('shop')) wireShop(drawThumb);
   $('bShare').onclick=shareList;
+  $('bGift').onclick=()=>route('offrir');
   $('bList').onclick=()=>{listCat=0;route('list');};
   if($('bTransfer')) $('bTransfer').onclick=()=>showTransfer('trBox');
   if($('bPlay')) $('bPlay').onclick=()=>route('play');
@@ -1084,13 +1103,15 @@ function renderPoster(){
   draw();
 }
 let shopFmt='a2', fmtPreview='a4';
+if(S.gift&&SHOP[S.gift.format]) shopFmt=S.gift.format;   // le format offert est présélectionné
 /* Bloc commande (partagé entre l'écran Affiche et l'écran combiné sur ordinateur) */
 function shopHTML(){return `<div class="shop" id="shop">
       <h2>${esc(t('shop_h'))}</h2>
       <p>${esc(t('shop_p'))}</p>
-      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(S.lang==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${esc(money(priceOf(k)))}</small></button>`).join('')}</div>
-      <button class="primary" id="orderBtn">${esc(t('shop_btn')(money(priceOf(shopFmt))))}</button>
-      <p class="shop-cur">${esc(t(CUR==='usd'?'cur_us':'cur_ca'))} <button class="linkish" id="curSwitch">${esc(t(CUR==='usd'?'cur_to_ca':'cur_to_us'))}</button></p>
+      <div class="styles" role="group" id="fmts">${Object.entries(SHOP).map(([k,f])=>`<button data-fmt="${k}" aria-pressed="${k===shopFmt}">${esc(S.lang==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${esc(S.gift&&S.gift.cur===CUR?(giftDue(k)?'+ '+money(giftDue(k)):t('gift_incl')):money(priceOf(k)))}</small></button>`).join('')}</div>
+      ${giftBanner()}
+      <button class="primary" id="orderBtn">${esc(S.gift?t('shop_btn_g')(money(giftDue(shopFmt))):t('shop_btn')(money(priceOf(shopFmt))))}</button>
+      ${S.gift?'':`<p class="shop-cur">${esc(t(CUR==='usd'?'cur_us':'cur_ca'))} <button class="linkish" id="curSwitch">${esc(t(CUR==='usd'?'cur_to_ca':'cur_to_us'))}</button></p>`}
       <p class="shop-status" id="shopStatus" role="status" aria-live="polite"></p>
       <p class="shop-legal">${t('shop_legal')}</p>
     </div>`;}
@@ -1098,15 +1119,15 @@ function dlHTML(){return `<div class="btns"><button class="ghost" id="dl">${esc(
 function tipHTML(){return `<div class="tip"><div>${t('tip')}<div class="pens" aria-label="${esc(t('pens_l'))}">${CATS.map(c=>`<i style="background:${PAL[c.id]}" title="${esc(catName(c))} : ${esc(PEN[S.lang][c.id])}"></i>`).join('')}</div></div></div>`;}
 function wireShop(draw){
   $('dl').onclick=()=>exportPoster($('pv'),S.name);
-  $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=t('shop_btn')(money(priceOf(shopFmt)));fmtPreview=shopFmt;draw();});
+  $('fmts').querySelectorAll('[data-fmt]').forEach(b=>b.onclick=()=>{shopFmt=b.dataset.fmt;$('fmts').querySelectorAll('[data-fmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('orderBtn').textContent=S.gift?t('shop_btn_g')(money(giftDue(shopFmt))):t('shop_btn')(money(priceOf(shopFmt)));fmtPreview=shopFmt;draw();});
   $('orderBtn').onclick=()=>{track('commander',{format:shopFmt,style:S.style,cur:CUR});placeOrder();};
-  $('curSwitch').onclick=()=>setCur(CUR==='usd'?'cad':'usd');
+  if($('curSwitch')) $('curSwitch').onclick=()=>setCur(CUR==='usd'?'cad':'usd');
 }
 
 const ONLINE=/(^|\.)studioexistence\.com$|\.vercel\.app$/.test(location.hostname);
 // pays du visiteur : une seule fois par session, sans bloquer l'affichage
 if(ONLINE){let known=false;try{known=!!sessionStorage.getItem('bl-cur');}catch(e){}
-  if(!known) fetch('/api/geo').then(r=>r.json()).then(g=>{if(g&&g.currency&&g.currency!==CUR){setCur(g.currency);}else{try{sessionStorage.setItem('bl-cur',CUR);}catch(e){}}}).catch(()=>{});}
+  if(!known&&!S.gift) fetch('/api/geo').then(r=>r.json()).then(g=>{if(g&&g.currency&&g.currency!==CUR){setCur(g.currency);}else{try{sessionStorage.setItem('bl-cur',CUR);}catch(e){}}}).catch(()=>{});}
 async function placeOrder(){
   const btn=$('orderBtn'), st=$('shopStatus'); const items=posterItems(S);
   if(!items.length){st.textContent=t('shop_need');return;}
@@ -1125,10 +1146,12 @@ async function placeOrder(){
     st.textContent=t('shop_pay');
     // corps = aperçu (800 px) suivi du fichier d'impression ; « pl » = taille de l'aperçu en octets
     const q=new URLSearchParams({format:shopFmt,style,lang:S.lang,name:S.name||'',cur:CUR,pl:String(prev.size)});
+    if(S.gift&&S.gift.cur===CUR) q.set('gift',S.gift.code);
     // lien de transfert : inclus dans le courriel de confirmation pour retrouver la liste plus tard
     try{const rc=(await restoreUrl()).split('?r=')[1]||'';if(rc.length<12000)q.set('rc',rc);}catch(e){}
     const r=await fetch('/api/checkout?'+q.toString(),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:new Blob([prev,blob])});
     const j=await r.json().catch(()=>({}));
+    if(r.status===409&&j.error==='gift'){delete S.gift;save();route(currentScreen());toast(t(j.reason==='used'?'gift_used':'gift_bad'));return;}
     if(!r.ok||!j.url) throw new Error(j.error||('http '+r.status));
     track('commande-paiement',{format:shopFmt,style:S.style}); location.href=j.url;
   }catch(e){ st.textContent=t('shop_err'); btn.disabled=false; console.error(e); }
@@ -1472,14 +1495,95 @@ async function showTransfer(boxId){
   const sb=box.querySelector('[data-send]'); if(sb) sb.onclick=async()=>{try{await navigator.share({title:t('tr_title'),text:t('tr_txt'),url});}catch(e){}};
 }
 
+
+/* =====================================================================
+   BONS CADEAUX
+   ===================================================================== */
+const giftDue=k=>{if(!S.gift||S.gift.cur!==CUR)return priceOf(k);return Math.max(0,priceOf(k)-Math.round((S.gift.amount||0)/100));};
+function giftBanner(){if(!S.gift)return'';return `<div class="giftban"><b>${esc(t('gb_h')(S.gift.from))}</b><span>${esc(t('gb_p')(S.gift.format.toUpperCase()))}</span></div>`;}
+async function checkGift(code,{welcome=true}={}){
+  try{const r=await fetch('/api/gift?code='+encodeURIComponent(code));const g=await r.json();
+    if(!g.valid){toast(t(g.reason==='used'?'gift_used':'gift_bad'));return false;}
+    S.gift={code:g.code,format:g.format,cur:g.cur,amount:g.amount,from:g.from||'',to:g.to||'',msg:g.msg||''};
+    if(!Object.keys(S.answers).length&&(g.lang==='fr'||g.lang==='en'))S.lang=g.lang;
+    if(!S.name&&g.to)S.name=g.to;
+    if(SHOP[g.format])shopFmt=g.format;
+    save();CUR=g.cur;try{sessionStorage.setItem('bl-cur',CUR);}catch(e){}applyLang();
+    if(welcome)giftWelcome();
+    route(currentScreen()==='intro'||!S.finished?'intro':'bilan');return true;
+  }catch(e){toast(t('gift_bad'));return false;}
+}
+function giftDialog(html,wire){let d=$('giftDlg');if(d)d.remove();document.body.insertAdjacentHTML('beforeend',`<dialog class="confirm gift" id="giftDlg">${html}</dialog>`);d=$('giftDlg');d.addEventListener('close',()=>d.remove());wire(d);if(d.showModal)d.showModal();}
+function giftWelcome(){const g=S.gift;giftDialog(`<p class="gw-k">${esc(t('gw_k'))}</p><h2>${esc(t('gw_h')(g.from))}</h2>${g.msg?`<p class="gw-m">${esc(g.msg)}</p>`:''}<p>${esc(t('gw_p')(g.format.toUpperCase()))}</p><div class="btns"><button class="primary" id="gwGo">${esc(t('gw_go'))}</button></div>`,d=>{$('gwGo').onclick=()=>d.close();});}
+function giftAsk(){giftDialog(`<h2>${esc(t('ga_h'))}</h2><p>${esc(t('ga_p'))}</p><div class="field"><input id="gaIn" placeholder="BL-XXXX-XXXX" autocomplete="off" autocapitalize="characters"></div><div class="btns"><button class="primary" id="gaOk">${esc(t('ga_ok'))}</button><button class="ghost" id="gaNo">${esc(t('reset_no'))}</button></div>`,
+  d=>{$('gaNo').onclick=()=>d.close();$('gaOk').onclick=async()=>{const v=$('gaIn').value.trim();if(!v)return;d.close();await checkGift(v);};});}
+
+let giftFmt='a3';
+function renderGift(){
+  const L=S.lang;
+  $('offrir').innerHTML=`<div class="screen-in">
+    <div class="s-top"><button class="back" id="gBack">${esc(t('back'))}</button><div class="mark" style="margin-left:auto">Bucket <span>List</span></div>${langBtn()}</div>
+    <h1>${t('of_h')}</h1>
+    <p>${esc(t('of_p'))}</p>
+    <figure class="of-art"><img src="/bucket-list/bon-exemple-${L}.jpg" alt="" width="1000" height="707"></figure>
+    <div class="styles" role="group" id="gFmts">${Object.entries(SHOP).map(([k,f])=>`<button data-gfmt="${k}" aria-pressed="${k===giftFmt}">${esc(L==='en'?f.label.replace(/,/g,'.'):f.label)}<small>${esc(money(priceOf(k)))}</small></button>`).join('')}</div>
+    <p class="shop-cur">${esc(t(CUR==='usd'?'of_us':'of_ca'))} <button class="linkish" id="gCur">${esc(t(CUR==='usd'?'cur_to_ca':'cur_to_us'))}</button></p>
+    <div class="field"><label for="gFrom">${esc(t('of_from'))}</label><input id="gFrom" maxlength="40" value="${esc(S.name)}"></div>
+    <div class="field"><label for="gTo">${esc(t('of_to'))}</label><input id="gTo" maxlength="40"></div>
+    <div class="field"><label for="gMsg">${esc(t('of_msg'))}</label><textarea id="gMsg" maxlength="240" rows="3" placeholder="${esc(t('of_msg_p'))}"></textarea></div>
+    <button class="primary" id="gBuy">${esc(t('of_btn')(money(priceOf(giftFmt))))}</button>
+    <p class="shop-status" id="gStatus" role="status" aria-live="polite"></p>
+    <p class="shop-legal">${esc(t('of_note'))} ${t('shop_legal')}</p>
+  </div>`;
+  show('offrir');
+  $('gBack').onclick=()=>route(S.finished?'bilan':'intro');
+  $('gCur').onclick=()=>setCur(CUR==='usd'?'cad':'usd');
+  $('gFmts').querySelectorAll('[data-gfmt]').forEach(b=>b.onclick=()=>{giftFmt=b.dataset.gfmt;$('gFmts').querySelectorAll('[data-gfmt]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('gBuy').textContent=t('of_btn')(money(priceOf(giftFmt)));});
+  $('gBuy').onclick=async()=>{
+    const st=$('gStatus'),btn=$('gBuy');
+    if(!ONLINE){st.textContent=t('shop_off');return;}
+    btn.disabled=true;st.textContent=t('shop_pay');track('offrir',{format:giftFmt,cur:CUR});
+    try{const q=new URLSearchParams({format:giftFmt,cur:CUR,lang:S.lang});
+      const r=await fetch('/api/gift?'+q,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({from:$('gFrom').value,to:$('gTo').value,msg:$('gMsg').value})});
+      const j=await r.json().catch(()=>({}));if(!r.ok||!j.url)throw new Error(j.error||r.status);location.href=j.url;
+    }catch(e){st.textContent=t('shop_err');btn.disabled=false;}
+  };
+}
+async function renderGiftThanks(){
+  $('cmerci').innerHTML=`<div class="screen-in">
+    <div class="s-top"><div class="mark">Bucket <span>List</span></div>${langBtn()}</div>
+    <h1>${t('gt_h')}</h1><p id="gtP">${esc(t('gt_wait'))}</p><div id="gtBox"></div>
+    <button class="ghost" id="gtBack">${esc(t('thanks_back'))}</button></div>`;
+  show('cmerci'); track('offrir-merci');
+  $('gtBack').onclick=()=>route(S.finished?'bilan':'intro');
+  for(let i=0;i<20&&GIFT_SID;i++){
+    try{const j=await (await fetch('/api/gift?session_id='+encodeURIComponent(GIFT_SID))).json();
+      if(j.ready){const link=location.origin+'/bucket-list/?cadeau='+encodeURIComponent(j.code), pdf='/api/gift?pdf=1&code='+encodeURIComponent(j.code);
+        $('gtP').textContent=t('gt_p')(j.to);
+        $('gtBox').innerHTML=`<div class="kit"><h2>${esc(j.code)}</h2>
+          <a class="primary" href="${pdf}" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">${esc(t('gt_pdf'))}</a>
+          <div class="share-box"><input readonly value="${esc(link)}" aria-label="URL"><button class="ghost" id="gtCopy">${esc(t('copy'))}</button></div>
+          ${navigator.share?`<button class="ghost" id="gtSend">${esc(t('gt_send'))}</button>`:''}
+          <p class="kit-n">${esc(t('gt_note'))}</p></div>`;
+        $('gtCopy').onclick=async()=>{try{await navigator.clipboard.writeText(link);toast(t('link_copied'));}catch(e){}};
+        if($('gtSend'))$('gtSend').onclick=async()=>{try{await navigator.share({title:t('gt_share_t'),text:t('gt_share_txt'),url:link});}catch(e){}};
+        return;}
+    }catch(e){}
+    await new Promise(r=>setTimeout(r,2000));
+  }
+  $('gtP').textContent=t('gt_late');
+}
+
 /* =====================================================================
    DÉMARRAGE
    ===================================================================== */
 function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove('show'),1800);}
 function start(){
+  if(GIFT_SID){route('cmerci');return;}
+  if(GIFT_IN!==null){const c=GIFT_IN;GIFT_IN=null;route(S.finished?'bilan':'intro');if(c)checkGift(c);else giftAsk();return;}
   if(RESTORE){const c=RESTORE;RESTORE=null;askRestore(c);return;}
   if(SHARED){route('shared');return;}
-  if(ORDER_RET==='merci'){route('merci');return;}
+  if(ORDER_RET==='merci'){if(S.gift){delete S.gift;save();}route('merci');return;}
   if(ORDER_RET==='annulee'){route(S.finished?'poster':'intro');toast(t('cancel_t'));return;}
   if(!S.seenIntro) route('intro');
   else if(S.finished) route('bilan');
@@ -1487,6 +1591,9 @@ function start(){
 }
 SHARED=parseShared();
 let RESTORE=new URLSearchParams(location.search).get('r');
+let GIFT_IN=new URLSearchParams(location.search).get('cadeau');   // null = absent, '' = saisir un code
+const GIFT_SID=new URLSearchParams(location.search).get('cadeau-merci')?new URLSearchParams(location.search).get('session_id'):null;
+if(GIFT_IN!==null||GIFT_SID) history.replaceState(null,'',location.pathname);
 if(RESTORE) history.replaceState(null,'',location.pathname);
 const ORDER_RET=new URLSearchParams(location.search).get('commande');
 if(ORDER_RET) history.replaceState(null,'',location.pathname);

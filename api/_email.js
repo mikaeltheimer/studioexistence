@@ -96,6 +96,7 @@ export function sellerEmail(session, printful = {}) {
     `Livraison : ${[r.address1, r.address2, r.city, r.state_code, r.zip].filter(Boolean).join(', ')}`,
     `Printful : commande ${printful.id || '?'}${printful.confirm ? ' (envoyée en production)' : ' (BROUILLON à confirmer dans Printful)'}`,
     `Fichier d'impression : ${m.file || '?'}`,
+    ...(m.gift ? [`Bon cadeau utilisé : ${m.gift}`] : []),
     `Stripe : ${session.id}`,
   ];
   return { subject: `Nouvelle commande Bucket List ${no} — ${money(session.amount_total, 'fr', session.currency)}`, text: lines.join('\n') };
@@ -120,5 +121,58 @@ export async function sendOrderEmails(session, printful, fetchImpl = fetch) {
   const to = session.customer_details?.email;
   if (to) { const c = customerEmail(session); await sendResend({ from, to: [to], reply_to: replyTo, subject: c.subject, html: c.html, text: c.text }, `client-${session.id}`, fetchImpl); out.client = true; }
   if (process.env.ORDER_NOTIFY) { const v = sellerEmail(session, printful); await sendResend({ from, to: [process.env.ORDER_NOTIFY], reply_to: to || replyTo, subject: v.subject, text: v.text }, `vente-${session.id}`, fetchImpl); out.vendeur = true; }
+  return out;
+}
+
+/* ---------- Bon cadeau : courriel à la personne qui offre, avec le bon en PDF ---------- */
+export function giftEmail(session, code, link) {
+  const m = session.metadata || {}, fr = m.lang !== 'en', L = fr ? 'fr' : 'en';
+  const fmt = FORMATS[m.format] || {}, to = m.to || '', total = money(session.amount_total, L, session.currency);
+  const T = fr ? {
+    subject: `Ton bon cadeau Bucket List${to ? ' pour ' + to : ''}`,
+    hi: 'Merci pour ce beau cadeau !',
+    lead: `Voici ton bon pour ${to ? esc(to) : 'la personne à qui tu l\'offres'} : ${esc(fmt.fr || '')}, impression et livraison incluses.`,
+    how: 'Comment l\'offrir', how1: 'Imprime le bon en pièce jointe (format A5), ou transfère ce lien :', how2: 'La personne compose sa liste quand elle veut : le bon s\'applique tout seul au moment de commander.',
+    btn: 'Ouvrir le bon', code: 'Code du bon', paid: 'Payé', note: "Le bon n'expire jamais. Si les prix changent, la différence éventuelle sera à payer au moment de commander.",
+    help: 'Une question ? Réponds simplement à ce courriel.', by: 'Studio Existence inc. · Sutton (Québec)', file: `bon-cadeau-bucket-list-${code}.pdf`,
+  } : {
+    subject: `Your Bucket List gift card${to ? ' for ' + to : ''}`,
+    hi: 'Thank you for this lovely gift!',
+    lead: `Here is your gift card for ${to ? esc(to) : 'your lucky person'}: ${esc(fmt.en || '')}, printing and shipping included.`,
+    how: 'How to give it', how1: 'Print the attached card (A5 size), or forward this link:', how2: 'They build their list whenever they like: the gift card applies automatically at checkout.',
+    btn: 'Open the gift card', code: 'Gift code', paid: 'Paid', note: 'The gift card never expires. If prices change, any difference will be due at checkout.',
+    help: 'A question? Just reply to this email.', by: 'Studio Existence inc. · Sutton, Québec', file: `bucket-list-gift-card-${code}.pdf`,
+  };
+  const html = `<!doctype html><html lang="${L}"><body style="margin:0;padding:0;background:${PAPER};color:${INK};font-family:Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${PAPER}"><tr><td align="center" style="padding:28px 16px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
+<tr><td style="font-family:Georgia,serif;font-size:22px;padding-bottom:20px">Bucket <span style="font-style:italic;background:${YEL};padding:0 4px">List</span></td></tr>
+<tr><td style="font-family:Georgia,serif;font-size:34px;line-height:1.1;padding-bottom:12px">${T.hi}</td></tr>
+<tr><td style="font-size:16px;line-height:1.5;padding-bottom:22px">${T.lead}</td></tr>
+<tr><td style="background:${CARD};border:1.5px solid ${INK};border-radius:8px;padding:16px 18px">
+  <div style="font-family:Georgia,serif;font-size:20px;padding-bottom:8px">${T.how}</div>
+  <div style="font-size:14px;line-height:1.5;padding-bottom:12px">${T.how1}</div>
+  <a href="${esc(link)}" style="display:inline-block;background:${INK};color:${PAPER};text-decoration:none;font-weight:700;font-size:15px;padding:12px 20px;border-radius:8px">${T.btn}</a>
+  <div style="font-size:14px;line-height:1.5;padding-top:12px">${T.how2}</div>
+  <div style="font-size:14px;padding-top:12px">${T.code} : <b style="letter-spacing:2px">${esc(code)}</b> · ${T.paid} : <b>${total}</b></div>
+  <div style="font-size:12px;color:#4A4458;padding-top:10px">${T.note}</div>
+</td></tr>
+<tr><td style="font-size:14px;line-height:1.5;padding:22px 0 6px">${T.help}</td></tr>
+<tr><td style="font-size:12px;color:#4A4458;padding-top:6px">${T.by}</td></tr>
+</table></td></tr></table></body></html>`;
+  const text = [T.hi, '', T.lead.replace(/&#39;/g, "'"), '', T.how1, link, '', T.how2, '', `${T.code} : ${code} · ${T.paid} : ${total}`, T.note, '', T.help, T.by].join('\n');
+  return { subject: T.subject, html, text, file: T.file };
+}
+
+export async function sendGiftEmails(session, code, link, pdf, fetchImpl = fetch) {
+  if (!process.env.RESEND_API_KEY) return { skipped: true };
+  const from = process.env.ORDER_FROM || 'Studio Existence <commandes@studioexistence.com>';
+  const replyTo = process.env.ORDER_REPLY_TO || 'mikael@studioexistence.com';
+  const out = {}, to = session.customer_details?.email, m = session.metadata || {};
+  if (to) { const g = giftEmail(session, code, link);
+    await sendResend({ from, to: [to], reply_to: replyTo, subject: g.subject, html: g.html, text: g.text, ...(pdf ? { attachments: [{ filename: g.file, content: pdf.toString('base64') }] } : {}) }, `cadeau-${session.id}`, fetchImpl); out.client = true; }
+  if (process.env.ORDER_NOTIFY) { await sendResend({ from, to: [process.env.ORDER_NOTIFY], reply_to: to || replyTo,
+    subject: `Bon cadeau vendu ${code} — ${money(session.amount_total, 'fr', session.currency)}`,
+    text: [`Bon cadeau ${code} — affiche ${String(m.format || '').toUpperCase()} (${m.cur})`, `De : ${m.from || '?'} <${to || '?'}>`, `Pour : ${m.to || '?'}`, `Message : ${m.msg || '—'}`, `Lien : ${link}`, `Stripe : ${session.id}`].join('\n') }, `vente-cadeau-${session.id}`, fetchImpl); out.vendeur = true; }
   return out;
 }

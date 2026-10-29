@@ -29,6 +29,16 @@
       "source": "/privacy",
       "destination": "/confidentialite/#en",
       "permanent": false
+    },
+    {
+      "source": "/bucket-list/cadeau",
+      "destination": "/bucket-list/?cadeau=",
+      "permanent": false
+    },
+    {
+      "source": "/bucket-list/cadeau/",
+      "destination": "/bucket-list/?cadeau=",
+      "permanent": false
     }
   ],
   "rewrites": [
@@ -47,6 +57,12 @@
     },
     "api/bucket-og.js": {
       "includeFiles": "{bucket-list/index.html,bucket-list/fonts/**}"
+    },
+    "api/gift.js": {
+      "includeFiles": "{bucket-list/fonts/**,bucket-list/cadeau-*.jpg}"
+    },
+    "api/stripe-webhook.js": {
+      "includeFiles": "{bucket-list/fonts/**,bucket-list/cadeau-*.jpg}"
     }
   },
   "crons": [
